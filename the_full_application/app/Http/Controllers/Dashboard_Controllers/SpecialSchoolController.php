@@ -522,4 +522,38 @@ public function view_staff_details()
     return view('dashboard.special_school.view_staff_details', compact('specialSchool', 'specialSchoolMapping', 'specialSchoolStaff'));
 }
 
+public function view_staff_details_by_state_office($id)
+{
+    $user = auth()->user();
+    $specialSchoolMapping = SpecialSchoolMapping::where('special_school_id', $id)->firstOrFail();
+    $specialSchool = SpecialSchool::where('special_school_id', $specialSchoolMapping->special_school_id)->first();
+    if (!$specialSchool) {
+        return redirect()->back()->with('warning', 'You dont have permission to proceed further.');
+    }
+    $specialSchoolStaff = SpecialSchoolStaff::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])->where('special_school_id', $specialSchool->special_school_id)->get();
+
+    foreach ($specialSchoolStaff as $staff) {
+        $addressParts = [];
+
+        if ($staff->village) {
+            $addressParts[] = $staff->village->village_name;
+        }
+        if ($staff->grampanchayat) {
+            $addressParts[] = $staff->grampanchayat->gp_name;
+        }
+        if ($staff->block) {
+            $addressParts[] = $staff->block->block_name;
+        }
+        if ($staff->municipality) {
+            $addressParts[] = $staff->municipality->municipality_name;
+        }
+        if ($staff->district) {
+            $addressParts[] = $staff->district->district_name;
+        }
+
+        $staff->full_address = implode(', ', array_filter($addressParts));
+    }
+    return view('dashboard.special_school.view_staff_details', compact('specialSchool', 'specialSchoolMapping', 'specialSchoolStaff'));
+}
+
 }
