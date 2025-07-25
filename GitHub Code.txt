@@ -1,0 +1,208 @@
+To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.
+
+Here’s the exact command to do that:
+
+---
+
+### 🧹 **Remove Git repository (de-initialize)**
+
+```bash
+rm -rf .git
+```
+
+📍 Run this **inside** the `the_full_application` folder:
+
+```bash
+cd /var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application
+rm -rf .git
+```
+
+---
+
+### ✅ Confirm it’s removed
+
+Run:
+
+```bash
+ls -a
+```
+
+If you **don’t see `.git`**, the Git repo has been fully removed.
+
+You can also verify by running:
+
+```bash
+git status
+```
+
+It should now say:
+
+```
+fatal: not a git repository (or any of the parent directories): .git
+```
+
+---
+
+Let me know if you'd like to reinitialize it under a different path or want to structure your Git repo differently.
+
+
+Great! You want to:
+
+1. **Do development on your Windows 11 laptop**
+2. **Push changes to GitHub**
+3. **Automatically update your CentOS server at**
+   `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal` when code is pushed
+
+Let me guide you step-by-step.
+
+---
+
+## 🧰 PART 1: Setup Git on your **Windows 11 Laptop**
+
+### ✅ 1. Install Git for Windows
+
+* Download: [https://git-scm.com/download/win](https://git-scm.com/download/win)
+* Install it with default settings.
+
+Open **Git Bash** after installation (not CMD/PowerShell).
+
+---
+
+### ✅ 2. Configure Git on your laptop
+
+In **Git Bash**, run:
+
+```bash
+git config --global user.name "ssepdhelpdesk"
+git config --global user.email "ssepdhelpdesk@gmail.com"
+```
+
+---
+
+### ✅ 3. Generate SSH key and add it to GitHub
+
+In **Git Bash**:
+
+```bash
+ssh-keygen -t ed25519 -C "ssepdhelpdesk@gmail.com"
+```
+
+Press Enter to all prompts (default location, no passphrase is fine).
+
+Then run:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+**Copy the entire output**, and add it to GitHub:
+
+* GitHub → Profile → **Settings**
+* **SSH and GPG keys** → **New SSH Key**
+* Title: `Windows Laptop`
+* Paste the copied key → Save
+
+Now test it:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see:
+
+```
+Hi ssepdhelpdesk! You've successfully authenticated...
+```
+
+---
+
+## 🧰 PART 2: Clone the GitHub Repo to Your Windows Laptop
+
+In **Git Bash**, choose a folder (e.g., Documents), then:
+
+```bash
+cd ~/Documents
+git clone git@github.com:ssepdhelpdesk/ssepd_ngo_working_portal.git
+cd ssepd_ngo_working_portal
+```
+
+Now you can **do all your development here** — edit files, commit, push.
+
+---
+
+## 💾 PART 3: Do Development Work Locally
+
+Example flow when editing code:
+
+```bash
+# Inside repo folder
+git status                       # See changes
+git add .                        # Add all changes
+git commit -m "Your message"    # Commit
+git push origin main            # Push to GitHub
+```
+
+---
+
+## 🔁 PART 4: Auto-Update CentOS Server When You Push (Deploy via Pull)
+
+Now you want the CentOS server to auto-update when you push.
+Simplest way: **pull from GitHub manually or via script/cron.**
+
+---
+
+### ✅ Option A: Manual Git Pull on Server
+
+On your CentOS server:
+
+```bash
+cd /var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal
+git pull origin main
+```
+
+Do this after every push from your laptop.
+
+---
+
+### ✅ Option B: Set Up Password-less Git Pull via SSH on Server
+
+On CentOS server:
+
+1. Make sure `.git` is initialized and connected to GitHub (as we did before)
+2. Run this if it says “Permission denied” when pulling:
+
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+Then `git pull origin main` should work without issue.
+
+---
+
+### ✅ Option C (Advanced): Automate with GitHub Webhook + Deploy Script
+
+You can set up a webhook from GitHub that triggers a script on your server to pull changes automatically. This requires:
+
+* Public IP or domain on your server
+* Web server listening to GitHub POST
+* Secure deploy token or secret
+
+Let me know if you want this, and I’ll guide you.
+
+---
+
+## ✅ Summary
+
+| Task                          | Done        |
+| ----------------------------- | ----------- |
+| Git installed on Windows      | ✅           |
+| SSH key added to GitHub       | ✅           |
+| GitHub repo cloned on Windows | ✅           |
+| Git push from Windows         | ✅           |
+| Git pull on CentOS            | ✅           |
+| Automated sync (optional)     | 🔄 Optional |
+
+---
+
+Would you like me to write a **Windows batch script** or **Linux shell script** to help with push/pull automation?
