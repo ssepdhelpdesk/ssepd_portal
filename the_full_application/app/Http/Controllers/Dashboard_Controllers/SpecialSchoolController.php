@@ -98,14 +98,25 @@ public function index()
 
         /*Append full address for each school*/
         foreach ($specialSchool as $schoolDetails) {
-            $addressParts = [
-                optional($schoolDetails->village)->village_name,
-                optional($schoolDetails->grampanchayat)->gp_name,
-                optional($schoolDetails->block)->block_name,
-                optional($schoolDetails->municipality)->municipality_name,
-                optional($schoolDetails->district)->district_name,
-            ];
-            $schoolDetails->full_address = implode(', ', array_filter($addressParts));
+            $address = '';
+
+            if ($schoolDetails->village) {
+                $address .= 'Village: ' . $schoolDetails->village->village_name . ', ';
+            }
+            if ($schoolDetails->grampanchayat) {
+                $address .= 'GP: ' . $schoolDetails->grampanchayat->gp_name . ', ';
+            }
+            if ($schoolDetails->block) {
+                $address .= 'Block: ' . $schoolDetails->block->block_name . ', ';
+            }
+            if ($schoolDetails->municipality) {
+                $address .= 'Municipality: ' . $schoolDetails->municipality->municipality_name . ', ';
+            }
+            if ($schoolDetails->district) {
+                $address .= 'District: ' . $schoolDetails->district->district_name;
+            }
+
+            $schoolDetails->full_address = rtrim($address, ', ');
         }
 
         return view('dashboard.special_school.index', compact('specialSchool', 'specialSchoolMapping'));
@@ -116,14 +127,25 @@ public function index()
 
     /*Generate full address for each school*/
     foreach ($specialSchool as $schoolDetails) {
-        $addressParts = [
-            optional($schoolDetails->village)->village_name,
-            optional($schoolDetails->grampanchayat)->gp_name,
-            optional($schoolDetails->block)->block_name,
-            optional($schoolDetails->municipality)->municipality_name,
-            optional($schoolDetails->district)->district_name,
-        ];
-        $schoolDetails->full_address = implode(', ', array_filter($addressParts));
+        $address = '';
+
+        if ($schoolDetails->village) {
+            $address .= 'Village: ' . $schoolDetails->village->village_name . ', ';
+        }
+        if ($schoolDetails->grampanchayat) {
+            $address .= 'GP: ' . $schoolDetails->grampanchayat->gp_name . ', ';
+        }
+        if ($schoolDetails->block) {
+            $address .= 'Block: ' . $schoolDetails->block->block_name . ', ';
+        }
+        if ($schoolDetails->municipality) {
+            $address .= 'Municipality: ' . $schoolDetails->municipality->municipality_name . ', ';
+        }
+        if ($schoolDetails->district) {
+            $address .= 'District: ' . $schoolDetails->district->district_name;
+        }
+
+        $schoolDetails->full_address = rtrim($address, ', ');
     }
 
     return view('dashboard.special_school.index', compact('specialSchool', 'specialSchoolMapping'));
@@ -536,19 +558,23 @@ public function view_staff_details_by_state_office($id)
         $addressParts = [];
 
         if ($staff->village) {
-            $addressParts[] = $staff->village->village_name;
+            $addressParts[] = 'Village: ' . $staff->village->village_name;
         }
+
         if ($staff->grampanchayat) {
-            $addressParts[] = $staff->grampanchayat->gp_name;
+            $addressParts[] = 'GP: ' . $staff->grampanchayat->gp_name;
         }
+
         if ($staff->block) {
-            $addressParts[] = $staff->block->block_name;
+            $addressParts[] = 'Block: ' . $staff->block->block_name;
         }
+
         if ($staff->municipality) {
-            $addressParts[] = $staff->municipality->municipality_name;
+            $addressParts[] = 'Municipality: ' . $staff->municipality->municipality_name;
         }
+
         if ($staff->district) {
-            $addressParts[] = $staff->district->district_name;
+            $addressParts[] = 'District: ' . $staff->district->district_name;
         }
 
         $staff->full_address = implode(', ', array_filter($addressParts));

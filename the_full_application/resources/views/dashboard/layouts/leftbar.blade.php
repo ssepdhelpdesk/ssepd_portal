@@ -79,10 +79,8 @@
                   @can('special-school-access')
                   <li><a href="{{route('admin.specialschool.index')}}">View Special Schools</a></li>
                   @endcan
-                  @can('special-school-show')
-                  <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
-                  @endcan
                   @can('special-school-create')
+                  <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
                   <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
                   <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Construction Update</a></li>
                   @endcan                  

@@ -43,6 +43,7 @@ Staff Details || Special School
 								<tr>
 									<th>Sl No</th>
 									<th>School Name</th>
+									<th>Image</th>
 									<th>Name</th>
 									<th>Engagement Date</th>
 									<th>Designation</th>
@@ -57,6 +58,7 @@ Staff Details || Special School
 								<tr>
 									<th>Sl No</th>
 									<th>School Name</th>
+									<th>Image</th>
 									<th>Name</th>
 									<th>Engagement Date</th>
 									<th>Designation</th>
@@ -74,26 +76,32 @@ Staff Details || Special School
 								<tr>
 									<td>{{ $i++ }}</td>
 									<td>{{ $staffDetails->special_school_name }}</td>
+									<td><a href="{{ url('storage/' . $staffDetails->file_staff_image) }}" target="_blank"> <img src="{{ url('storage/' . $staffDetails->file_staff_image) }}" alt="Staff Image" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"></a></td>
 									<td>{{ $staffDetails->special_school_staff_name }}</td>
 									<td>{{ \Carbon\Carbon::parse($staffDetails->staff_engagement_date)->format('jS F, Y') }}</td>
 									<td>
 										@php
 										$designations = [
-										1 => 'HM / Principal / Sr. SES',
-										2 => 'Trained Graduate',
-										3 => 'Trained Intermediate',
-										4 => 'Trained Matric',
-										5 => 'MCD / DHLS',
-										6 => 'Craft Teacher',
-										7 => 'Art Teacher',
-										8 => 'PET',
-										9 => 'Music Teacher',
-										10 => 'Mobility Teacher',
-										11 => 'Matron / Warden',
-										12 => 'Clerk / Accountant',
-										13 => 'Cook',
-										14 => 'Attendant',
-										15 => 'Sweeper / Watchman',
+										1  => 'Sr.SES/Principal/HM',
+										2  => 'Asst. Teacher (TG)',
+										3  => 'Classical/ Language Teacher',
+										4  => 'Asst. Teacher (TI)',
+										5  => 'Asst. Teacher (TM)',
+										6  => 'MCD/DHLS Teacher',
+										7  => 'Occupational Therapist',
+										8  => 'P.E.T.',
+										9  => 'Art Teacher',
+										10 => 'Music Teacher',
+										11 => 'Mobility Teacher',
+										12 => 'Craft teacher',
+										13 => 'Computer Teacher',
+										14 => 'Matron/Warden',
+										15 => 'Clerk-cum-Accountant',
+										16 => 'Cook',
+										17 => 'Cook-Helper',
+										18 => 'Attendant',
+										19 => 'Sweeper-cum-Watchman',
+										20 => 'Part time post, if any',
 										];
 										@endphp
 
@@ -123,18 +131,18 @@ Staff Details || Special School
                                     <a class="dropdown-item" href="{{route('admin.specialschool.create')}}">Add Staff Details</a>
                                     @endcan
                                  </div> -->
-                             </div>
-                         </td>
-                     </tr>
-                     @endforeach
-                     @endif
-                 </tbody>
-             </table>
+                              </div>
+                           </td>
+                        </tr>
+                        @endforeach
+                        @endif
+                     </tbody>
+                  </table>
+               </div>
+            </div>
          </div>
-     </div>
- </div>
-</div>
-</div>
+      </div>
+   </div>
 <!-- row -->
 <!-- ============================================================== -->
 <!-- End Page Content -->
