@@ -1,0 +1,790 @@
+[2025-07-29 13:29:32] local.ERROR: Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. {"view":{"view":"E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\resources\\views\\dashboard\\special_school\\view_staff_details.blade.php","data":{"errors":"<pre class=sf-dump id=sf-dump-1504159770 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Support\\ViewErrorBag</span> {<a class=sf-dump-ref>#1729</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">bags</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-1504159770\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchool":"<pre class=sf-dump id=sf-dump-944340594 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\SpecialSchool</span> {<a class=sf-dump-ref>#1768</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"15 characters\">special_schools</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:40</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>school_system_gen_reg_no</span>\" => \"<span class=sf-dump-str title=\"36 characters\">SSEPD/SPECIALSCHOOL/22/07/2025/12494</span>\"
+    \"<span class=sf-dump-key>school_establishment_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-21</span>\"
+    \"<span class=sf-dump-key>school_category</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>school_type</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>act_reg_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">qwqw</span>\"
+    \"<span class=sf-dump-key>file_act_reg</span>\" => \"<span class=sf-dump-str title=\"121 characters\">special_school_files/SSEPD_SPECIALSCHOOL_22_07_2025_12494/SPECIAL_SCHOOL_ACT_GF9OyOo1p62SMdVSPfE6O9Q03ZGanBby43Hpz3dB.pdf</span>\"
+    \"<span class=sf-dump-key>school_email_id</span>\" => \"<span class=sf-dump-str title=\"26 characters\">patelsurajprasim@gmail.com</span>\"
+    \"<span class=sf-dump-key>school_mobile_no</span>\" => \"<span class=sf-dump-str title=\"10 characters\">7008731607</span>\"
+    \"<span class=sf-dump-key>school_address_type</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>state_id</span>\" => <span class=sf-dump-num>228</span>
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2409</span>
+    \"<span class=sf-dump-key>municipality_id</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>block_id</span>\" => <span class=sf-dump-num>2409009</span>
+    \"<span class=sf-dump-key>gp_id</span>\" => <span class=sf-dump-num>2409009003</span>
+    \"<span class=sf-dump-key>village_id</span>\" => <span class=sf-dump-num>420244</span>
+    \"<span class=sf-dump-key>pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768005</span>\"
+    \"<span class=sf-dump-key>school_postal_address_at</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_post</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_via</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_ps</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_district</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>is_active</span>\" => \"<span class=sf-dump-str title=\"6 characters\">active</span>\"
+    \"<span class=sf-dump-key>created_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-22</span>\"
+    \"<span class=sf-dump-key>created_time</span>\" => \"<span class=sf-dump-str title=\"8 characters\">13:31:45</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => <span class=sf-dump-num>9310</span>
+    \"<span class=sf-dump-key>updated_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_time</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_by</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>application_stage_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>no_of_form_completed</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:40</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>school_system_gen_reg_no</span>\" => \"<span class=sf-dump-str title=\"36 characters\">SSEPD/SPECIALSCHOOL/22/07/2025/12494</span>\"
+    \"<span class=sf-dump-key>school_establishment_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-21</span>\"
+    \"<span class=sf-dump-key>school_category</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>school_type</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>act_reg_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">qwqw</span>\"
+    \"<span class=sf-dump-key>file_act_reg</span>\" => \"<span class=sf-dump-str title=\"121 characters\">special_school_files/SSEPD_SPECIALSCHOOL_22_07_2025_12494/SPECIAL_SCHOOL_ACT_GF9OyOo1p62SMdVSPfE6O9Q03ZGanBby43Hpz3dB.pdf</span>\"
+    \"<span class=sf-dump-key>school_email_id</span>\" => \"<span class=sf-dump-str title=\"26 characters\">patelsurajprasim@gmail.com</span>\"
+    \"<span class=sf-dump-key>school_mobile_no</span>\" => \"<span class=sf-dump-str title=\"10 characters\">7008731607</span>\"
+    \"<span class=sf-dump-key>school_address_type</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>state_id</span>\" => <span class=sf-dump-num>228</span>
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2409</span>
+    \"<span class=sf-dump-key>municipality_id</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>block_id</span>\" => <span class=sf-dump-num>2409009</span>
+    \"<span class=sf-dump-key>gp_id</span>\" => <span class=sf-dump-num>2409009003</span>
+    \"<span class=sf-dump-key>village_id</span>\" => <span class=sf-dump-num>420244</span>
+    \"<span class=sf-dump-key>pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768005</span>\"
+    \"<span class=sf-dump-key>school_postal_address_at</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_post</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_via</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_ps</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_district</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>is_active</span>\" => \"<span class=sf-dump-str title=\"6 characters\">active</span>\"
+    \"<span class=sf-dump-key>created_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-22</span>\"
+    \"<span class=sf-dump-key>created_time</span>\" => \"<span class=sf-dump-str title=\"8 characters\">13:31:45</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => <span class=sf-dump-num>9310</span>
+    \"<span class=sf-dump-key>updated_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_time</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_by</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>application_stage_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>no_of_form_completed</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+  +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+  +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-944340594\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchoolMapping":"<pre class=sf-dump id=sf-dump-227164592 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\SpecialSchoolMapping</span> {<a class=sf-dump-ref>#1769</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"23 characters\">special_school_mappings</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:11</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2421</span>
+    \"<span class=sf-dump-key>district_name</span>\" => \"<span class=sf-dump-str title=\"5 characters\">ANGUL</span>\"
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_at</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:11</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2421</span>
+    \"<span class=sf-dump-key>district_name</span>\" => \"<span class=sf-dump-str title=\"5 characters\">ANGUL</span>\"
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_at</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+  +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+  +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-227164592\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchoolStaff":"<pre class=sf-dump id=sf-dump-646337978 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#1794</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"App\\Models\\SpecialSchoolStaff
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">App\\Models</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">SpecialSchoolStaff</span></span> {<a class=sf-dump-ref>#1790</a><samp data-depth=3 class=sf-dump-compact>
+      #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"20 characters\">special_school_staff</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+      +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+      #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+      +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+      +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:49</span> [ &#8230;49]
+      #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:48</span> [ &#8230;48]
+      #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+      #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">relations</span>: <span class=sf-dump-note>array:6</span> [ &#8230;6]
+      #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+      +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [ &#8230;1]
+      #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+      +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+      +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+    </samp>}
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-646337978\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+"}},"userId":9310,"exception":"[object] (Spatie\\LaravelIgnition\\Exceptions\\ViewException(code: 0): Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. at E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Exceptions\\UrlGenerationException.php:35)
+[stacktrace]
+#0 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteUrlGenerator.php(90): Illuminate\\Routing\\Exceptions\\UrlGenerationException::forMissingParameters(Object(Illuminate\\Routing\\Route), Array)
+#1 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(544): Illuminate\\Routing\\RouteUrlGenerator->to(Object(Illuminate\\Routing\\Route), Array, true)
+#2 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(509): Illuminate\\Routing\\UrlGenerator->toRoute(Object(Illuminate\\Routing\\Route), Array, true)
+#3 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(853): Illuminate\\Routing\\UrlGenerator->route('admin.specialsc...', Array, true)
+#4 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\resources\\views\\dashboard\\special_school\\view_staff_details.blade.php(131): route('admin.specialsc...')
+#5 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('E:\\\\XAMPP\\\\htdocs...')
+#6 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#7 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('E:\\\\XAMPP\\\\htdocs...', Array)
+#8 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(22): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#9 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(75): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#10 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(10): Illuminate\\View\\Engines\\CompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#11 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(209): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#12 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(192): Illuminate\\View\\View->getContents()
+#13 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(161): Illuminate\\View\\View->renderContents()
+#14 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(79): Illuminate\\View\\View->render()
+#15 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#16 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(920): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#17 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(887): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#18 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#19 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\TrackUserSession.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\TrackUserSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\PreventBackHistory.php(20): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\PreventBackHistory->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#34 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#38 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#45 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#46 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(750): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#47 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#48 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(201): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#49 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#50 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware.php(19): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Livewire\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#64 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#65 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#66 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#67 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#68 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#69 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#70 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#71 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#72 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#73 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1220): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#74 E:\\XAMPP\\htdocs\\ssepd_portal\\index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
+#75 {main}
+
+[previous exception] [object] (Illuminate\\Routing\\Exceptions\\UrlGenerationException(code: 0): Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. at E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Exceptions\\UrlGenerationException.php:35)
+[stacktrace]
+#0 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteUrlGenerator.php(90): Illuminate\\Routing\\Exceptions\\UrlGenerationException::forMissingParameters(Object(Illuminate\\Routing\\Route), Array)
+#1 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(544): Illuminate\\Routing\\RouteUrlGenerator->to(Object(Illuminate\\Routing\\Route), Array, true)
+#2 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(509): Illuminate\\Routing\\UrlGenerator->toRoute(Object(Illuminate\\Routing\\Route), Array, true)
+#3 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(853): Illuminate\\Routing\\UrlGenerator->route('admin.specialsc...', Array, true)
+#4 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\storage\\framework\\views\\a38f443550d8a3c92b12f0a4fdf64d9f.php(133): route('admin.specialsc...')
+#5 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('E:\\\\XAMPP\\\\htdocs...')
+#6 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#7 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('E:\\\\XAMPP\\\\htdocs...', Array)
+#8 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(22): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#9 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(75): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#10 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(10): Illuminate\\View\\Engines\\CompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#11 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(209): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#12 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(192): Illuminate\\View\\View->getContents()
+#13 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(161): Illuminate\\View\\View->renderContents()
+#14 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(79): Illuminate\\View\\View->render()
+#15 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#16 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(920): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#17 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(887): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#18 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#19 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\TrackUserSession.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\TrackUserSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\PreventBackHistory.php(20): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\PreventBackHistory->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#34 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#38 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#45 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#46 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(750): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#47 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#48 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(201): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#49 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#50 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware.php(19): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Livewire\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#64 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#65 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#66 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#67 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#68 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#69 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#70 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#71 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#72 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#73 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1220): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#74 E:\\XAMPP\\htdocs\\ssepd_portal\\index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
+#75 {main}
+"} 
+[2025-07-29 13:29:46] local.ERROR: Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. {"view":{"view":"E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\resources\\views\\dashboard\\special_school\\view_staff_details.blade.php","data":{"errors":"<pre class=sf-dump id=sf-dump-427938332 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Support\\ViewErrorBag</span> {<a class=sf-dump-ref>#1729</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">bags</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-427938332\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchool":"<pre class=sf-dump id=sf-dump-680833556 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\SpecialSchool</span> {<a class=sf-dump-ref>#1768</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"15 characters\">special_schools</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:40</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>school_system_gen_reg_no</span>\" => \"<span class=sf-dump-str title=\"36 characters\">SSEPD/SPECIALSCHOOL/22/07/2025/12494</span>\"
+    \"<span class=sf-dump-key>school_establishment_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-21</span>\"
+    \"<span class=sf-dump-key>school_category</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>school_type</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>act_reg_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">qwqw</span>\"
+    \"<span class=sf-dump-key>file_act_reg</span>\" => \"<span class=sf-dump-str title=\"121 characters\">special_school_files/SSEPD_SPECIALSCHOOL_22_07_2025_12494/SPECIAL_SCHOOL_ACT_GF9OyOo1p62SMdVSPfE6O9Q03ZGanBby43Hpz3dB.pdf</span>\"
+    \"<span class=sf-dump-key>school_email_id</span>\" => \"<span class=sf-dump-str title=\"26 characters\">patelsurajprasim@gmail.com</span>\"
+    \"<span class=sf-dump-key>school_mobile_no</span>\" => \"<span class=sf-dump-str title=\"10 characters\">7008731607</span>\"
+    \"<span class=sf-dump-key>school_address_type</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>state_id</span>\" => <span class=sf-dump-num>228</span>
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2409</span>
+    \"<span class=sf-dump-key>municipality_id</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>block_id</span>\" => <span class=sf-dump-num>2409009</span>
+    \"<span class=sf-dump-key>gp_id</span>\" => <span class=sf-dump-num>2409009003</span>
+    \"<span class=sf-dump-key>village_id</span>\" => <span class=sf-dump-num>420244</span>
+    \"<span class=sf-dump-key>pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768005</span>\"
+    \"<span class=sf-dump-key>school_postal_address_at</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_post</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_via</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_ps</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_district</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>is_active</span>\" => \"<span class=sf-dump-str title=\"6 characters\">active</span>\"
+    \"<span class=sf-dump-key>created_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-22</span>\"
+    \"<span class=sf-dump-key>created_time</span>\" => \"<span class=sf-dump-str title=\"8 characters\">13:31:45</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => <span class=sf-dump-num>9310</span>
+    \"<span class=sf-dump-key>updated_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_time</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_by</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>application_stage_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>no_of_form_completed</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:40</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>school_system_gen_reg_no</span>\" => \"<span class=sf-dump-str title=\"36 characters\">SSEPD/SPECIALSCHOOL/22/07/2025/12494</span>\"
+    \"<span class=sf-dump-key>school_establishment_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-21</span>\"
+    \"<span class=sf-dump-key>school_category</span>\" => <span class=sf-dump-num>3</span>
+    \"<span class=sf-dump-key>school_type</span>\" => <span class=sf-dump-num>2</span>
+    \"<span class=sf-dump-key>act_reg_no</span>\" => \"<span class=sf-dump-str title=\"4 characters\">qwqw</span>\"
+    \"<span class=sf-dump-key>file_act_reg</span>\" => \"<span class=sf-dump-str title=\"121 characters\">special_school_files/SSEPD_SPECIALSCHOOL_22_07_2025_12494/SPECIAL_SCHOOL_ACT_GF9OyOo1p62SMdVSPfE6O9Q03ZGanBby43Hpz3dB.pdf</span>\"
+    \"<span class=sf-dump-key>school_email_id</span>\" => \"<span class=sf-dump-str title=\"26 characters\">patelsurajprasim@gmail.com</span>\"
+    \"<span class=sf-dump-key>school_mobile_no</span>\" => \"<span class=sf-dump-str title=\"10 characters\">7008731607</span>\"
+    \"<span class=sf-dump-key>school_address_type</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>state_id</span>\" => <span class=sf-dump-num>228</span>
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2409</span>
+    \"<span class=sf-dump-key>municipality_id</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>block_id</span>\" => <span class=sf-dump-num>2409009</span>
+    \"<span class=sf-dump-key>gp_id</span>\" => <span class=sf-dump-num>2409009003</span>
+    \"<span class=sf-dump-key>village_id</span>\" => <span class=sf-dump-num>420244</span>
+    \"<span class=sf-dump-key>pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768005</span>\"
+    \"<span class=sf-dump-key>school_postal_address_at</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_post</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_via</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_ps</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_district</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>school_postal_address_pin</span>\" => \"<span class=sf-dump-str title=\"6 characters\">768222</span>\"
+    \"<span class=sf-dump-key>is_active</span>\" => \"<span class=sf-dump-str title=\"6 characters\">active</span>\"
+    \"<span class=sf-dump-key>created_date</span>\" => \"<span class=sf-dump-str title=\"10 characters\">2025-07-22</span>\"
+    \"<span class=sf-dump-key>created_time</span>\" => \"<span class=sf-dump-str title=\"8 characters\">13:31:45</span>\"
+    \"<span class=sf-dump-key>created_by</span>\" => <span class=sf-dump-num>9310</span>
+    \"<span class=sf-dump-key>updated_date</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_time</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_by</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>application_stage_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>no_of_form_completed</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+    \"<span class=sf-dump-key>updated_at</span>\" => \"<span class=sf-dump-str title=\"19 characters\">2025-07-22 13:31:45</span>\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+  +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+  +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-680833556\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchoolMapping":"<pre class=sf-dump id=sf-dump-1211299950 data-indent-pad=\"  \"><span class=sf-dump-note>App\\Models\\SpecialSchoolMapping</span> {<a class=sf-dump-ref>#1769</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"23 characters\">special_school_mappings</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+  #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+  +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+  #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+  +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+  +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:11</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2421</span>
+    \"<span class=sf-dump-key>district_name</span>\" => \"<span class=sf-dump-str title=\"5 characters\">ANGUL</span>\"
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_at</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:11</span> [<samp data-depth=2 class=sf-dump-compact>
+    \"<span class=sf-dump-key>id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>management_name</span>\" => \"<span class=sf-dump-str title=\"26 characters\">Punnyashram, Tentol, Angul</span>\"
+    \"<span class=sf-dump-key>special_school_id</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>special_school_name</span>\" => \"<span class=sf-dump-str title=\"35 characters\">N.C. Special School for Deaf &amp; Dumb</span>\"
+    \"<span class=sf-dump-key>district_id</span>\" => <span class=sf-dump-num>2421</span>
+    \"<span class=sf-dump-key>district_name</span>\" => \"<span class=sf-dump-str title=\"5 characters\">ANGUL</span>\"
+    \"<span class=sf-dump-key>user_table_id</span>\" => <span class=sf-dump-num>14005</span>
+    \"<span class=sf-dump-key>status</span>\" => <span class=sf-dump-num>1</span>
+    \"<span class=sf-dump-key>created_at</span>\" => <span class=sf-dump-const>null</span>
+    \"<span class=sf-dump-key>updated_at</span>\" => <span class=sf-dump-const>null</span>
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+  #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">relations</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+  +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+  +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+  #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+  #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => \"\"
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+  +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+  +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+  +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+</samp>}
+</pre><script>Sfdump(\"sf-dump-1211299950\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+","specialSchoolStaff":"<pre class=sf-dump id=sf-dump-250787337 data-indent-pad=\"  \"><span class=sf-dump-note>Illuminate\\Database\\Eloquent\\Collection</span> {<a class=sf-dump-ref>#1794</a><samp data-depth=1 class=sf-dump-expanded>
+  #<span class=sf-dump-protected title=\"Protected property\">items</span>: <span class=sf-dump-note>array:1</span> [<samp data-depth=2 class=sf-dump-compact>
+    <span class=sf-dump-index>0</span> => <span class=\"sf-dump-note sf-dump-ellipsization\" title=\"App\\Models\\SpecialSchoolStaff
+\"><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">App\\Models</span><span class=\"sf-dump-ellipsis sf-dump-ellipsis-note\">\\</span><span class=\"sf-dump-ellipsis-tail\">SpecialSchoolStaff</span></span> {<a class=sf-dump-ref>#1790</a><samp data-depth=3 class=sf-dump-compact>
+      #<span class=sf-dump-protected title=\"Protected property\">connection</span>: \"<span class=sf-dump-str title=\"5 characters\">mysql</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">table</span>: \"<span class=sf-dump-str title=\"20 characters\">special_school_staff</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">primaryKey</span>: \"<span class=sf-dump-str title=\"2 characters\">id</span>\"
+      #<span class=sf-dump-protected title=\"Protected property\">keyType</span>: \"<span class=sf-dump-str title=\"3 characters\">int</span>\"
+      +<span class=sf-dump-public title=\"Public property\">incrementing</span>: <span class=sf-dump-const>true</span>
+      #<span class=sf-dump-protected title=\"Protected property\">with</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">withCount</span>: []
+      +<span class=sf-dump-public title=\"Public property\">preventsLazyLoading</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">perPage</span>: <span class=sf-dump-num>15</span>
+      +<span class=sf-dump-public title=\"Public property\">exists</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">wasRecentlyCreated</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">attributes</span>: <span class=sf-dump-note>array:49</span> [ &#8230;49]
+      #<span class=sf-dump-protected title=\"Protected property\">original</span>: <span class=sf-dump-note>array:48</span> [ &#8230;48]
+      #<span class=sf-dump-protected title=\"Protected property\">changes</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">casts</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">classCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">attributeCastCache</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dateFormat</span>: <span class=sf-dump-const>null</span>
+      #<span class=sf-dump-protected title=\"Protected property\">appends</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">dispatchesEvents</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">observables</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">relations</span>: <span class=sf-dump-note>array:6</span> [ &#8230;6]
+      #<span class=sf-dump-protected title=\"Protected property\">touches</span>: []
+      +<span class=sf-dump-public title=\"Public property\">timestamps</span>: <span class=sf-dump-const>true</span>
+      +<span class=sf-dump-public title=\"Public property\">usesUniqueIds</span>: <span class=sf-dump-const>false</span>
+      #<span class=sf-dump-protected title=\"Protected property\">hidden</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">visible</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">fillable</span>: []
+      #<span class=sf-dump-protected title=\"Protected property\">guarded</span>: <span class=sf-dump-note>array:1</span> [ &#8230;1]
+      #<span class=sf-dump-protected title=\"Protected property\">excludedAttributes</span>: []
+      +<span class=sf-dump-public title=\"Public property\">auditEvent</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">auditCustomOld</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">auditCustomNew</span>: <span class=sf-dump-const>null</span>
+      +<span class=sf-dump-public title=\"Public property\">isCustomEvent</span>: <span class=sf-dump-const>false</span>
+      +<span class=sf-dump-public title=\"Public property\">preloadedResolverData</span>: []
+    </samp>}
+  </samp>]
+  #<span class=sf-dump-protected title=\"Protected property\">escapeWhenCastingToString</span>: <span class=sf-dump-const>false</span>
+</samp>}
+</pre><script>Sfdump(\"sf-dump-250787337\", {\"maxDepth\":3,\"maxStringLength\":160})</script>
+"}},"userId":9310,"exception":"[object] (Spatie\\LaravelIgnition\\Exceptions\\ViewException(code: 0): Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. at E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Exceptions\\UrlGenerationException.php:35)
+[stacktrace]
+#0 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteUrlGenerator.php(90): Illuminate\\Routing\\Exceptions\\UrlGenerationException::forMissingParameters(Object(Illuminate\\Routing\\Route), Array)
+#1 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(544): Illuminate\\Routing\\RouteUrlGenerator->to(Object(Illuminate\\Routing\\Route), Array, true)
+#2 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(509): Illuminate\\Routing\\UrlGenerator->toRoute(Object(Illuminate\\Routing\\Route), Array, true)
+#3 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(853): Illuminate\\Routing\\UrlGenerator->route('admin.specialsc...', Array, true)
+#4 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\resources\\views\\dashboard\\special_school\\view_staff_details.blade.php(131): route('admin.specialsc...')
+#5 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('E:\\\\XAMPP\\\\htdocs...')
+#6 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#7 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('E:\\\\XAMPP\\\\htdocs...', Array)
+#8 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(22): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#9 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(75): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#10 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(10): Illuminate\\View\\Engines\\CompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#11 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(209): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#12 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(192): Illuminate\\View\\View->getContents()
+#13 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(161): Illuminate\\View\\View->renderContents()
+#14 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(79): Illuminate\\View\\View->render()
+#15 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#16 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(920): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#17 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(887): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#18 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#19 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\TrackUserSession.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\TrackUserSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\PreventBackHistory.php(20): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\PreventBackHistory->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#34 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#38 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#45 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#46 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(750): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#47 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#48 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(201): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#49 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#50 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware.php(19): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Livewire\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#64 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#65 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#66 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#67 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#68 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#69 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#70 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#71 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#72 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#73 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1220): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#74 E:\\XAMPP\\htdocs\\ssepd_portal\\index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
+#75 {main}
+
+[previous exception] [object] (Illuminate\\Routing\\Exceptions\\UrlGenerationException(code: 0): Missing required parameter for [Route: admin.specialschool.delete] [URI: dashboard/specialschool/{id}/delete] [Missing parameter: id]. at E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Exceptions\\UrlGenerationException.php:35)
+[stacktrace]
+#0 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteUrlGenerator.php(90): Illuminate\\Routing\\Exceptions\\UrlGenerationException::forMissingParameters(Object(Illuminate\\Routing\\Route), Array)
+#1 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(544): Illuminate\\Routing\\RouteUrlGenerator->to(Object(Illuminate\\Routing\\Route), Array, true)
+#2 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php(509): Illuminate\\Routing\\UrlGenerator->toRoute(Object(Illuminate\\Routing\\Route), Array, true)
+#3 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(853): Illuminate\\Routing\\UrlGenerator->route('admin.specialsc...', Array, true)
+#4 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\storage\\framework\\views\\a38f443550d8a3c92b12f0a4fdf64d9f.php(133): route('admin.specialsc...')
+#5 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(123): require('E:\\\\XAMPP\\\\htdocs...')
+#6 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(124): Illuminate\\Filesystem\\Filesystem::Illuminate\\Filesystem\\{closure}()
+#7 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\PhpEngine.php(58): Illuminate\\Filesystem\\Filesystem->getRequire('E:\\\\XAMPP\\\\htdocs...', Array)
+#8 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(22): Illuminate\\View\\Engines\\PhpEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#9 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Engines\\CompilerEngine.php(75): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->evaluatePath('E:\\\\XAMPP\\\\htdocs...', Array)
+#10 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine.php(10): Illuminate\\View\\Engines\\CompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#11 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(209): Livewire\\Mechanisms\\ExtendBlade\\ExtendedCompilerEngine->get('E:\\\\XAMPP\\\\htdocs...', Array)
+#12 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(192): Illuminate\\View\\View->getContents()
+#13 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\View.php(161): Illuminate\\View\\View->renderContents()
+#14 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(79): Illuminate\\View\\View->render()
+#15 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Response.php(35): Illuminate\\Http\\Response->setContent(Object(Illuminate\\View\\View))
+#16 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(920): Illuminate\\Http\\Response->__construct(Object(Illuminate\\View\\View), 200, Array)
+#17 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(887): Illuminate\\Routing\\Router::toResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#18 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Routing\\Router->prepareResponse(Object(Illuminate\\Http\\Request), Object(Illuminate\\View\\View))
+#19 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(Illuminate\\Http\\Request))
+#20 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#21 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#22 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\TrackUserSession.php(57): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#23 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\TrackUserSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#24 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\app\\Http\\Middleware\\PreventBackHistory.php(20): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#25 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): App\\Http\\Middleware\\PreventBackHistory->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#26 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#27 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#28 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\SubstituteBindings.php(51): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#29 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#30 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Auth\\Middleware\\Authenticate.php(64): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#31 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Auth\\Middleware\\Authenticate->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#32 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken.php(88): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#33 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\VerifyCsrfToken->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#34 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\View\\Middleware\\ShareErrorsFromSession.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#35 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#36 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(121): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#37 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Session\\Middleware\\StartSession.php(64): Illuminate\\Session\\Middleware\\StartSession->handleStatefulRequest(Object(Illuminate\\Http\\Request), Object(Illuminate\\Session\\Store), Object(Closure))
+#38 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Session\\Middleware\\StartSession->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#39 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#40 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#41 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Cookie\\Middleware\\EncryptCookies.php(75): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#42 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Cookie\\Middleware\\EncryptCookies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#43 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#44 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#45 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(786): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(Illuminate\\Http\\Request))
+#46 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(750): Illuminate\\Routing\\Router->runRoute(Object(Illuminate\\Http\\Request), Object(Illuminate\\Routing\\Route))
+#47 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Router.php(739): Illuminate\\Routing\\Router->dispatchToRoute(Object(Illuminate\\Http\\Request))
+#48 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(201): Illuminate\\Routing\\Router->dispatch(Object(Illuminate\\Http\\Request))
+#49 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(170): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(Illuminate\\Http\\Request))
+#50 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\livewire\\livewire\\src\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware.php(19): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#51 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Livewire\\Features\\SupportDisablingBackButtonCache\\DisableBackButtonCacheMiddleware->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#52 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\barryvdh\\laravel-debugbar\\src\\Middleware\\InjectDebugbar.php(59): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#53 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Barryvdh\\Debugbar\\Middleware\\InjectDebugbar->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#54 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#55 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull.php(31): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#56 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#57 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest.php(21): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#58 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\TrimStrings.php(51): Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#59 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\TrimStrings->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#60 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\ValidatePostSize.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#61 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\ValidatePostSize->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#62 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance.php(110): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#63 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#64 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\HandleCors.php(49): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#65 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\HandleCors->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#66 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Http\\Middleware\\TrustProxies.php(58): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#67 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Http\\Middleware\\TrustProxies->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#68 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks.php(22): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#69 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(209): Illuminate\\Foundation\\Http\\Middleware\\InvokeDeferredCallbacks->handle(Object(Illuminate\\Http\\Request), Object(Closure))
+#70 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Pipeline\\Pipeline.php(127): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(Illuminate\\Http\\Request))
+#71 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))
+#72 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(145): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#73 E:\\XAMPP\\htdocs\\ssepd_portal\\the_full_application\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(1220): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#74 E:\\XAMPP\\htdocs\\ssepd_portal\\index.php(17): Illuminate\\Foundation\\Application->handleRequest(Object(Illuminate\\Http\\Request))
+#75 {main}
+"} 

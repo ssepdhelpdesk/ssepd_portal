@@ -78,7 +78,7 @@ Special School || List
                            <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
                            <td>{{ $schoolDetails->special_school_name }}</td>
                            <td>{{ $schoolDetails->special_school_management_name }}</td>
-                           <td>{{ $schoolDetails->school_establishment_date }}</td>
+                           <td>{{ \Carbon\Carbon::parse($schoolDetails->school_establishment_date)->format('d F Y') }}</td>
                            <td>
                               @php
                               $categories = [
@@ -110,8 +110,8 @@ Special School || List
                                  </button>
                                  <div class="dropdown-menu">
                                     @can('special-school-show')
-                                    <a class="dropdown-item" href="{{route('admin.specialschool.view_staff_details_by_state_office', $schoolDetails->special_school_id)}}">View Staff Details1</a>
-                                    <a class="dropdown-item" href="{{route('admin.specialschoolconstructions.index', $schoolDetails->special_school_id)}}">Construction Status</a>
+                                    <a class="dropdown-item" href="{{route('admin.specialschool.view_staff_details_by_state_office', $schoolDetails->special_school_id)}}">View Staff Details</a>
+                                    <a class="dropdown-item" href="{{route('admin.specialschoolconstructions.index', $schoolDetails->special_school_id)}}">Toilet Construction Status</a>
                                     @endcan
                                  </div>
                               </div>

@@ -157,6 +157,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     Route::prefix('specialschool')->name('specialschool.')->controller(SpecialSchoolController::class)->group(function () {
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
+        Route::get('{id}/delete', 'delete')->name('delete');
         Route::post('store_school_basic_details', 'store_school_basic_details')->name('store_school_basic_details');
         Route::post('store_school_staff_details', 'store_school_staff_details')->name('store_school_staff_details');
         Route::get('view_staff_details', 'view_staff_details')->name('view_staff_details');

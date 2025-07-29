@@ -126,11 +126,11 @@ Staff Details || Special School
 											<button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 												Action
 											</button>
-                                 <!-- <div class="dropdown-menu">
-                                    @can('special-school-show')
-                                    <a class="dropdown-item" href="{{route('admin.specialschool.create')}}">Add Staff Details</a>
+                                 <div class="dropdown-menu">
+                                    @can('special-school-delete')
+                                    <a class="dropdown-item" href="{{route('admin.specialschool.delete', $staffDetails->id)}}" id="delete">Delete Staff Details</a>
                                     @endcan
-                                 </div> -->
+                                 </div>
                               </div>
                            </td>
                         </tr>

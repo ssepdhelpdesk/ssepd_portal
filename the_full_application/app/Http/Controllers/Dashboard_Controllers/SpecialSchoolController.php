@@ -582,4 +582,52 @@ public function view_staff_details_by_state_office($id)
     return view('dashboard.special_school.view_staff_details', compact('specialSchool', 'specialSchoolMapping', 'specialSchoolStaff'));
 }
 
+public function delete($id)
+{
+    $user = auth()->user();
+    $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)->firstOrFail();
+    $specialSchool = SpecialSchool::where('user_table_id', $specialSchoolMapping->user_table_id)->first();
+
+    if (!$specialSchool) {
+        return redirect()->route('admin.specialschool.create')
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+    }
+
+    $staff = SpecialSchoolStaff::findOrFail($id);
+
+    $schoolSystemGenRegNo = str_replace('/', '_', $specialSchool->school_system_gen_reg_no);
+    $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
+    $externalBasePath = dirname(base_path());
+    $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
+
+    $fileFields = [
+        'special_school_file_staff_aadhar',
+        'file_staff_image',
+        'file_udid_certificate',
+    ];
+
+    foreach ($fileFields as $field) {
+        if (!empty($staff->$field)) {
+            $fileName = basename($staff->$field);
+            $subfolder = dirname($staff->$field);
+
+            $publicFullPath = public_path($staff->$field);
+            $externalFullPath = $externalBasePath . '/storage/' . $staff->$field;
+
+            if (file_exists($publicFullPath)) {
+                @unlink($publicFullPath);
+            }
+            if (file_exists($externalFullPath)) {
+                @unlink($externalFullPath);
+            }
+        }
+    }
+
+    // Delete staff record from DB
+    $staff->delete();
+
+    return redirect()->back()->with('success', 'Staff record deleted successfully.');
+}
+
+
 }
