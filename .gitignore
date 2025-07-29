@@ -28,7 +28,8 @@ yarn-error.log
 /.vscode
 /.fleet
 
-# Custom folder to ignore
+# Custom folders to ignore
 the_full_application/MyWorkingFiles/
 /public/special_school_files/
-storage/
+/storage/
+the_full_application/storage/
