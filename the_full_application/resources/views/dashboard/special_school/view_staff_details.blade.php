@@ -128,7 +128,7 @@ Staff Details || Special School
 											</button>
                                  <div class="dropdown-menu">
                                     @can('special-school-delete')
-                                    <a class="dropdown-item" href="{{route('admin.specialschool.delete', $staffDetails->id)}}" id="delete">Delete  Details</a>
+                                    <a class="dropdown-item" href="{{route('admin.specialschool.delete', $staffDetails->id)}}" id="delete">Delete Staff Details</a>
                                     @endcan
                                  </div>
                               </div>
