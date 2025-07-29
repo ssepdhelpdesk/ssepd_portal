@@ -31,4 +31,4 @@ yarn-error.log
 # Custom folder to ignore
 the_full_application/MyWorkingFiles/
 /public/special_school_files/
-storgae
+storage/
