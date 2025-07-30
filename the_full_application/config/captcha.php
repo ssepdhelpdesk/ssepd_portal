@@ -18,6 +18,17 @@ return [
         'height' => 36,
         'quality' => 90,
         'math' => true,
+        'bgColor' => '#f5f5dc',
+    ],
+
+    'math_blue' => [
+        'length' => 9,
+        'width' => 120,
+        'height' => 36,
+        'quality' => 90,
+        'math' => true,
+        'bgColor' => '#d0e7ff',
+        'fontColors' => ['#000000', '#1a237e'],
     ],
 
     'flat' => [

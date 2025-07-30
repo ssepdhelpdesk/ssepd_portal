@@ -29,18 +29,20 @@
                      @enderror
                   </div>
                   <div class="mb-3">
-                     <label for="captcha" class="form-label text-primary fw-semibold">{{ __('Captcha') }}</label>
-                     <div class="captcha d-flex align-items-center mb-3">
-                        <span>{!! captcha_img() !!}</span>
-                        <button type="button" class="btn btn-success btn-refresh ms-2"><i class="fa fa-refresh"></i></button>
-                     </div>
-                     <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" required placeholder="Enter Captcha" style="margin-top: 10px;">
-                     @if ($errors->has('captcha'))
-                     <span class="help-block" role="alert">
-                     <strong>{{ $errors->first('captcha') }}</strong>
-                     </span>
-                     @endif
-                  </div>
+    <label for="captcha" class="form-label text-primary fw-semibold">{{ __('Captcha') }}</label>
+    <div class="captcha d-flex align-items-center mb-3">
+        <span id="captcha-img">{!! captcha_img('math_blue') !!}</span>
+        <button type="button" class="btn btn-success btn-refresh ms-2" id="reload-captcha">
+            <i class="fa fa-refresh"></i>
+        </button>
+    </div>
+    <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" required placeholder="Enter Answer" style="margin-top: 10px;">
+    @if ($errors->has('captcha'))
+        <span class="help-block" role="alert">
+            <strong>{{ $errors->first('captcha') }}</strong>
+        </span>
+    @endif
+</div>
                   <div class="form-check mb-3">
                      <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                      <label class="form-check-label text-secondary" for="remember">

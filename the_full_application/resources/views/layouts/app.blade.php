@@ -81,14 +81,17 @@
    <script src="{{ asset('dashboard_assets/assets/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
    <script type="text/javascript">
       $(".btn-refresh").click(function(){
-        $.ajax({
-           type:'GET',      
-           url:'/refresh_captcha',      
-           success:function(data){      
-              $(".captcha span").html(data.captcha);      
-           }      
-        });      
-      });
+    $.ajax({
+        type: 'GET',
+        url: '{{ route("refreshCaptcha") }}',
+        success: function(data){
+            $("#captcha-img").html(data.captcha);
+        },
+        error: function(xhr) {
+            alert('Captcha reload failed. Please check your setup.');
+        }
+    });
+});
       $(function() {
            $(".preloader").fadeOut();
          });

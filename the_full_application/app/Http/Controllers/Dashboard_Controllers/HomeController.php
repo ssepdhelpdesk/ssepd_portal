@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard_Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -26,7 +27,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return view('auth.login');
+        //return view('home');
     }
 
     /**
@@ -36,6 +41,6 @@ class HomeController extends Controller
      */
     public function refreshCaptcha(): JsonResponse
     {
-        return response()->json(['captcha' => captcha_img()]);
+        return response()->json(['captcha' => captcha_img('math_blue')]);
     }
 }
