@@ -623,11 +623,9 @@ public function delete($id)
         }
     }
 
-    // Delete staff record from DB
     $staff->delete();
 
     return redirect()->back()->with('success', 'Staff record deleted successfully.');
 }
-
 
 }
