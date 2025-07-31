@@ -32,6 +32,14 @@ use App\Models\SpecialSchoolStaff;
 
 class SpecialSchoolController extends Controller
 {
+
+    function __construct()
+    {
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
+   }
 /**
 * Display a listing of the resource.
 */
