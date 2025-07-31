@@ -590,7 +590,7 @@ public function delete($id)
 
     if (!$specialSchool) {
         return redirect()->route('admin.specialschool.create')
-            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+        ->with('info', 'Kindly provide the basic information of the school to proceed further.');
     }
 
     $staff = SpecialSchoolStaff::findOrFail($id);
@@ -627,5 +627,48 @@ public function delete($id)
 
     return redirect()->back()->with('success', 'Staff record deleted successfully.');
 }
+
+public function cumulative_report()
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $specialSchoolMappingQuery = SpecialSchoolMapping::with(['district'])->withCount('staff');
+
+    // Role-based filtering
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        // See all records
+    } elseif (in_array($userRole, [4, 6])) {
+        $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif ($userRole == 5) {
+        $district_id = DB::table('municipalities')->where('municipality_id', $user->posted_municipality)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [8, 10])) {
+        $district_id = DB::table('subdivisions')->where('subdivision_id', $user->posted_subdiv)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [9, 11])) {
+        $specialSchoolMappingQuery->where('district_id', $user->posted_district);
+    }
+
+    if ($userRole == 22) {
+        $specialSchoolMapping = SpecialSchoolMapping::with(['district'])
+        ->withCount('staff')
+        ->where('user_table_id', $user->user_table_id)
+        ->first();
+
+        if (!$specialSchoolMapping) {
+            return redirect()->route('admin.specialschool.create')
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+        }
+
+        $specialSchoolMapping = collect([$specialSchoolMapping]);
+    } else {
+        $specialSchoolMapping = $specialSchoolMappingQuery->get();
+    }
+
+    return view('dashboard.special_school.report.cumulative_report', compact('specialSchoolMapping'));
+}
+
 
 }

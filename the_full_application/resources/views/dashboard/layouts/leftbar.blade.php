@@ -86,7 +86,20 @@
                   @endcan                  
                </ul>
             </li>
-            <li class="nav-small-cap">--- SUPPORT</li>
+            <li class="nav-small-cap">--- REPORTS</li>
+            <li>
+               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-media-right-alt"></i><span class="hide-menu">Reports</span></a>
+               <ul aria-expanded="false" class="collapse">
+                  @can('special-school-access')
+                  <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
+                  @endcan
+                  @can('special-school-create')
+                  <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
+                  <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
+                  <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
+                  @endcan                  
+               </ul>
+            </li>
          </ul>
       </nav>
       <!-- End Sidebar navigation -->

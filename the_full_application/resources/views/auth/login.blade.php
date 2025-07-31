@@ -15,7 +15,7 @@
                      <input id="username" type="text" class="form-control shadow-sm @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autofocus placeholder="Enter your email or user ID">
                      @error('username')
                      <span class="invalid-feedback" role="alert">
-                     <strong>{{ $message }}</strong>
+                        <strong>{{ $message }}</strong>
                      </span>
                      @enderror
                   </div>
@@ -24,48 +24,48 @@
                      <input id="password" type="password" class="form-control shadow-sm @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Enter your password">
                      @error('password')
                      <span class="invalid-feedback" role="alert">
-                     <strong>{{ $message }}</strong>
+                        <strong>{{ $message }}</strong>
                      </span>
                      @enderror
                   </div>
                   <div class="mb-3">
-    <label for="captcha" class="form-label text-primary fw-semibold">{{ __('Captcha') }}</label>
-    <div class="captcha d-flex align-items-center mb-3">
-        <span id="captcha-img">{!! captcha_img('math_blue') !!}</span>
-        <button type="button" class="btn btn-success btn-refresh ms-2" id="reload-captcha">
-            <i class="fa fa-refresh"></i>
-        </button>
-    </div>
-    <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" required placeholder="Enter Answer" style="margin-top: 10px;">
-    @if ($errors->has('captcha'))
-        <span class="help-block" role="alert">
-            <strong>{{ $errors->first('captcha') }}</strong>
-        </span>
-    @endif
-</div>
-                  <div class="form-check mb-3">
-                     <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                     <label class="form-check-label text-secondary" for="remember">
+                    <label for="captcha" class="form-label text-primary fw-semibold">{{ __('Captcha') }}</label>
+                    <div class="captcha d-flex align-items-center mb-3">
+                      <span id="captcha-img">{!! captcha_img('math_blue') !!}</span>
+                      <button type="button" class="btn btn-success btn-refresh ms-2" id="reload-captcha">
+                        <i class="fa fa-refresh"></i>
+                     </button>
+                  </div>
+                  <input id="captcha" type="text" class="form-control {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" required placeholder="Enter Answer" style="margin-top: 10px;">
+                  @if ($errors->has('captcha'))
+                  <span class="help-block" role="alert">
+                     <strong>{{ $errors->first('captcha') }}</strong>
+                  </span>
+                  @endif
+               </div>
+               <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+                  <label class="form-check-label text-secondary" for="remember">
                      {{ __('Remember Me') }}
-                     </label>
-                  </div>
-                  <div class="d-grid gap-2">
-                     <button type="submit" class="btn btn-primary fw-bold shadow-sm">{{ __('Login') }}</button>
-                  </div>
-                  <div class="text-center mt-3">
-                     @if (Route::has('password.request'))
-                     <a class="text-primary-600 fw-semibold" href="{{ route('password.request') }}">
+                  </label>
+               </div>
+               <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary fw-bold shadow-sm">{{ __('Login') }}</button>
+               </div>
+               <div class="text-center mt-3">
+                  @if (Route::has('password.request'))
+                  <a class="text-primary-600 fw-semibold" href="{{ route('password.request') }}">
                      {{ __('Forgot Your Password?') }}
-                     </a>
-                     @endif
-                  </div>
-               </form>
-            </div>
-            <div class="card-footer text-center bg-light rounded-bottom">
-               <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-primary fw-bold">Sign up</a></span>
-            </div>
+                  </a>
+                  @endif
+               </div>
+            </form>
+         </div>
+         <div class="card-footer text-center bg-light rounded-bottom">
+            <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-primary fw-bold">Sign up</a></span>
          </div>
       </div>
    </div>
+</div>
 </div>
 @endsection

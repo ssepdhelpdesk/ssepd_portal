@@ -162,6 +162,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('store_school_staff_details', 'store_school_staff_details')->name('store_school_staff_details');
         Route::get('view_staff_details', 'view_staff_details')->name('view_staff_details');
         Route::get('{id}/view_staff_details_by_state_office', 'view_staff_details_by_state_office')->name('view_staff_details_by_state_office');
+        Route::get('cumulative_report', 'cumulative_report')->name('cumulative_report');
 
         Route::get('check-staff-aadhar', 'check_staff_aadhar')->name('check_staff_aadhar');
         Route::get('check-staff-udidno', 'check_staff_udidno')->name('check_staff_udidno');
