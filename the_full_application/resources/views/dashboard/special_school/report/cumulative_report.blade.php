@@ -45,7 +45,8 @@ Special School || List
                            <th>District</th>
                            <th>Management Name</th>
                            <th>School Name</th>
-                           <th>Staff Details Provided</th>
+                           <th>Staff Info Status</th>
+                           <th>Toilet Construction Status</th>
                         </tr>
                      </thead>
                      <tfoot>
@@ -54,30 +55,55 @@ Special School || List
                            <th>District</th>
                            <th>Management Name</th>
                            <th>School Name</th>
-                           <th>Staff Details Provided</th>
+                           <th>Staff Info Status</th>
+                           <th>Toilet Construction Status</th>
                         </tr>
                      </tfoot>
                      <tbody>
-@forelse ($specialSchoolMapping as $schoolDetails)
-<tr>
-   <td class="text-center">{{ $loop->iteration }}</td>
-   <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
-   <td>{{ $schoolDetails->management_name }}</td>
-   <td>{{ $schoolDetails->special_school_name }}</td>
-   <td class="text-center">{{ $schoolDetails->staff_count ?? '0' }}</td>
-</tr>
-@empty
-<tr>
-   <td colspan="5" class="text-center">No records found.</td>
-</tr>
-@endforelse
-</tbody>             
-                  </table>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
+                       @forelse ($specialSchoolMapping as $schoolDetails)
+                       <tr>
+                         <td class="text-center">{{ $loop->iteration }}</td>
+                         <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
+                         <td>{{ $schoolDetails->management_name }}</td>
+                         <td>{{ $schoolDetails->special_school_name }}</td>
+                         <td class="text-center">{{ $schoolDetails->staff_count ?? '0' }}</td>
+                         <td class="text-center">
+                           @php
+                           $phaseMap = [
+                           1 => 'First',
+                           2 => 'Second',
+                           3 => 'Third',
+                           4 => 'Fourth',
+                           5 => 'Fifth',
+                           6 => 'Sixth',
+                           7 => 'Seventh',
+                           8 => 'Eighth',
+                           9 => 'Ninth',
+                           10 => 'Tenth'
+                           ];
+                           $phase = $schoolDetails->construction_max_phase_no ?? 0;
+                           @endphp
+
+                           @if($phase)
+                           {{ $phaseMap[$phase] ?? 'Phase ' . $phase }} Phase uploaded
+                           @else
+                           Pending to upload
+                           @endif
+                        </td>
+                     </tr>
+                     @empty
+                     <tr>
+                      <td colspan="6" class="text-center">No records found.</td>
+                   </tr>
+                   @endforelse
+                </tbody>
+
+             </table>
+          </div>
+       </div>
+    </div>
+ </div>
+</div>
 <!-- row -->
 <!-- ============================================================== -->
 <!-- End Page Content -->

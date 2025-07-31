@@ -303,7 +303,7 @@ public function construction_timeline_store(Request $request)
     $school_construction->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
     $school_construction->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
     $school_construction->created_by = Auth::id() ?? null;
-    $school_construction->no_of_image_uploaded = 1;
+    $school_construction->no_of_image_uploaded = 5;
     $school_construction->status = 1;
     $school_construction->save();
 

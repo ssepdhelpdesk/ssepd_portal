@@ -25,4 +25,8 @@ class SpecialSchoolMapping extends Model implements Auditable
     {
         return $this->hasMany(\App\Models\SpecialSchoolStaff::class, 'special_school_id', 'special_school_id');
     }
+
+    public function construction() {
+        return $this->hasMany(SpecialSchoolConstruction::class, 'special_school_id', 'special_school_id');
+    }
 }
