@@ -12,7 +12,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     LocationController,
     NgoRegdController,
     SpecialSchoolController,
-    SpecialSchoolConstructionController
+    SpecialSchoolConstructionController,
+    PensionFundsRequirementsController
 };
 
 use App\Http\Controllers\Frontend_Controller\{
@@ -172,6 +173,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/index', 'index')->name('index');
         Route::get('construction_timeline', 'construction_timeline')->name('construction_timeline');
         Route::post('construction_timeline_store', 'construction_timeline_store')->name('construction_timeline_store');
+    });
+
+    Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

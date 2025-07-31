@@ -83,7 +83,8 @@
                   <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
                   <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
                   <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
-                  @endcan                  
+                  @endcan
+                  <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                </ul>
             </li>
             <li class="nav-small-cap">--- REPORTS</li>
