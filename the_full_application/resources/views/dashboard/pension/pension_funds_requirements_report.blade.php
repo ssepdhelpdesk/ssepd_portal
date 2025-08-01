@@ -90,9 +90,9 @@ Special School || List
                         <td>{{ $fundsRequirements->district->district_name ?? '-' }}</td>
                         <td>
                            @if($fundsRequirements->address_type == 1)
-                           {{ $fundsRequirements->block->block_name ?? '-' }}
+                           Block: {{ $fundsRequirements->block->block_name ?? '-' }}
                            @elseif($fundsRequirements->address_type == 2)
-                           {{ $fundsRequirements->municipality->municipality_name ?? '-' }}
+                           ULB: {{ $fundsRequirements->municipality->municipality_name ?? '-' }}
                            @else
                            -
                            @endif
