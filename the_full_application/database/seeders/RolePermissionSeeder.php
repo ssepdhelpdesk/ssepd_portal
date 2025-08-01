@@ -66,37 +66,37 @@ class RolePermissionSeeder extends Seeder
             'DSSO' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'Collector' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'HO' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'BO' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'Director' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'Secretary' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form'
             ],
 
             'BSSO' => [
