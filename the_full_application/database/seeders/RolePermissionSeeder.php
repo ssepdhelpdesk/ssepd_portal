@@ -98,6 +98,16 @@ class RolePermissionSeeder extends Seeder
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
                 'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form',
             ],
+
+            'BSSO' => [
+                'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-create', 'ngo-edit',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'pension-create',
+            ],
+
+            'MEO' => [
+                'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-create', 'ngo-edit',
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'pension-create',
+            ],
         ];
 
         foreach ($allRoles as $roleName) {
