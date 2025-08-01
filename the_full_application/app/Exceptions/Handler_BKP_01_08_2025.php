@@ -5,7 +5,6 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class Handler extends ExceptionHandler
 {
@@ -43,17 +42,11 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception): void
     {
-        Log::error('🚨 Unhandled Exception Occurred', [
-            'message'  => $exception->getMessage(),
-            'file'     => $exception->getFile(),
-            'line'     => $exception->getLine(),
-            'trace'    => $exception->getTraceAsString(),
-            'url'      => request()->fullUrl(),
-            'method'   => request()->method(),
-            'ip'       => request()->ip(),
-            'user_id'  => Auth::check() ? Auth::id() : null,
-            'time'     => now()->toDateTimeString(),
-        ]);
+        // Log the error message
+        Log::error('Error occurred: ' . $exception->getMessage());
+
+        // Log the full exception trace (optional)
+        Log::error('Exception Trace: ' . $exception->getTraceAsString());
 
         parent::report($exception);
     }

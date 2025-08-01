@@ -317,7 +317,14 @@ public function store_school_basic_details(Request $request)
         return view('dashboard.special_school.staff_details_entry')->with('success', 'Special 1st step registration successful.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("Special School Part One Registration failed: " . $e->getMessage());
+        \Log::error("🏫 Special School Part One Registration failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
@@ -492,7 +499,14 @@ public function store_school_staff_details(Request $request)
         return redirect()->route('admin.specialschool.view_staff_details')->with('success', 'One staff record added successfully.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("Special School Staff Details Submission failed: " . $e->getMessage());
+        \Log::error("👨‍🏫 Special School Staff Details Submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
@@ -638,7 +652,14 @@ public function delete($id)
         return redirect()->back()->with('success', 'Staff record deleted successfully.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("Special School Staff Detail Delete Failed: " . $e->getMessage());
+        \Log::error("🗑️ Special School Staff Detail Delete Failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }

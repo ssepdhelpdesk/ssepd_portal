@@ -175,7 +175,14 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'Submitted Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error("Pension Funds Requirements form Submission Failed: " . $e->getMessage());
+            \Log::error("🛑 Pension Funds Requirements form submission failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
             return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
         }
     }
@@ -339,7 +346,14 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->route('admin.pension.report')->with('info', 'Updated Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error("Pension Funds Requirements form Updation Failed: " . $e->getMessage());
+            \Log::error("🛑 Pension Funds Requirements form update failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
             return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
         }
     }

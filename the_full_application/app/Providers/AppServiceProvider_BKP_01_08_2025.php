@@ -40,10 +40,11 @@ class AppServiceProvider extends ServiceProvider
             $bindings = $query->bindings;
             $time = $query->time;
 
+            /*Default controller/method*/
             $controller = $method = 'N/A';
 
-            /*Safely extract controller and method name if available*/
-            if (Route::current() && $action = Route::currentRouteAction()) {
+            /*Extract controller and method name*/
+            if ($action = Route::currentRouteAction()) {
                 if (strpos($action, '@') !== false) {
                     [$controller, $method] = explode('@', class_basename($action));
                 } else {
@@ -53,31 +54,16 @@ class AppServiceProvider extends ServiceProvider
 
             $timestamp = Carbon::now('Asia/Kolkata')->format('Y-m-d h:i:s A');
 
-            /*Try to interpolate bindings into SQL for readability*/
-            try {
-                $interpolatedSql = vsprintf(str_replace('?', "'%s'", $sql), $bindings);
-            } catch (\Exception $e) {
-                $interpolatedSql = 'Could not interpolate SQL: ' . $e->getMessage();
-            }
-
-            /*Optional: Limit very large bindings*/
-            $bindingsPreview = strlen(json_encode($bindings)) > 2000
-                ? ['message' => 'Bindings too large to log']
-                : $bindings;
-
-            /*Build log payload*/
             $logPayload = [
-                'Timestamp'        => $timestamp,
-                'Controller'       => $controller,
-                'Method'           => $method,
-                'Raw SQL'          => $sql,
-                'Interpolated SQL' => $interpolatedSql,
-                'Bindings'         => $bindingsPreview,
-                'Time (ms)'        => $time,
-                'User ID'          => Auth::check() ? Auth::id() : null,
+                'Timestamp'      => $timestamp,
+                'Controller'     => $controller,
+                'Method'         => $method,
+                'Executed Query' => $sql,
+                'Bindings'       => $bindings,
+                'Time (ms)'      => $time,
             ];
 
-            /*Log to daily and query-specific log channels*/
+            /*Log to multiple channels*/
             Log::channel('daily')->info(json_encode($logPayload, JSON_PRETTY_PRINT));
             Log::channel('query')->info(json_encode($logPayload, JSON_PRETTY_PRINT));
         });

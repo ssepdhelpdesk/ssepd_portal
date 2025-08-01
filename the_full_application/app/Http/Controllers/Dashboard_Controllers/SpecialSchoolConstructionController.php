@@ -36,11 +36,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+ }
 
 /**
 * Display a listing of the resource.
@@ -319,7 +319,14 @@ public function construction_timeline_store(Request $request)
         return redirect()->route('admin.specialschoolconstructions.construction_timeline')->with('success', 'Image added successfully.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("Special School Construction form Submission Failed: " . $e->getMessage());
+        \Log::error("🏫 Special School Construction form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
