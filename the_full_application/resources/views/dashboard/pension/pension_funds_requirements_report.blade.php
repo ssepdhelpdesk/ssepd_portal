@@ -41,7 +41,7 @@ Special School || List
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                   <thead>
                      <tr>
-                        <th>Sl No1</th>
+                        <th>Sl No</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
                         <th>MBPOAP (Below 80 Years)</th>
