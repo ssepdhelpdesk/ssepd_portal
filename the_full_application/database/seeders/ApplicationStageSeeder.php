@@ -51,6 +51,11 @@ class ApplicationStageSeeder extends Seeder
             ['stage_id' => 35, 'stage_name' => 'Reverted by Director'],
             ['stage_id' => 36, 'stage_name' => 'Reverted by Secretary'],
             ['stage_id' => 37, 'stage_name' => 'Application updated by User'],
+            ['stage_id' => 38, 'stage_name' => 'Pension Funds Requirement form Submitted'],
+            ['stage_id' => 39, 'stage_name' => 'Pension Funds Requirement form Updated by BSSO or MEO'],
+            ['stage_id' => 40, 'stage_name' => 'Pension Funds Requirement form Updated by DSSO'],
+            ['stage_id' => 41, 'stage_name' => 'Pension Funds Requirement data deleted by BSSO or MEO'],
+            ['stage_id' => 42, 'stage_name' => 'Pension Funds Requirement data deleted by DSSO'],
         ];
 
         $applicationstagesData = [];

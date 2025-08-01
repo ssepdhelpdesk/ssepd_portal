@@ -178,6 +178,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('report', 'report')->name('report');
     });
 

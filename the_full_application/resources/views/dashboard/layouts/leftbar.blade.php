@@ -84,7 +84,9 @@
                   <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
                   <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
                   @endcan
+                  @can('pension-create')
                   <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
+                  @endcan
                </ul>
             </li>
             <li class="nav-small-cap">--- REPORTS</li>
@@ -94,7 +96,9 @@
                   @can('special-school-access')
                   <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
                   @endcan
+                  @can('pension-access')
                   <li><a href="{{route('admin.pension.report')}}">Pension Report</a></li>
+                  @endcan
                </ul>
             </li>
          </ul>

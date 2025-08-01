@@ -63,7 +63,14 @@ class PermissionTableSeeder extends Seeder
            'special-school-create',
            'special-school-edit',
            'special-school-delete',
-           'special-school-approve-form'
+           'special-school-approve-form',
+           'pension-access',
+           'pension-list',
+           'pension-show',
+           'pension-create',
+           'pension-edit',
+           'pension-delete',
+           'pension-approve-form'
         ];
         
         foreach ($permissions as $permission) {

@@ -35,7 +35,7 @@ Special School || List
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title"></h4>
+            <h4 class="card-title">Block/ULB wise fund requirement under MBPY for the pension month August 2025</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
@@ -59,6 +59,7 @@ Special School || List
                         <th>Widow due to Covid</th>
                         <th>Divorcee or Destitute</th>
                         <th>Transgender</th>
+                        <th>Action</th>
                      </tr>
                   </thead>
                   <tfoot>
@@ -81,6 +82,7 @@ Special School || List
                         <th>Widow due to Covid</th>
                         <th>Divorcee or Destitute</th>
                         <th>Transgender</th>
+                        <th>Action</th>
                      </tr>
                   </tfoot>
                   <tbody>
@@ -112,6 +114,21 @@ Special School || List
                         <td>{{ $fundsRequirements->mbpy_widow_due_to_covid }}</td>
                         <td>{{ $fundsRequirements->mbpy_divorce_or_destitute }}</td>
                         <td>{{ $fundsRequirements->mbpy_transgender }}</td>
+                        <td>
+                           <div class="btn-group">
+                              <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                 Action
+                              </button>
+                              <div class="dropdown-menu">
+                                 @can('pension-edit')
+                                 <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
+                                 @endcan
+                                 @can('pension-delete')
+                                 <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
+                                 @endcan
+                              </div>
+                           </div>
+                        </td>
                      </tr>
                      @empty
                      <tr>
@@ -137,8 +154,8 @@ Special School || List
       $('#example23').DataTable({
          processing: true,
          ordering: true,
-         scrollX: true,
-         responsive: false,
+         scrollX: false,
+         responsive: true,
          lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
          dom: 'Blfrtip',
          buttons: [
