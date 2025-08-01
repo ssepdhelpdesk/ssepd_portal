@@ -94,6 +94,7 @@
                   @can('special-school-access')
                   <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
                   @endcan
+                  <li><a href="{{route('admin.pension.report')}}">Pension Report</a></li>
                </ul>
             </li>
          </ul>

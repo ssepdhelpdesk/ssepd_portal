@@ -36,11 +36,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-         $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-         $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-         $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
-    }
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+   }
 
 /**
 * Display a listing of the resource.
@@ -192,128 +192,136 @@ public function construction_timeline_store(Request $request)
     ];
 
     $validatedData = $request->validate($validationRules, $customMessages);
+    DB::beginTransaction();
+    try {
 
-    $user = auth()->user();
-    $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)->firstOrFail();
-    $specialSchool = SpecialSchool::where('user_table_id', $specialSchoolMapping->user_table_id)->first();
+        $user = auth()->user();
+        $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)->firstOrFail();
+        $specialSchool = SpecialSchool::where('user_table_id', $specialSchoolMapping->user_table_id)->first();
 
-    $phase_no_latest = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->latest('phase_no')->value('phase_no');
-    $phase_no = ($phase_no_latest ?? 0) + 1;
-    $schoolSystemGenRegNo = str_replace('/', '_', $specialSchool->school_system_gen_reg_no);
+        $phase_no_latest = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->latest('phase_no')->value('phase_no');
+        $phase_no = ($phase_no_latest ?? 0) + 1;
+        $schoolSystemGenRegNo = str_replace('/', '_', $specialSchool->school_system_gen_reg_no);
 
-    $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
-    /*A folder i.e. storage/special_school_files is created inside the root directory ssepd_ngo_working_portal/storage/special_school_files*/
-    $externalBasePath = dirname(base_path());
-    $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
+        $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
+        /*A folder i.e. storage/special_school_files is created inside the root directory ssepd_ngo_working_portal/storage/special_school_files*/
+        $externalBasePath = dirname(base_path());
+        $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
 
-    $constructionImagePath = $folderPath . '/construction_images';
-    $externalConstructionPath = $externalPath . '/construction_images';
+        $constructionImagePath = $folderPath . '/construction_images';
+        $externalConstructionPath = $externalPath . '/construction_images';
 
-    if (!file_exists($constructionImagePath)) {
-        mkdir($constructionImagePath, 0755, true);
+        if (!file_exists($constructionImagePath)) {
+            mkdir($constructionImagePath, 0755, true);
+        }
+        if (!file_exists($externalConstructionPath)) {
+            mkdir($externalConstructionPath, 0755, true);
+        }
+
+        if ($request->hasFile('file_construction_image_1')) {
+            $constructionFile_1 = $request->file('file_construction_image_1');
+            $constructionExtension_1 = $constructionFile_1->getClientOriginalExtension();
+            $constructionRandomName_1 = 'CONSTRUCTION_IMAGE_1_' . Str::random(40) . '.' . $constructionExtension_1;
+
+            $constructionStoredPath_1 = $constructionFile_1->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_1, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$constructionImagePath}/{$constructionRandomName_1}");
+            copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$externalConstructionPath}/{$constructionRandomName_1}");
+        }
+
+        if ($request->hasFile('file_construction_image_2')) {
+            $constructionFile_2 = $request->file('file_construction_image_2');
+            $constructionExtension_2 = $constructionFile_2->getClientOriginalExtension();
+            $constructionRandomName_2 = 'CONSTRUCTION_IMAGE_2_' . Str::random(40) . '.' . $constructionExtension_2;
+
+            $constructionStoredPath_2 = $constructionFile_2->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_2, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_2}"), "{$constructionImagePath}/{$constructionRandomName_2}");
+            copy(storage_path("app/public/{$constructionStoredPath_2}"), "{$externalConstructionPath}/{$constructionRandomName_2}");
+        }
+
+        if ($request->hasFile('file_construction_image_3')) {
+            $constructionFile_3 = $request->file('file_construction_image_3');
+            $constructionExtension_3 = $constructionFile_3->getClientOriginalExtension();
+            $constructionRandomName_3 = 'CONSTRUCTION_IMAGE_3_' . Str::random(40) . '.' . $constructionExtension_3;
+
+            $constructionStoredPath_3 = $constructionFile_3->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_3, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_3}"), "{$constructionImagePath}/{$constructionRandomName_3}");
+            copy(storage_path("app/public/{$constructionStoredPath_3}"), "{$externalConstructionPath}/{$constructionRandomName_3}");
+        }
+
+        if ($request->hasFile('file_construction_image_4')) {
+            $constructionFile_4 = $request->file('file_construction_image_4');
+            $constructionExtension_4 = $constructionFile_4->getClientOriginalExtension();
+            $constructionRandomName_4 = 'CONSTRUCTION_IMAGE_4_' . Str::random(40) . '.' . $constructionExtension_4;
+
+            $constructionStoredPath_4 = $constructionFile_4->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_4, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_4}"), "{$constructionImagePath}/{$constructionRandomName_4}");
+            copy(storage_path("app/public/{$constructionStoredPath_4}"), "{$externalConstructionPath}/{$constructionRandomName_4}");
+        }
+
+        if ($request->hasFile('file_construction_image_5')) {
+            $constructionFile_5 = $request->file('file_construction_image_5');
+            $constructionExtension_5 = $constructionFile_5->getClientOriginalExtension();
+            $constructionRandomName_5 = 'CONSTRUCTION_IMAGE_5_' . Str::random(40) . '.' . $constructionExtension_5;
+
+            $constructionStoredPath_5 = $constructionFile_5->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_5, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_5}"), "{$constructionImagePath}/{$constructionRandomName_5}");
+            copy(storage_path("app/public/{$constructionStoredPath_5}"), "{$externalConstructionPath}/{$constructionRandomName_5}");
+        }
+
+        $school_construction = new SpecialSchoolConstruction();
+        $school_construction->management_id = $specialSchool->management_id;
+        $school_construction->special_school_management_name = $specialSchool->special_school_management_name;
+        $school_construction->special_school_id = $specialSchool->special_school_id;
+        $school_construction->special_school_name = $specialSchool->special_school_name;
+        $school_construction->school_system_gen_reg_no = $specialSchool->school_system_gen_reg_no;
+        $school_construction->file_construction_image_1 = $constructionStoredPath_1;
+        $school_construction->latitude_1 = $validatedData['latitude_1'];
+        $school_construction->longitude_1 = $validatedData['longitude_1'];
+        $school_construction->file_construction_image_2 = $constructionStoredPath_2;
+        $school_construction->latitude_2 = $validatedData['latitude_2'];
+        $school_construction->longitude_2 = $validatedData['longitude_2'];
+        $school_construction->file_construction_image_3 = $constructionStoredPath_3;
+        $school_construction->latitude_3 = $validatedData['latitude_3'];
+        $school_construction->longitude_3 = $validatedData['longitude_3'];
+        $school_construction->file_construction_image_4 = $constructionStoredPath_4;
+        $school_construction->latitude_4 = $validatedData['latitude_4'];
+        $school_construction->longitude_4 = $validatedData['longitude_4'];
+        $school_construction->file_construction_image_5 = $constructionStoredPath_5;
+        $school_construction->latitude_5 = $validatedData['latitude_5'];
+        $school_construction->longitude_5 = $validatedData['longitude_5'];
+        $school_construction->any_remarks =$validatedData['any_remarks'];
+        $school_construction->phase_no = $phase_no;
+        $school_construction->school_address_type = $specialSchool->school_address_type;
+        $school_construction->state_id = $specialSchool->state_id;
+        $school_construction->district_id = $specialSchool->district_id;
+        $school_construction->municipality_id = $specialSchool->municipality_id;
+        $school_construction->block_id = $specialSchool->block_id;
+        $school_construction->gp_id = $specialSchool->gp_id;
+        $school_construction->village_id = $specialSchool->village_id;
+        $school_construction->pin = $specialSchool->pin;
+        $school_construction->school_postal_address_at = $specialSchool->school_postal_address_at;
+        $school_construction->school_postal_address_post = $specialSchool->school_postal_address_post;
+        $school_construction->school_postal_address_via = $specialSchool->school_postal_address_via;
+        $school_construction->school_postal_address_ps = $specialSchool->school_postal_address_ps;
+        $school_construction->school_postal_address_district = $specialSchool->school_postal_address_district;
+        $school_construction->school_postal_address_pin = $specialSchool->school_postal_address_pin;
+        $school_construction->system_stored_latitude = $request->system_stored_latitude;
+        $school_construction->system_stored_longitude = $request->system_stored_longitude;
+        $school_construction->is_active = 'active';
+        $school_construction->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+        $school_construction->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+        $school_construction->created_by = Auth::id() ?? null;
+        $school_construction->no_of_image_uploaded = 5;
+        $school_construction->status = 1;
+        $school_construction->save();
+
+        DB::commit();
+        return redirect()->route('admin.specialschoolconstructions.construction_timeline')->with('success', 'Image added successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Special School Construction form Submission Failed: " . $e->getMessage());
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
-    if (!file_exists($externalConstructionPath)) {
-        mkdir($externalConstructionPath, 0755, true);
-    }
-
-    if ($request->hasFile('file_construction_image_1')) {
-        $constructionFile_1 = $request->file('file_construction_image_1');
-        $constructionExtension_1 = $constructionFile_1->getClientOriginalExtension();
-        $constructionRandomName_1 = 'CONSTRUCTION_IMAGE_1_' . Str::random(40) . '.' . $constructionExtension_1;
-
-        $constructionStoredPath_1 = $constructionFile_1->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_1, 'public');
-        copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$constructionImagePath}/{$constructionRandomName_1}");
-        copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$externalConstructionPath}/{$constructionRandomName_1}");
-    }
-
-    if ($request->hasFile('file_construction_image_2')) {
-        $constructionFile_2 = $request->file('file_construction_image_2');
-        $constructionExtension_2 = $constructionFile_2->getClientOriginalExtension();
-        $constructionRandomName_2 = 'CONSTRUCTION_IMAGE_2_' . Str::random(40) . '.' . $constructionExtension_2;
-
-        $constructionStoredPath_2 = $constructionFile_2->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_2, 'public');
-        copy(storage_path("app/public/{$constructionStoredPath_2}"), "{$constructionImagePath}/{$constructionRandomName_2}");
-        copy(storage_path("app/public/{$constructionStoredPath_2}"), "{$externalConstructionPath}/{$constructionRandomName_2}");
-    }
-
-    if ($request->hasFile('file_construction_image_3')) {
-        $constructionFile_3 = $request->file('file_construction_image_3');
-        $constructionExtension_3 = $constructionFile_3->getClientOriginalExtension();
-        $constructionRandomName_3 = 'CONSTRUCTION_IMAGE_3_' . Str::random(40) . '.' . $constructionExtension_3;
-
-        $constructionStoredPath_3 = $constructionFile_3->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_3, 'public');
-        copy(storage_path("app/public/{$constructionStoredPath_3}"), "{$constructionImagePath}/{$constructionRandomName_3}");
-        copy(storage_path("app/public/{$constructionStoredPath_3}"), "{$externalConstructionPath}/{$constructionRandomName_3}");
-    }
-
-    if ($request->hasFile('file_construction_image_4')) {
-        $constructionFile_4 = $request->file('file_construction_image_4');
-        $constructionExtension_4 = $constructionFile_4->getClientOriginalExtension();
-        $constructionRandomName_4 = 'CONSTRUCTION_IMAGE_4_' . Str::random(40) . '.' . $constructionExtension_4;
-
-        $constructionStoredPath_4 = $constructionFile_4->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_4, 'public');
-        copy(storage_path("app/public/{$constructionStoredPath_4}"), "{$constructionImagePath}/{$constructionRandomName_4}");
-        copy(storage_path("app/public/{$constructionStoredPath_4}"), "{$externalConstructionPath}/{$constructionRandomName_4}");
-    }
-
-    if ($request->hasFile('file_construction_image_5')) {
-        $constructionFile_5 = $request->file('file_construction_image_5');
-        $constructionExtension_5 = $constructionFile_5->getClientOriginalExtension();
-        $constructionRandomName_5 = 'CONSTRUCTION_IMAGE_5_' . Str::random(40) . '.' . $constructionExtension_5;
-
-        $constructionStoredPath_5 = $constructionFile_5->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_5, 'public');
-        copy(storage_path("app/public/{$constructionStoredPath_5}"), "{$constructionImagePath}/{$constructionRandomName_5}");
-        copy(storage_path("app/public/{$constructionStoredPath_5}"), "{$externalConstructionPath}/{$constructionRandomName_5}");
-    }
-
-    $school_construction = new SpecialSchoolConstruction();
-    $school_construction->management_id = $specialSchool->management_id;
-    $school_construction->special_school_management_name = $specialSchool->special_school_management_name;
-    $school_construction->special_school_id = $specialSchool->special_school_id;
-    $school_construction->special_school_name = $specialSchool->special_school_name;
-    $school_construction->school_system_gen_reg_no = $specialSchool->school_system_gen_reg_no;
-    $school_construction->file_construction_image_1 = $constructionStoredPath_1;
-    $school_construction->latitude_1 = $validatedData['latitude_1'];
-    $school_construction->longitude_1 = $validatedData['longitude_1'];
-    $school_construction->file_construction_image_2 = $constructionStoredPath_2;
-    $school_construction->latitude_2 = $validatedData['latitude_2'];
-    $school_construction->longitude_2 = $validatedData['longitude_2'];
-    $school_construction->file_construction_image_3 = $constructionStoredPath_3;
-    $school_construction->latitude_3 = $validatedData['latitude_3'];
-    $school_construction->longitude_3 = $validatedData['longitude_3'];
-    $school_construction->file_construction_image_4 = $constructionStoredPath_4;
-    $school_construction->latitude_4 = $validatedData['latitude_4'];
-    $school_construction->longitude_4 = $validatedData['longitude_4'];
-    $school_construction->file_construction_image_5 = $constructionStoredPath_5;
-    $school_construction->latitude_5 = $validatedData['latitude_5'];
-    $school_construction->longitude_5 = $validatedData['longitude_5'];
-    $school_construction->any_remarks =$validatedData['any_remarks'];
-    $school_construction->phase_no = $phase_no;
-    $school_construction->school_address_type = $specialSchool->school_address_type;
-    $school_construction->state_id = $specialSchool->state_id;
-    $school_construction->district_id = $specialSchool->district_id;
-    $school_construction->municipality_id = $specialSchool->municipality_id;
-    $school_construction->block_id = $specialSchool->block_id;
-    $school_construction->gp_id = $specialSchool->gp_id;
-    $school_construction->village_id = $specialSchool->village_id;
-    $school_construction->pin = $specialSchool->pin;
-    $school_construction->school_postal_address_at = $specialSchool->school_postal_address_at;
-    $school_construction->school_postal_address_post = $specialSchool->school_postal_address_post;
-    $school_construction->school_postal_address_via = $specialSchool->school_postal_address_via;
-    $school_construction->school_postal_address_ps = $specialSchool->school_postal_address_ps;
-    $school_construction->school_postal_address_district = $specialSchool->school_postal_address_district;
-    $school_construction->school_postal_address_pin = $specialSchool->school_postal_address_pin;
-    $school_construction->system_stored_latitude = $request->system_stored_latitude;
-    $school_construction->system_stored_longitude = $request->system_stored_longitude;
-    $school_construction->is_active = 'active';
-    $school_construction->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
-    $school_construction->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
-    $school_construction->created_by = Auth::id() ?? null;
-    $school_construction->no_of_image_uploaded = 5;
-    $school_construction->status = 1;
-    $school_construction->save();
-
-    return redirect()->route('admin.specialschoolconstructions.construction_timeline')->with('success', 'Image added successfully.');
 }
 
 /**

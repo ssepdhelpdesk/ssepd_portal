@@ -178,6 +178,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
+        Route::get('report', 'report')->name('report');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

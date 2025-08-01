@@ -35,11 +35,11 @@ class SpecialSchoolController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
+ }
 /**
 * Display a listing of the resource.
 */
@@ -600,40 +600,47 @@ public function delete($id)
         return redirect()->route('admin.specialschool.create')
         ->with('info', 'Kindly provide the basic information of the school to proceed further.');
     }
+    DB::beginTransaction();
+    try {
 
-    $staff = SpecialSchoolStaff::findOrFail($id);
+        $staff = SpecialSchoolStaff::findOrFail($id);
 
-    $schoolSystemGenRegNo = str_replace('/', '_', $specialSchool->school_system_gen_reg_no);
-    $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
-    $externalBasePath = dirname(base_path());
-    $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
+        $schoolSystemGenRegNo = str_replace('/', '_', $specialSchool->school_system_gen_reg_no);
+        $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
+        $externalBasePath = dirname(base_path());
+        $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
 
-    $fileFields = [
-        'special_school_file_staff_aadhar',
-        'file_staff_image',
-        'file_udid_certificate',
-    ];
+        $fileFields = [
+            'special_school_file_staff_aadhar',
+            'file_staff_image',
+            'file_udid_certificate',
+        ];
 
-    foreach ($fileFields as $field) {
-        if (!empty($staff->$field)) {
-            $fileName = basename($staff->$field);
-            $subfolder = dirname($staff->$field);
+        foreach ($fileFields as $field) {
+            if (!empty($staff->$field)) {
+                $fileName = basename($staff->$field);
+                $subfolder = dirname($staff->$field);
 
-            $publicFullPath = public_path($staff->$field);
-            $externalFullPath = $externalBasePath . '/storage/' . $staff->$field;
+                $publicFullPath = public_path($staff->$field);
+                $externalFullPath = $externalBasePath . '/storage/' . $staff->$field;
 
-            if (file_exists($publicFullPath)) {
-                @unlink($publicFullPath);
-            }
-            if (file_exists($externalFullPath)) {
-                @unlink($externalFullPath);
+                if (file_exists($publicFullPath)) {
+                    @unlink($publicFullPath);
+                }
+                if (file_exists($externalFullPath)) {
+                    @unlink($externalFullPath);
+                }
             }
         }
+
+        $staff->delete();
+        DB::commit();
+        return redirect()->back()->with('success', 'Staff record deleted successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Special School Staff Detail Delete Failed: " . $e->getMessage());
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
-
-    $staff->delete();
-
-    return redirect()->back()->with('success', 'Staff record deleted successfully.');
 }
 
 public function cumulative_report()

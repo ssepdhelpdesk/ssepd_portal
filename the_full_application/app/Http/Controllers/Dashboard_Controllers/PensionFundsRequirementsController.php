@@ -27,6 +27,7 @@ use DB;
 
 /*Controller Requirements*/
 use App\Models\PensionFundsRequirement;
+use App\Models\District;
 use App\Models\Block;
 use App\Models\Municipality;
 
@@ -113,37 +114,81 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->back()->with('info', 'You are not authorised to fill up this form.');
         }
 
-        $pensionFundsRequirement = new PensionFundsRequirement();
-        $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
-        $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
-        $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];
-        $pensionFundsRequirement->mbpy_dp = $validatedData['mbpy_dp'];
-        $pensionFundsRequirement->mbpy_sdp_below_80_percent = $validatedData['mbpy_sdp_below_80_percent'];
-        $pensionFundsRequirement->mbpy_sdp_above_80_percent = $validatedData['mbpy_sdp_above_80_percent'];
-        $pensionFundsRequirement->mbpy_sdoap = $validatedData['mbpy_sdoap'];
-        $pensionFundsRequirement->mbpy_clp = $validatedData['mbpy_clp'];
-        $pensionFundsRequirement->mbpy_wp_aids = $validatedData['mbpy_wp_aids'];
-        $pensionFundsRequirement->mbpy_dp_aids = $validatedData['mbpy_dp_aids'];
-        $pensionFundsRequirement->mbpy_unmarried_women = $validatedData['mbpy_unmarried_women'];
-        $pensionFundsRequirement->mbpy_orphan_due_to_covide = $validatedData['mbpy_orphan_due_to_covide'];
-        $pensionFundsRequirement->mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'];
-        $pensionFundsRequirement->mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'];
-        $pensionFundsRequirement->mbpy_transgender = $validatedData['mbpy_transgender'];
-        $pensionFundsRequirement->address_type = $address_type;
-        $pensionFundsRequirement->state_id = $state_id;
-        $pensionFundsRequirement->district_id = $district_id;
-        $pensionFundsRequirement->municipality_id = $municipality_id;
-        $pensionFundsRequirement->block_id = $block_id;
-        $pensionFundsRequirement->gp_id = NULL;
-        $pensionFundsRequirement->village_id = NULL;
-        $pensionFundsRequirement->pin = NULL;
-        $pensionFundsRequirement->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
-        $pensionFundsRequirement->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
-        $pensionFundsRequirement->created_by = Auth::id() ?? null;
-        $pensionFundsRequirement->status = 1;
-        $pensionFundsRequirement->save();
-        return redirect()->route('admin.dashboard')->with('success', 'Submitted Successfully.');
+        DB::beginTransaction();
+        try {
+            $pensionFundsRequirement = new PensionFundsRequirement();
+            $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
+            $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
+            $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];
+            $pensionFundsRequirement->mbpy_dp = $validatedData['mbpy_dp'];
+            $pensionFundsRequirement->mbpy_sdp_below_80_percent = $validatedData['mbpy_sdp_below_80_percent'];
+            $pensionFundsRequirement->mbpy_sdp_above_80_percent = $validatedData['mbpy_sdp_above_80_percent'];
+            $pensionFundsRequirement->mbpy_sdoap = $validatedData['mbpy_sdoap'];
+            $pensionFundsRequirement->mbpy_clp = $validatedData['mbpy_clp'];
+            $pensionFundsRequirement->mbpy_wp_aids = $validatedData['mbpy_wp_aids'];
+            $pensionFundsRequirement->mbpy_dp_aids = $validatedData['mbpy_dp_aids'];
+            $pensionFundsRequirement->mbpy_unmarried_women = $validatedData['mbpy_unmarried_women'];
+            $pensionFundsRequirement->mbpy_orphan_due_to_covide = $validatedData['mbpy_orphan_due_to_covide'];
+            $pensionFundsRequirement->mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'];
+            $pensionFundsRequirement->mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'];
+            $pensionFundsRequirement->mbpy_transgender = $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->address_type = $address_type;
+            $pensionFundsRequirement->state_id = $state_id;
+            $pensionFundsRequirement->district_id = $district_id;
+            $pensionFundsRequirement->municipality_id = $municipality_id;
+            $pensionFundsRequirement->block_id = $block_id;
+            $pensionFundsRequirement->gp_id = NULL;
+            $pensionFundsRequirement->village_id = NULL;
+            $pensionFundsRequirement->pin = NULL;
+            $pensionFundsRequirement->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $pensionFundsRequirement->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $pensionFundsRequirement->created_by = Auth::id() ?? null;
+            $pensionFundsRequirement->status = 1;
+            $pensionFundsRequirement->save();
+            DB::commit();
+            return redirect()->route('admin.dashboard')->with('success', 'Submitted Successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("Pension Funds Requirements form Submission Failed: " . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+        }
     }
+
+    public function report()
+    {
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality']);
+
+        /*Role-based filtering logic*/
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            /*SuperAdmin, Admin, HO, BO, Director, Secretary — see all records*/
+        } elseif (in_array($userRole, [4, 6])) {
+            /*BSSO, BDO — filter by posted_block*/
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+        } elseif ($userRole == 5) {
+            /*MEO — filter by posted_municipality*/
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+        } elseif (in_array($userRole, [8, 10])) {
+            /*SSSO, SubCollector — filter by posted_subdiv*/
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+        } elseif (in_array($userRole, [9, 11])) {
+            /*DSSO, Collector — filter by posted_district*/
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+        }
+
+        $pensionFundsRequirements = $pensionFundsRequirementQuery->get();
+
+        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements'));
+    }
+
 
     /**
      * Display the specified resource.
