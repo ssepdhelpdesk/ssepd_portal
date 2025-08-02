@@ -228,6 +228,28 @@ Pension || Funds Requiremt
                                  @enderror
                               </div>
                            </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="mbpy_bank_account_number_div">
+                                 <label class="form-label">Bank Account Number<span class="itsrequired"> *</span></label>
+                                 <input 
+                                 type="text" id="mbpy_bank_account_number" name="mbpy_bank_account_number" value="{{ old('mbpy_bank_account_number', $pensionFundsRequirement->mbpy_bank_account_number) }}" class="form-control" placeholder="Enter beneficiary count">
+                                 <div id="mbpy_bank_account_number_error"></div>
+                                 @error('mbpy_bank_account_number')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="mbpy_bank_ifsc_code_div">
+                                 <label class="form-label">IFSC Code<span class="itsrequired"> *</span></label>
+                                 <input 
+                                 type="text" id="mbpy_bank_ifsc_code" name="mbpy_bank_ifsc_code" value="{{ old('mbpy_bank_ifsc_code', $pensionFundsRequirement->mbpy_bank_ifsc_code) }}" class="form-control" placeholder="Enter beneficiary count">
+                                 <div id="mbpy_bank_ifsc_code_error"></div>
+                                 @error('mbpy_bank_ifsc_code')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
                         </div>
                      </div>
                      <div class="form-actions">
