@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const field = document.getElementById(id);
             const errorDiv = document.getElementById(id + "_error");
 
-            // Clear previous errors
+            // Clear previous error
             errorDiv.innerHTML = "";
             field.classList.remove("is-invalid");
 
@@ -308,10 +308,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 errorDiv.innerHTML = `<label class="error">This field is required</label>`;
                 field.classList.add("is-invalid");
                 hasError = true;
-            } else if (!/^\d+$/.test(value)) {
-                errorDiv.innerHTML = `<label class="error">Enter a valid number</label>`;
-                field.classList.add("is-invalid");
-                hasError = true;
+            } else {
+                if (id === "mbpy_bank_ifsc_code") {
+                    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+                    if (!ifscRegex.test(value)) {
+                        errorDiv.innerHTML = `<label class="error">Enter valid IFSC code (e.g., SBIN0001234)</label>`;
+                        field.classList.add("is-invalid");
+                        hasError = true;
+                    }
+                } else if (id !== "mbpy_bank_account_number" && !/^\d+$/.test(value)) {
+                    errorDiv.innerHTML = `<label class="error">Enter a valid number</label>`;
+                    field.classList.add("is-invalid");
+                    hasError = true;
+                }
+                // You may add additional checks for account number if needed
             }
         });
 
@@ -323,5 +333,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
 @endsection
