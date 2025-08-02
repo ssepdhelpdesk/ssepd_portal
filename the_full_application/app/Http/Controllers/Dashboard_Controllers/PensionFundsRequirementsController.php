@@ -70,6 +70,8 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_widow_due_to_covid' => 'required|integer|min:0',
             'mbpy_divorce_or_destitute' => 'required|integer|min:0',
             'mbpy_transgender' => 'required|integer|min:0',
+            'mbpy_bank_account_number' => 'required',
+            'mbpy_bank_ifsc_code' => 'required',
         ];
 
         $customMessages = [
@@ -92,6 +94,8 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_widow_due_to_covid.required' => 'Widow due to COVID is required.',
             'mbpy_divorce_or_destitute.required' => 'Divorced/Destitute Women is required.',
             'mbpy_transgender.required' => 'Transgender pension count is required.',
+            'mbpy_bank_account_number.required' => 'Bank Account is Required.',
+            'mbpy_bank_ifsc_code.required' => 'Bank IFSC Code is required.',
         ];
 
         $validatedData = $request->validate($validationRules, $customMessages);
@@ -140,6 +144,8 @@ class PensionFundsRequirementsController extends Controller
             $pensionFundsRequirement->mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'];
             $pensionFundsRequirement->mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'];
             $pensionFundsRequirement->mbpy_transgender = $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->mbpy_bank_account_number = $validatedData['mbpy_bank_account_number'];
+            $pensionFundsRequirement->mbpy_bank_ifsc_code = $validatedData['mbpy_bank_ifsc_code'];
             $pensionFundsRequirement->address_type = $address_type;
             $pensionFundsRequirement->state_id = $state_id;
             $pensionFundsRequirement->district_id = $district_id;

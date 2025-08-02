@@ -28,6 +28,8 @@ return new class extends Migration
             $table->integer('mbpy_widow_due_to_covid')->nullable();
             $table->integer('mbpy_divorce_or_destitute')->nullable();
             $table->integer('mbpy_transgender')->nullable();
+            $table->string('mbpy_bank_account_number')->nullable();
+            $table->string('mbpy_bank_ifsc_code')->nullable();
             $table->tinyInteger('address_type')->nullable();
             $table->bigInteger('state_id')->nullable();
             $table->bigInteger('district_id')->nullable();
