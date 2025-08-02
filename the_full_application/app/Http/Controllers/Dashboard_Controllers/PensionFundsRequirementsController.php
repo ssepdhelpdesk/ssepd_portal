@@ -70,8 +70,8 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_widow_due_to_covid' => 'required|integer|min:0',
             'mbpy_divorce_or_destitute' => 'required|integer|min:0',
             'mbpy_transgender' => 'required|integer|min:0',
-            'mbpy_bank_account_number' => 'required',
-            'mbpy_bank_ifsc_code' => 'required',
+            'mbpy_bank_account_number' => 'required|string|regex:/^[0-9]{9,18}$/',
+            'mbpy_bank_ifsc_code' => 'required|string|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i',
         ];
 
         $customMessages = [
@@ -95,7 +95,9 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_divorce_or_destitute.required' => 'Divorced/Destitute Women is required.',
             'mbpy_transgender.required' => 'Transgender pension count is required.',
             'mbpy_bank_account_number.required' => 'Bank Account is Required.',
+            'mbpy_bank_account_number.regex' => 'Enter a valid Bank Account Number (9 to 18 digits).',
             'mbpy_bank_ifsc_code.required' => 'Bank IFSC Code is required.',
+            'mbpy_bank_ifsc_code.regex' => 'Enter a valid IFSC code (e.g., SBIN0001234).',
         ];
 
         $validatedData = $request->validate($validationRules, $customMessages);
