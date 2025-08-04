@@ -14,7 +14,7 @@ SSEPD PORTAL
          <div class="d-flex align-items-center">
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-               <li class="breadcrumb-item active">Dashboard 1</li>
+               <li class="breadcrumb-item active">Dashboard</li>
             </ol>
          </div>
       </div>

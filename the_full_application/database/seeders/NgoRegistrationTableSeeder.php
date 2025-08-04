@@ -55,11 +55,11 @@ public function run(): void
             'updated_at' => Carbon::now('Asia/Kolkata'),
         ]);
 
-        $role = Role::find(15);
+        $role = Role::find(16);
         if ($role) {
             $user->assignRole($role->name);
         } else {
-            throw new Exception("Role with ID 15 does not exist.");
+            throw new Exception("Role with ID 16 does not exist.");
         }
     }
 
