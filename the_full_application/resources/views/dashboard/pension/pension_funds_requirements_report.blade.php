@@ -1,5 +1,5 @@
 @section('title') 
-Special School || List
+Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
