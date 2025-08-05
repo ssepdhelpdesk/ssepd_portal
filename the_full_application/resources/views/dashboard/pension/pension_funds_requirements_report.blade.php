@@ -119,14 +119,14 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <td>{{ $fundsRequirements->mbpy_divorce_or_destitute ?? 0 }}</td>
                         <td>{{ $fundsRequirements->mbpy_transgender ?? 0 }}</td>
                         @php
-    $accountNumber = $fundsRequirements->mbpy_bank_account_number;
-    $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code;
+                        $accountNumber = $fundsRequirements->mbpy_bank_account_number;
+                        $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code;
 
-    $maskedAccount = $accountNumber ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) : 'Not Provided';
-    $maskedIFSC = $ifscCode ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) : 'Not Provided';
-@endphp
+                        $maskedAccount = $accountNumber ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) : 'Not Provided';
+                        $maskedIFSC = $ifscCode ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) : 'Not Provided';
+                        @endphp
                         <td>{{ $maskedAccount }}</td>
-<td>{{ $maskedIFSC }}</td>
+                        <td>{{ $maskedIFSC }}</td>
                         <td>
                            <div class="btn-group">
                               <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
