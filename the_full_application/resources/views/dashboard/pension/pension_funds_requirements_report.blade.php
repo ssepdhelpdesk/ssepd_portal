@@ -59,6 +59,8 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <th>Widow due to Covid</th>
                         <th>Divorcee or Destitute</th>
                         <th>Transgender</th>
+                        <th>A/C No</th>
+                        <th>IFSC Code</th>
                         <th>Action</th>
                      </tr>
                   </thead>
@@ -82,6 +84,8 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <th>Widow due to Covid</th>
                         <th>Divorcee or Destitute</th>
                         <th>Transgender</th>
+                        <th>A/C No</th>
+                        <th>IFSC Code</th>
                         <th>Action</th>
                      </tr>
                   </tfoot>
@@ -99,21 +103,23 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                            -
                            @endif
                         </td>
-                        <td>{{ $fundsRequirements->mbpy_oap_below_80_years }}</td>
-                        <td>{{ $fundsRequirements->mbpy_oap_above_80_years }}</td>
-                        <td>{{ $fundsRequirements->mbpy_wp }}</td>
-                        <td>{{ $fundsRequirements->mbpy_dp }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdp_below_80_percent }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdp_above_80_percent }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdoap }}</td>
-                        <td>{{ $fundsRequirements->mbpy_clp }}</td>
-                        <td>{{ $fundsRequirements->mbpy_wp_aids }}</td>
-                        <td>{{ $fundsRequirements->mbpy_dp_aids }}</td>
-                        <td>{{ $fundsRequirements->mbpy_unmarried_women }}</td>
-                        <td>{{ $fundsRequirements->mbpy_orphan_due_to_covide }}</td>
-                        <td>{{ $fundsRequirements->mbpy_widow_due_to_covid }}</td>
-                        <td>{{ $fundsRequirements->mbpy_divorce_or_destitute }}</td>
-                        <td>{{ $fundsRequirements->mbpy_transgender }}</td>
+                        <td>{{ $fundsRequirements->mbpy_oap_below_80_years ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_oap_above_80_years ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_wp ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_dp ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_sdp_below_80_percent ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_sdp_above_80_percent ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_sdoap ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_clp ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_wp_aids ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_dp_aids ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_unmarried_women ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_orphan_due_to_covide ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_widow_due_to_covid ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_divorce_or_destitute ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_transgender ?? 0 }}</td>
+                        <td>{{ $fundsRequirements->mbpy_bank_account_number ?? 'Not Provided' }}</td>
+                        <td>{{ $fundsRequirements->mbpy_bank_ifsc_code ?? 'Not Provided' }}</td>
                         <td>
                            <div class="btn-group">
                               <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -153,9 +159,9 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
    $(function () {
       $('#example23').DataTable({
          processing: true,
+         responsive: false,
          ordering: true,
-         scrollX: false,
-         responsive: true,
+         scrollX: true,
          lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
          dom: 'Blfrtip',
          buttons: [

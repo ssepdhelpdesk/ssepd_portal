@@ -77,7 +77,7 @@ public function construction_timeline()
 
     $id = $specialSchool->special_school_id;
 
-    $allConstructionRecords = SpecialSchoolConstruction::where('special_school_id', $id)->get();
+    $allConstructionRecords = SpecialSchoolConstruction::where('special_school_id', $id)->where('status', 1)->get();
 
     $phaseNumbers = $allConstructionRecords->pluck('phase_no')->unique()->sort()->values();
 
