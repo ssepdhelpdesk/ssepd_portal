@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use DataTables;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -48,10 +49,11 @@ public function index(Request $request)
         ->addColumn('action', function ($user) {
             $actions = '';
             if (auth()->user()->can('user-show')) {
-                $actions .= "<a href='" . route('admin.users.show', $user->id) . "'><span class='label label-warning'>View</span></a> ";
+                $actions .= "<a href='" . route('admin.users.show', $user->id) . "'><span class='label label-info'>View</span></a> ";
             }
             if (auth()->user()->can('user-edit')) {
                 $actions .= "<a href='" . route('admin.users.edit', $user->id) . "'><span class='label label-success'>Edit</span></a> ";
+                $actions .= "<a href='" . route('admin.users.reset_password', $user->id) . "'><span class='label label-warning'>Reset Password</span></a> ";
             }
             if (auth()->user()->can('user-delete')) {
                 $actions .= "<a href='" . route('admin.users.destroy', $user->id) . "' id='delete'><span class='label label-danger'>Delete</span></a>";
@@ -197,4 +199,22 @@ public function destroy($id): RedirectResponse
     return redirect()->route('admin.users.index')
     ->with('success', 'User deleted successfully');
 }
+
+public function reset_password($id)
+{
+    $user = User::find($id);
+
+    if (!$user) {
+        return redirect()->back()->with('warning', 'User not found.');
+    }
+
+    $newPassword = '123456';
+    $user->password = Hash::make($newPassword);
+    $user->save();
+
+    Log::info("Password reset for user: {$user->name} (ID: {$user->id}) by admin.");
+
+    return redirect()->back()->with('success', "Password for {$user->name} has been reset to \"{$newPassword}\".");
+}
+
 }

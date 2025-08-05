@@ -7,7 +7,7 @@ Special School || List
    .wrap-text {
   white-space: normal !important;
   word-break: break-word;
-  max-width: 200px; /* adjust as needed */
+  max-width: 200px;
 }
 </style>
 @endsection 
