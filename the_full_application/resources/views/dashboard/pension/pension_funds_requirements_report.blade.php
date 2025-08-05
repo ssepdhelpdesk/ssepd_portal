@@ -45,20 +45,36 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <th>District</th>
                         <th>Block/ULB Name</th>
                         <th>MBPOAP (Below 80 Years)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPOAP (Above 80 Years)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPWP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPDP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDP (Below 80%)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDP (Above 80%)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDOAP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPCLP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPWP (Due to Aids)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPDP (Due to Aids)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPUMW</th>
+                        <th>Fund Requirements</th>
                         <th>Orphan due to Covid</th>
+                        <th>Fund Requirements</th>
                         <th>Widow due to Covid</th>
+                        <th>Fund Requirements</th>
                         <th>Divorcee or Destitute</th>
+                        <th>Fund Requirements</th>
                         <th>Transgender</th>
+                        <th>Fund Requirements</th>
+                        <th>Total Fund Requirement</th>
                         <th>A/C No</th>
                         <th>IFSC Code</th>
                         <th>Action</th>
@@ -70,20 +86,36 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <th>District</th>
                         <th>Block/ULB Name</th>
                         <th>MBPOAP (Below 80 Years)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPOAP (Above 80 Years)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPWP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPDP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDP (Below 80%)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDP (Above 80%)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPSDOAP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPCLP</th>
+                        <th>Fund Requirements</th>
                         <th>MBPWP (Due to Aids)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPDP (Due to Aids)</th>
+                        <th>Fund Requirements</th>
                         <th>MBPUMW</th>
+                        <th>Fund Requirements</th>
                         <th>Orphan due to Covid</th>
+                        <th>Fund Requirements</th>
                         <th>Widow due to Covid</th>
+                        <th>Fund Requirements</th>
                         <th>Divorcee or Destitute</th>
+                        <th>Fund Requirements</th>
                         <th>Transgender</th>
+                        <th>Fund Requirements</th>
+                        <th>Total Fund Requirement</th>
                         <th>A/C No</th>
                         <th>IFSC Code</th>
                         <th>Action</th>
@@ -91,6 +123,13 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                   </tfoot>
                   <tbody>
                      @forelse ($pensionFundsRequirements as $key => $fundsRequirements)
+                     @php
+                     $accountNumber = $fundsRequirements->mbpy_bank_account_number;
+                     $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code;
+
+                     $maskedAccount = $accountNumber ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) : 'Not Provided';
+                     $maskedIFSC = $ifscCode ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) : 'Not Provided';
+                     @endphp
                      <tr>
                         <td>{{ $key + 1 }}</td>
                         <td>{{ $fundsRequirements->district->district_name ?? '-' }}</td>
@@ -103,30 +142,77 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                            -
                            @endif
                         </td>
-                        <td>{{ $fundsRequirements->mbpy_oap_below_80_years ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_oap_above_80_years ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_wp ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_dp ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdp_below_80_percent ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdp_above_80_percent ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_sdoap ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_clp ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_wp_aids ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_dp_aids ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_unmarried_women ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_orphan_due_to_covide ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_widow_due_to_covid ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_divorce_or_destitute ?? 0 }}</td>
-                        <td>{{ $fundsRequirements->mbpy_transgender ?? 0 }}</td>
-                        @php
-                        $accountNumber = $fundsRequirements->mbpy_bank_account_number;
-                        $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code;
 
-                        $maskedAccount = $accountNumber ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) : 'Not Provided';
-                        $maskedIFSC = $ifscCode ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) : 'Not Provided';
-                        @endphp
+                        {{-- Amount Columns --}}
+                        <td>{{ $fundsRequirements->mbpy_oap_below_80_years ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_oap_below_80_years ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_oap_above_80_years ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_oap_above_80_years ?? 0) * 3500 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_wp ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_wp ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_dp ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_dp ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_sdp_below_80_percent ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_sdp_below_80_percent ?? 0) * 1200 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_sdp_above_80_percent ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_sdp_above_80_percent ?? 0) * 3500 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_sdoap ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_sdoap ?? 0) * 3500 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_clp ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_clp ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_wp_aids ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_wp_aids ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_dp_aids ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_dp_aids ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_unmarried_women ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_unmarried_women ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_orphan_due_to_covide ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_orphan_due_to_covide ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_widow_due_to_covid ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_widow_due_to_covid ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_divorce_or_destitute ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_divorce_or_destitute ?? 0) * 1000 }}</td>
+
+                        <td>{{ $fundsRequirements->mbpy_transgender ?? 0 }}</td>
+                        <td>{{ ($fundsRequirements->mbpy_transgender ?? 0) * 1000 }}</td>
+
+                        @php
+    $totalFund = 
+        ($fundsRequirements->mbpy_oap_below_80_years ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_oap_above_80_years ?? 0) * 3500 +
+        ($fundsRequirements->mbpy_wp ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_dp ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_sdp_below_80_percent ?? 0) * 1200 +
+        ($fundsRequirements->mbpy_sdp_above_80_percent ?? 0) * 3500 +
+        ($fundsRequirements->mbpy_sdoap ?? 0) * 3500 +
+        ($fundsRequirements->mbpy_clp ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_wp_aids ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_dp_aids ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_unmarried_women ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_orphan_due_to_covide ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_widow_due_to_covid ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_divorce_or_destitute ?? 0) * 1000 +
+        ($fundsRequirements->mbpy_transgender ?? 0) * 1000;
+@endphp
+
+<td>{{ number_format($totalFund) }}</td>
                         <td>{{ $maskedAccount }}</td>
                         <td>{{ $maskedIFSC }}</td>
+
+                        {{-- Action Dropdown --}}
                         <td>
                            <div class="btn-group">
                               <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -145,7 +231,7 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                      </tr>
                      @empty
                      <tr>
-                        <td colspan="18" class="text-center">No records found.</td>
+                        <td colspan="40" class="text-center">No records found.</td>
                      </tr>
                      @endforelse
                   </tbody>

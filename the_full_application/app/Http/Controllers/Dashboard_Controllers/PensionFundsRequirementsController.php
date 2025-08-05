@@ -254,7 +254,10 @@ class PensionFundsRequirementsController extends Controller
             $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
         }
 
-        $pensionFundsRequirements = $pensionFundsRequirementQuery->get();
+        /*$pensionFundsRequirements = $pensionFundsRequirementQuery->get();*/
+        $pensionFundsRequirements = $pensionFundsRequirementQuery->get()->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })->values();
 
         return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements'));
     }

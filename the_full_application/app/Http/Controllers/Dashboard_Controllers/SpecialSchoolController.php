@@ -671,9 +671,8 @@ public function cumulative_report()
 
     $specialSchoolMappingQuery = SpecialSchoolMapping::with(['district'])->withCount('staff')->withMax('construction', 'phase_no');
 
-    // Role-based filtering
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-        // See all records
+        
     } elseif (in_array($userRole, [4, 6])) {
         $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
         $specialSchoolMappingQuery->where('district_id', $district_id);
