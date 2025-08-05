@@ -44,13 +44,31 @@ class PensionFundsRequirementsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    /*public function create()
     {
         $userId = auth()->id();
         $currentMonth = now()->format('Y-m');
 
         $existingEntry = PensionFundsRequirement::where('created_by', $userId)
         ->whereRaw("DATE_FORMAT(created_date, '%Y-%m') = ?", [$currentMonth])
+        ->first();
+
+        if ($existingEntry) {
+            return redirect()->back()->with('warning', 'You have already submitted this form for the current month on ' . \Carbon\Carbon::parse($existingEntry->created_date)->format('d M, Y') . '. If any modification is required, please contact your concerned district.');
+        }
+
+        return view('dashboard.pension.pension_funds_requirements');
+    }*/
+
+    public function create()
+    {
+        $userId = auth()->id();
+
+        $startDate = '2025-07-01';
+        $endDate = '2025-08-06';
+
+        $existingEntry = PensionFundsRequirement::where('created_by', $userId)
+        ->whereBetween('created_date', [$startDate, $endDate])
         ->first();
 
         if ($existingEntry) {
