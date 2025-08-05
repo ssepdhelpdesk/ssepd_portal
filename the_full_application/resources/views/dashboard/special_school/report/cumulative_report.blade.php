@@ -66,7 +66,7 @@ Special School || List
                          <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
                          <td>{{ $schoolDetails->management_name }}</td>
                          <td>{{ $schoolDetails->special_school_name }}</td>
-                         <td class="text-center">{{ $schoolDetails->staff_count ?? '0' }}</td>
+                         <td class="text-center"><a href="{{ route('admin.specialschool.view_staff_details_by_state_office', $schoolDetails->special_school_id) }}" target="_blank">{{ $schoolDetails->staff_count ?? '0' }}</a></td>
                          <td class="text-center">
                            @php
                            $phaseMap = [
@@ -85,7 +85,7 @@ Special School || List
                            @endphp
 
                            @if($phase)
-                           {{ $phaseMap[$phase] ?? 'Phase ' . $phase }} Phase uploaded
+                           <a href="{{ route('admin.specialschoolconstructions.index', $schoolDetails->special_school_id) }}" target="_blank">{{ $phaseMap[$phase] ?? 'Phase ' . $phase }} Phase uploaded</a>
                            @else
                            Pending to upload
                            @endif
@@ -115,8 +115,9 @@ Special School || List
    $(function () {
      $('#example23').DataTable({
        processing: true,
-       responsive: true,
+       responsive: false,
        ordering: true,
+       scrollX: true,
        lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
        dom: 'Blfrtip',
        buttons: [
