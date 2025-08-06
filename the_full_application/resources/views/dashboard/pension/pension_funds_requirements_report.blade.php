@@ -190,25 +190,25 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                         <td>{{ ($fundsRequirements->mbpy_transgender ?? 0) * 1000 }}</td>
 
                         @php
-    $totalFund = 
-        ($fundsRequirements->mbpy_oap_below_80_years ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_oap_above_80_years ?? 0) * 3500 +
-        ($fundsRequirements->mbpy_wp ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_dp ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_sdp_below_80_percent ?? 0) * 1200 +
-        ($fundsRequirements->mbpy_sdp_above_80_percent ?? 0) * 3500 +
-        ($fundsRequirements->mbpy_sdoap ?? 0) * 3500 +
-        ($fundsRequirements->mbpy_clp ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_wp_aids ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_dp_aids ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_unmarried_women ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_orphan_due_to_covide ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_widow_due_to_covid ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_divorce_or_destitute ?? 0) * 1000 +
-        ($fundsRequirements->mbpy_transgender ?? 0) * 1000;
-@endphp
+                        $totalFund = 
+                        ($fundsRequirements->mbpy_oap_below_80_years ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_oap_above_80_years ?? 0) * 3500 +
+                        ($fundsRequirements->mbpy_wp ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_dp ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_sdp_below_80_percent ?? 0) * 1200 +
+                        ($fundsRequirements->mbpy_sdp_above_80_percent ?? 0) * 3500 +
+                        ($fundsRequirements->mbpy_sdoap ?? 0) * 3500 +
+                        ($fundsRequirements->mbpy_clp ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_wp_aids ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_dp_aids ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_unmarried_women ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_orphan_due_to_covide ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_widow_due_to_covid ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_divorce_or_destitute ?? 0) * 1000 +
+                        ($fundsRequirements->mbpy_transgender ?? 0) * 1000;
+                        @endphp
 
-<td>{{ number_format($totalFund) }}</td>
+                        <td>{{ number_format($totalFund) }}</td>
                         <td>{{ $maskedAccount }}</td>
                         <td>{{ $maskedIFSC }}</td>
 

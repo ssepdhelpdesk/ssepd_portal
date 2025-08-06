@@ -104,12 +104,12 @@ Special School || Construction Progress Details
                                                 @if(!empty($construction->$image))
                                                 <div class="col-md-4 mb-4">
                                                    <div class="card shadow-lg custom-shadow h-100">
-                                                      <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                      <a href="{{ url('storage/' . $construction->$image) }}" target="_blank"> <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
                                                          <img class="card-img-top img-fluid"
                                                             src="{{ url('storage/' . $construction->$image) }}"
                                                             alt="Card image cap"
                                                             style="width: 100%; height: 100%; object-fit: contain;">
-                                                      </div>
+                                                      </div></a>
                                                       <div class="card-body">
                                                          <ul class="list-inline font-14 mb-0">
                                                             <li class="p-l-0 d-inline-block me-3">
