@@ -24,6 +24,7 @@ use App\Helpers\AadhaarVerifier;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Support\Collection;
 
 /*Controller Requirements*/
 use App\Models\PensionFundsRequirement;
@@ -224,24 +225,23 @@ class PensionFundsRequirementsController extends Controller
         }
     }
 
-    public function report()
+        /*public function report()
     {
         $user = auth()->user();
         $userRole = $user->role_id;
 
         $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality']);
-
-        /*Role-based filtering logic*/
+        
         if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-            /*SuperAdmin, Admin, HO, BO, Director, Secretary — see all records*/
+            
         } elseif (in_array($userRole, [4, 6])) {
-            /*BSSO, BDO — filter by posted_block*/
+            
             $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
         } elseif ($userRole == 5) {
-            /*MEO — filter by posted_municipality*/
+            
             $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
         } elseif (in_array($userRole, [8, 10])) {
-            /*SSSO, SubCollector — filter by posted_subdiv*/
+            
             $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
             $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
 
@@ -250,18 +250,113 @@ class PensionFundsRequirementsController extends Controller
                 ->orWhereIn('municipality_id', $municipalityIds);
             });
         } elseif (in_array($userRole, [9, 11])) {
-            /*DSSO, Collector — filter by posted_district*/
+            
             $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
         }
-
-        /*$pensionFundsRequirements = $pensionFundsRequirementQuery->get();*/
+        
         $pensionFundsRequirements = $pensionFundsRequirementQuery->get()->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })->values();
+
+        $submittedBlockIds = PensionFundsRequirement::whereNotNull('block_id')->pluck('block_id')->toArray();
+        $submittedMunicipalityIds = PensionFundsRequirement::whereNotNull('municipality_id')->pluck('municipality_id')->toArray();
+        
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            
+            $pendingBlocks = Block::whereNotIn('block_id', $submittedBlockIds)->where('is_active', 'active')->get();
+            $municipalities = Municipality::whereNotIn('municipality_id', $submittedMunicipalityIds)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+            if()
+        } elseif ($userRole == 5) {
+            
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+        } elseif (in_array($userRole, [8, 10])) {
+            
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+        } elseif (in_array($userRole, [9, 11])) {
+            
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+        }
+        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements'));
+    }*/
+
+
+    /*Created on  06-08-2025 to fetch all Blocks & ULBs*/
+    public function report()
+    {
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality']);
+        $allBlocks = collect();
+        $allMunicipalities = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allBlocks = Block::where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+            $allBlocks = Block::where('block_id', $user->posted_block)->where('is_active', 'active')->get();
+        } elseif ($userRole == 5) {
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+            $allMunicipalities = Municipality::where('municipality_id', $user->posted_municipality)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $allBlocks = Block::whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::whereIn('municipality_id', $municipalityIds)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [9, 11])) {
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+
+            $allBlocks = Block::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+        }
+
+        $filledRequirements = $pensionFundsRequirementQuery->get();
+
+        $submittedBlockIds = $filledRequirements->pluck('block_id')->filter()->unique();
+        $submittedMunicipalityIds = $filledRequirements->pluck('municipality_id')->filter()->unique();
+
+        $pendingBlocks = $allBlocks->whereNotIn('block_id', $submittedBlockIds)->map(function ($block) {
+            return (object)[
+                'district' => $block->district,
+                'block' => $block,
+                'municipality' => null,
+                'address_type' => 1,
+            ];
+        });
+
+        $pendingUlbs = $allMunicipalities->whereNotIn('municipality_id', $submittedMunicipalityIds)->map(function ($ulb) {
+            return (object)[
+                'district' => $ulb->district,
+                'block' => null,
+                'municipality' => $ulb,
+                'address_type' => 2,
+            ];
+        });
+
+        $combined = $filledRequirements->concat($pendingBlocks)->concat($pendingUlbs);
+
+        $pensionFundsRequirements = $combined->sortBy(function ($item) {
             return $item->district->district_name ?? '';
         })->values();
 
         return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements'));
     }
-
 
     /**
      * Display the specified resource.
