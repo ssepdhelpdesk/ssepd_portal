@@ -138,7 +138,7 @@ Example flow when editing code:
 # Inside repo folder
 git status                       # See changes
 git add .                        # Add all changes
-git commit -m "Construction Image"
+git commit -m "3500 first phase added, also dual DB Integration"
 git push origin main            # Push to GitHub
 ```
 

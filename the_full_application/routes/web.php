@@ -16,10 +16,16 @@ use App\Http\Controllers\Dashboard_Controllers\{
     PensionFundsRequirementsController
 };
 
+use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
+    OldAge3500Controller,
+    Disability3500Controller
+};
+
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
     LocationFrontendController
 };
+
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -183,6 +189,20 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('report', 'report')->name('report');
+    });
+
+    Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::get('{id}/delete', 'delete')->name('delete');
+    });
+
+    Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::get('{id}/delete', 'delete')->name('delete');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

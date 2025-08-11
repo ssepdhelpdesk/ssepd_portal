@@ -87,6 +87,10 @@
                   @can('pension-create')
                   <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                   @endcan
+                  @can('pension-3500-list')
+                  <li><a href="{{route('admin.oldage3500data.index')}}">₹3500 OldAge Pension</a></li>
+                  <li><a href="{{route('admin.disability3500data.index')}}">₹3500 Disability Pension</a></li>
+                  @endcan
                </ul>
             </li>
             <li class="nav-small-cap">--- REPORTS</li>

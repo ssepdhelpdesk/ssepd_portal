@@ -350,7 +350,6 @@ class PensionFundsRequirementsController extends Controller
         });
 
         $combined = $filledRequirements->concat($pendingBlocks)->concat($pendingUlbs);
-
         $pensionFundsRequirements = $combined->sortBy(function ($item) {
             return $item->district->district_name ?? '';
         })->values();

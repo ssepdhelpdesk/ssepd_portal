@@ -77,7 +77,14 @@ class PermissionTableSeeder extends Seeder
            'pension-create',
            'pension-edit',
            'pension-delete',
-           'pension-approve-form'
+           'pension-approve-form',
+           'pension-3500-access',
+           'pension-3500-list',
+           'pension-3500-show',
+           'pension-3500-create',
+           'pension-3500-edit',
+           'pension-3500-delete',
+           'pension-3500-approve-form'
         ];
         
         foreach ($permissions as $permission) {

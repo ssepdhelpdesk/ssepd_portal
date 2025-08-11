@@ -289,7 +289,7 @@ public function construction_timeline_store(Request $request)
         $school_construction->file_construction_image_5 = $constructionStoredPath_5;
         $school_construction->latitude_5 = $validatedData['latitude_5'];
         $school_construction->longitude_5 = $validatedData['longitude_5'];
-        $school_construction->any_remarks =$validatedData['any_remarks'];
+        $school_construction->any_remarks = $validatedData['any_remarks'];
         $school_construction->phase_no = $phase_no;
         $school_construction->school_address_type = $specialSchool->school_address_type;
         $school_construction->state_id = $specialSchool->state_id;
