@@ -101,10 +101,10 @@ class OldAge3500Controller extends Controller
                     $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
                 }
 
-                if (auth()->user()->can('pension-3500-delete')) {
+                /*if (auth()->user()->can('pension-3500-delete')) {
                     $deleteUrl = route('admin.oldage3500data.delete', $row->id);
                     $buttons .= '<a href="'.$deleteUrl.'" class="btn btn-sm btn-danger">Delete</a>';
-                }
+                }*/
 
                 return $buttons;
             })
