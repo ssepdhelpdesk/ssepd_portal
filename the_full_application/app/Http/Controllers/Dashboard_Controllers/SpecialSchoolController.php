@@ -669,7 +669,7 @@ public function cumulative_report()
     $user = auth()->user();
     $userRole = $user->role_id;
 
-    $specialSchoolMappingQuery = SpecialSchoolMapping::with(['district'])->withCount('staff')->withMax('construction', 'phase_no');
+    $specialSchoolMappingQuery = SpecialSchoolMapping::where('status', 0)->with(['district'])->withCount('staff')->withMax('construction', 'phase_no');
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
         

@@ -206,10 +206,10 @@ Special School || Staff Details
 
    if (!isChecked) {
     errorDiv.innerHTML = "<label class='error'>Please select an address type.</label>";
-        return false; // prevent form submission
+        return false;
      } else {
        errorDiv.innerHTML = "";
-        return true; // allow form submission
+        return true;
      }
   }
 </script>
