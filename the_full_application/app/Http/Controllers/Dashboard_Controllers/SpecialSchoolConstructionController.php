@@ -52,8 +52,8 @@ public function index($id)
     if (!$specialSchool) {
         return redirect()->route('admin.specialschool.index')->with('danger', 'Something went wrong. Please reach out to your system administrator.');
     }
-    $specialSchoolConstruction = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->first();
-    $phaseNumbers = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->pluck('phase_no')->unique()->values();
+    $specialSchoolConstruction = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->where('status', 1)->first();
+    $phaseNumbers = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)->where('status', 1)->pluck('phase_no')->unique()->values();
 
     return view('dashboard.special_school.construction_timeline_for_state', compact(
         'specialSchool',
