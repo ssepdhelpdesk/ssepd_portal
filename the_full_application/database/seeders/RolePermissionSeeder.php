@@ -42,9 +42,10 @@ class RolePermissionSeeder extends Seeder
             'DPM',
             'User',
             'SpecialSchool',
+            'DDRC',
+            'ARC',
         ];
 
-        // ✅ Use names instead of IDs
         $allPermissionNames = Permission::pluck('name')->all();
 
         $rolePermissions = [
@@ -66,7 +67,7 @@ class RolePermissionSeeder extends Seeder
             'DSSO' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit',
                 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-edit', 'ngo-approve-form',
-                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete', 'pension-approve-form', 'pension-3500-access', 'pension-3500-list', 'pension-3500-show', 'pension-3500-edit', 'pension-3500-delete'
+                'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'special-school-delete', 'special-school-approve-form', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-approve-form', 'pension-3500-access', 'pension-3500-list', 'pension-3500-show', 'pension-3500-edit', 'pension-3500-delete'
             ],
 
             'Collector' => [
@@ -107,6 +108,14 @@ class RolePermissionSeeder extends Seeder
             'MEO' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'ngo-access', 'ngo-list', 'ngo-show', 'ngo-create', 'ngo-edit',
                 'special-school-access', 'special-school-list', 'special-school-show', 'special-school-create', 'special-school-edit', 'pension-access', 'pension-list', 'pension-show'
+            ],
+
+            'DDRC' => [
+                'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'DDRC-access', 'DDRC-list', 'DDRC-show', 'DDRC-create', 'DDRC-edit', 'DDRC-delete', 'DDRC-approve-form'
+            ],
+
+            'ARC' => [
+                'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'ARC-access', 'ARC-list', 'ARC-show', 'ARC-create', 'ARC-edit', 'ARC-delete', 'ARC-approve-form'
             ],
         ];
 

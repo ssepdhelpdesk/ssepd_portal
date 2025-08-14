@@ -13,7 +13,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     NgoRegdController,
     SpecialSchoolController,
     SpecialSchoolConstructionController,
-    PensionFundsRequirementsController
+    PensionFundsRequirementsController,
+    DdrcController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -203,6 +204,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
+    });
+
+    Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

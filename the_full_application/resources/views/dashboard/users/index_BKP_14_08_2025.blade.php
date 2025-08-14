@@ -1,21 +1,9 @@
 @section('title') 
 Users || View
 @endsection 
-
 @extends('dashboard.layouts.main')
-
 @section('style')
-<style>
-    .dataTables_wrapper {
-        width: 100%;
-        overflow-x: auto;
-    }
-    table.dataTable {
-        white-space: nowrap;
-    }
-</style>
 @endsection 
-
 @section('content')
 <div class="container-fluid">
    <div class="row page-titles">
@@ -44,9 +32,10 @@ Users || View
       <div class="col-12">
          <div class="card">
             <div class="card-body">
+               <h4 class="card-title"></h4>
                @include('dashboard.component.message')
                <div class="table-responsive m-t-40">
-                  <table id="example23" class="display nowrap table table-hover table-striped border" style="width:100%;">
+                  <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                      <thead>
                         <tr>
                            <th>Sl No</th>
@@ -79,37 +68,33 @@ Users || View
    </div>
 </div>
 @endsection 
-
 @section('script')
 <script>
    $(function () {
-      $('#example23').DataTable({
-         processing: true,
-         serverSide: true,
-         responsive: false,
-         ordering: true,
-         scrollX: true,
-         ajax: "{{ route('admin.users.index') }}",
-         columns: [
-            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'name', name: 'name' },
-            { data: 'user_id', name: 'user_id' },
-            { data: 'email', name: 'email' },
-            { data: 'mobile_no', name: 'mobile_no' },
-            { data: 'roles', name: 'roles'},
-            { data: 'created_at', name: 'created_at' },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
-         ],
-         dom: 'Blfrtip',
-         buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-         lengthMenu: [[10, 50, 100, 500], [10, 50, 100, 500]],
-         drawCallback: function() {
-            $('[data-toggle="tooltip"]').tooltip();
-         }
-      });
+    $('#example23').DataTable({
+     processing: true,
+     serverSide: true,
+     responsive: false,
+     ordering: true,
+     scrollX: true,
+     ajax: "{{ route('admin.users.index') }}",
+     columns: [
+      { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+      { data: 'name', name: 'name' },
+      { data: 'user_id', name: 'user_id' },
+      { data: 'email', name: 'email' },
+      { data: 'mobile_no', name: 'mobile_no' },
+      { data: 'roles', name: 'roles'},
+      { data: 'created_at', name: 'created_at' },
+      { data: 'action', name: 'action', orderable: false, searchable: false }
+   ],
+   dom: 'Blfrtip',
+   buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+   lengthMenu: [[10, 50, 100, 500], [10, 50, 100, 500]],
+});
 
-      $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
-         .addClass('btn btn-primary me-1');
-   });
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+    .addClass('btn btn-primary me-1');
+ });
 </script>
 @endsection

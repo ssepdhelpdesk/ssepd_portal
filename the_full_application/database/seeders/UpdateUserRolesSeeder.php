@@ -28,10 +28,32 @@ class UpdateUserRolesSeeder extends Seeder
         ];
 
         DB::table('users')
-            ->whereIn('user_table_id', $userIds)
-            ->update([
-                'role_id' => 22,
-                'role_name' => 'SpecialSchool'
-            ]);
+        ->whereIn('user_table_id', $userIds)
+        ->update([
+            'role_id' => 22,
+            'role_name' => 'SpecialSchool'
+        ]);
+
+        $DdrcUserIds = [
+            14248, 14249, 14250, 14251, 14252, 14253, 14254, 14255, 14256, 14257,
+        ];
+
+        DB::table('users')
+        ->whereIn('user_table_id', $DdrcUserIds)
+        ->update([
+            'role_id' => 23,
+            'role_name' => 'DDRC'
+        ]);
+
+        $ArcUserIds = [
+            14240, 14241, 14242, 14243,
+        ];
+
+        DB::table('users')
+        ->whereIn('user_table_id', $ArcUserIds)
+        ->update([
+            'role_id' => 24,
+            'role_name' => 'ARC'
+        ]);
     }
 }

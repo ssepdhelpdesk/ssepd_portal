@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 use Illuminate\Support\Facades\DB;
 
 class ModelHasRolesSeeder extends Seeder
@@ -15,11 +16,19 @@ class ModelHasRolesSeeder extends Seeder
      */
     public function run(): void
     {
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('model_has_roles')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         ini_set('memory_limit', '1G');
         $batchSize = 1000;
         $ssepdUserRolesData = [];
 
         $ssepdUserRoles = [
+            ['role_id' => '1',  'model_id' => '1'],
+            ['role_id' => '2',  'model_id' => '2'],
             ['role_id' => '2',  'model_id' => '3'],
             ['role_id' => '2',  'model_id' => '4'],
             ['role_id' => '11',  'model_id' => '5'],
@@ -9554,6 +9563,20 @@ class ModelHasRolesSeeder extends Seeder
             ['role_id' => '17',  'model_id' => '9581'],
             ['role_id' => '16',  'model_id' => '9582'],
             ['role_id' => '16',  'model_id' => '9583'],
+            ['role_id' => '23',  'model_id' => '9552'], 
+            ['role_id' => '23',  'model_id' => '9553'], 
+            ['role_id' => '23',  'model_id' => '9554'], 
+            ['role_id' => '23',  'model_id' => '9555'], 
+            ['role_id' => '23',  'model_id' => '9556'], 
+            ['role_id' => '23',  'model_id' => '9557'], 
+            ['role_id' => '23',  'model_id' => '9558'], 
+            ['role_id' => '23',  'model_id' => '9559'], 
+            ['role_id' => '23',  'model_id' => '9560'], 
+            ['role_id' => '23',  'model_id' => '9561'],
+            ['role_id' => '24',  'model_id' => '9546'],
+            ['role_id' => '24',  'model_id' => '9544'],
+            ['role_id' => '24',  'model_id' => '9547'],
+            ['role_id' => '24',  'model_id' => '9545'], 
         ];
 
         $batchSize = 1000;
