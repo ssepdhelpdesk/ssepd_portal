@@ -105,8 +105,8 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('DDRC-access')
-                        <li><a href="{{route('admin.ddrc.index')}}">₹3500 OldAge Pension</a></li>
-                        <li><a href="{{route('admin.disability3500data.index')}}">₹3500 Disability Pension</a></li>
+                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Details Entry</a></li>
+                        
                         @endcan
                      </ul>
                   </li>
