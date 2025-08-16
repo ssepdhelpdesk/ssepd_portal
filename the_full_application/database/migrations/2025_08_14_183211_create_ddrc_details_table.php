@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_table_id')->unique('uq_user_table');
             $table->string('ddrc_name', 255);
+            $table->string('ddrc_system_gen_reg_no', 255);
             $table->string('file_geo_tagged_image', 255);
             $table->decimal('ddrc_latitude', 10, 7);
             $table->decimal('ddrc_longitude', 10, 7);

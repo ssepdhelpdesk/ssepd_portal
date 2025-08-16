@@ -105,7 +105,7 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('DDRC-access')
-                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Details Entry</a></li>
+                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Details Entry</a></li>
                         
                         @endcan
                      </ul>
