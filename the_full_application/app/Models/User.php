@@ -76,8 +76,37 @@ class User extends Authenticatable implements Auditable, MustVerifyEmail
         return $this->loginHistories()->whereNull('logout_time')->latest()->first();
     }
 
+    public function state() {
+        return $this->belongsTo(State::class, 'posted_state', 'state_id');
+    }
+
+    public function district() {
+        return $this->belongsTo(District::class, 'posted_district', 'district_id');
+    }
+
+    public function block() {
+        return $this->belongsTo(Block::class, 'posted_block', 'block_id');
+    }
+
+    public function grampanchayat() {
+        return $this->belongsTo(Grampanchayat::class, 'posted_gp', 'gp_id');
+    }
+
+    public function village() {
+        return $this->belongsTo(Village::class, 'posted_village', 'village_id');
+    }
+
+    public function municipality() {
+        return $this->belongsTo(Municipality::class, 'posted_municipality', 'municipality_id');
+    }
+
     public function ngoRegistrations()
     {
         return $this->hasMany(NgoRegistration::class, 'user_table_id');
+    }
+
+    public function ddrcStaff()
+    {
+        return $this->hasMany(DdrcStaffDetails::class, 'user_table_id', 'id');
     }
 }

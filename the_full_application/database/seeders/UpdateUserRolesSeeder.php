@@ -55,5 +55,28 @@ class UpdateUserRolesSeeder extends Seeder
             'role_id' => 24,
             'role_name' => 'ARC'
         ]);
+
+        $ddrcMapping = [
+            'DDRC_BHADRAK'     => 2417,
+            'DDRC_DHENKANAL'   => 2407,
+            'DDRC_GANJAM'      => 2412,
+            'DDRC_KALAHANDI'   => 2410,
+            'DDRC_KANDHAMAL'   => 2408,
+            'DDRC_KHORDHA'     => 2423,
+            'DDRC_KORAPUT'     => 2411,
+            'DDRC_MAYURBHANJ'  => 2404,
+            'DDRC_NABARANGAPUR'=> 2430,
+            'DDRC_SAMBALPUR'   => 2401,
+        ];
+
+        foreach ($ddrcMapping as $userId => $districtId) {
+            DB::table('users')
+            ->where('user_id', $userId)
+            ->update([
+                'posted_district' => $districtId,
+                'role_id' => 23,
+                'role_name' => 'DDRC',
+            ]);
+        }
     }
 }

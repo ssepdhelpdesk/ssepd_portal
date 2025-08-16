@@ -31,25 +31,63 @@ use App\Models\DdrcStaffDetails;
 
 class DdrcController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:DDRC-access|DDRC-list|DDRC-create|DDRC-edit|DDRC-delete|DDRC-show', ['only' => ['index','store']]);
+        $this->middleware('permission:DDRC-create', ['only' => ['create','store', 'staff_store', 'ddrc_check_staff_aadhar', 'ddrc_check_staff_udidno']]);
+        $this->middleware('permission:DDRC-edit', ['only' => ['edit','update']]);
+        $this->middleware('permission:DDRC-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:DDRC-show', ['only' => ['show']]);
+    }
 /**
 * Display a listing of the resource.
 */
+
 public function index()
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;    
+    $all_ddrc = User::where('role_id', 23)->where('status', 1)->withCount('ddrcStaff')->get();
+    
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        
+    } elseif (in_array($userRole, [4, 6])) {
+        $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
+        $all_ddrc = $all_ddrc->where('district_id', $district_id);
+    } elseif ($userRole == 5) {
+        $district_id = DB::table('municipalities')->where('municipality_id', $user->posted_municipality)->value('district_id');
+        $all_ddrc = $all_ddrc->where('district_id', $district_id);
+    } elseif (in_array($userRole, [8, 10])) {
+        $district_id = DB::table('subdivisions')->where('subdivision_id', $user->posted_subdiv)->value('district_id');
+        $all_ddrc = $all_ddrc->where('district_id', $district_id);
+    } elseif (in_array($userRole, [9, 11])) {
+        $all_ddrc = $all_ddrc->where('district_id', $user->posted_district);
+    }
+    
+    if ($userRole == 23) {
+        $ddrc = User::where('id', $user->id)->withCount('ddrcStaff')->first();
+        $ddrcDetails = DdrcDetails::where('user_table_id', $ddrc->id)->first();
+
+        if (!$ddrcDetails) {
+            return redirect()->route('admin.ddrc.create')->with('info', 'Kindly provide the basic information of the DDRC to proceed further.');
+        }
+
+        $all_ddrc = collect([$ddrc]);
+    }
+
+    return view('dashboard.ddrc.index', compact('all_ddrc'));
+}
+
+
+public function create()
 {
     $user = auth()->user();    
     $ddrcDetails = DdrcDetails::where('user_table_id', $user->id)->exists();
     if (!$ddrcDetails) {
-        return view('dashboard.ddrc.ddrc_details', compact('user'))->with('info', 'Please provide the basic details first.');
+        return view('dashboard.ddrc.ddrc_details', compact('user'))->with('info', 'Kindly provide the basic information of the DDRC to proceed further.');
     }
     return view('dashboard.ddrc.ddrc_staff_details_entry', compact('user', 'ddrcDetails'));
-}
-
-/**
-* Show the form for creating a new resource.
-*/
-public function create()
-{
-//
 }
 
 /**

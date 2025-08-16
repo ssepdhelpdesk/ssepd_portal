@@ -104,9 +104,8 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
                      <ul aria-expanded="false" class="collapse">
-                        @can('DDRC-access')
-                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Details Entry</a></li>
-                        
+                        @can('DDRC-create')
+                        <li><a href="{{route('admin.ddrc.create')}}">DDRC Staff Details Entry</a></li>                        
                         @endcan
                      </ul>
                   </li>
@@ -121,6 +120,9 @@
                   @endcan
                   @can('pension-access')
                   <li><a href="{{route('admin.pension.report')}}">Pension Report</a></li>
+                  @endcan
+                  @can('DDRC-access')
+                  <li><a href="{{route('admin.ddrc.index')}}">DDRC Report</a></li>
                   @endcan
                </ul>
             </li>
