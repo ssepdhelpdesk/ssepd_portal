@@ -63,12 +63,12 @@ DDRC || List
                         </tr>
                      </tfoot>
                      <tbody>
-                      @forelse ($all_ddrc as $schoolDetails)
+                      @forelse ($all_ddrc as $ddrcDetails)
                       <tr>
                        <td class="text-center">{{ $loop->iteration }}</td>
-                       <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
-                       <td class="wrap-text">{{ $schoolDetails->name }}</td>
-                       <td class="text-center"><a href="" target="_blank">{{ $schoolDetails->staff_count ?? '0' }}</a></td>
+                       <td>{{ $ddrcDetails->district->district_name ?? 'N/A' }}</td>
+                       <td class="wrap-text">{{ $ddrcDetails->name }}</td>
+                       <td class="text-center"><a href="" target="_blank">{{ $ddrcDetails->ddrc_staff_count ?? '0' }}</a></td>
                     </tr>
                   @empty
                   <tr>
