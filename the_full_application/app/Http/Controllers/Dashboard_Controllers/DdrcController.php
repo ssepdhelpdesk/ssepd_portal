@@ -38,7 +38,7 @@ class DdrcController extends Controller
         $this->middleware('permission:DDRC-create', ['only' => ['create','store', 'staff_store', 'ddrc_check_staff_aadhar', 'ddrc_check_staff_udidno']]);
         $this->middleware('permission:DDRC-edit', ['only' => ['edit','update']]);
         $this->middleware('permission:DDRC-delete', ['only' => ['destroy']]);
-        $this->middleware('permission:DDRC-show', ['only' => ['show']]);
+        $this->middleware('permission:DDRC-show', ['only' => ['show', 'view_staff_details']]);
     }
 /**
 * Display a listing of the resource.
@@ -202,7 +202,7 @@ public function store(Request $request)
         return back()->with('success', 'You have successfully provided the details.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("NGO Part Two Registration failed: " . $e->getMessage());
+        \Log::error("DDRC Registration failed: " . $e->getMessage());
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
@@ -409,6 +409,13 @@ public function ddrc_check_staff_udidno(Request $request)
     }
     $exists = DdrcStaffDetails::where('udid_no', $udid)->exists();
     return response()->json($exists ? 1 : 0);
+}
+
+public function view_staff_details(string $id)
+{
+    $ddrcDetails = DdrcDetails::where('user_table_id', $id)->value('id');
+    $ddrcStaff = DdrcStaffDetails::where('ddrc_id', $ddrcDetails)->get();
+    return view('dashboard.ddrc.ddrc_view_staff_details', compact('ddrcStaff'));
 }
 
 /**

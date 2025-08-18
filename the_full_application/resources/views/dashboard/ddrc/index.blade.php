@@ -68,7 +68,7 @@ DDRC || List
                        <td class="text-center">{{ $loop->iteration }}</td>
                        <td>{{ $ddrcDetails->district->district_name ?? 'N/A' }}</td>
                        <td class="wrap-text">{{ $ddrcDetails->name }}</td>
-                       <td class="text-center"><a href="" target="_blank">{{ $ddrcDetails->ddrc_staff_count ?? '0' }}</a></td>
+                       <td class="text-center"><a href="{{ route('admin.ddrc.view_staff_details', $ddrcDetails->id) }}" target="_blank">{{ $ddrcDetails->ddrc_staff_count ?? '0' }}</a></td>
                     </tr>
                   @empty
                   <tr>
