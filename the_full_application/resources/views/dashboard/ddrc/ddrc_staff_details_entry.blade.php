@@ -190,7 +190,7 @@ DDRC || Staff Details
                            </div>
                            <div class="col-md-3">
                               <div class="form-group" id="file_staff_image_div">
-                                 <label class="form-label">Upload Staff Image <span class="itsrequired">(Geo-tagged photo inside school premises)</span></label>
+                                 <label class="form-label">Upload Staff Image <span class="itsrequired">(Geo-tagged photo inside DDRC premises)</span></label>
                                  <input type="file" class="form-control" id="file_staff_image" name="file_staff_image" value="{{old('file_staff_image')}}" accept="image/*" aria-describedby="inputGroupFileAddon01">
                                  <div id="file_staff_image_error"></div>
                                  @error('file_staff_image')
