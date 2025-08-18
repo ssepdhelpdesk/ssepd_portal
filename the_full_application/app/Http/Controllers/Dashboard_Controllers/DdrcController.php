@@ -414,7 +414,7 @@ public function ddrc_check_staff_udidno(Request $request)
 public function view_staff_details(string $id)
 {
     $ddrcDetails = DdrcDetails::where('user_table_id', $id)->value('id');
-    $ddrcStaff = DdrcStaffDetails::where('ddrc_id', $ddrcDetails)->get();
+    $ddrcStaff = DdrcStaffDetails::where('ddrc_id', $ddrcDetails)->where('status', 1)->get();
     return view('dashboard.ddrc.ddrc_view_staff_details', compact('ddrcStaff'));
 }
 
