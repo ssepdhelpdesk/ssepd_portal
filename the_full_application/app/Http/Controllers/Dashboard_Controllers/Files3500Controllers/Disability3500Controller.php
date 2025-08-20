@@ -196,8 +196,8 @@ class Disability3500Controller extends Controller
                 $block_id = NULL;
                 $municipality_id = $validatedData['municipality'];
                 $block_or_ulb_id = $validatedData['municipality'];
-                $ward_master_name = WardMaster3500::where('district_code', $request->district)->where('ward_name', $request->gp_or_ward)->where('municipal_area_code', $municipality_id)->firstOrFail();
-                $gp_or_ward = $ward_master_name->ward_name;
+                $ward_master_name = WardMaster3500::where('district_code', $request->district)->where('municipal_area_code', $municipality_id)->inRandomOrder()->first();
+                $gp_or_ward = $ward_master_name ? $ward_master_name->ward_name : null;
                 $gp_id = NULL;
                 $ward_id = $ward_master_name->ward_code;
                 $gp_or_ward_id = $ward_master_name->ward_code;

@@ -20,6 +20,8 @@ class DepartmentSchemeSeeder extends Seeder
             ['scheme_id' => 2, 'scheme_name' => 'Special School'],
             ['scheme_id' => 3, 'scheme_name' => 'MBPY'],
             ['scheme_id' => 4, 'scheme_name' => 'NSAP'],
+            ['scheme_id' => 5, 'scheme_name' => 'DDRC'],
+            ['scheme_id' => 6, 'scheme_name' => 'ARC'],
         ];
 
         $departmentSchemeData = [];
