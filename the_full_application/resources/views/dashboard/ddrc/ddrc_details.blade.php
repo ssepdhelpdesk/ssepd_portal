@@ -377,6 +377,28 @@ return isValid;
                }
             });
          });
+
+         $('#municipality-dropdown').on('change', function () {
+            var idMunicipality = this.value;
+            console.log(idMunicipality);
+            $("#ward-dropdown").html('');
+            $.ajax({
+                url: "{{url('dashboard/locations/fetch-ward')}}",
+                type: "POST",
+                data: {
+                    municipality_id: idMunicipality,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (res) {
+                    $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
+                    $.each(res.wards, function (key, value) {
+                        $("#ward-dropdown").append('<option value="' + value
+                            .ward_code + '">' + value.ward_name + '</option>');
+                    });
+                }
+            });
+        });
       }
 
       radios.forEach(radio => {
@@ -501,6 +523,7 @@ return isValid;
             { id: 'state-dropdown', message: 'Please select State.' },
             { id: 'district-dropdown', message: 'Please select District.' },
             { id: 'municipality-dropdown', message: 'Please select Municipality.' },
+            { id: 'ward-dropdown', message: 'Please select Ward.' },
             { id: 'pin', message: 'Please provide PIN.' },
             { id: 'ngo_postal_address_at', message: 'Please provide At.' },
             { id: 'ngo_postal_address_post', message: 'Please provide Post.' },

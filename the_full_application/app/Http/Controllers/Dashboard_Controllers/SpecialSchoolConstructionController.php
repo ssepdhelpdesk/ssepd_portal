@@ -295,6 +295,7 @@ public function construction_timeline_store(Request $request)
         $school_construction->state_id = $specialSchool->state_id;
         $school_construction->district_id = $specialSchool->district_id;
         $school_construction->municipality_id = $specialSchool->municipality_id;
+        $school_construction->ward_id = $specialSchool->ward_id;
         $school_construction->block_id = $specialSchool->block_id;
         $school_construction->gp_id = $specialSchool->gp_id;
         $school_construction->village_id = $specialSchool->village_id;

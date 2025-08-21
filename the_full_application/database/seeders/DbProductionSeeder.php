@@ -21,6 +21,7 @@ class DbProductionSeeder extends Seeder
             RolePermissionSeeder::class,
             UpdateUserRolesSeeder::class,
             ModelHasRolesSeeder::class,
+            WardMasterSeeder::class,
         ]);
     }
 }

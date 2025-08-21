@@ -37,6 +37,7 @@ return new class extends Migration
             $table->bigInteger('state_id')->nullable();
             $table->bigInteger('district_id')->nullable();
             $table->bigInteger('municipality_id')->nullable();
+            $table->bigInteger('ward_id')->nullable();
             $table->bigInteger('block_id')->nullable();
             $table->bigInteger('gp_id')->nullable();
             $table->bigInteger('village_id')->nullable();

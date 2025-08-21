@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             VillageTableSeederThree::class,
             VillageTableSeederFour::class,
             VillageTableSeederFive::class,
+            WardMasterSeeder::class,
             ApplicationStageSeeder::class,
             BankMasterSeeder::class,
             NgoCategorySeeder::class,

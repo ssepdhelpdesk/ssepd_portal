@@ -123,6 +123,7 @@ public function store(Request $request)
             'state' => 'required',
             'district' => 'required',
             'municipality' => 'required',
+            'ward' => 'required',
             'pin' => 'required',
             'ngo_postal_address_at' => 'required|string',
             'ngo_postal_address_post' => 'required|string',
@@ -185,6 +186,7 @@ public function store(Request $request)
         $ddrcDetails->gp_id = $request->input('grampanchayat', null);
         $ddrcDetails->village_id = $request->input('village', null);
         $ddrcDetails->municipality_id = $request->input('municipality', null);
+        $ddrcDetails->ward_id = $request->input('ward', null);
         $ddrcDetails->pin = $validatedData['pin'];
         $ddrcDetails->ddrc_postal_address_at = $validatedData['ngo_postal_address_at'];
         $ddrcDetails->ddrc_postal_address_post = $validatedData['ngo_postal_address_post'];
@@ -250,6 +252,7 @@ public function staff_store(Request $request)
             'state' => 'required',
             'district' => 'required',
             'municipality' => 'required',
+            'ward' => 'required',
             'pin' => 'required',
             'ngo_postal_address_at' => 'required|string',
             'ngo_postal_address_post' => 'required|string',
@@ -340,6 +343,7 @@ public function staff_store(Request $request)
         $ddrcStaffDetails->gp_id = $request->input('grampanchayat', null);
         $ddrcStaffDetails->village_id = $request->input('village', null);
         $ddrcStaffDetails->municipality_id = $request->input('municipality', null);
+        $ddrcStaffDetails->ward_id = $request->input('ward', null);
         $ddrcStaffDetails->pin = $validatedData['pin'];
         $ddrcStaffDetails->staff_postal_address_at = $validatedData['ngo_postal_address_at'];
         $ddrcStaffDetails->staff_postal_address_post = $validatedData['ngo_postal_address_post'];

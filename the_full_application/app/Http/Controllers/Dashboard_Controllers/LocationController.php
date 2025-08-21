@@ -11,6 +11,7 @@ use App\Models\Municipality;
 use App\Models\Block;
 use App\Models\Grampanchayat;
 use App\Models\Village;
+use App\Models\WardMaster;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 
@@ -72,6 +73,14 @@ class LocationController extends Controller
     {
         $data['villages'] = Village::where("gp_id", $request->gp_id)->orderBy("village_name", "asc")
                                 ->get(["village_name", "village_id"]);
+  
+        return response()->json($data);
+    }
+
+    public function fetchWard(Request $request): JsonResponse
+    {
+        $data['wards'] = WardMaster::where("municipal_area_code", $request->municipality_id)->orderBy("ward_code", "asc")
+                                ->get(["ward_name", "ward_code"]);
   
         return response()->json($data);
     }

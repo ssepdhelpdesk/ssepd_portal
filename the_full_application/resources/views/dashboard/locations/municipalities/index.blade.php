@@ -58,6 +58,11 @@ Municipality || Master
                      <select class="select2 form-control form-select" id="municipality-dropdown" style="width: 100%; height:36px;">
                      </select>
                   </div>
+                  <div class="col-md-4">
+                     <h5 class="m-t-30">Ward</h5>
+                     <select class="select2 form-control form-select" id="ward-dropdown" style="width: 100%; height:36px;">
+                     </select>
+                  </div>
                </div>
             </div>
          </div>
@@ -101,7 +106,8 @@ Municipality || Master
                         $("#district-dropdown").append('<option value="' + value
                             .district_id + '">' + value.district_name + '</option>');
                     });
-                    $('#municipality-dropdown').html('<option value="">-- Select Grampanchayat --</option>');
+                    $('#municipality-dropdown').html('<option value="">-- Select Municipality --</option>');
+                    $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
                 }
             });
         });
@@ -127,6 +133,35 @@ Municipality || Master
                     $.each(res.municipalities, function (key, value) {
                         $("#municipality-dropdown").append('<option value="' + value
                             .municipality_id + '">' + value.municipality_name + '</option>');
+                    });
+                    $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
+                }
+            });
+        });
+
+        /*------------------------------------------
+        --------------------------------------------
+        Municipality Dropdown Change Event
+        --------------------------------------------
+        --------------------------------------------*/
+
+        $('#municipality-dropdown').on('change', function () {
+            var idMunicipality = this.value;
+            console.log(idMunicipality);
+            $("#ward-dropdown").html('');
+            $.ajax({
+                url: "{{url('dashboard/locations/fetch-ward')}}",
+                type: "POST",
+                data: {
+                    municipality_id: idMunicipality,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (res) {
+                    $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
+                    $.each(res.wards, function (key, value) {
+                        $("#ward-dropdown").append('<option value="' + value
+                            .ward_code + '">' + value.ward_name + '</option>');
                     });
                 }
             });

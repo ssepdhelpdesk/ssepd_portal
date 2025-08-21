@@ -52,6 +52,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::post('fetch-block', 'fetchBlock')->name('fetchBlock');
         Route::post('fetch-grampanchayat', 'fetchGrampanchayat')->name('fetchGrampanchayat');
         Route::post('fetch-village', 'fetchVillage')->name('fetchVillage');
+        Route::post('fetch-ward', 'fetchWard')->name('fetchWard');
     });
 
     Route::get('get-address-type-content-data/{type}', function ($type) {
@@ -134,6 +135,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('fetch-block', 'fetchBlock')->name('fetchBlock');
         Route::post('fetch-grampanchayat', 'fetchGrampanchayat')->name('fetchGrampanchayat');
         Route::post('fetch-village', 'fetchVillage')->name('fetchVillage');
+        Route::post('fetch-ward', 'fetchWard')->name('fetchWard');
     });
 
     Route::prefix('ngo')->name('ngo.')->controller(NgoRegdController::class)->group(function () {

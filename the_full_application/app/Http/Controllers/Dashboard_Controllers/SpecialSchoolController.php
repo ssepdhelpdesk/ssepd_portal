@@ -215,6 +215,7 @@ public function store_school_basic_details(Request $request)
             'state' => 'required',
             'district' => 'required',
             'municipality' => 'required',
+            'ward' => 'required',
             'pin' => 'required',
             'ngo_postal_address_at' => 'required|string',
             'ngo_postal_address_post' => 'required|string',
@@ -279,6 +280,7 @@ public function store_school_basic_details(Request $request)
         $specialSchool->gp_id = $request->input('grampanchayat', null);
         $specialSchool->village_id = $request->input('village', null);
         $specialSchool->municipality_id = $request->input('municipality', null);
+        $specialSchool->ward_id = $request->input('ward', null);
         $specialSchool->pin = $validatedData['pin'];
         $specialSchool->school_postal_address_at = $validatedData['ngo_postal_address_at'];
         $specialSchool->school_postal_address_post = $validatedData['ngo_postal_address_post'];
@@ -372,6 +374,7 @@ public function store_school_staff_details(Request $request)
             'state' => 'required',
             'district' => 'required',
             'municipality' => 'required',
+            'ward' => 'required',
             'pin' => 'required',
             'ngo_postal_address_at' => 'required|string',
             'ngo_postal_address_post' => 'required|string',
@@ -461,6 +464,7 @@ public function store_school_staff_details(Request $request)
         $specialSchoolStaff->gp_id = $request->input('grampanchayat', null);
         $specialSchoolStaff->village_id = $request->input('village', null);
         $specialSchoolStaff->municipality_id = $request->input('municipality', null);
+        $specialSchoolStaff->ward_id = $request->input('ward', null);
         $specialSchoolStaff->pin = $validatedData['pin'];
         $specialSchoolStaff->staff_postal_address_at = $validatedData['ngo_postal_address_at'];
         $specialSchoolStaff->staff_postal_address_post = $validatedData['ngo_postal_address_post'];
@@ -705,6 +709,5 @@ public function cumulative_report()
 
     return view('dashboard.special_school.report.cumulative_report', compact('specialSchoolMapping'));
 }
-
 
 }
