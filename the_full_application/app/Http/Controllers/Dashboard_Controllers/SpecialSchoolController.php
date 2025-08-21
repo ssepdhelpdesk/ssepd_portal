@@ -656,7 +656,7 @@ public function delete($id)
         return redirect()->back()->with('success', 'Staff record deleted successfully.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error("🗑️ Special School Staff Detail Delete Failed", [
+        \Log::error("🗑️ Special School Staff Detail Delete Failed.", [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
             'line'    => $e->getLine(),
