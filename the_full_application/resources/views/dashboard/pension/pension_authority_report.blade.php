@@ -41,7 +41,6 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                         <th>Sl No</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
-                        <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
                         <th>Officer Mobile No</th>
                         <th>Officer Designation</th>                        
@@ -53,7 +52,6 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                         <th>Sl No</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
-                        <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
                         <th>Officer Mobile No</th>
                         <th>Officer Designation</th>                        
@@ -87,9 +85,9 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                        $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
                     }
 
-                    $authorityName = $disbursementAuthority->authority_name ?? 0;
-                    $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 0;
-                    $authorityDesignation = $disbursementAuthority->authority_designation ?? 0;                    
+                    $authorityName = $disbursementAuthority->authority_name ?? 'N/A';
+                    $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'N/A';
+                    $authorityDesignation = $disbursementAuthority->authority_designation ?? 'N/A';                    
                     @endphp
                     <tr>
                      <td>{{ $key + 1 }}</td>
@@ -97,11 +95,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      <td>
                         {{ $disbursementAuthority->address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
                      </td>
-                     <td>
-                        <span class="badge {{ $status == 'Submitted' ? 'bg-success' : 'bg-danger' }}">
-                           {{ $status }}
-                        </span>
-                     </td>
+                     
                      <td>{{ $authorityName }}</td>
                      <td>{{ $authorityMobileNo }}</td>
                     <td>{{ $authorityDesignation }}</td>                     
