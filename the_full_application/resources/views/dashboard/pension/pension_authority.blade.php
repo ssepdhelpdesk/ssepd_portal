@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Pension Disbursement Authority
+Pension || Pension Disburshing Officer
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -57,7 +57,7 @@ Pension || Pension Disbursement Authority
                   @csrf
                   @method('post')
                   <div class="form-body">
-                     <h5 class="card-title">Pension Disbursement Authority <small class="text-primary">Provide the Details.</small></h5>
+                     <h5 class="card-title">Pension Disbursing Officer Details <small class="text-primary">Provide the Details.</small></h5>
                      <hr>
                      <div class="row">
                         @if($user->role_id == 4)
@@ -95,9 +95,9 @@ Pension || Pension Disbursement Authority
                         @endif
                         <div class="col-md-3">
                            <div class="form-group" id="authority_name_div">
-                              <label class="form-label">Authority Name<span class="itsrequired"> *</span></label>
+                              <label class="form-label">Officer Name<span class="itsrequired"> *</span></label>
                               <input 
-                              type="text" id="authority_name" name="authority_name" value="{{ old('authority_name') }}" class="form-control" placeholder="Enter Authority Name">
+                              type="text" id="authority_name" name="authority_name" value="{{ old('authority_name') }}" class="form-control" placeholder="Enter Officer Name">
                               <div id="authority_name_error"></div>
                               @error('authority_name')
                               <label class="error">{{ $message }}</label>
@@ -106,9 +106,9 @@ Pension || Pension Disbursement Authority
                         </div>
                         <div class="col-md-3">
                            <div class="form-group" id="authority_mobile_no_div">
-                              <label class="form-label">Authority Mobile No<span class="itsrequired"> *</span></label>
+                              <label class="form-label">Officer Mobile No<span class="itsrequired"> *</span></label>
                               <input 
-                              type="text" id="authority_mobile_no" name="authority_mobile_no" value="{{ old('authority_mobile_no') }}" class="form-control" placeholder="Enter Authority Mobile No">
+                              type="text" id="authority_mobile_no" name="authority_mobile_no" value="{{ old('authority_mobile_no') }}" class="form-control" placeholder="Enter Officer Mobile No">
                               <div id="authority_mobile_no_error"></div>
                               @error('authority_mobile_no')
                               <label class="error">{{ $message }}</label>
@@ -121,7 +121,11 @@ Pension || Pension Disbursement Authority
                               <select class="form-control show-tick ms select2" id="authority_designation" name="authority_designation">
                                  <option >Please Select</option>
                                  <option value="1">PEO</option>
-                                 <option value="2">EO</option>
+                                 <option value="2">CO</option>
+                                 <option value="3">Tax Collector</option>
+                                 <option value="4">JA</option>
+                                 <option value="5">PA</option>
+                                 <option value="6">Other</option>
                               </select>
                               <div id="authority_designation_error"></div>
                               @error('authority_designation')
@@ -178,7 +182,7 @@ function validateField(id) {
 
     switch (id) {
         case "authority_name":
-            if (!field.value.trim()) msg = "Authority Name is required.";
+            if (!field.value.trim()) msg = "Officer Name is required.";
             break;
         case "authority_mobile_no":
             if (!/^[0-9]{10}$/.test(field.value.trim())) msg = "Enter a valid 10-digit mobile number.";
