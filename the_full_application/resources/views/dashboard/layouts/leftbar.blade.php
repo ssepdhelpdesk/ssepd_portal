@@ -126,7 +126,8 @@
                   @endcan
                   @can('pension-access')
                   <li><a href="{{route('admin.pension.report')}}">Pension Report</a></li>
-                  <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
+                  <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer Report</a></li>
+                  <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>                  
                   @endcan
                   @can('DDRC-access')
                   <li><a href="{{route('admin.ddrc.index')}}">DDRC Report</a></li>
