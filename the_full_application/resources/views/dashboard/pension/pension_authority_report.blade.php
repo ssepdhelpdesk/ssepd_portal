@@ -41,6 +41,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                         <th>Sl No</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
+                        <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
                         <th>Officer Mobile No</th>
                         <th>Officer Designation</th>                        
@@ -52,6 +53,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                         <th>Sl No</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
+                        <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
                         <th>Officer Mobile No</th>
                         <th>Officer Designation</th>                        
@@ -63,15 +65,15 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      @php
                      $block = $disbursementAuthority->block->block_name ?? '';
                      $municipality = $disbursementAuthority->municipality->municipality_name ?? '';
-                     $addressType = $disbursementAuthority->address_type == 1 ? 'Block' : 'ULB';
+                     $addressType = $disbursementAuthority->staff_address_type == 1 ? 'Block' : 'ULB';
                      $unit = $addressType == 'Block' ? $block : $municipality;
                      $blockId = $disbursementAuthority->block->block_id ?? null;
                      $municipalityId = $disbursementAuthority->municipality->municipality_id ?? null;
                      $isSubmitted = false;
                      if ($blockId) {
-                        $isSubmitted = DB::table('pension_funds_requirements')->where('block_id', $blockId)->exists();
+                        $isSubmitted = DB::table('pension_disbursement_authorities')->where('block_id', $blockId)->exists();
                      } elseif ($municipalityId) {
-                        $isSubmitted = DB::table('pension_funds_requirements')->where('municipality_id', $municipalityId)->exists();
+                        $isSubmitted = DB::table('pension_disbursement_authorities')->where('municipality_id', $municipalityId)->exists();
                      }
                      $status = $isSubmitted ? 'Submitted' : 'Not Submitted';
 
@@ -85,17 +87,21 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                        $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
                     }
 
-                    $authorityName = $disbursementAuthority->authority_name ?? 'N/A1';
-                    $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'N/A';
-                    $authorityDesignation = $disbursementAuthority->authority_designation ?? 'N/A';                    
+                    $authorityName = $disbursementAuthority->authority_name ?? 'Not Yet Provided';
+                    $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'Not Yet Provided';
+                    $authorityDesignation = $disbursementAuthority->authority_designation ?? 'Not Yet Provided';                    
                     @endphp
                     <tr>
                      <td>{{ $key + 1 }}</td>
                      <td>{{ $district }}</td>
                      <td>
-                        {{ $disbursementAuthority->address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
+                        {{ $disbursementAuthority->staff_address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
                      </td>
-                     
+                     <td>
+                        <span class="badge {{ $status == 'Submitted' ? 'bg-success' : 'bg-danger' }}">
+                           {{ $status }}
+                        </span>
+                     </td>
                      <td>{{ $authorityName }}</td>
                      <td>{{ $authorityMobileNo }}</td>
                     <td>{{ $authorityDesignation }}</td>                     
@@ -108,11 +114,11 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                              @if(!empty($disbursementAuthority->id))
 
                              @can('pension-edit')
-                             <a class="dropdown-item" href="{{ route('admin.pension.edit', $disbursementAuthority->id) }}">Edit</a>
+                             <a class="dropdown-item" href="">Edit</a>
                              @endcan
 
                              @can('pension-delete')
-                             <a class="dropdown-item" href="{{ route('admin.pension.delete', $disbursementAuthority->id) }}" id="delete">Delete</a>
+                             <a class="dropdown-item" href="" id="delete">Delete</a>
                              @endcan
                              @endif
                           </div>

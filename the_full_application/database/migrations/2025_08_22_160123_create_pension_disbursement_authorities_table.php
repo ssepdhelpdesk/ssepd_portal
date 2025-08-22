@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('authority_name');
             $table->string('authority_mobile_no');
             $table->string('authority_email_id')->nullable();
+            $table->string('disbursement_month');
             $table->bigInteger('authority_designation');
             $table->tinyInteger('staff_address_type')->nullable();
             $table->bigInteger('state_id')->nullable();

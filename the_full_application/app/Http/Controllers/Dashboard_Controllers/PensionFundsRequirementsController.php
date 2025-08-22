@@ -598,6 +598,7 @@ class PensionFundsRequirementsController extends Controller
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
                         $pension_authority->authority_designation = $validatedData['authority_designation'];
+                        $pension_authority->disbursement_month    = 'September-2025';
                         $pension_authority->staff_address_type    = 1;
                         $pension_authority->state_id              = 228;
                         $pension_authority->district_id           = $gp->district_id;
@@ -624,6 +625,7 @@ class PensionFundsRequirementsController extends Controller
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
                         $pension_authority->authority_designation = $validatedData['authority_designation'];
+                        $pension_authority->disbursement_month    = 'September-2025';
                         $pension_authority->staff_address_type    = 2;
                         $pension_authority->state_id              = 228;
                         $pension_authority->district_id           = $ward->district_code;
@@ -703,7 +705,7 @@ class PensionFundsRequirementsController extends Controller
                 'district' => $block->district,
                 'block' => $block,
                 'municipality' => null,
-                'address_type' => 1,
+                'staff_address_type' => 1,
             ];
         });
 
@@ -713,7 +715,7 @@ class PensionFundsRequirementsController extends Controller
                 'district' => $ulb->district,
                 'block' => null,
                 'municipality' => $ulb,
-                'address_type' => 2,
+                'staff_address_type' => 2,
             ];
         });
 

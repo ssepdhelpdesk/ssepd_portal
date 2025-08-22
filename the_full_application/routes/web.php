@@ -197,6 +197,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('pension_authority_index', 'pension_authority_index')->name('pension_authority_index');
         Route::post('pension_authority_store', 'pension_authority_store')->name('pension_authority_store');
         Route::get('pension_authority_report', 'pension_authority_report')->name('pension_authority_report');
+        Route::get('{id}/pension_authority_edit', 'pension_authority_edit')->name('pension_authority_edit');
+        Route::post('{id}/pension_authority_update', 'pension_authority_update')->name('pension_authority_update');
+        Route::get('{id}/pension_authority_delete', 'pension_authority_delete')->name('pension_authority_delete');
     });
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
