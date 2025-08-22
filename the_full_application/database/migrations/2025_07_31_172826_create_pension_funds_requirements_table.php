@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pension_funds_requirements', function (Blueprint $table) {
             $table->id();
+            $table->string('for_the_month')->nullable();
             $table->integer('mbpy_oap_below_80_years')->nullable();
             $table->integer('mbpy_oap_above_80_years')->nullable();
             $table->integer('mbpy_wp')->nullable();

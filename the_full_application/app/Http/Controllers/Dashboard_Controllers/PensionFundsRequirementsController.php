@@ -161,6 +161,7 @@ class PensionFundsRequirementsController extends Controller
         DB::beginTransaction();
         try {
             $pensionFundsRequirement = new PensionFundsRequirement();
+            $pensionFundsRequirement->for_the_month = 'September-2025';
             $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
             $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
             $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];

@@ -60,7 +60,7 @@ Pension || Funds Requiremt
                      @csrf
                      @method('post')
                      <div class="form-body">
-                        <h5 class="card-title">Block/ULB wise fund requirement under MBPY for the pension month August 2025 <small>Provide the beneficiary count, not the amount.</small></h5>
+                        <h5 class="card-title">Block/ULB wise fund requirement under MBPY for the pension month September 2025 <small>Provide the beneficiary count, not the amount.</small></h5>
                         <hr>
                         <div class="row">
                            <div class="col-md-3">
