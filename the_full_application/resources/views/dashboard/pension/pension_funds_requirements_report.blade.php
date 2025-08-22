@@ -35,7 +35,7 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">Block/ULB wise fund requirement under MBPY for the pension month August 2025</h4>
+            <h4 class="card-title">Block/ULB wise fund requirement under MBPY</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
