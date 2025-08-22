@@ -85,7 +85,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                        $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
                     }
 
-                    $authorityName = $disbursementAuthority->authority_name ?? 'N/A';
+                    $authorityName = $disbursementAuthority->authority_name ?? 'N/A1';
                     $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'N/A';
                     $authorityDesignation = $disbursementAuthority->authority_designation ?? 'N/A';                    
                     @endphp
