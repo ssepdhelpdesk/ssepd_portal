@@ -65,6 +65,7 @@ class PensionFundsRequirementsController extends Controller
     {
         $userId = auth()->id();
 
+        /*You have to chnage the date in report function also*/
         $startDate = '2025-08-22';
         $endDate = '2025-08-26';
 
@@ -336,6 +337,7 @@ class PensionFundsRequirementsController extends Controller
 
         $pendingBlocks = $allBlocks->whereNotIn('block_id', $submittedBlockIds)->map(function ($block) {
             return (object)[
+                'id' => 'block-'.$block->block_id,
                 'district' => $block->district,
                 'block' => $block,
                 'municipality' => null,
@@ -345,6 +347,7 @@ class PensionFundsRequirementsController extends Controller
 
         $pendingUlbs = $allMunicipalities->whereNotIn('municipality_id', $submittedMunicipalityIds)->map(function ($ulb) {
             return (object)[
+                'id' => 'ulb-'.$ulb->municipality_id,
                 'district' => $ulb->district,
                 'block' => null,
                 'municipality' => $ulb,

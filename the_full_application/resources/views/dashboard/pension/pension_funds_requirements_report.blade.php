@@ -143,57 +143,57 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                      $district = 'Not Provided';
 
                      if ($blockId) {
-                       $districtId = DB::table('blocks')->where('block_id', $blockId)->value('district_id');
-                       $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                    } elseif ($municipalityId) {
-                       $districtId = DB::table('municipalities')->where('municipality_id', $municipalityId)->value('district_id');
-                       $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                    }
+                      $districtId = DB::table('blocks')->where('block_id', $blockId)->value('district_id');
+                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
+                   } elseif ($municipalityId) {
+                      $districtId = DB::table('municipalities')->where('municipality_id', $municipalityId)->value('district_id');
+                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
+                   }
 
-                    $oapBelow80 = $fundsRequirements->mbpy_oap_below_80_years ?? 0;
-                    $oapAbove80 = $fundsRequirements->mbpy_oap_above_80_years ?? 0;
-                    $wp = $fundsRequirements->mbpy_wp ?? 0;
-                    $dp = $fundsRequirements->mbpy_dp ?? 0;
-                    $sdpBelow80 = $fundsRequirements->mbpy_sdp_below_80_percent ?? 0;
-                    $sdpAbove80 = $fundsRequirements->mbpy_sdp_above_80_percent ?? 0;
-                    $sdoap = $fundsRequirements->mbpy_sdoap ?? 0;
-                    $clp = $fundsRequirements->mbpy_clp ?? 0;
-                    $wpAids = $fundsRequirements->mbpy_wp_aids ?? 0;
-                    $dpAids = $fundsRequirements->mbpy_dp_aids ?? 0;
-                    $unmarried = $fundsRequirements->mbpy_unmarried_women ?? 0;
-                    $orphan = $fundsRequirements->mbpy_orphan_due_to_covide ?? 0;
-                    $widow = $fundsRequirements->mbpy_widow_due_to_covid ?? 0;
-                    $divorce = $fundsRequirements->mbpy_divorce_or_destitute ?? 0;
-                    $transgender = $fundsRequirements->mbpy_transgender ?? 0;
+                   $oapBelow80 = $fundsRequirements->mbpy_oap_below_80_years ?? 0;
+                   $oapAbove80 = $fundsRequirements->mbpy_oap_above_80_years ?? 0;
+                   $wp = $fundsRequirements->mbpy_wp ?? 0;
+                   $dp = $fundsRequirements->mbpy_dp ?? 0;
+                   $sdpBelow80 = $fundsRequirements->mbpy_sdp_below_80_percent ?? 0;
+                   $sdpAbove80 = $fundsRequirements->mbpy_sdp_above_80_percent ?? 0;
+                   $sdoap = $fundsRequirements->mbpy_sdoap ?? 0;
+                   $clp = $fundsRequirements->mbpy_clp ?? 0;
+                   $wpAids = $fundsRequirements->mbpy_wp_aids ?? 0;
+                   $dpAids = $fundsRequirements->mbpy_dp_aids ?? 0;
+                   $unmarried = $fundsRequirements->mbpy_unmarried_women ?? 0;
+                   $orphan = $fundsRequirements->mbpy_orphan_due_to_covide ?? 0;
+                   $widow = $fundsRequirements->mbpy_widow_due_to_covid ?? 0;
+                   $divorce = $fundsRequirements->mbpy_divorce_or_destitute ?? 0;
+                   $transgender = $fundsRequirements->mbpy_transgender ?? 0;
 
-                    $totalFund = $oapBelow80 * 1000 +
-                    $oapAbove80 * 3500 +
-                    $wp * 1000 +
-                    $dp * 1000 +
-                    $sdpBelow80 * 1200 +
-                    $sdpAbove80 * 3500 +
-                    $sdoap * 3500 +
-                    $clp * 1000 +
-                    $wpAids * 1000 +
-                    $dpAids * 1000 +
-                    $unmarried * 1000 +
-                    $orphan * 1000 +
-                    $widow * 1000 +
-                    $divorce * 1000 +
-                    $transgender * 1000;
+                   $totalFund = $oapBelow80 * 1000 +
+                   $oapAbove80 * 3500 +
+                   $wp * 1000 +
+                   $dp * 1000 +
+                   $sdpBelow80 * 1200 +
+                   $sdpAbove80 * 3500 +
+                   $sdoap * 3500 +
+                   $clp * 1000 +
+                   $wpAids * 1000 +
+                   $dpAids * 1000 +
+                   $unmarried * 1000 +
+                   $orphan * 1000 +
+                   $widow * 1000 +
+                   $divorce * 1000 +
+                   $transgender * 1000;
 
-                    $accountNumber = $fundsRequirements->mbpy_bank_account_number ?? null;
-                    $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code ?? null;
+                   $accountNumber = $fundsRequirements->mbpy_bank_account_number ?? null;
+                   $ifscCode = $fundsRequirements->mbpy_bank_ifsc_code ?? null;
 
-                    $maskedAccount = $accountNumber && trim($accountNumber) !== '' 
-                    ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) 
-                    : 'Not Provided';
+                   $maskedAccount = $accountNumber && trim($accountNumber) !== '' 
+                   ? str_repeat('X', strlen($accountNumber) - 4) . substr($accountNumber, -4) 
+                   : 'Not Provided';
 
-                    $maskedIFSC = $ifscCode && trim($ifscCode) !== '' 
-                    ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) 
-                    : 'Not Provided';
-                    @endphp
-                    <tr>
+                   $maskedIFSC = $ifscCode && trim($ifscCode) !== '' 
+                   ? str_repeat('X', strlen($ifscCode) - 4) . substr($ifscCode, -4) 
+                   : 'Not Provided';
+                   @endphp
+                   <tr>
                      <td>{{ $key + 1 }}</td>
                      <td>{{ $district }}</td>
                      <td>
@@ -229,10 +229,15 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                            </button>
                            <div class="dropdown-menu">
                               @can('pension-edit')
+                              @if(!empty($fundsRequirements->id))
                               <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
+                              @endif
                               @endcan
+
                               @can('pension-delete')
+                              @if(!empty($fundsRequirements->id))
                               <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
+                              @endif
                               @endcan
                            </div>
                         </div>
