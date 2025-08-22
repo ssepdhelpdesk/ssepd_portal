@@ -80,18 +80,18 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      $district = 'Not Provided';
 
                      if ($blockId) {
-                       $districtId = DB::table('blocks')->where('block_id', $blockId)->value('district_id');
-                       $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                    } elseif ($municipalityId) {
-                       $districtId = DB::table('municipalities')->where('municipality_id', $municipalityId)->value('district_id');
-                       $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                    }
+                      $districtId = DB::table('blocks')->where('block_id', $blockId)->value('district_id');
+                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
+                   } elseif ($municipalityId) {
+                      $districtId = DB::table('municipalities')->where('municipality_id', $municipalityId)->value('district_id');
+                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
+                   }
 
-                    $authorityName = $disbursementAuthority->authority_name ?? 'Not Yet Provided';
-                    $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'Not Yet Provided';
-                    $authorityDesignation = $disbursementAuthority->authority_designation ?? 'Not Yet Provided';                    
-                    @endphp
-                    <tr>
+                   $authorityName = $disbursementAuthority->authority_name ?? 'Not Yet Provided';
+                   $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'Not Yet Provided';
+                   $authorityDesignation = $disbursementAuthority->authority_designation ?? 'Not Yet Provided';                    
+                   @endphp
+                   <tr>
                      <td>{{ $key + 1 }}</td>
                      <td>{{ $district }}</td>
                      <td>
@@ -104,36 +104,53 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      </td>
                      <td>{{ $authorityName }}</td>
                      <td>{{ $authorityMobileNo }}</td>
-                    <td>{{ $authorityDesignation }}</td>                     
                      <td>
-                        <div class="btn-group">
-                           <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Action
-                           </button>
-                           <div class="dropdown-menu">
-                             @if(!empty($disbursementAuthority->id))
-
-                             @can('pension-edit')
-                             <a class="dropdown-item" href="">Edit</a>
-                             @endcan
-
-                             @can('pension-delete')
-                             <a class="dropdown-item" href="" id="delete">Delete</a>
-                             @endcan
-                             @endif
-                          </div>
-                       </div>
+                       @if($authorityDesignation == 1)
+                       PEO
+                       @elseif($authorityDesignation == 2)
+                       CO
+                       @elseif($authorityDesignation == 3)
+                       Tax Collector
+                       @elseif($authorityDesignation == 4)
+                       JA
+                       @elseif($authorityDesignation == 5)
+                       PA
+                       @elseif($authorityDesignation == 6)
+                       Other
+                       @else
+                       Not Yet Provided
+                       @endif
                     </td>
-                 </tr>
-                 @empty
-                 <tr>
-                  <td colspan="40" class="text-center">No records found.</td>
-               </tr>
-               @endforelse
-            </tbody>
-         </table>
-      </div>
+                    
+                    <td>
+                     <div class="btn-group">
+                        <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                           Action
+                        </button>
+                        <div class="dropdown-menu">
+                         @if(!empty($disbursementAuthority->id))
+
+                         @can('pension-edit')
+                         <a class="dropdown-item" href="">Edit</a>
+                         @endcan
+
+                         @can('pension-delete')
+                         <a class="dropdown-item" href="" id="delete">Delete</a>
+                         @endcan
+                         @endif
+                      </div>
+                   </div>
+                </td>
+             </tr>
+             @empty
+             <tr>
+               <td colspan="40" class="text-center">No records found.</td>
+            </tr>
+            @endforelse
+         </tbody>
+      </table>
    </div>
+</div>
 </div>
 </div>
 </div>
