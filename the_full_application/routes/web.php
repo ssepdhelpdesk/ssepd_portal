@@ -19,7 +19,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
     OldAge3500Controller,
-    Disability3500Controller
+    Disability3500Controller,
+    ReportOf3500Controller
 };
 
 use App\Http\Controllers\Frontend_Controller\{
@@ -206,6 +207,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
+    });
+
+    Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {
+        Route::get('active_ineligible', 'active_ineligible')->name('active_ineligible');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {

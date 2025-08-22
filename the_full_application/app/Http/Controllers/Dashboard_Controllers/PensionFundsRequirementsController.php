@@ -65,8 +65,8 @@ class PensionFundsRequirementsController extends Controller
     {
         $userId = auth()->id();
 
-        $startDate = '2025-07-01';
-        $endDate = '2025-08-06';
+        $startDate = '2025-08-22';
+        $endDate = '2025-08-26';
 
         $existingEntry = PensionFundsRequirement::where('created_by', $userId)
         ->whereBetween('created_date', [$startDate, $endDate])
