@@ -75,10 +75,16 @@
             <li class="nav-small-cap">--- BENEFICIARY SERVICES</li>
             <li>
                <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-align-left"></i><span class="hide-menu">Beneficiary Services</span></a>
-               <ul aria-expanded="false" class="collapse in">
-                  @can('pension-create')
-                  <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
-                  @endcan
+               <ul aria-expanded="false" class="collapse in">                  
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('pension-create')
+                        <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
+                        <li><a href="{{route('admin.pension.pension_authority_index')}}">Disbursement Authority</a></li>
+                        @endcan                        
+                     </ul>
+                  </li>
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
                      <ul aria-expanded="false" class="collapse">

@@ -31,6 +31,10 @@ use App\Models\PensionFundsRequirement;
 use App\Models\District;
 use App\Models\Block;
 use App\Models\Municipality;
+use App\Models\Grampanchayat;
+use App\Models\WardMaster;
+use App\Models\PensionDisbursementAuthority;
+
 
 class PensionFundsRequirementsController extends Controller
 {
@@ -542,6 +546,112 @@ class PensionFundsRequirementsController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("Pension Funds Requirement data deleted by DSSO Failed: " . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+        }
+    }
+
+    public function pension_authority_index()
+    {
+        $pension = PensionDisbursementAuthority::get();
+        $user = auth()->user();
+        $grampanchayats = collect();
+        $wards = collect();
+
+        if ($user->role_id == 4) {
+            $grampanchayats = Grampanchayat::where('block_id', $user->posted_block)->get();
+        } elseif ($user->role_id == 5) {
+            $wards = WardMaster::where('municipal_area_code', $user->posted_municipality)->get();
+        }
+
+        return view('dashboard.pension.pension_authority', compact('user', 'grampanchayats', 'wards'));
+    }
+
+    public function pension_authority_store(Request $request)
+    {
+        $user = auth()->user();
+
+        $validationRules = [
+            'authority_name'       => 'required|string|max:255',
+            'authority_mobile_no'  => 'required|digits:10',
+            'authority_designation'=> 'required|in:1,2',
+        ];
+
+        if ($user->role_id == 4) {
+            $validationRules['grampanchayat'] = 'required|array|min:1';
+            $validationRules['grampanchayat.*'] = 'exists:grampanchayats,gp_id';
+        } elseif ($user->role_id == 5) {
+            $validationRules['ward'] = 'required|array|min:1';
+            $validationRules['ward.*'] = 'exists:ward_masters,ward_code';
+        }
+
+        $validatedData = $request->validate($validationRules);
+        DB::beginTransaction();
+        try {
+
+            if ($user->role_id == 4 && isset($validatedData['grampanchayat'])) {
+                foreach ($validatedData['grampanchayat'] as $gpId) {
+                    $gp = Grampanchayat::where('gp_id', $gpId)->first();
+
+                    if ($gp) {
+                        $pension_authority = new PensionDisbursementAuthority();
+                        $pension_authority->authority_name        = $validatedData['authority_name'];
+                        $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
+                        $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
+                        $pension_authority->authority_designation = $validatedData['authority_designation'];
+                        $pension_authority->staff_address_type    = 1;
+                        $pension_authority->state_id              = 228;
+                        $pension_authority->district_id           = $gp->district_id;
+                        $pension_authority->block_id              = $gp->block_id;
+                        $pension_authority->gp_id                 = $gp->gp_id;
+                        $pension_authority->is_active             = 'active';
+                        $pension_authority->created_date          = now()->setTimezone('Asia/Kolkata')->toDateString();
+                        $pension_authority->created_time          = now()->setTimezone('Asia/Kolkata')->toTimeString();
+                        $pension_authority->created_by            = Auth::id();
+                        $pension_authority->user_table_id         = $user->user_table_id;
+                        $pension_authority->status                = 1;
+                        $pension_authority->save();
+                    }
+                }
+            }
+
+            if ($user->role_id == 5 && isset($validatedData['ward'])) {
+                foreach ($validatedData['ward'] as $wardCode) {
+                    $ward = WardMaster::where('ward_code', $wardCode)->first();
+
+                    if ($ward) {
+                        $pension_authority = new PensionDisbursementAuthority();
+                        $pension_authority->authority_name        = $validatedData['authority_name'];
+                        $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
+                        $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
+                        $pension_authority->authority_designation = $validatedData['authority_designation'];
+                        $pension_authority->staff_address_type    = 2;
+                        $pension_authority->state_id              = 228;
+                        $pension_authority->district_id           = $ward->district_code;
+                        $pension_authority->municipality_id       = $ward->municipal_area_code;
+                        $pension_authority->ward_id               = $ward->ward_code;
+                        $pension_authority->is_active             = 'active';
+                        $pension_authority->created_date          = now()->setTimezone('Asia/Kolkata')->toDateString();
+                        $pension_authority->created_time          = now()->setTimezone('Asia/Kolkata')->toTimeString();
+                        $pension_authority->created_by            = Auth::id();
+                        $pension_authority->user_table_id         = $user->user_table_id;
+                        $pension_authority->status                = 1;
+                        $pension_authority->save();
+                    }
+                }
+            }
+            DB::commit();
+
+            return redirect()->route('admin.pension.pension_authority_index')->with('message', "Pension Disbursement Authority Details Provided Successfully.");
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("🛑 Pension Disbursement Authority form update failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
             return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
         }
     }
