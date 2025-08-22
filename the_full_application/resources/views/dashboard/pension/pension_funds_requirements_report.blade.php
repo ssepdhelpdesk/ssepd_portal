@@ -134,9 +134,9 @@ Pension || MBPY Fund Requirements || {{ \Carbon\Carbon::now('Asia/Kolkata')->for
                      $municipalityId = $fundsRequirements->municipality->municipality_id ?? null;
                      $isSubmitted = false;
                      if ($blockId) {
-                        $isSubmitted = DB::table('pension_funds_requirements')->where('block_id', $blockId)->exists();
+                        $isSubmitted = DB::table('pension_funds_requirements')->whereBetween('created_date', [$startDate, $endDate])->where('block_id', $blockId)->exists();
                      } elseif ($municipalityId) {
-                        $isSubmitted = DB::table('pension_funds_requirements')->where('municipality_id', $municipalityId)->exists();
+                        $isSubmitted = DB::table('pension_funds_requirements')->whereBetween('created_date', [$startDate, $endDate])->where('municipality_id', $municipalityId)->exists();
                      }
                      $status = $isSubmitted ? 'Submitted' : 'Not Submitted';
 

@@ -360,7 +360,7 @@ class PensionFundsRequirementsController extends Controller
             return $item->district->district_name ?? '';
         })->values();
 
-        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements'));
+        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements', 'startDate', 'endDate'));
     }
 
     /**
