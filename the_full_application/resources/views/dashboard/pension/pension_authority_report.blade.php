@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -32,7 +32,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">Block/ULB wise fund requirement under MBPY</h4>
+            <h4 class="card-title">Block/ULB wise Pension Disbursing Office Details</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">

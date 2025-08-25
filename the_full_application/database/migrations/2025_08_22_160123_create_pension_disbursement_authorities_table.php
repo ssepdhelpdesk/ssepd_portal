@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pension_disbursement_authorities', function (Blueprint $table) {
             $table->id();
+            $table->string('for_the_month')->nullable();
             $table->string('authority_name');
             $table->string('authority_mobile_no');
             $table->string('authority_email_id')->nullable();

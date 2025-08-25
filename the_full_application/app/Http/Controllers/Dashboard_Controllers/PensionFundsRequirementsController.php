@@ -628,6 +628,7 @@ class PensionFundsRequirementsController extends Controller
 
                     if ($ward) {
                         $pension_authority = new PensionDisbursementAuthority();
+                        $pension_authority->for_the_month         = 'Sepetember-2025'; 
                         $pension_authority->authority_name        = $validatedData['authority_name'];
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
@@ -736,7 +737,6 @@ class PensionFundsRequirementsController extends Controller
 
     public function pension_authority_report()
     {
-        /*Get the user first*/
         $user = auth()->user();
         $userRole = $user->role_id;
 
