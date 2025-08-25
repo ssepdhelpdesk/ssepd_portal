@@ -828,4 +828,16 @@ class PensionFundsRequirementsController extends Controller
         return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority'));
     }
 
+    public function pension_authority_delete(string $id)
+    {
+        $pensionDisbursementAuthority = PensionDisbursementAuthority::find($id);
+
+        if (!$pensionDisbursementAuthority) {
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.']);
+        }
+
+        $pensionDisbursementAuthority->delete();
+
+        return redirect()->back()->with('info', 'Deleted Successfully');
+    }
 }
