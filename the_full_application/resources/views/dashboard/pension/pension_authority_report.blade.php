@@ -136,7 +136,7 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      </tr>
                      @empty
                      <tr>
-                        <td colspan="8" class="text-center text-muted">No Records Found</td>
+                        <td colspan="8" class="text-center text-muted">No Records Found Yet</td>
                      </tr>
                      @endforelse
                   </tbody>
