@@ -45,4 +45,8 @@ class PensionDisbursementAuthority extends Model implements Auditable
     public function municipality() {
         return $this->belongsTo(Municipality::class, 'municipality_id', 'municipality_id');
     }
+
+    public function ward() {
+        return $this->belongsTo(WardMaster::class, 'ward_id', 'ward_code');
+    }
 }

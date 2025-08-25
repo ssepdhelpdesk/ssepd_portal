@@ -545,7 +545,14 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->route('admin.pension.report')->with('warning', 'Deleted Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error("Pension Funds Requirement data deleted by DSSO Failed: " . $e->getMessage());
+            \Log::error("💸 Pension Funds Requirement deletion by DSSO failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
             return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
         }
     }
@@ -573,7 +580,7 @@ class PensionFundsRequirementsController extends Controller
         $validationRules = [
             'authority_name'       => 'required|string|max:255',
             'authority_mobile_no'  => 'required|digits:10',
-            'authority_designation'=> 'required|in:1,2',
+            'authority_designation'=> 'required|in:1,2,3,4,5,6,7,8,9 ',
         ];
 
         if ($user->role_id == 4) {
@@ -658,12 +665,12 @@ class PensionFundsRequirementsController extends Controller
         }
     }
 
-    public function pension_authority_report()
+    /*public function pension_authority_report()
     {
         $user = auth()->user();
         $userRole = $user->role_id;
 
-        $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality']);
+        $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality', 'ward']);
         $allBlocks = collect();
         $allMunicipalities = collect();
 
@@ -725,5 +732,99 @@ class PensionFundsRequirementsController extends Controller
         })->values();
 
         return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority'));
+    }*/
+
+    public function pension_authority_report()
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with([
+        'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
+    ]);
+
+    $allGps = collect();
+    $allWards = collect();
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [4, 6])) {
+        $pensionDisbursementAuthorityQuery->where('block_id', $user->posted_block);
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('block_id', $user->posted_block)->where('is_active', 'active')->get();
+    } elseif ($userRole == 5) {
+        $pensionDisbursementAuthorityQuery->where('municipality_id', $user->posted_municipality);
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('municipal_area_code', $user->posted_municipality)->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('block_id');
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('municipality_id');
+
+        $pensionDisbursementAuthorityQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+                  ->orWhereIn('municipality_id', $municipalityIds);
+        });
+
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->whereIn('municipal_area_code', $municipalityIds)->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [9, 11])) {
+        $pensionDisbursementAuthorityQuery->where('district_id', $user->posted_district);
+
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('district_code', $user->posted_district)->where('is_active', '1')->get();
     }
+
+    $disbursementAuthority = $pensionDisbursementAuthorityQuery->get();
+
+    $submittedGpIds = $disbursementAuthority->pluck('gp_id')->filter()->unique();
+    $submittedWardIds = $disbursementAuthority->pluck('ward_code')->filter()->unique();
+
+    $pendingGps = $allGps->whereNotIn('gp_id', $submittedGpIds)->map(function ($gp) {
+        return (object)[
+            'id' => null,
+            'district' => $gp->district,
+            'block' => $gp->block,
+            'grampanchayat' => $gp,
+            'municipality' => null,
+            'ward' => null,
+            'staff_address_type' => 1,
+            'authority_name' => null,
+            'authority_mobile_no' => null,
+            'authority_designation' => null,
+        ];
+    });
+
+    $pendingWards = $allWards->whereNotIn('ward_code', $submittedWardIds)->map(function ($ward) {
+        return (object)[
+            'id' => null,
+            'district' => $ward->district,
+            'block' => null,
+            'grampanchayat' => null,
+            'municipality' => $ward->municipality,
+            'ward' => $ward,
+            'staff_address_type' => 2,
+            'authority_name' => null,
+            'authority_mobile_no' => null,
+            'authority_designation' => null,
+        ];
+    });
+
+    $combined = $disbursementAuthority
+        ->concat($pendingGps)
+        ->concat($pendingWards);
+
+    $pensiondisbursementAuthority = $combined->sortBy(function ($item) {
+        return $item->district->district_name ?? '';
+    })->values();
+
+    return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority'));
+}
+
 }

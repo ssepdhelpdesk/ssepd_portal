@@ -40,11 +40,12 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      <tr>
                         <th>Sl No</th>
                         <th>District</th>
-                        <th>Block/ULB Name</th>
+                        <th>Block/ULB</th>
+                        <th>Gp/Ward</th>
                         <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
-                        <th>Officer Mobile No</th>
-                        <th>Officer Designation</th>                        
+                        <th>Mobile No</th>
+                        <th>Designation</th>                        
                         <th>Action</th>
                      </tr>
                   </thead>
@@ -52,107 +53,98 @@ Pension || Pension Disburshing Officer || {{ \Carbon\Carbon::now('Asia/Kolkata')
                      <tr>
                         <th>Sl No</th>
                         <th>District</th>
-                        <th>Block/ULB Name</th>
+                        <th>Block/ULB</th>
+                        <th>Gp/Ward</th>
                         <th>Provided/Not Provided</th>
                         <th>Officer Name</th>
-                        <th>Officer Mobile No</th>
-                        <th>Officer Designation</th>                        
+                        <th>Mobile No</th>
+                        <th>Designation</th>                        
                         <th>Action</th>
                      </tr>
                   </tfoot>
                   <tbody>
-                     @forelse ($pensiondisbursementAuthority as $key => $disbursementAuthority)
-                     @php
-                     $block = $disbursementAuthority->block->block_name ?? '';
-                     $municipality = $disbursementAuthority->municipality->municipality_name ?? '';
-                     $addressType = $disbursementAuthority->staff_address_type == 1 ? 'Block' : 'ULB';
-                     $unit = $addressType == 'Block' ? $block : $municipality;
-                     $blockId = $disbursementAuthority->block->block_id ?? null;
-                     $municipalityId = $disbursementAuthority->municipality->municipality_id ?? null;
-                     $isSubmitted = false;
-                     if ($blockId) {
-                        $isSubmitted = DB::table('pension_disbursement_authorities')->where('block_id', $blockId)->exists();
-                     } elseif ($municipalityId) {
-                        $isSubmitted = DB::table('pension_disbursement_authorities')->where('municipality_id', $municipalityId)->exists();
-                     }
-                     $status = $isSubmitted ? 'Submitted' : 'Not Submitted';
-
-                     $district = 'Not Provided';
-
-                     if ($blockId) {
-                      $districtId = DB::table('blocks')->where('block_id', $blockId)->value('district_id');
-                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                   } elseif ($municipalityId) {
-                      $districtId = DB::table('municipalities')->where('municipality_id', $municipalityId)->value('district_id');
-                      $district = DB::table('districts')->where('district_id', $districtId)->value('district_name') ?? 'Not Provided';
-                   }
-
-                   $authorityName = $disbursementAuthority->authority_name ?? 'Not Yet Provided';
-                   $authorityMobileNo = $disbursementAuthority->authority_mobile_no ?? 'Not Yet Provided';
-                   $authorityDesignation = $disbursementAuthority->authority_designation ?? 'Not Yet Provided';                    
-                   @endphp
-                   <tr>
-                     <td>{{ $key + 1 }}</td>
-                     <td>{{ $district }}</td>
-                     <td>
-                        {{ $disbursementAuthority->staff_address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
-                     </td>
-                     <td>
-                        <span class="badge {{ $status == 'Submitted' ? 'bg-success' : 'bg-danger' }}">
-                           {{ $status }}
-                        </span>
-                     </td>
-                     <td>{{ $authorityName }}</td>
-                     <td>{{ $authorityMobileNo }}</td>
-                     <td>
-                       @if($authorityDesignation == 1)
-                       PEO
-                       @elseif($authorityDesignation == 2)
-                       CO
-                       @elseif($authorityDesignation == 3)
-                       Tax Collector
-                       @elseif($authorityDesignation == 4)
-                       JA
-                       @elseif($authorityDesignation == 5)
-                       PA
-                       @elseif($authorityDesignation == 6)
-                       Other
-                       @else
-                       Not Yet Provided
-                       @endif
-                    </td>
-                    
-                    <td>
-                     <div class="btn-group">
-                        <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                           Action
-                        </button>
-                        <div class="dropdown-menu">
-                         @if(!empty($disbursementAuthority->id))
-
-                         @can('pension-edit')
-                         <a class="dropdown-item" href="">Edit</a>
-                         @endcan
-
-                         @can('pension-delete')
-                         <a class="dropdown-item" href="" id="delete">Delete</a>
-                         @endcan
-                         @endif
-                      </div>
-                   </div>
-                </td>
-             </tr>
-             @empty
-             <tr>
-               <td colspan="40" class="text-center">No records found.</td>
-            </tr>
-            @endforelse
-         </tbody>
-      </table>
+                     @forelse($pensiondisbursementAuthority as $index => $disbursementAuthority)
+                     <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $disbursementAuthority->district->district_name ?? 'Not Provided' }}</td>
+                        <td>
+                           @if($disbursementAuthority->staff_address_type == 1)
+                           Block: {{ $disbursementAuthority->block->block_name ?? 'Not Provided' }}
+                           @elseif($disbursementAuthority->staff_address_type == 2)
+                           ULB: {{ $disbursementAuthority->municipality->municipality_name ?? 'Not Provided' }}
+                           @else
+                           Not Provided
+                           @endif
+                        </td>
+                        <td>
+                           @if($disbursementAuthority->staff_address_type == 1)
+                           {{ $disbursementAuthority->grampanchayat->gp_name ?? 'Not Provided' }}
+                           @elseif($disbursementAuthority->staff_address_type == 2)
+                           {{ $disbursementAuthority->ward->ward_name ?? 'Not Provided' }}
+                           @else
+                           Not Provided
+                           @endif
+                        </td>
+                        <td>
+                           @if(isset($disbursementAuthority->id))
+                           @if($disbursementAuthority->staff_address_type == 1)
+                           <span class="badge bg-success">Submitted GP</span>
+                           @elseif($disbursementAuthority->staff_address_type == 2)
+                           <span class="badge bg-success">Submitted Ward</span>
+                           @endif
+                           @else
+                           @if($disbursementAuthority->staff_address_type == 1)
+                           <span class="badge bg-danger">Pending GP</span>
+                           @elseif($disbursementAuthority->staff_address_type == 2)
+                           <span class="badge bg-danger">Pending Ward</span>
+                           @endif
+                           @endif
+                        </td>
+                        <td>{{ $disbursementAuthority->authority_name ?? '-' }}</td>
+                        <td>{{ $disbursementAuthority->authority_mobile_no ?? '-' }}</td>
+                        <td>
+                           @switch($disbursementAuthority->authority_designation)
+                           @case(1) PEO @break
+                           @case(2) CO @break
+                           @case(3) Tax Collector @break
+                           @case(4) JA @break
+                           @case(5) PA @break
+                           @case(6) ADEO @break
+                           @case(7) GRS @break
+                           @case(8) Other @break
+                           @case(9) Jogana Sahayak (JS) @break
+                           @default  -
+                           @endswitch
+                        </td>
+                        <td>
+                           <div class="btn-group">
+                              <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                 Action
+                              </button>
+                              <div class="dropdown-menu">
+                                 @if(!empty($disbursementAuthority->id))
+                                 @can('pension-edit')
+                                 <a class="dropdown-item" href="">Edit</a>
+                                 @endcan
+                                 @can('pension-delete')
+                                 <a class="dropdown-item" href="" id="delete">Delete</a>
+                                 @endcan
+                                 @endif
+                              </div>
+                           </div>
+                        </td>
+                     </tr>
+                     @empty
+                     <tr>
+                        <td colspan="8" class="text-center text-muted">No Records Found</td>
+                     </tr>
+                     @endforelse
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
    </div>
-</div>
-</div>
-</div>
 </div>
 <!-- row -->
 <!-- ============================================================== -->

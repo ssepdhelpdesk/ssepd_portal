@@ -125,7 +125,10 @@ Pension || Pension Disburshing Officer
                                  <option value="3">Tax Collector</option>
                                  <option value="4">JA</option>
                                  <option value="5">PA</option>
-                                 <option value="6">Other</option>
+                                 <option value="6">ADEO</option>
+                                 <option value="7">GRS</option>
+                                 <option value="8">Other</option>
+                                 <option value="9">Jogana Sahayak (JS)</option>
                               </select>
                               <div id="authority_designation_error"></div>
                               @error('authority_designation')

@@ -11,4 +11,24 @@ class District extends Model implements Auditable
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
     protected $guarded = [''];
+
+    public function blocks()
+    {
+        return $this->hasMany(Block::class, 'district_id', 'district_id');
+    }
+
+    public function municipalities()
+    {
+        return $this->hasMany(Municipality::class, 'district_id', 'district_id');
+    }
+
+    public function grampanchayats()
+    {
+        return $this->hasMany(Grampanchayat::class, 'district_id', 'district_id');
+    }
+
+    public function wards()
+    {
+        return $this->hasMany(WardMaster::class, 'district_code', 'district_id');
+    }
 }
