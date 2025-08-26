@@ -57,5 +57,6 @@ class DatabaseSeeder extends Seeder
         ])->update(['is_active' => 'Inactive']);
 
         DB::table('municipalities')->whereIn('municipality_id', [2])->update(['is_active' => 'Inactive']);
+        DB::table('grampanchayats')->whereIn('gp_id', ['2411001006', '2418009014', '2431014012', '2431014013', '2431014014'])->update(['is_active' => 'Inactive']);
     }
 }

@@ -668,6 +668,7 @@ class PensionFundsRequirementsController extends Controller
 
     public function pension_authority_report()
     {
+        ini_set('memory_limit', '512M');
         $user = auth()->user();
         $userRole = $user->role_id;
 
