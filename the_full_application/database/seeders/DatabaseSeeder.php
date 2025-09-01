@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
         ])->update(['is_active' => 'Inactive']);
 
         DB::table('municipalities')->whereIn('municipality_id', [2])->update(['is_active' => 'Inactive']);
-        DB::table('grampanchayats')->whereIn('gp_id', ['2411001006', '2418009014', '2431014012', '2431014013', '2431014014'])->update(['is_active' => 'Inactive']);
-        DB::table('ward_master')->whereIn('ward_code', ['24110005026', '24110005027'])->update(['is_active' => '0']);
+        DB::table('grampanchayats')->whereIn('gp_id', ['2411001006', '2418009014', '2431014012', '2431014013', '2431014014', '2401001001', '2401001002', '2401001005', '2401001006', '2401001007', '2401001013', '2401001015', '2401002008', '2401002010', '2401002011', '2401002015', '2401002017', '2408021001'])->update(['is_active' => 'Inactive']);
+        DB::table('ward_master')->whereIn('ward_code', ['24110005026', '24110005027', '240100040015'])->update(['is_active' => '0']);
     }
 }

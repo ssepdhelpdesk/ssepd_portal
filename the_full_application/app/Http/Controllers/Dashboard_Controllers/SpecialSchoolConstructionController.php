@@ -36,11 +36,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
- }
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+   }
 
 /**
 * Display a listing of the resource.
@@ -331,6 +331,67 @@ public function construction_timeline_store(Request $request)
         return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
+
+public function approve_construction_status_store(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'approve_status'    => 'required',
+        'approver_remarks'  => 'nullable|string|max:1000',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $special_school = SpecialSchoolConstruction::where('special_school_id', $id)
+        ->orderByDesc('phase_no')
+        ->first();
+
+        if (!$special_school) {
+            return redirect()->back()->with('info', 'Something went wrong, kindly contact your Administrator.');
+        }
+
+        $special_school->update([
+            'approve_status'    => $validatedData['approve_status'],
+            'approver_remarks'  => $validatedData['approver_remarks'],
+        ]);
+
+        $applicationstagehistory = new ApplicationStageHistory();
+        /*department_scheme_id Special School = 2*/
+        $applicationstagehistory->department_scheme_id = 2;
+        $applicationstagehistory->model_name = 'SpecialSchoolConstruction';
+        $applicationstagehistory->model_table_id = $special_school->id;
+        $applicationstagehistory->initial_model_table_id = $special_school->id;
+        if ($special_school->approve_status == 1) {
+            $applicationstagehistory->stage_id = 25;
+            $applicationstagehistory->stage_name = 'Approved';
+        } elseif ($special_school->approve_status == 2) {
+            $applicationstagehistory->stage_id = 21;
+            $applicationstagehistory->stage_name = 'Rejected by HO';
+        }      
+        $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+        $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+        $applicationstagehistory->created_by = Auth::id();
+        $applicationstagehistory->created_by_remarks = 'Special School Construction Approver form submission Successfully.';
+        $ipAddress = request()->ip();
+        $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
+        $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
+        $applicationstagehistory->save();
+
+        DB::commit();
+        return redirect()->back()->with('success', 'Construction status updated successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🏫 Special School Construction Approver form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
+}
+
 
 /**
 * Display the specified resource.

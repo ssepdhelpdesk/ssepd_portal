@@ -184,6 +184,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/index', 'index')->name('index');
         Route::get('construction_timeline', 'construction_timeline')->name('construction_timeline');
         Route::post('construction_timeline_store', 'construction_timeline_store')->name('construction_timeline_store');
+        Route::get('{id}/approve_construction_status', 'approve_construction_status')->name('approve_construction_status');
+        Route::post('{id}/approve_construction_status_store', 'approve_construction_status_store')->name('approve_construction_status_store');
     });
 
     Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
