@@ -79,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
 
             /*Log to daily and query-specific log channels*/
             Log::channel('daily')->info(json_encode($logPayload, JSON_PRETTY_PRINT));
-            Log::channel('query')->info(json_encode($logPayload, JSON_PRETTY_PRINT));
+            //Log::channel('query')->info(json_encode($logPayload, JSON_PRETTY_PRINT));
         });
     }
 }
