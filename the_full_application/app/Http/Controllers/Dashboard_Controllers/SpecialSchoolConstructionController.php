@@ -36,11 +36,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+ }
 
 /**
 * Display a listing of the resource.
