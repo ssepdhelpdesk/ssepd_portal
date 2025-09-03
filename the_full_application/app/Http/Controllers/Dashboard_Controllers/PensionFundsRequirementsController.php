@@ -71,7 +71,7 @@ class PensionFundsRequirementsController extends Controller
 
         /*You have to chnage the date in report function also*/
         $startDate = '2025-08-22';
-        $endDate = '2025-09-03';
+        $endDate = '2025-08-26';
 
         $existingEntry = PensionFundsRequirement::where('created_by', $userId)
         ->whereBetween('created_date', [$startDate, $endDate])
