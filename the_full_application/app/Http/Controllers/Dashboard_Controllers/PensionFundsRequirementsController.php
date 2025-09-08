@@ -34,6 +34,7 @@ use App\Models\Municipality;
 use App\Models\Grampanchayat;
 use App\Models\WardMaster;
 use App\Models\PensionDisbursementAuthority;
+use App\Models\PensionFundRequirementDates;
 use Yajra\DataTables\Facades\DataTables;
 
 class PensionFundsRequirementsController extends Controller
@@ -65,11 +66,10 @@ class PensionFundsRequirementsController extends Controller
         return view('dashboard.pension.pension_funds_requirements');
     }*/
 
-    public function create()
+    /*public function create()
     {
         $userId = auth()->id();
 
-        /*You have to chnage the date in report function also*/
         $startDate = '2025-08-22';
         $endDate = '2025-09-03';
 
@@ -82,6 +82,36 @@ class PensionFundsRequirementsController extends Controller
         }
 
         return view('dashboard.pension.pension_funds_requirements', compact('startDate', 'endDate'));
+    }*/
+
+    public function create()
+    {
+        $userId = auth()->id();
+
+        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
+        $existingEntry = PensionFundsRequirement::where('created_by', $userId)
+        ->whereBetween('created_date', [$startDate, $endDate])
+        ->first();
+
+        if ($existingEntry) {
+            return redirect()->back()->with(
+                'warning',
+                'You have already submitted this form for ' . $forTheMonth . ' on ' .
+                \Carbon\Carbon::parse($existingEntry->created_date)->format('d M, Y') .
+                '. If any modification is required, please contact your concerned district.'
+            );
+        }
+
+        return view('dashboard.pension.pension_funds_requirements', compact('startDate', 'endDate', 'forTheMonth'));
     }
 
     /**
@@ -163,10 +193,16 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->back()->with('warning', 'You are not authorised to fill up this form.');
         }
 
+        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
         DB::beginTransaction();
         try {
             $pensionFundsRequirement = new PensionFundsRequirement();
-            $pensionFundsRequirement->for_the_month = 'September-2025';
+            $pensionFundsRequirement->for_the_month = $dateConfig->for_the_month;
             $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
             $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
             $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];
@@ -300,8 +336,16 @@ class PensionFundsRequirementsController extends Controller
     {
         $user = auth()->user();
         $userRole = $user->role_id;
-        $startDate = '2025-08-22';
-        $endDate = '2025-09-03';
+
+        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
 
         $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])->whereBetween('created_date', [$startDate, $endDate]);
         $allBlocks = collect();
