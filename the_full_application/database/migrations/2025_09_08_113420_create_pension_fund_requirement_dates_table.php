@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->string('for_the_month');
+            $table->string('for_which_page');
             $table->string('is_active')->default('active');
             $table->date('created_date');
             $table->time('created_time');

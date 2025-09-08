@@ -88,7 +88,7 @@ class PensionFundsRequirementsController extends Controller
     {
         $userId = auth()->id();
 
-        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')->where('status', 1)->first();
 
         if (!$dateConfig) {
             return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
@@ -193,7 +193,7 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->back()->with('warning', 'You are not authorised to fill up this form.');
         }
 
-        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')->where('status', 1)->first();
 
         if (!$dateConfig) {
             return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
@@ -337,7 +337,7 @@ class PensionFundsRequirementsController extends Controller
         $user = auth()->user();
         $userRole = $user->role_id;
 
-        $dateConfig = PensionFundRequirementDates::where('status', 1)->first();
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')->where('status', 1)->first();
 
         if (!$dateConfig) {
             return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
@@ -603,6 +603,17 @@ class PensionFundsRequirementsController extends Controller
 
     public function pension_authority_index()
     {
+
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_disbursement_authority')->where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
         $pension = PensionDisbursementAuthority::get();
         $user = auth()->user();
         $grampanchayats = collect();
@@ -614,11 +625,22 @@ class PensionFundsRequirementsController extends Controller
             $wards = WardMaster::where('municipal_area_code', $user->posted_municipality)->get();
         }
 
-        return view('dashboard.pension.pension_authority', compact('user', 'grampanchayats', 'wards'));
+        return view('dashboard.pension.pension_authority', compact('user', 'grampanchayats', 'wards', 'startDate', 'endDate', 'forTheMonth'));
     }
 
     public function pension_authority_store(Request $request)
     {
+
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_disbursement_authority')->where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+        
         $user = auth()->user();
 
         $validationRules = [
@@ -649,7 +671,7 @@ class PensionFundsRequirementsController extends Controller
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
                         $pension_authority->authority_designation = $validatedData['authority_designation'];
-                        $pension_authority->disbursement_month    = 'September-2025';
+                        $pension_authority->disbursement_month    = $forTheMonth;
                         $pension_authority->staff_address_type    = 1;
                         $pension_authority->state_id              = 228;
                         $pension_authority->district_id           = $gp->district_id;
@@ -672,7 +694,7 @@ class PensionFundsRequirementsController extends Controller
 
                     if ($ward) {
                         $pension_authority = new PensionDisbursementAuthority();
-                        $pension_authority->for_the_month         = 'Sepetember-2025'; 
+                        $pension_authority->for_the_month         = $forTheMonth; 
                         $pension_authority->authority_name        = $validatedData['authority_name'];
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
@@ -712,6 +734,16 @@ class PensionFundsRequirementsController extends Controller
 
     public function pension_authority_report()
     {
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_disbursement_authority')->where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
         ini_set('memory_limit', '512M');
         $user = auth()->user();
         $userRole = $user->role_id;
@@ -801,7 +833,7 @@ class PensionFundsRequirementsController extends Controller
             return $item->district->district_name ?? '';
         })->values();
 
-        return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority'));
+        return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority', 'startDate', 'endDate', 'forTheMonth'));
     }
 
     public function pension_authority_delete(string $id)

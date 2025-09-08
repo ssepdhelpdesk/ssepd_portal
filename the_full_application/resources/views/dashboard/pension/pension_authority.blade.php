@@ -138,9 +138,24 @@ Pension || Pension Disburshing Officer
                         </div>
                      </div>
                   </div>
-                  <div class="form-actions">
-                     <button type="submit" onclick="return IsEmpty();" name="register" class="btn btn-primary text-white from-prevent-multiple-submits"><i class="spinner fa fa-spinner fa-spin"></i> Submit</button>
-                  </div>
+                  @php
+                     $today = \Carbon\Carbon::today();
+                     @endphp
+
+                     @if($today->between(\Carbon\Carbon::parse($startDate), \Carbon\Carbon::parse($endDate)))
+                     <div class="form-actions">
+                      <button type="submit" onclick="return IsEmpty();" name="register"
+                      class="btn btn-primary text-white from-prevent-multiple-submits">
+                      <i class="spinner fa fa-spinner fa-spin"></i> Submit
+                   </button>
+                </div>
+                @else
+                <div class="alert alert-warning">
+                   Form submission is allowed only between 
+                   {{ \Carbon\Carbon::parse($startDate)->format('d M, Y') }} and 
+                   {{ \Carbon\Carbon::parse($endDate)->format('d M, Y') }}.
+                </div>
+                @endif
                </form>
             </div>
          </div>

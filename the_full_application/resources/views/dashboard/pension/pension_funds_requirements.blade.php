@@ -250,100 +250,100 @@ Pension || Funds Requiremt
                         </div>
                      </div>
                      @php
-    $today = \Carbon\Carbon::today();
-@endphp
+                     $today = \Carbon\Carbon::today();
+                     @endphp
 
-@if($today->between(\Carbon\Carbon::parse($startDate), \Carbon\Carbon::parse($endDate)))
-    <div class="form-actions">
-        <button type="submit" onclick="return IsEmpty();" name="register"
-            class="btn btn-primary text-white from-prevent-multiple-submits">
-            <i class="spinner fa fa-spinner fa-spin"></i> Submit
-        </button>
+                     @if($today->between(\Carbon\Carbon::parse($startDate), \Carbon\Carbon::parse($endDate)))
+                     <div class="form-actions">
+                      <button type="submit" onclick="return IsEmpty();" name="register"
+                      class="btn btn-primary text-white from-prevent-multiple-submits">
+                      <i class="spinner fa fa-spinner fa-spin"></i> Submit
+                   </button>
+                </div>
+                @else
+                <div class="alert alert-warning">
+                   Form submission is allowed only between 
+                   {{ \Carbon\Carbon::parse($startDate)->format('d M, Y') }} and 
+                   {{ \Carbon\Carbon::parse($endDate)->format('d M, Y') }}.
+                </div>
+                @endif
+             </form>
+          </div>
+       </div>
     </div>
-@else
-    <div class="alert alert-warning">
-        Form submission is allowed only between 
-        {{ \Carbon\Carbon::parse($startDate)->format('d M, Y') }} and 
-        {{ \Carbon\Carbon::parse($endDate)->format('d M, Y') }}.
-    </div>
-@endif
-                  </form>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <!-- row -->
-   <!-- ============================================================== -->
-   <!-- End Page Content -->
-   <!-- ============================================================== -->
+ </div>
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const form = document.forms["vform"];
-    const requiredFields = [
-        "mbpy_oap_below_80_years",
-        "mbpy_oap_above_80_years",
-        "mbpy_wp",
-        "mbpy_dp",
-        "mbpy_sdp_below_80_percent",
-        "mbpy_sdp_above_80_percent",
-        "mbpy_sdoap",
-        "mbpy_clp",
-        "mbpy_wp_aids",
-        "mbpy_dp_aids",
-        "mbpy_unmarried_women",
-        "mbpy_orphan_due_to_covide",
-        "mbpy_widow_due_to_covid",
-        "mbpy_divorce_or_destitute",
-        "mbpy_transgender",
-        "mbpy_bank_account_number",
-        "mbpy_bank_ifsc_code"
+   document.addEventListener("DOMContentLoaded", function () {
+     const form = document.forms["vform"];
+     const requiredFields = [
+       "mbpy_oap_below_80_years",
+       "mbpy_oap_above_80_years",
+       "mbpy_wp",
+       "mbpy_dp",
+       "mbpy_sdp_below_80_percent",
+       "mbpy_sdp_above_80_percent",
+       "mbpy_sdoap",
+       "mbpy_clp",
+       "mbpy_wp_aids",
+       "mbpy_dp_aids",
+       "mbpy_unmarried_women",
+       "mbpy_orphan_due_to_covide",
+       "mbpy_widow_due_to_covid",
+       "mbpy_divorce_or_destitute",
+       "mbpy_transgender",
+       "mbpy_bank_account_number",
+       "mbpy_bank_ifsc_code"
     ];
 
     form.addEventListener("submit", function (e) {
-        let hasError = false;
+       let hasError = false;
 
-        requiredFields.forEach((id) => {
-            const field = document.getElementById(id);
-            const errorDiv = document.getElementById(id + "_error");
+       requiredFields.forEach((id) => {
+         const field = document.getElementById(id);
+         const errorDiv = document.getElementById(id + "_error");
 
             // Clear previous error
-            errorDiv.innerHTML = "";
-            field.classList.remove("is-invalid");
+         errorDiv.innerHTML = "";
+         field.classList.remove("is-invalid");
 
-            const value = field.value.trim();
+         const value = field.value.trim();
 
-            if (value === "") {
-                errorDiv.innerHTML = `<label class="error">This field is required</label>`;
-                field.classList.add("is-invalid");
-                hasError = true;
-            } else {
-                if (id === "mbpy_bank_ifsc_code") {
-                    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-                    if (!ifscRegex.test(value)) {
-                        errorDiv.innerHTML = `<label class="error">Enter valid IFSC code (e.g., SBIN0001234)</label>`;
-                        field.classList.add("is-invalid");
-                        hasError = true;
-                    }
-                } else if (id !== "mbpy_bank_account_number" && !/^\d+$/.test(value)) {
-                    errorDiv.innerHTML = `<label class="error">Enter a valid number</label>`;
-                    field.classList.add("is-invalid");
-                    hasError = true;
-                }
-                // You may add additional checks for account number if needed
+         if (value === "") {
+           errorDiv.innerHTML = `<label class="error">This field is required</label>`;
+           field.classList.add("is-invalid");
+           hasError = true;
+        } else {
+           if (id === "mbpy_bank_ifsc_code") {
+             const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+             if (!ifscRegex.test(value)) {
+               errorDiv.innerHTML = `<label class="error">Enter valid IFSC code (e.g., SBIN0001234)</label>`;
+               field.classList.add("is-invalid");
+               hasError = true;
             }
-        });
+         } else if (id !== "mbpy_bank_account_number" && !/^\d+$/.test(value)) {
+          errorDiv.innerHTML = `<label class="error">Enter a valid number</label>`;
+          field.classList.add("is-invalid");
+          hasError = true;
+       }
+                // You may add additional checks for account number if needed
+    }
+ });
 
-        if (hasError) {
+       if (hasError) {
             e.preventDefault(); // Stop form submission
             return false;
-        }
-        return true;
-    });
-});
+         }
+         return true;
+      });
+ });
 </script>
 
 

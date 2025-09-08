@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || Block/ULB wise Pension Disbursing Office Details for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -32,7 +32,7 @@ Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">Block/ULB wise Pension Disbursing Office Details</h4>
+            <h4 class="card-title">Block/ULB wise Pension Disbursing Office Details for the month - {{$forTheMonth}}</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
               <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
@@ -40,6 +40,7 @@ Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon
                   <tr>
                      <th>Sl No</th>
                      <th>District</th>
+                     <th>For the Month</th>
                      <th>Block/ULB</th>
                      <th>Gp/Ward</th>
                      <th>Provided/Not Provided</th>
@@ -53,6 +54,7 @@ Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon
                   <tr>
                      <th>Sl No</th>
                      <th>District</th>
+                     <th>For the Month</th>
                      <th>Block/ULB</th>
                      <th>Gp/Ward</th>
                      <th>Provided/Not Provided</th>
@@ -67,6 +69,7 @@ Pension || Block/ULB wise Pension Disbursing Office Details || {{ \Carbon\Carbon
                   <tr>
                      <td>{{ $index + 1 }}</td>
                      <td>{{ $disbursementAuthority->district->district_name ?? 'Not Provided' }}</td>
+                     <td>{{$forTheMonth}}</td>
                      <td>
                         @if($disbursementAuthority->staff_address_type == 1)
                         Block: {{ $disbursementAuthority->block->block_name ?? 'Not Provided' }}

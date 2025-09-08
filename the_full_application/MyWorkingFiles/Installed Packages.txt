@@ -1,6 +1,15 @@
 For Fetch Location: composer require stevebauman/location
 
 Desktop/mobile user agent parser with support for Laravel, based on Mobiledetect: composer require jenssegers/agent
+326 blocks (315 Active, 11 Inactive)
+
+115 Municipality (114 Active, 1 Inactive)
+
+6853 grampanchayats (6821 Acive, 32 Inactive)
+
+50371 Village (6821 Acive, 32 Inactive)
+
+2081 Wards (2075 Active, 5 Inactive)
 
 
 
