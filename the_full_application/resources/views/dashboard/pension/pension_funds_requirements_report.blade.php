@@ -1,5 +1,5 @@
 @section('title') 
-Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || MBPY Fund Requirements for the month - {{$forTheMonth1}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -32,15 +32,15 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">Block/ULB wise fund requirement under MBPY for the month - {{$forTheMonth}}</h4>
+            <h4 class="card-title">Block/ULB wise fund requirement under MBPY for the month - {{$forTheMonth1}}</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                   <thead>
                      <tr>
                         <th>Sl No</th>
-                        <th>Month</th>
                         <th>District</th>
+                        <th>For the Month</th>
                         <th>Block/ULB Name</th>
                         <th>Provided/Not Provided</th>
                         <th>MBPOAP (Below 80 Years)</th>
@@ -81,9 +81,9 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                   </thead>
                   <tfoot>
                      <tr>
-                        <th>Sl No</th>
-                        <th>Month</th>
+                        <th>Sl No</th>                       
                         <th>District</th>
+                        <th>For the Month</th>
                         <th>Block/ULB Name</th>
                         <th>Provided/Not Provided</th>
                         <th>MBPOAP (Below 80 Years)</th>
@@ -193,9 +193,9 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                     : 'Not Provided';
                     @endphp
                     <tr>
-                     <td>{{ $key + 1 }}</td>
-                     <td>{{$forTheMonth}}</td>
+                     <td>{{ $key + 1 }}</td>                     
                      <td>{{ $district }}</td>
+                     <td>{{$forTheMonth1}}</td>
                      <td>
                         {{ $fundsRequirements->address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
                      </td>
