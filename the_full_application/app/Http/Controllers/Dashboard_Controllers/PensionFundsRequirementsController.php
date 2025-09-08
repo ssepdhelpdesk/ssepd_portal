@@ -345,7 +345,7 @@ class PensionFundsRequirementsController extends Controller
 
         $startDate = $dateConfig->start_date;
         $endDate   = $dateConfig->end_date;
-        $forTheMonth1 = $dateConfig->for_the_month;
+        $forTheMonth = $dateConfig->for_the_month;
 
         $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])->whereBetween('created_date', [$startDate, $endDate]);
         $allBlocks = collect();
@@ -408,7 +408,7 @@ class PensionFundsRequirementsController extends Controller
             return $item->district->district_name ?? '';
         })->values();
 
-        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements', 'startDate', 'endDate', 'forTheMonth1'));
+        return view('dashboard.pension.pension_funds_requirements_report', compact('pensionFundsRequirements', 'startDate', 'endDate', 'forTheMonth'));
     }
 
     /**
