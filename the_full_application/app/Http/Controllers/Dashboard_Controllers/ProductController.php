@@ -2,6 +2,7 @@
     
 namespace App\Http\Controllers\Dashboard_Controllers;
     
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\View\View;

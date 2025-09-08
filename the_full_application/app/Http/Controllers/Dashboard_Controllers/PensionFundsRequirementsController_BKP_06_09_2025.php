@@ -81,7 +81,7 @@ class PensionFundsRequirementsController extends Controller
             return redirect()->back()->with('warning', 'You have already submitted this form for the current month on ' . \Carbon\Carbon::parse($existingEntry->created_date)->format('d M, Y') . '. If any modification is required, please contact your concerned district.');
         }
 
-        return view('dashboard.pension.pension_funds_requirements', compact('startDate', 'endDate'));
+        return view('dashboard.pension.pension_funds_requirements');
     }
 
     /**
@@ -666,99 +666,164 @@ class PensionFundsRequirementsController extends Controller
         }
     }
 
-    public function pension_authority_report()
-    {
-        ini_set('memory_limit', '512M');
-        $user = auth()->user();
-        $userRole = $user->role_id;
+    public function pension_authority_report(Request $request)
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
 
-        $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with([
-            'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
-        ]);
+    $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with([
+        'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
+    ]);
 
-        $allGps = collect();
-        $allWards = collect();
+    $allGps = collect();
+    $allWards = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-            $allGps = Grampanchayat::with(['district', 'block'])
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        $allGps = Grampanchayat::with(['district', 'block'])
             ->where('is_active', 'active')->get();
-            $allWards = WardMaster::with(['district', 'municipality'])
+        $allWards = WardMaster::with(['district', 'municipality'])
             ->where('is_active', '1')->get();
-        } elseif (in_array($userRole, [4, 6])) {
-            $pensionDisbursementAuthorityQuery->where('block_id', $user->posted_block);
-            $allGps = Grampanchayat::with(['district', 'block'])
-            ->where('block_id', $user->posted_block)->where('is_active', 'active')->get();
-        } elseif ($userRole == 5) {
-            $pensionDisbursementAuthorityQuery->where('municipality_id', $user->posted_municipality);
-            $allWards = WardMaster::with(['district', 'municipality'])
-            ->where('municipal_area_code', $user->posted_municipality)->where('is_active', '1')->get();
-        } elseif (in_array($userRole, [8, 10])) {
-            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('block_id');
-            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('municipality_id');
+    } elseif (in_array($userRole, [4, 6])) {
+        $pensionDisbursementAuthorityQuery->where('block_id', $user->posted_block);
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('block_id', $user->posted_block)
+            ->where('is_active', 'active')->get();
+    } elseif ($userRole == 5) {
+        $pensionDisbursementAuthorityQuery->where('municipality_id', $user->posted_municipality);
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('municipal_area_code', $user->posted_municipality)
+            ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')->pluck('block_id');
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')->pluck('municipality_id');
 
-            $pensionDisbursementAuthorityQuery->where(function ($query) use ($blockIds, $municipalityIds) {
-                $query->whereIn('block_id', $blockIds)
+        $pensionDisbursementAuthorityQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
                 ->orWhereIn('municipality_id', $municipalityIds);
-            });
-
-            $allGps = Grampanchayat::with(['district', 'block'])
-            ->whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
-            $allWards = WardMaster::with(['district', 'municipality'])
-            ->whereIn('municipal_area_code', $municipalityIds)->where('is_active', '1')->get();
-        } elseif (in_array($userRole, [9, 11])) {
-            $pensionDisbursementAuthorityQuery->where('district_id', $user->posted_district);
-
-            $allGps = Grampanchayat::with(['district', 'block'])
-            ->where('district_id', $user->posted_district)->where('is_active', 'active')->get();
-            $allWards = WardMaster::with(['district', 'municipality'])
-            ->where('district_code', $user->posted_district)->where('is_active', '1')->get();
-        }
-
-        $disbursementAuthority = $pensionDisbursementAuthorityQuery->get();
-
-        $submittedGpIds = $disbursementAuthority->pluck('gp_id')->filter()->unique();
-        $submittedWardIds = $disbursementAuthority->pluck('ward_id')->filter()->unique();
-
-        $pendingGps = $allGps->whereNotIn('gp_id', $submittedGpIds)->map(function ($gp) {
-            return (object)[
-                'id' => null,
-                'district' => $gp->district,
-                'block' => $gp->block,
-                'grampanchayat' => $gp,
-                'municipality' => null,
-                'ward' => null,
-                'staff_address_type' => 1,
-                'authority_name' => null,
-                'authority_mobile_no' => null,
-                'authority_designation' => null,
-            ];
         });
 
-        $pendingWards = $allWards->whereNotIn('ward_code', $submittedWardIds)->map(function ($ward) {
-            return (object)[
-                'id' => null,
-                'district' => $ward->district,
-                'block' => null,
-                'grampanchayat' => null,
-                'municipality' => $ward->municipality,
-                'ward' => $ward,
-                'staff_address_type' => 2,
-                'authority_name' => null,
-                'authority_mobile_no' => null,
-                'authority_designation' => null,
-            ];
-        });
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->whereIn('block_id', $blockIds)
+            ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->whereIn('municipal_area_code', $municipalityIds)
+            ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [9, 11])) {
+        $pensionDisbursementAuthorityQuery->where('district_id', $user->posted_district);
 
-        $combined = $disbursementAuthority
+        $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('district_id', $user->posted_district)
+            ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('district_code', $user->posted_district)
+            ->where('is_active', '1')->get();
+    }
+
+    $disbursementAuthority = $pensionDisbursementAuthorityQuery->get();
+
+    // Submitted IDs
+    $submittedGpIds = $disbursementAuthority->pluck('gp_id')->filter()->unique();
+    $submittedWardIds = $disbursementAuthority->pluck('ward_id')->filter()->unique();
+
+    // Pending GP
+    $pendingGps = $allGps->whereNotIn('gp_id', $submittedGpIds)->map(function ($gp) {
+        return (object)[
+            'id' => null,
+            'district' => $gp->district,
+            'block' => $gp->block,
+            'grampanchayat' => $gp,
+            'municipality' => null,
+            'ward' => null,
+            'staff_address_type' => 1,
+            'authority_name' => null,
+            'authority_mobile_no' => null,
+            'authority_designation' => null,
+        ];
+    });
+
+    // Pending Ward
+    $pendingWards = $allWards->whereNotIn('ward_code', $submittedWardIds)->map(function ($ward) {
+        return (object)[
+            'id' => null,
+            'district' => $ward->district,
+            'block' => null,
+            'grampanchayat' => null,
+            'municipality' => $ward->municipality,
+            'ward' => $ward,
+            'staff_address_type' => 2,
+            'authority_name' => null,
+            'authority_mobile_no' => null,
+            'authority_designation' => null,
+        ];
+    });
+
+    $combined = $disbursementAuthority
         ->concat($pendingGps)
         ->concat($pendingWards);
 
-        $pensiondisbursementAuthority = $combined->sortBy(function ($item) {
-            return $item->district->district_name ?? '';
-        })->values();
-
-        return view('dashboard.pension.pension_authority_report', compact('pensiondisbursementAuthority'));
+    // If request is Ajax → return JSON for DataTables
+    if ($request->ajax()) {
+        return DataTables::of($combined)
+            ->addIndexColumn()
+            ->editColumn('district_name', function ($row) {
+                return $row->district->district_name ?? 'Not Provided';
+            })
+            ->editColumn('block_ulb', function ($row) {
+                if ($row->staff_address_type == 1) {
+                    return "Block: " . ($row->block->block_name ?? 'Not Provided');
+                } elseif ($row->staff_address_type == 2) {
+                    return "ULB: " . ($row->municipality->municipality_name ?? 'Not Provided');
+                }
+                return 'Not Provided';
+            })
+            ->editColumn('gp_ward', function ($row) {
+                if ($row->staff_address_type == 1) {
+                    return $row->grampanchayat->gp_name ?? 'Not Provided';
+                } elseif ($row->staff_address_type == 2) {
+                    return $row->ward->ward_name ?? 'Not Provided';
+                }
+                return 'Not Provided';
+            })
+            ->editColumn('provided_status', function ($row) {
+                if ($row->id) {
+                    return $row->staff_address_type == 1
+                        ? '<span class="badge bg-success">Submitted GP</span>'
+                        : '<span class="badge bg-success">Submitted Ward</span>';
+                } else {
+                    return $row->staff_address_type == 1
+                        ? '<span class="badge bg-danger">Pending GP</span>'
+                        : '<span class="badge bg-danger">Pending Ward</span>';
+                }
+            })
+            ->editColumn('designation', function ($row) {
+                $map = [
+                    1 => 'PEO', 2 => 'CO', 3 => 'Tax Collector', 4 => 'JA',
+                    5 => 'PA', 6 => 'ADEO', 7 => 'GRS', 8 => 'Other',
+                    9 => 'Jogana Sahayak (JS)',
+                ];
+                return $map[$row->authority_designation] ?? '-';
+            })
+            ->addColumn('action', function ($row) {
+                $btn = '';
+                if ($row->id) {
+                    $btn .= '<div class="btn-group">
+                                <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown">Action</button>
+                                <div class="dropdown-menu">';
+                    $btn .= '<a class="dropdown-item" href="#">Edit</a>';
+                    $btn .= '<a class="dropdown-item" href="' . route('admin.pension.pension_authority_delete', $row->id) . '" id="delete">Delete</a>';
+                    $btn .= '</div></div>';
+                }
+                return $btn;
+            })
+            ->rawColumns(['provided_status', 'action'])
+            ->make(true);
     }
+
+    // Else → load view
+    return view('dashboard.pension.pension_authority_report');
+}
 
     public function pension_authority_delete(string $id)
     {
