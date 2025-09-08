@@ -39,6 +39,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                   <thead>
                      <tr>
                         <th>Sl No</th>
+                        <th>Month</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
                         <th>Provided/Not Provided</th>
@@ -81,6 +82,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                   <tfoot>
                      <tr>
                         <th>Sl No</th>
+                        <th>Month</th>
                         <th>District</th>
                         <th>Block/ULB Name</th>
                         <th>Provided/Not Provided</th>
@@ -192,6 +194,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                     @endphp
                     <tr>
                      <td>{{ $key + 1 }}</td>
+                     <td>{{$forTheMonth}}</td>
                      <td>{{ $district }}</td>
                      <td>
                         {{ $fundsRequirements->address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}
