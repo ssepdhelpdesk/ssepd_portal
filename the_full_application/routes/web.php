@@ -28,12 +28,20 @@ use App\Http\Controllers\Frontend_Controller\{
     LocationFrontendController
 };
 
+use App\Http\Controllers\Api\{
+    EpPensionersController
+};
+
 
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('admin.dashboard');
     }
     return view('auth.login');
+});
+Route::prefix('apis')->name('apis.')->controller(EpPensionersController::class)->group(function () {
+    Route::get('/disability-pensioner-datas/{aadhar_no}', 'getDisabilityPensionerByAadharRequiredDatas');
+    Route::get('/oldage-pensioner-datas/{aadhar_no}', 'getOldAgePensionerByAadharRequiredDatas');
 });
 
 Route::prefix('frontend')->name('frontend.')->group(function () {
