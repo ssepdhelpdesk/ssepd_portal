@@ -41,7 +41,7 @@ Route::get('/', function () {
 });
 Route::prefix('apis')->name('apis.')->controller(EpPensionersController::class)->group(function () {
     Route::get('/disability-pensioner-datas/{aadhar_no}', 'getDisabilityPensionerByAadharRequiredDatas');
-    Route::get('/oldage-pensioner-datas/{aadhar_no}', 'getOldAgePensionerByAadharRequiredDatas');
+    Route::get('/oldage-pensioner-datas1/{aadhar_no}', 'getOldAgePensionerByAadharRequiredDatas');
 });
 
 Route::prefix('frontend')->name('frontend.')->group(function () {
