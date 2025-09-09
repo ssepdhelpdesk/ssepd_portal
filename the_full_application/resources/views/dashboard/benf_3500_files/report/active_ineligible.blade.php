@@ -5,10 +5,10 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
 @section('style')
 <style>
    .wrap-text {
-     white-space: normal !important;
-     word-break: break-word;
-     max-width: 200px;
-  }
+    white-space: normal !important;
+    word-break: break-word;
+    max-width: 200px;
+ }
 </style>
 @endsection 
 @section('content')
@@ -43,85 +43,85 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                @include('dashboard.component.message')
                <div>
                   <form method="GET" class="row g-3 mb-4">
-        <div class="col-md-3">
-            <label for="from_date">From Date</label>
-            <input type="date" name="from_date" id="from_date" value="{{ $from_date }}" class="form-control">
-        </div>
-        <div class="col-md-3">
-            <label for="to_date">To Date</label>
-            <input type="date" name="to_date" id="to_date" value="{{ $to_date }}" class="form-control">
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary">Filter</button>
-        </div>
-    </form>
-               </div>
-               <div class="table-responsive m-t-40">
-                  <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
-                     <thead>
-                        <tr>
-                           <th>Sl No</th>
-                           <th>District</th>
-                           <th>Total Oldage</th>
-                           <th>Oldage Death</th>
-                           <th>Oldage Ineligible</th>
-                           <th>Total Oldage Discontinued</th>
-                           <th>Oldage Active</th>
-                           <th>Total Disability</th>
-                           <th>Disability Death</th>
-                           <th>Disability Ineligible</th>
-                           <th>Total Disability Discontinued</th>
-                           <th>Disability Active</th>
-                           <th>Total Sanction</th>
-                           <th>Total Discontinued</th>
-                           <th>Total Active</th>
-                        </tr>
-                     </thead>
-                     <tfoot>
-                        <tr>
-                           <th>Sl No</th>
-                           <th>District</th>
-                           <th>Total Oldage</th>
-                           <th>Oldage Death</th>
-                           <th>Oldage Ineligible</th>
-                           <th>Total Oldage Discontinued</th>
-                           <th>Oldage Active</th>
-                           <th>Total Disability</th>
-                           <th>Disability Death</th>
-                           <th>Disability Ineligible</th>
-                           <th>Total Disability Discontinued</th>
-                           <th>Disability Active</th>
-                           <th>Total Sanction</th>
-                           <th>Total Discontinued</th>
-                           <th>Total Active</th>
-                        </tr>
-                     </tfoot>
-                     <tbody>
-                      @foreach($final_data as $row)
-                      <tr>
-                       <td>{{ $row['SlNo'] }}</td>
-                       <td>{{ $row['District'] }}</td>
-                       <td>{{ $row['TotalOldage'] }}</td>
-                       <td>{{ $row['OldageDeath'] }}</td>
-                       <td>{{ $row['OldageIneligible'] }}</td>
-                       <td>{{ $row['TotalOldageDiscontinued'] }}</td>
-                       <td>{{ $row['OldageActive'] }}</td>
-                       <td>{{ $row['TotalDisability'] }}</td>
-                       <td>{{ $row['DisabilityDeath'] }}</td>
-                       <td>{{ $row['DisabilityIneligible'] }}</td>
-                       <td>{{ $row['TotalDisabilityDiscontinued'] }}</td>
-                       <td>{{ $row['DisabilityActive'] }}</td>
-                       <td>{{ $row['TotalSanction'] }}</td>
-                       <td>{{ $row['TotalDiscontinued'] }}</td>
-                       <td>{{ $row['TotalActive'] }}</td>
-                    </tr>
-                    @endforeach
-                 </tbody>
-              </table>
-           </div>
-        </div>
-     </div>
-  </div>
+                   <div class="col-md-3">
+                     <label for="from_date">From Date</label>
+                     <input type="date" name="from_date" id="from_date" value="{{ $from_date }}" class="form-control">
+                  </div>
+                  <div class="col-md-3">
+                     <label for="to_date">To Date</label>
+                     <input type="date" name="to_date" id="to_date" value="{{ $to_date }}" class="form-control">
+                  </div>
+                  <div class="col-md-3 d-flex align-items-end">
+                     <button type="submit" class="btn btn-primary">Filter</button>
+                  </div>
+               </form>
+            </div>
+            <div class="table-responsive m-t-40">
+               <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+                  <thead>
+                     <tr>
+                        <th>Sl No</th>
+                        <th>District</th>
+                        <th>Total Oldage</th>
+                        <th>Oldage Death</th>
+                        <th>Oldage Ineligible</th>
+                        <th>Total Oldage Discontinued</th>
+                        <th>Oldage Active</th>
+                        <th>Total Disability</th>
+                        <th>Disability Death</th>
+                        <th>Disability Ineligible</th>
+                        <th>Total Disability Discontinued</th>
+                        <th>Disability Active</th>
+                        <th>Total Sanction</th>
+                        <th>Total Discontinued</th>
+                        <th>Total Active</th>
+                     </tr>
+                  </thead>
+                  <tfoot>
+                     <tr>
+                        <th>Sl No</th>
+                        <th>District</th>
+                        <th>Total Oldage</th>
+                        <th>Oldage Death</th>
+                        <th>Oldage Ineligible</th>
+                        <th>Total Oldage Discontinued</th>
+                        <th>Oldage Active</th>
+                        <th>Total Disability</th>
+                        <th>Disability Death</th>
+                        <th>Disability Ineligible</th>
+                        <th>Total Disability Discontinued</th>
+                        <th>Disability Active</th>
+                        <th>Total Sanction</th>
+                        <th>Total Discontinued</th>
+                        <th>Total Active</th>
+                     </tr>
+                  </tfoot>
+                  <tbody>
+                    @foreach($final_data as $row)
+                    <tr>
+                      <td>{{ $row['SlNo'] }}</td>
+                      <td>{{ $row['District'] }}</td>
+                      <td>{{ $row['TotalOldage'] }}</td>
+                      <td>{{ $row['OldageDeath'] }}</td>
+                      <td>{{ $row['OldageIneligible'] }}</td>
+                      <td>{{ $row['TotalOldageDiscontinued'] }}</td>
+                      <td>{{ $row['OldageActive'] }}</td>
+                      <td>{{ $row['TotalDisability'] }}</td>
+                      <td>{{ $row['DisabilityDeath'] }}</td>
+                      <td>{{ $row['DisabilityIneligible'] }}</td>
+                      <td>{{ $row['TotalDisabilityDiscontinued'] }}</td>
+                      <td>{{ $row['DisabilityActive'] }}</td>
+                      <td>{{ $row['TotalSanction'] }}</td>
+                      <td>{{ $row['TotalDiscontinued'] }}</td>
+                      <td>{{ $row['TotalActive'] }}</td>
+                   </tr>
+                   @endforeach
+                </tbody>
+             </table>
+          </div>
+       </div>
+    </div>
+ </div>
 </div>
 <!-- row -->
 <!-- ============================================================== -->
@@ -132,18 +132,18 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
 @section('script')
 <script>
    $(function () {
-    $('#example23').DataTable({
-     processing: true,
-     responsive: false,
-     ordering: true,
-     scrollX: true,
-     lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
-     dom: 'Blfrtip',
-     buttons: [
-      'copy', 'csv', 'excel', 'pdf', 'print'
-   ]
-});
-    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
- });   
+     $('#example23').DataTable({
+       processing: true,
+       responsive: false,
+       ordering: true,
+       scrollX: true,
+       lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
+       dom: 'Blfrtip',
+       buttons: [
+         'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+   });
+     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+  });   
 </script>
 @endsection

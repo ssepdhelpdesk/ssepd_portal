@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('management_name', 255);
             $table->integer('special_school_id')->unique('uq_special_school');
             $table->string('special_school_name', 255);
+            $table->decimal('special_school_latitude', 10, 7);
+            $table->decimal('special_school_longitude', 10, 7);
             $table->integer('district_id')->index('idx_district_id');
             $table->string('district_name', 100);
             $table->integer('user_table_id')->unique('uq_user_table');
