@@ -116,22 +116,44 @@
                      </ul>
                   </li>
                </ul>
-            </li>            
+            </li>
             <li class="nav-small-cap">--- REPORTS</li>
             <li>
-               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-book-open-page-variant"></i><span class="hide-menu">Reports</span></a>
-               <ul aria-expanded="false" class="collapse">
-                  @can('special-school-access')
-                  <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
-                  @endcan
-                  @can('pension-access')
-                  <li><a href="{{route('admin.pension.report')}}">Pension Report</a></li>
-                  <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer Report</a></li>
-                  <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>                  
-                  @endcan
-                  @can('DDRC-access')
-                  <li><a href="{{route('admin.ddrc.index')}}">DDRC Report</a></li>
-                  @endcan
+               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-align-left"></i><span class="hide-menu">Reports</span></a>
+               <ul aria-expanded="false" class="collapse in">                  
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('pension-access')
+                        <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
+                        <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
+                        @endcan                        
+                     </ul>
+                  </li>
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">EP Pension</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('pension-3500-access')
+                        <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
+                        @endcan
+                     </ul>
+                  </li>
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('special-school-access')
+                        <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
+                        @endcan
+                     </ul>
+                  </li>
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('DDRC-access')
+                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Deatils</a></li>
+                        @endcan
+                     </ul>
+                  </li>
                </ul>
             </li>
          </ul>

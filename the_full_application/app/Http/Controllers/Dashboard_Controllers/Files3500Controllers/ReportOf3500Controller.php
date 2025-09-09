@@ -44,30 +44,30 @@ class ReportOf3500Controller extends Controller
         $to_date   = $request->get('to_date');
 
         $oldAgeQuery = OldAge3500Pensioner::selectRaw('district, COUNT(*) as total_oldage')
-            ->groupBy('district');
+        ->groupBy('district');
 
         $oldAgeDeathQuery = OldAge3500Pensioner::selectRaw('district, COUNT(*) as oldage_death')
-            ->where('discontinued_reason', 'Death')
-            ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-            ->groupBy('district');
+        ->where('discontinued_reason', 'Death')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
+        ->groupBy('district');
 
         $oldAgeIneligibleQuery = OldAge3500Pensioner::selectRaw('district, COUNT(*) as oldage_ineligible')
-            ->where('discontinued_reason', 'Ineligible')
-            ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-            ->groupBy('district');
+        ->where('discontinued_reason', 'Ineligible')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
+        ->groupBy('district');
 
         $disabilityQuery = Disability3500Pensioner::selectRaw('district, COUNT(*) as total_disability')
-            ->groupBy('district');
+        ->groupBy('district');
 
         $disabilityDeathQuery = Disability3500Pensioner::selectRaw('district, COUNT(*) as disability_death')
-            ->where('discontinued_reason', 'Death')
-            ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-            ->groupBy('district');
+        ->where('discontinued_reason', 'Death')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
+        ->groupBy('district');
 
         $disabilityIneligibleQuery = Disability3500Pensioner::selectRaw('district, COUNT(*) as disability_ineligible')
-            ->where('discontinued_reason', 'Ineligible')
-            ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-            ->groupBy('district');
+        ->where('discontinued_reason', 'Ineligible')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
+        ->groupBy('district');
 
         $oldage_total = $oldAgeQuery->pluck('total_oldage', 'district')->toArray();
         $oldage_death = $oldAgeDeathQuery->pluck('oldage_death', 'district')->toArray();
@@ -94,11 +94,17 @@ class ReportOf3500Controller extends Controller
             $oldDeath = $oldage_death[$district] ?? 0;
             $oldIneligible = $oldage_ineligible[$district] ?? 0;
             $oldActive = $totalOld - ($oldDeath + $oldIneligible);
+            $oldDiscontinued = $oldDeath + $oldIneligible;
 
             $totalDis = $disability_total[$district] ?? 0;
             $disDeath = $disability_death[$district] ?? 0;
             $disIneligible = $disability_ineligible[$district] ?? 0;
             $disActive = $totalDis - ($disDeath + $disIneligible);
+            $disDiscontinued = $disDeath + $disIneligible;
+
+            $totalDiscontinued = $oldDiscontinued + $disDiscontinued;
+            $totalSanction = $totalOld + $totalDis;
+            $totalActive = $totalSanction - $totalDiscontinued;
 
             $final_data[] = [
                 'SlNo' => $slno++,
@@ -106,12 +112,16 @@ class ReportOf3500Controller extends Controller
                 'TotalOldage' => $totalOld,
                 'OldageDeath' => $oldDeath,
                 'OldageIneligible' => $oldIneligible,
+                'TotalOldageDiscontinued' => $oldDiscontinued,
                 'OldageActive' => $oldActive,
                 'TotalDisability' => $totalDis,
                 'DisabilityDeath' => $disDeath,
                 'DisabilityIneligible' => $disIneligible,
+                'TotalDisabilityDiscontinued' => $disDiscontinued,
                 'DisabilityActive' => $disActive,
-                'TotalDiscontinued' => $oldDeath + $oldIneligible + $disDeath + $disIneligible
+                'TotalSanction' => $totalSanction,
+                'TotalDiscontinued' => $totalDiscontinued,
+                'TotalActive' => $totalActive,
             ];
         }
 
