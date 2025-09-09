@@ -251,4 +251,5 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     });
 
     Route::resource('products', ProductController::class)->names('products');
+    Route::get('decompose','\Lubusin\Decomposer\Controllers\DecomposerController@index');
 });
