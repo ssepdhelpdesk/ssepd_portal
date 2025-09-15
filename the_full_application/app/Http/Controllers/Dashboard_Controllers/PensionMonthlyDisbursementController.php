@@ -71,8 +71,10 @@ class PensionMonthlyDisbursementController extends Controller
         $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
         $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
 
-        $alreadySubmitted = MonthlyPensionDisbursemenet::whereIn('gp_id', $gpIds)
-        ->orWhereIn('ward_id', $wardIds)
+        $alreadySubmitted = MonthlyPensionDisbursemenet::where(function ($q) use ($gpIds, $wardIds) {
+            $q->whereIn('gp_id', $gpIds)
+            ->orWhereIn('ward_id', $wardIds);
+        })
         ->where('for_the_month', $forTheMonth)
         ->where('is_active', 'active')
         ->where('status', 1)
@@ -240,7 +242,7 @@ class PensionMonthlyDisbursementController extends Controller
             ->where('district_code', $user->posted_district)->where('is_active', '1')->get();
         }
 
-        $monthlyPension = $monthlyPensionDisbursemenetQuery->get();
+        $monthlyPension = $monthlyPensionDisbursemenetQuery->where('is_active', 'active')->where('status', 1)->get();
 
         $submittedGpIds = $monthlyPension->pluck('gp_id')->filter()->unique();
         $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
