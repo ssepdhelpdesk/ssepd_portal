@@ -85,10 +85,14 @@ class PensionMonthlyDisbursementController extends Controller
     public function store(Request $request)
     {
         $validationRules = [
-            'gp_ward_id'   => 'required|array',
-            'gp_ward_id.*' => 'required|string',
-            'gp_ward_name'   => 'required|array',
-            'gp_ward_name.*' => 'required|string',
+            'gp_ward_id'              => 'required|array',
+            'gp_ward_id.*'            => 'required|string',
+            'gp_ward_name'            => 'required|array',
+            'gp_ward_name.*'          => 'required|string',
+            'no_of_normal_pensioners'   => 'required|array',
+            'no_of_normal_pensioners.*' => 'required|integer|min:0',
+            'no_of_ep_pensioners'       => 'required|array',
+            'no_of_ep_pensioners.*'     => 'required|integer|min:0',
         ];
 
         $validatedData = $request->validate($validationRules);
@@ -122,10 +126,14 @@ class PensionMonthlyDisbursementController extends Controller
 
         foreach ($request->gp_ward_id as $index => $gpWardId) {
             $startDate = $request->disbursement_start_date[$index] ?? null;
+            $no_of_normal_pensioners = $request->no_of_normal_pensioners[$index] ?? 0;
+            $no_of_ep_pensioners = $request->no_of_ep_pensioners[$index] ?? 0;
 
             \DB::table('monthly_pension_disbursemenets')->insert([
                 'for_the_month'            => $forTheMonth,
                 'disbursement_start_date'  => $startDate,
+                'no_of_normal_pensioners'      => $no_of_normal_pensioners,
+                'no_of_ep_pensioners'      => $no_of_ep_pensioners,                
                 'disbursement_started'     => $startDate ? 1 : 0,
                 'staff_address_type'       => $staff_address_type,
                 'state_id'                 => 228,

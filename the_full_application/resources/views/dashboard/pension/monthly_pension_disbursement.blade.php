@@ -9,6 +9,12 @@ Pension || Funds Requiremt
       background-color: #f8f9fa;
       cursor: default;
    }
+   .form-control {
+    color: #212529;
+    min-height: 38px;
+    display: initial;
+    width: auto;
+}
 </style>
 @endsection 
 @section('content')
@@ -69,7 +75,9 @@ Pension || Funds Requiremt
                                  <th>Ward Name</th>
                                  @endif                                 
                                  <th>For the Month</th>
-                                 <th>Disbursement Start Date</th>                                 
+                                 <th>Disbursement Start Date</th>
+                                 <th>No of Normal Pensioners</th>
+                                 <th>No of EP Pensioners</th>                                 
                               </tr>
                            </thead>
                            <tbody>
@@ -116,6 +124,30 @@ Pension || Funds Requiremt
                                           @enderror
                                        </div>
                                     </div>    
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                                       <div class="form-group" id="no_of_normal_pensioners_div">
+                                          <input 
+                                          type="number" id="no_of_normal_pensioners" name="no_of_normal_pensioners[]" value="{{ old('no_of_normal_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          <div id="no_of_normal_pensioners_error"></div>
+                                          @error('no_of_normal_pensioners')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                    </div>
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                                       <div class="form-group" id="no_of_ep_pensioners_div">
+                                          <input 
+                                          type="number" id="no_of_ep_pensioners" name="no_of_ep_pensioners[]" value="{{ old('no_of_ep_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          <div id="no_of_ep_pensioners_error"></div>
+                                          @error('no_of_ep_pensioners')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                    </div>
                                  </td>
                               </tr>
                               @empty
