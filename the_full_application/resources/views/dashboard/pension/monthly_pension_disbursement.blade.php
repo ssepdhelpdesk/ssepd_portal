@@ -117,7 +117,7 @@ Pension || Funds Requiremt
                                     <div class="col-md-3">
                                        <div class="form-group" id="disbursement_start_date_div">
                                           <input 
-                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="{{ old('disbursement_start_date') }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
+                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="{{ old('disbursement_start_date') }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="" required>
                                           <div id="disbursement_start_date_error"></div>
                                           @error('disbursement_start_date')
                                           <label class="error">{{ $message }}</label>
@@ -129,7 +129,7 @@ Pension || Funds Requiremt
                                     <div class="col-md-3">
                                        <div class="form-group" id="no_of_normal_pensioners_div">
                                           <input 
-                                          type="number" id="no_of_normal_pensioners" name="no_of_normal_pensioners[]" value="{{ old('no_of_normal_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          type="number" id="no_of_normal_pensioners" name="no_of_normal_pensioners[]" value="{{ old('no_of_normal_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1" required>
                                           <div id="no_of_normal_pensioners_error"></div>
                                           @error('no_of_normal_pensioners')
                                           <label class="error">{{ $message }}</label>
@@ -141,7 +141,7 @@ Pension || Funds Requiremt
                                     <div class="col-md-3">
                                        <div class="form-group" id="no_of_ep_pensioners_div">
                                           <input 
-                                          type="number" id="no_of_ep_pensioners" name="no_of_ep_pensioners[]" value="{{ old('no_of_ep_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          type="number" id="no_of_ep_pensioners" name="no_of_ep_pensioners[]" value="{{ old('no_of_ep_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1" required>
                                           <div id="no_of_ep_pensioners_error"></div>
                                           @error('no_of_ep_pensioners')
                                           <label class="error">{{ $message }}</label>

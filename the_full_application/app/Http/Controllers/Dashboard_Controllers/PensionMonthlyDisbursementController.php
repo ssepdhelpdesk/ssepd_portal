@@ -105,6 +105,8 @@ class PensionMonthlyDisbursementController extends Controller
             'gp_ward_id.*'            => 'required|string',
             'gp_ward_name'            => 'required|array',
             'gp_ward_name.*'          => 'required|string',
+            'disbursement_start_date'   => 'required|array',
+            'disbursement_start_date.*' => 'required|date',
             'no_of_normal_pensioners'   => 'required|array',
             'no_of_normal_pensioners.*' => 'required|integer|min:0',
             'no_of_ep_pensioners'       => 'required|array',
