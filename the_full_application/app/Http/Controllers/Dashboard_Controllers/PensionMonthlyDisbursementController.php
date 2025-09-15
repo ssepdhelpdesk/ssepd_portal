@@ -68,6 +68,18 @@ class PensionMonthlyDisbursementController extends Controller
             return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
         }
 
+        $gpIds   = $gpWardList->pluck('gp_id')->toArray();
+        $wardIds = $gpWardList->pluck('ward_id')->toArray();
+
+        $alreadySubmitted = MonthlyPensionDisbursemenet::whereIn('gp_id', $gpIds)
+        ->orWhereIn('ward_id', $wardIds)
+        ->where('for_the_month', $forTheMonth)
+        ->exists();
+
+        if ($alreadySubmitted) {
+            return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth);
+        }
+
         return view('dashboard.pension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
     }
 
