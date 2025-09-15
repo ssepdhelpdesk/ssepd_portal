@@ -76,8 +76,8 @@ Pension || Funds Requiremt
                                  @endif                                 
                                  <th>For the Month</th>
                                  <th>Disbursement Start Date</th>
-                                 <th>No of Normal Pensioners</th>
-                                 <th>No of EP Pensioners</th>                                 
+                                 <th>No of Beneficiaries Received Normal Pension</th>
+                                 <th>No of Beneficiaries Received EP Pension</th>                                 
                               </tr>
                            </thead>
                            <tbody>
