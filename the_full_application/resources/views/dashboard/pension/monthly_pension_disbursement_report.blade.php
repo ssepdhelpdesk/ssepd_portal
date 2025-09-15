@@ -117,7 +117,7 @@ Pension || Block/ULB wise Pension Disbursing Office Details for the month - {{$f
                               <a class="dropdown-item" href="">Edit</a>
                               @endcan
                               @can('pension-delete')
-                              <a class="dropdown-item" href="{{ route('admin.pension.pension_authority_delete', $monthlyPensionDetails->id) }}" id="delete">Delete</a>
+                              <a class="dropdown-item" href="" id="delete">Delete</a>
                               @endcan
                               @endif
                            </div>
