@@ -291,6 +291,135 @@ class PensionMonthlyDisbursementController extends Controller
         return view('dashboard.pension.monthly_pension_disbursement_report', compact('monthlyPensionDisbursemenet', 'startDate', 'endDate', 'forTheMonth'));
     }
 
+    public function monthly_pension_disbursement_report_abstract()
+    {
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'monthly_pension_disbursemenets')
+        ->where('status', 1)
+        ->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate   = $dateConfig->start_date;
+        $endDate     = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
+        ini_set('memory_limit', '512M');
+        $user     = auth()->user();
+        $userRole = $user->role_id;
+
+        $monthlyPensionQuery = MonthlyPensionDisbursemenet::with([
+            'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
+        ]);
+
+        $allGps   = collect();
+        $allWards = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            $monthlyPensionQuery->where('block_id', $user->posted_block);
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('block_id', $user->posted_block)
+            ->where('is_active', 'active')->get();
+        } elseif ($userRole == 5) {
+            $monthlyPensionQuery->where('municipality_id', $user->posted_municipality);
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('municipal_area_code', $user->posted_municipality)
+            ->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('municipality_id');
+
+            $monthlyPensionQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->whereIn('block_id', $blockIds)
+            ->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->whereIn('municipal_area_code', $municipalityIds)
+            ->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [9, 11])) {
+            $monthlyPensionQuery->where('district_id', $user->posted_district);
+
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('district_id', $user->posted_district)
+            ->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('district_code', $user->posted_district)
+            ->where('is_active', '1')->get();
+        }
+
+        $monthlyPension = $monthlyPensionQuery->where('is_active', 'active')
+        ->where('status', 1)->get();
+
+        $submittedGpIds   = $monthlyPension->pluck('gp_id')->filter()->unique();
+        $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
+
+        $summary = collect();
+
+        foreach ($allGps->groupBy(fn($gp) => $gp->district->district_name . '-' . $gp->block->block_name) as $key => $gpsGroup) {
+            [$districtName, $blockOrUlb] = explode('-', $key);
+
+            $submittedCount = $gpsGroup->whereIn('gp_id', $submittedGpIds)->count();
+            $pendingCount   = $gpsGroup->whereNotIn('gp_id', $submittedGpIds)->count();
+
+            $summary[$key] = [
+                'district'                  => $districtName,
+                'type'                      => 'Block',
+                'block_or_ulb'              => $blockOrUlb,
+                'Data_provided_by_GP'       => $submittedCount,
+                'Data_provided_by_ward'     => 0,
+                'Data_not_provided_by_GP'   => $pendingCount,
+                'Data_not_provided_by_ward' => 0,
+            ];
+        }
+
+        foreach ($allWards->groupBy(fn($ward) => $ward->district->district_name . '-' . $ward->municipality->municipality_name) as $key => $wardsGroup) {
+            [$districtName, $blockOrUlb] = explode('-', $key);
+
+            $submittedCount = $wardsGroup->whereIn('ward_code', $submittedWardIds)->count();
+            $pendingCount   = $wardsGroup->whereNotIn('ward_code', $submittedWardIds)->count();
+
+            if (!$summary->has($key)) {
+                $summary[$key] = [
+                    'district'                  => $districtName,
+                    'type'                      => 'ULB',
+                    'block_or_ulb'              => $blockOrUlb,
+                    'Data_provided_by_GP'       => 0,
+                    'Data_provided_by_ward'     => $submittedCount,
+                    'Data_not_provided_by_GP'   => 0,
+                    'Data_not_provided_by_ward' => $pendingCount,
+                ];
+            } else {
+                $summary[$key]['type']                      = 'ULB';
+                $summary[$key]['Data_provided_by_ward']     = $submittedCount;
+                $summary[$key]['Data_not_provided_by_ward'] = $pendingCount;
+            }
+        }
+
+        $summaryReport = $summary->values();
+
+        return view('dashboard.pension.monthly_pension_disbursement_report_abstract', compact(
+            'summaryReport',
+            'startDate',
+            'endDate',
+            'forTheMonth',
+            'monthlyPension'
+        ));
+    }
+
 
     /**
      * Display the specified resource.
