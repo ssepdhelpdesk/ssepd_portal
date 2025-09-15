@@ -44,6 +44,7 @@ class RolePermissionSeeder extends Seeder
             'SpecialSchool',
             'DDRC',
             'ARC',
+            'PensionRole',
         ];
 
         $allPermissionNames = Permission::pluck('name')->all();
@@ -116,6 +117,10 @@ class RolePermissionSeeder extends Seeder
 
             'ARC' => [
                 'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'ARC-access', 'ARC-list', 'ARC-show', 'ARC-create', 'ARC-edit', 'ARC-delete', 'ARC-approve-form'
+            ],
+
+            'PensionRole' => [
+                'my-profile-access', 'my-profile-list', 'my-profile-show', 'my-profile-create', 'my-profile-edit', 'pension-access', 'pension-list', 'pension-show', 'pension-create', 'pension-edit', 'pension-delete'
             ],
         ];
 

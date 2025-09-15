@@ -246,8 +246,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
-        Route::post('staff_store', 'staff_store')->name('staff_store');
-        Route::get('{id}/view_staff_details', 'view_staff_details')->name('view_staff_details');
+        Route::get('monthly_pension_disbursement_report', 'monthly_pension_disbursement_report')->name('monthly_pension_disbursement_report');        
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

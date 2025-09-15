@@ -123,34 +123,156 @@ class PensionMonthlyDisbursementController extends Controller
         } else {
             return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
         }
+        DB::beginTransaction();
+        try {
 
-        foreach ($request->gp_ward_id as $index => $gpWardId) {
-            $startDate = $request->disbursement_start_date[$index] ?? null;
-            $no_of_normal_pensioners = $request->no_of_normal_pensioners[$index] ?? 0;
-            $no_of_ep_pensioners = $request->no_of_ep_pensioners[$index] ?? 0;
+            foreach ($request->gp_ward_id as $index => $gpWardId) {
+                $startDate = $request->disbursement_start_date[$index] ?? null;
+                $no_of_normal_pensioners = $request->no_of_normal_pensioners[$index] ?? 0;
+                $no_of_ep_pensioners = $request->no_of_ep_pensioners[$index] ?? 0;
 
-            \DB::table('monthly_pension_disbursemenets')->insert([
-                'for_the_month'            => $forTheMonth,
-                'disbursement_start_date'  => $startDate,
-                'no_of_normal_pensioners'      => $no_of_normal_pensioners,
-                'no_of_ep_pensioners'      => $no_of_ep_pensioners,                
-                'disbursement_started'     => $startDate ? 1 : 0,
-                'staff_address_type'       => $staff_address_type,
-                'state_id'                 => 228,
-                'district_id'              => $district_id,
-                'municipality_id'          => $municipality_id,
-                'block_id'                 => $block_id,
-                'gp_id'                    => $user->role_name == 'BSSO' ? $gpWardId : null,
-                'ward_id'                  => $user->role_name == 'MEO' ? $gpWardId : null,
-                'is_active'                => 'active',
-                'created_date'             => now()->setTimezone('Asia/Kolkata')->toDateString(),
-                'created_time'             => now()->setTimezone('Asia/Kolkata')->toTimeString(),
-                'created_by'               => $user->id,
-                'status'                   => 1,
+                \DB::table('monthly_pension_disbursemenets')->insert([
+                    'for_the_month'            => $forTheMonth,
+                    'disbursement_start_date'  => $startDate,
+                    'no_of_normal_pensioners'      => $no_of_normal_pensioners,
+                    'no_of_ep_pensioners'      => $no_of_ep_pensioners,                
+                    'disbursement_started'     => $startDate ? 1 : 0,
+                    'staff_address_type'       => $staff_address_type,
+                    'state_id'                 => 228,
+                    'district_id'              => $district_id,
+                    'municipality_id'          => $municipality_id,
+                    'block_id'                 => $block_id,
+                    'gp_id'                    => $user->role_name == 'BSSO' ? $gpWardId : null,
+                    'ward_id'                  => $user->role_name == 'MEO' ? $gpWardId : null,
+                    'is_active'                => 'active',
+                    'created_date'             => now()->setTimezone('Asia/Kolkata')->toDateString(),
+                    'created_time'             => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+                    'created_by'               => $user->id,
+                    'status'                   => 1,
+                ]);
+            }
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Pension disbursement dates saved successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("🛑 Pension Disbursement Authority form update failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
             ]);
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+        }
+    }
+
+    public function monthly_pension_disbursement_report()
+    {
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'monthly_pension_disbursemenets')->where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
         }
 
-        return redirect()->back()->with('success', 'Pension disbursement dates saved successfully.');
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
+        ini_set('memory_limit', '512M');
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $monthlyPensionDisbursemenetQuery = MonthlyPensionDisbursemenet::with([
+            'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
+        ]);
+
+        $allGps = collect();
+        $allWards = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            $monthlyPensionDisbursemenetQuery->where('block_id', $user->posted_block);
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('block_id', $user->posted_block)->where('is_active', 'active')->get();
+        } elseif ($userRole == 5) {
+            $monthlyPensionDisbursemenetQuery->where('municipality_id', $user->posted_municipality);
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('municipal_area_code', $user->posted_municipality)->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->where('is_active', 'active')->pluck('municipality_id');
+
+            $monthlyPensionDisbursemenetQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->whereIn('municipal_area_code', $municipalityIds)->where('is_active', '1')->get();
+        } elseif (in_array($userRole, [9, 11])) {
+            $monthlyPensionDisbursemenetQuery->where('district_id', $user->posted_district);
+
+            $allGps = Grampanchayat::with(['district', 'block'])
+            ->where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+            $allWards = WardMaster::with(['district', 'municipality'])
+            ->where('district_code', $user->posted_district)->where('is_active', '1')->get();
+        }
+
+        $monthlyPension = $monthlyPensionDisbursemenetQuery->get();
+
+        $submittedGpIds = $monthlyPension->pluck('gp_id')->filter()->unique();
+        $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
+
+        $pendingGps = $allGps->whereNotIn('gp_id', $submittedGpIds)->map(function ($gp) {
+            return (object)[
+                'id' => null,
+                'district' => $gp->district,
+                'block' => $gp->block,
+                'grampanchayat' => $gp,
+                'municipality' => null,
+                'ward' => null,
+                'staff_address_type' => 1,
+                'for_the_month' => null,
+                'disbursement_start_date' => null,
+                'no_of_normal_pensioners' => null,
+                'no_of_ep_pensioners' => null,
+            ];
+        });
+
+        $pendingWards = $allWards->whereNotIn('ward_code', $submittedWardIds)->map(function ($ward) {
+            return (object)[
+                'id' => null,
+                'district' => $ward->district,
+                'block' => null,
+                'grampanchayat' => null,
+                'municipality' => $ward->municipality,
+                'ward' => $ward,
+                'staff_address_type' => 2,
+                'for_the_month' => null,
+                'disbursement_start_date' => null,
+                'no_of_normal_pensioners' => null,
+                'no_of_ep_pensioners' => null,
+                'disbursement_started' => null,
+            ];
+        });
+
+        $combined = $monthlyPension
+        ->concat($pendingGps)
+        ->concat($pendingWards);
+
+        $monthlyPensionDisbursemenet = $combined->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })->values();
+
+        return view('dashboard.pension.monthly_pension_disbursement_report', compact('monthlyPensionDisbursemenet', 'startDate', 'endDate', 'forTheMonth'));
     }
 
 
