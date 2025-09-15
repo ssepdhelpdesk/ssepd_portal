@@ -82,6 +82,7 @@
                         @can('pension-create')
                         <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Monthly Pension Disbursement</a></li>
                         @endcan                        
                      </ul>
                   </li>

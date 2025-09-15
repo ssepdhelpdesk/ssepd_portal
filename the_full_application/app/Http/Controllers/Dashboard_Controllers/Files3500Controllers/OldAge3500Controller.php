@@ -204,7 +204,6 @@ class OldAge3500Controller extends Controller
                 $village = NULL;
                 $village_id = NULL;
             }
-            //return $block_or_ulb_id;
 
             OldAge3500Pensioner::where('id', $id)->update([
                 'block_or_ulb' => $block_or_ulb,

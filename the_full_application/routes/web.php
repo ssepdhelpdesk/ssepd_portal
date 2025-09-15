@@ -14,7 +14,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     SpecialSchoolController,
     SpecialSchoolConstructionController,
     PensionFundsRequirementsController,
-    DdrcController
+    DdrcController,
+    PensionMonthlyDisbursementController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -239,6 +240,14 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('ddrc-check-staff-aadhar', 'ddrc_check_staff_aadhar')->name('ddrc_check_staff_aadhar');
         Route::get('ddrc-check-staff-udidno', 'ddrc_check_staff_udidno')->name('ddrc_check_staff_udidno');
+    });
+
+    Route::prefix('monthlyPensionDisbursement')->name('monthlypensiondisbursement.')->controller(PensionMonthlyDisbursementController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::post('staff_store', 'staff_store')->name('staff_store');
+        Route::get('{id}/view_staff_details', 'view_staff_details')->name('view_staff_details');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {
