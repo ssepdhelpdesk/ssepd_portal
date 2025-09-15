@@ -74,6 +74,8 @@ class PensionMonthlyDisbursementController extends Controller
         $alreadySubmitted = MonthlyPensionDisbursemenet::whereIn('gp_id', $gpIds)
         ->orWhereIn('ward_id', $wardIds)
         ->where('for_the_month', $forTheMonth)
+        ->where('is_active', 'active')
+        ->where('status', 1)
         ->exists();
 
         if ($alreadySubmitted) {
