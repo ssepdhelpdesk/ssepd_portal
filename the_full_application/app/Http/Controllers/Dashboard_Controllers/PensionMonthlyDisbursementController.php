@@ -68,8 +68,8 @@ class PensionMonthlyDisbursementController extends Controller
             return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
         }
 
-        $gpIds   = $gpWardList->pluck('gp_id')->toArray();
-        $wardIds = $gpWardList->pluck('ward_id')->toArray();
+        $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
+        $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
 
         $alreadySubmitted = MonthlyPensionDisbursemenet::whereIn('gp_id', $gpIds)
         ->orWhereIn('ward_id', $wardIds)
@@ -159,7 +159,7 @@ class PensionMonthlyDisbursementController extends Controller
                     'is_active'                => 'active',
                     'created_date'             => now()->setTimezone('Asia/Kolkata')->toDateString(),
                     'created_time'             => now()->setTimezone('Asia/Kolkata')->toTimeString(),
-                    'created_by'               => $user->id,
+                    'created_by'               => $user->user_table_id,
                     'status'                   => 1,
                 ]);
             }
