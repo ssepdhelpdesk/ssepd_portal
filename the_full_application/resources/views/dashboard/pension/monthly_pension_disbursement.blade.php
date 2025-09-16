@@ -94,7 +94,7 @@ Pension || Funds Requiremt
                         <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                            <thead>
                               <tr>
-                                 <th>Sl No</th>
+                                 <!-- <th>Sl No</th> -->
                                  @if($user->role_name == 'BSSO')
                                  <th>GP Name</th>
                                  @elseif($user->role_name == 'MEO')
@@ -109,7 +109,7 @@ Pension || Funds Requiremt
                            <tbody>
                               @forelse($gp_ward_id as $index => $gpward)
                               <tr>
-                                 <td>{{ $index + 1 }}</td>
+                                 <!-- <td>{{ $index + 1 }}</td> -->
                                  <td>
                                     <div class="col-md-3">                              
                                        @if($user->role_name == 'BSSO')
