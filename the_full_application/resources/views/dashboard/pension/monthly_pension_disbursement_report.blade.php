@@ -113,9 +113,8 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                            </button>
                            <div class="dropdown-menu">
                               @if(!empty($monthlyPensionDetails->id))
-                              @can('pension-edit')
                               <a class="dropdown-item" href="{{ route('admin.monthlypensiondisbursement.edit', $monthlyPensionDetails->id) }}">Edit</a>
-                              @endcan
+                              
                               @can('pension-delete')
                               <a class="dropdown-item" href="" id="delete">Delete</a>
                               @endcan
