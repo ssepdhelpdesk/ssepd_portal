@@ -82,7 +82,7 @@
                         @can('pension-create')
                         <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Monthly Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Daily Pension Disbursement</a></li>
                         @endcan                        
                      </ul>
                   </li>
@@ -128,8 +128,8 @@
                         @can('pension-access')
                         <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Monthly Pension Disbursement</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report_abstract')}}">Monthly Pension Disbursement Abstract</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report_abstract')}}">Daily Pension Disbursement Abstract</a></li>
                         @endcan                        
                      </ul>
                   </li>

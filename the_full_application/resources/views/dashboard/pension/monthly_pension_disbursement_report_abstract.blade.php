@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Block/ULB wise Pension Disbursement Details for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -32,7 +32,7 @@ Pension || Block/ULB wise Pension Disbursement Details for the month - {{$forThe
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">Block/ULB wise Pension Disbursement Details for the month - {{$forTheMonth}}</h4>
+            <h4 class="card-title">GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}}</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
              <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">

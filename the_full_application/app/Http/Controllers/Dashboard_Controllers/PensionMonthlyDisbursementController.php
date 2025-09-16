@@ -83,7 +83,7 @@ public function index()
     ->exists();
 
     if ($alreadySubmitted) {
-        return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth);
+        return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth . '. If any changes are required, then go to Daily Pension Disbursement under the Report section and Edit.');
     }
 
     return view('dashboard.pension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
