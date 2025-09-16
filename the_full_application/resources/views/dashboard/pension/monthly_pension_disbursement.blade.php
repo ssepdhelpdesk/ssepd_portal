@@ -143,7 +143,7 @@ Pension || Funds Requiremt
                                     <div class="col-md-3">
                                        <div class="form-group" id="disbursement_start_date_div">
                                           <input 
-                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="{{ old('disbursement_start_date') }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
+                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="{{ old('disbursement_start_date', \Carbon\Carbon::now()->format('Y-m-d')) }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
                                           <div id="disbursement_start_date_error"></div>
                                           @error('disbursement_start_date')
                                           <label class="error">{{ $message }}</label>
@@ -223,7 +223,7 @@ function showToast(message) {
 
     setTimeout(() => {
         toast.className = toast.className.replace("show", "");
-    }, 3000); // Toast disappears after 3 seconds
+    }, 3000);
 }
 
 function Validate() {
@@ -242,10 +242,10 @@ function Validate() {
 
     if (!isRowFilled) {
         showToast("Please fill at least one row with a valid date and beneficiaries count (normal or EP > 0).");
-        return false; // Prevent form submission
+        return false;
     }
 
-    return true; // Allow form submission
+    return true;
 }
 </script>
 @endsection
