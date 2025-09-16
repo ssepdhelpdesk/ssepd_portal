@@ -368,7 +368,7 @@ public function monthly_pension_disbursement_report_abstract()
     }
 
     $monthlyPension = $monthlyPensionQuery->where('is_active', 'active')
-    ->where('status', 1)->get();
+    ->where('status', 1)->where('disbursement_started', 1)->get();
 
     $submittedGpIds   = $monthlyPension->pluck('gp_id')->filter()->unique();
     $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
@@ -510,8 +510,45 @@ public function update(Request $request, string $id)
 /**
 * Remove the specified resource from storage.
 */
-public function destroy(string $id)
+public function delete(string $id)
 {
-//
+    $user = auth()->user();
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'monthly_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $startDate   = $dateConfig->start_date;
+    $endDate     = $dateConfig->end_date;
+    $forTheMonth = $dateConfig->for_the_month;
+    DB::beginTransaction();
+    try {
+        $monthly_pension_disbursemenet = MonthlyPensionDisbursemenet::findOrFail($id);
+        $monthly_pension_disbursemenet->disbursement_start_date = NULL;
+        $monthly_pension_disbursemenet->is_active = 'Inactive';
+        $monthly_pension_disbursemenet->status = '0';
+        $monthly_pension_disbursemenet->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+        $monthly_pension_disbursemenet->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+        $monthly_pension_disbursemenet->updated_by = $user->user_table_id;
+        $monthly_pension_disbursemenet->save();
+
+        DB::commit();
+        return redirect()->route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')->with('message', 'Pension Data Deleted Successfully');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🛑 Pension Disbursement form update failed.", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
 }
 }
