@@ -150,12 +150,12 @@ public function store(Request $request)
             $no_of_ep_pensioners     = (int) ($request->no_of_ep_pensioners[$index] ?? 0);
 
             if (!empty($startDate) && ($no_of_normal_pensioners > 0 || $no_of_ep_pensioners > 0)) {
-                DB::table('monthly_pension_disbursemenets')->insert([
+                \DB::table('monthly_pension_disbursemenets')->insert([
                     'for_the_month'           => $forTheMonth,
                     'disbursement_start_date' => $startDate,
                     'no_of_normal_pensioners' => $no_of_normal_pensioners,
                     'no_of_ep_pensioners'     => $no_of_ep_pensioners,
-                    'disbursement_started'    => 1,
+                    'disbursement_started'    => $startDate ? 1 : 0,
                     'staff_address_type'      => $staff_address_type,
                     'state_id'                => 228,
                     'district_id'             => $district_id,
