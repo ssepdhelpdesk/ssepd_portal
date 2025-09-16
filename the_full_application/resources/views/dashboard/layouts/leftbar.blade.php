@@ -129,6 +129,8 @@
                         <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
                         <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_submission')}}">Pension Disbursement – Daily Submissions</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
                         <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report_abstract')}}">Daily Pension Disbursement Abstract</a></li>
                         @endcan                        
                      </ul>

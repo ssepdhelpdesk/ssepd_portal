@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Funds Requiremt
+Pension || GP/Ward wise Pension Daily Disbursement
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -89,7 +89,7 @@ Pension || Funds Requiremt
                      @csrf
                      @method('post')                     
                      <div class="form-body">
-                        <h5 class="card-title">Block/ULB wise Pension Disbursement Date <small class="text-primary"></small></h5>
+                        <h5 class="card-title">GP/Ward wise Pension Daily Disbursement <small class="text-primary"></small></h5>
                         <hr>
                         <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                            <thead>

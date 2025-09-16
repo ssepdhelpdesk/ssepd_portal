@@ -250,6 +250,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('monthly_pension_disbursement_report', 'monthly_pension_disbursement_report')->name('monthly_pension_disbursement_report');
+        Route::get('pension_disbursement_daily_submission', 'pension_disbursement_daily_submission')->name('pension_disbursement_daily_submission');
+        Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
         Route::get('monthly_pension_disbursement_report_abstract', 'monthly_pension_disbursement_report_abstract')->name('monthly_pension_disbursement_report_abstract');        
     });
 
