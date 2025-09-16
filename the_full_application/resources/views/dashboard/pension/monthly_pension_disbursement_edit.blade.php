@@ -1,5 +1,5 @@
 @section('title') 
-Pension || GP/Ward wise Daily Basis Pension Disbursement
+Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -57,7 +57,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement
                      @csrf
                      @method('post')
                      <div class="form-body">
-                        <h5 class="card-title">GP/Ward wise Daily Basis Pension Disbursement <small class="text-primary"></small></h5>
+                        <h5 class="card-title">GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}} || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }} <small class="text-primary"></small></h5>
                         <hr>
                         <div class="row">
                            <div class="col-md-3">

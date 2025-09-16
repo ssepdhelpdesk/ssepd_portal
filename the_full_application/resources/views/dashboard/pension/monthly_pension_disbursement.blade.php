@@ -143,7 +143,7 @@ Pension || Funds Requiremt
                                     <div class="col-md-3">
                                        <div class="form-group" id="disbursement_start_date_div">
                                           <input 
-                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
+                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
                                           <div id="disbursement_start_date_error"></div>
                                           @error('disbursement_start_date')
                                           <label class="error">{{ $message }}</label>
