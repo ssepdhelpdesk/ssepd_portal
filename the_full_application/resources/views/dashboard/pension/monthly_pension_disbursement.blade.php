@@ -101,7 +101,7 @@ Pension || Funds Requiremt
                                  <th>Ward Name</th>
                                  @endif                                 
                                  <th>For the Month</th>
-                                 <th>Disbursement Start Date</th>
+                                 <th>Disbursement Date</th>
                                  <th>No of Beneficiaries Received Normal Pension</th>
                                  <th>No of Beneficiaries Received EP Pension</th>                                 
                               </tr>
