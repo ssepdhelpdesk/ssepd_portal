@@ -47,6 +47,7 @@ class PensionMonthlyDisbursementController extends Controller
     {
         $user = auth()->user();
         $userRole = $user->role_id;
+        $today_date = Carbon::today()->format('Y-m-d');
 
         $dateConfig = PensionFundRequirementDates::where('for_which_page', 'monthly_pension_disbursemenets')->where('status', 1)->first();
 
@@ -76,6 +77,7 @@ class PensionMonthlyDisbursementController extends Controller
             ->orWhereIn('ward_id', $wardIds);
         })
         ->where('for_the_month', $forTheMonth)
+        ->where('created_date', $today_date)
         ->where('is_active', 'active')
         ->where('status', 1)
         ->exists();
@@ -434,7 +436,7 @@ class PensionMonthlyDisbursementController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return $id;
     }
 
     /**
