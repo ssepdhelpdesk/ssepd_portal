@@ -597,6 +597,8 @@ public function delete(string $id)
     try {
         $monthly_pension_disbursemenet = MonthlyPensionDisbursemenet::findOrFail($id);
         $monthly_pension_disbursemenet->disbursement_start_date = NULL;
+        $monthly_pension_disbursemenet->no_of_normal_pensioners = 0;
+        $monthly_pension_disbursemenet->no_of_ep_pensioners = 0;
         $monthly_pension_disbursemenet->is_active = 'Inactive';
         $monthly_pension_disbursemenet->status = '0';
         $monthly_pension_disbursemenet->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
