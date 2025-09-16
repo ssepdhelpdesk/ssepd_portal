@@ -146,28 +146,30 @@ public function store(Request $request)
 
         foreach ($request->gp_ward_id as $index => $gpWardId) {
             $startDate = $request->disbursement_start_date[$index] ?? null;
-            $no_of_normal_pensioners = $request->no_of_normal_pensioners[$index] ?? 0;
-            $no_of_ep_pensioners = $request->no_of_ep_pensioners[$index] ?? 0;
+            $no_of_normal_pensioners = (int) ($request->no_of_normal_pensioners[$index] ?? 0);
+            $no_of_ep_pensioners     = (int) ($request->no_of_ep_pensioners[$index] ?? 0);
 
-            \DB::table('monthly_pension_disbursemenets')->insert([
-                'for_the_month'            => $forTheMonth,
-                'disbursement_start_date'  => $startDate,
-                'no_of_normal_pensioners'      => $no_of_normal_pensioners,
-                'no_of_ep_pensioners'      => $no_of_ep_pensioners,                
-                'disbursement_started'     => $startDate ? 1 : 0,
-                'staff_address_type'       => $staff_address_type,
-                'state_id'                 => 228,
-                'district_id'              => $district_id,
-                'municipality_id'          => $municipality_id,
-                'block_id'                 => $block_id,
-                'gp_id'                    => $user->role_name == 'BSSO' ? $gpWardId : null,
-                'ward_id'                  => $user->role_name == 'MEO' ? $gpWardId : null,
-                'is_active'                => 'active',
-                'created_date'             => now()->setTimezone('Asia/Kolkata')->toDateString(),
-                'created_time'             => now()->setTimezone('Asia/Kolkata')->toTimeString(),
-                'created_by'               => $user->user_table_id,
-                'status'                   => 1,
-            ]);
+            if (!empty($startDate) && ($no_of_normal_pensioners > 0 || $no_of_ep_pensioners > 0)) {
+                DB::table('monthly_pension_disbursemenets')->insert([
+                    'for_the_month'           => $forTheMonth,
+                    'disbursement_start_date' => $startDate,
+                    'no_of_normal_pensioners' => $no_of_normal_pensioners,
+                    'no_of_ep_pensioners'     => $no_of_ep_pensioners,
+                    'disbursement_started'    => 1,
+                    'staff_address_type'      => $staff_address_type,
+                    'state_id'                => 228,
+                    'district_id'             => $district_id,
+                    'municipality_id'         => $municipality_id,
+                    'block_id'                => $block_id,
+                    'gp_id'                   => $user->role_name == 'BSSO' ? $gpWardId : null,
+                    'ward_id'                 => $user->role_name == 'MEO' ? $gpWardId : null,
+                    'is_active'               => 'active',
+                    'created_date'            => now()->setTimezone('Asia/Kolkata')->toDateString(),
+                    'created_time'            => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+                    'created_by'              => $user->user_table_id,
+                    'status'                  => 1,
+                ]);
+            }
         }
         DB::commit();
 
@@ -244,7 +246,7 @@ public function monthly_pension_disbursement_report()
         ->where('district_code', $user->posted_district)->where('is_active', '1')->get();
     }
 
-    $monthlyPension = $monthlyPensionDisbursemenetQuery->where('is_active', 'active')->where('status', 1)->get();
+    $monthlyPension = $monthlyPensionDisbursemenetQuery->where('is_active', 'active')->where('status', 1)->where('disbursement_started', 1)->get();
 
     $submittedGpIds = $monthlyPension->pluck('gp_id')->filter()->unique();
     $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
@@ -262,6 +264,7 @@ public function monthly_pension_disbursement_report()
             'disbursement_start_date' => null,
             'no_of_normal_pensioners' => null,
             'no_of_ep_pensioners' => null,
+            'disbursement_started'     => 0,
         ];
     });
 
@@ -279,6 +282,7 @@ public function monthly_pension_disbursement_report()
             'no_of_normal_pensioners' => null,
             'no_of_ep_pensioners' => null,
             'disbursement_started' => null,
+            'disbursement_started'     => 0,
         ];
     });
 
