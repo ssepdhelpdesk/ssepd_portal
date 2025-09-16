@@ -204,7 +204,7 @@ public function monthly_pension_disbursement_report()
     $user = auth()->user();
     $userRole = $user->role_id;
 
-    $monthlyPensionDisbursemenetQuery = MonthlyPensionDisbursemenet::with([
+    $monthlyPensionDisbursemenetQuery = MonthlyPensionDisbursemenet::where('disbursement_started', 1)->where('is_active', 'active')->with([
         'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
     ]);
 
@@ -315,7 +315,7 @@ public function monthly_pension_disbursement_report_abstract()
     $user     = auth()->user();
     $userRole = $user->role_id;
 
-    $monthlyPensionQuery = MonthlyPensionDisbursemenet::with([
+    $monthlyPensionQuery = MonthlyPensionDisbursemenet::where('disbursement_started', 1)->where('is_active', 'active')->with([
         'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
     ]);
 
