@@ -72,7 +72,7 @@ public function index()
     $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
     $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
 
-    $alreadySubmitted = MonthlyPensionDisbursemenet::where(function ($q) use ($gpIds, $wardIds) {
+    /*$alreadySubmitted = MonthlyPensionDisbursemenet::where(function ($q) use ($gpIds, $wardIds) {
         $q->whereIn('gp_id', $gpIds)
         ->orWhereIn('ward_id', $wardIds);
     })
@@ -84,7 +84,7 @@ public function index()
 
     if ($alreadySubmitted) {
         return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth . '. If any changes are required, then go to Daily Pension Disbursement under the Report section and Edit.');
-    }
+    }*/
 
     return view('dashboard.pension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
 }
