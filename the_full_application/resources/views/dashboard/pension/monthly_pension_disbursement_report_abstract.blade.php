@@ -35,67 +35,77 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
             <h4 class="card-title">GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}}</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
-             <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
-               <thead>
-                  <tr>
-                   <th>Sl. No.</th>
-                   <th>District</th>
-                   <th>Address Type</th>
-                   <th>Block / ULB Name</th>
-                   <th>GPs Submitted</th>
-                   <th>Wards Submitted</th>
-                   <th>GPs Pending</th>
-                   <th>Wards Pending</th>
-                </tr>
-             </thead>
-             <tfoot>
-               <tr>
-                <th>Sl. No.</th>
-                <th>District</th>
-                <th>Address Type</th>
-                <th>Block / ULB Name</th>
-                <th>GPs Submitted</th>
-                <th>Wards Submitted</th>
-                <th>GPs Pending</th>
-                <th>Wards Pending</th>
-             </tr>
-          </tfoot>
-          <tbody>
-           @php
-           $totalProvidedGP   = 0;
-           $totalProvidedWard = 0;
-           $totalPendingGP    = 0;
-           $totalPendingWard  = 0;
-           @endphp
+               <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+                  <thead>
+                     <tr>
+                        <th>District</th>
+                        <th>Type</th>
+                        <th>Block / ULB</th>
+                        <th>Data Provided by GP</th>
+                        <th>Data Provided by Ward</th>
+                        <th>Data Not Provided by GP</th>
+                        <th>Data Not Provided by Ward</th>
+                        <th>No. of Normal Pensioners</th>
+                        <th>No. of EP Pensioners</th>
+                        <th>Total Pensioners</th>
+                     </tr>
+                  </thead>
+                  <tfoot>
+                     <tr>
+                        <th>District</th>
+                        <th>Type</th>
+                        <th>Block / ULB</th>
+                        <th>Data Provided by GP</th>
+                        <th>Data Provided by Ward</th>
+                        <th>Data Not Provided by GP</th>
+                        <th>Data Not Provided by Ward</th>
+                        <th>No. of Normal Pensioners</th>
+                        <th>No. of EP Pensioners</th>
+                        <th>Total Pensioners</th>
+                     </tr>
+                  </tfoot>
+                  <tbody>
+                     @foreach($summaryReport as $row)
+                     @if($row['district'] !== 'Grand Total')
+                     <tr>
+                        <td>{{ $row['district'] }}</td>
+                        <td>{{ $row['type'] }}</td>
+                        <td>{{ $row['block_or_ulb'] }}</td>
+                        <td>{{ $row['Data_provided_by_GP'] }}</td>
+                        <td>{{ $row['Data_provided_by_ward'] }}</td>
+                        <td>{{ $row['Data_not_provided_by_GP'] }}</td>
+                        <td>{{ $row['Data_not_provided_by_ward'] }}</td>
+                        <td>{{ $row['no_of_normal_pensioners'] ?? 0 }}</td>
+                        <td>{{ $row['no_of_ep_pensioners'] ?? 0 }}</td>
+                        <td>{{ ($row['no_of_normal_pensioners'] ?? 0) + ($row['no_of_ep_pensioners'] ?? 0) }}</td>
+                     </tr>
+                     @endif
+                     @endforeach
 
-           @forelse($summaryReport as $index => $row)
-           @php
-           $totalProvidedGP   += $row['Data_provided_by_GP'];
-           $totalProvidedWard += $row['Data_provided_by_ward'];
-           $totalPendingGP    += $row['Data_not_provided_by_GP'];
-           $totalPendingWard  += $row['Data_not_provided_by_ward'];
-           @endphp
-           <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $row['district'] }}</td>
-            <td>{{ $row['type'] }}</td>
-            <td>{{ $row['block_or_ulb'] }}</td>
-            <td>{{ $row['Data_provided_by_GP'] }}</td>
-            <td>{{ $row['Data_provided_by_ward'] }}</td>
-            <td>{{ $row['Data_not_provided_by_GP'] }}</td>
-            <td>{{ $row['Data_not_provided_by_ward'] }}</td>
-         </tr>
-         @empty
-         <tr>
-            <td colspan="8" class="text-center">No records found</td>
-         </tr>
-         @endforelse                
-      </tbody>
-   </table>
-</div>
-</div>
-</div>
-</div>
+                     {{-- Always append Grand Total row at bottom --}}
+                     @php
+                     $grandTotal = collect($summaryReport)->firstWhere('district', 'Grand Total');
+                     @endphp
+                     @if($grandTotal)
+                     <tr style="font-weight: bold; background: #f5f5f5;">
+                        <td>{{ $grandTotal['district'] }}</td>
+                        <td>{{ $grandTotal['type'] }}</td>
+                        <td>{{ $grandTotal['block_or_ulb'] }}</td>
+                        <td>{{ $grandTotal['Data_provided_by_GP'] }}</td>
+                        <td>{{ $grandTotal['Data_provided_by_ward'] }}</td>
+                        <td>{{ $grandTotal['Data_not_provided_by_GP'] }}</td>
+                        <td>{{ $grandTotal['Data_not_provided_by_ward'] }}</td>
+                        <td>{{ $grandTotal['no_of_normal_pensioners'] ?? 0 }}</td>
+                        <td>{{ $grandTotal['no_of_ep_pensioners'] ?? 0 }}</td>
+                        <td>{{ ($grandTotal['no_of_normal_pensioners'] ?? 0) + ($grandTotal['no_of_ep_pensioners'] ?? 0) }}</td>
+                     </tr>
+                     @endif
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 <!-- row -->
 <!-- ============================================================== -->
@@ -107,16 +117,23 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
 <script>
    $(function () {
       $('#example23').DataTable({
-         processing: true,
-         responsive: false,
-         ordering: true,
-         scrollX: true,
-         lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-         dom: 'Blfrtip',
-         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-         ]
-      });
+        processing: true,
+        responsive: false,
+        ordering: true,
+        scrollX: true,
+        lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        drawCallback: function(settings) {
+          let api = this.api();
+          let $grandTotalRow = api.rows().nodes().to$().filter(function() {
+            return $(this).find('td:first').text().trim() === 'Grand Total';
+         });
+          if ($grandTotalRow.length) {
+            $grandTotalRow.appendTo($(api.table().body())); // push to bottom
+         }
+      }
+   });
       $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
    });   
 </script>
