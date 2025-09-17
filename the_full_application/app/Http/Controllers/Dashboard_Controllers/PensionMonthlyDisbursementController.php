@@ -86,7 +86,7 @@ if ($alreadySubmitted) {
 return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth . '. If any changes are required, then go to Daily Pension Disbursement under the Report section and Edit.');
 }
 
-return view('dashboard.pension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
+return view('dashboard.pension.monthlypension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
 }*/
 
 public function index()
@@ -149,7 +149,7 @@ if ($gp_ward_id->isEmpty()) {
 return redirect()->back()->with('error', 'You have already submitted the details for ' . $forTheMonth . ' (for today). If any changes are required, please go to Daily Pension Disbursement under the Report section and Edit.');
 }*/
 
-return view('dashboard.pension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
+return view('dashboard.pension.monthlypension.monthly_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
 }
 
 
@@ -260,7 +260,9 @@ public function store(Request $request)
         }
         DB::commit();
 
-        return redirect()->back()->with('success', 'Pension disbursement dates saved successfully.');
+        //return redirect()->back()->with('success', 'Pension disbursement dates saved successfully.');
+        return redirect()->route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')->with('message', 'Pension disbursement dates saved successfully.');
+        
     } catch (\Exception $e) {
         DB::rollBack();
         \Log::error("🛑 Pension Disbursement Authority form update failed", [
@@ -383,7 +385,7 @@ public function monthly_pension_disbursement_report()
         return $item->district->district_name ?? '';
     })->values();
 
-    return view('dashboard.pension.monthly_pension_disbursement_report', compact('monthlyPensionDisbursemenet', 'startDate', 'endDate', 'forTheMonth'));
+    return view('dashboard.pension.monthlypension.monthly_pension_disbursement_report', compact('monthlyPensionDisbursemenet', 'startDate', 'endDate', 'forTheMonth'));
 }
 
 /*public function monthly_pension_disbursement_report_abstract()
@@ -666,7 +668,7 @@ public function monthly_pension_disbursement_report_abstract()
 
     $summaryReport->push($grandTotals);
 
-    return view('dashboard.pension.monthly_pension_disbursement_report_abstract', compact(
+    return view('dashboard.pension.monthlypension.monthly_pension_disbursement_report_abstract', compact(
         'summaryReport',
         'startDate',
         'endDate',
@@ -674,8 +676,6 @@ public function monthly_pension_disbursement_report_abstract()
         'monthlyPension'
     ));
 }
-
-
 
 /**
 * Display the specified resource.
@@ -886,7 +886,7 @@ public function pension_disbursement_daily_submission()
     ->orderBy('district_id')
     ->get();
 
-    return view('dashboard.pension.monthly_pension_disbursement_report', compact(
+    return view('dashboard.pension.monthlypension.monthly_pension_disbursement_report', compact(
         'monthlyPensionDisbursemenet',
         'startDate',
         'endDate',
@@ -1016,7 +1016,7 @@ public function pension_disbursement_daily_not_submission()
     })
     ->values();
 
-    return view('dashboard.pension.monthly_pension_disbursement_report', compact(
+    return view('dashboard.pension.monthlypension.monthly_pension_disbursement_report', compact(
         'monthlyPensionDisbursemenet',
         'startDate',
         'endDate',

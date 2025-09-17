@@ -217,35 +217,55 @@ Pension || GP/Ward wise Pension Daily Disbursement
 @section('script')
 <script>
    function showToast(message) {
-     const toast = document.getElementById("toast");
-     toast.innerText = message;
-     toast.className = "toast show";
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.className = "toast show";
 
-     setTimeout(() => {
-       toast.className = toast.className.replace("show", "");
-    }, 3000);
-  }
+  setTimeout(() => {
+    toast.className = toast.className.replace("show", "");
+  }, 3000);
+}
 
-  function Validate() {
-     let rows = document.querySelectorAll("#example23 tbody tr");
-     let isRowFilled = false;
+function Validate() {
+  let rows = document.querySelectorAll("#example23 tbody tr");
+  let isValid = true;
 
-     rows.forEach((row) => {
-       let normal = parseInt(row.querySelector("input[name='no_of_normal_pensioners[]']").value) || 0;
-       let ep = parseInt(row.querySelector("input[name='no_of_ep_pensioners[]']").value) || 0;
-       let date = row.querySelector("input[name='disbursement_start_date[]']").value;
+  rows.forEach((row, index) => {
+    let normalInput = row.querySelector("input[name='no_of_normal_pensioners[]']");
+    let epInput = row.querySelector("input[name='no_of_ep_pensioners[]']");
+    let dateInput = row.querySelector("input[name='disbursement_start_date[]']");
 
-       if (date !== "" && (normal > 0 || ep > 0)) {
-         isRowFilled = true;
+    let normal = normalInput.value.trim();
+    let ep = epInput.value.trim();
+    let date = dateInput.value.trim();
+
+    // Rule 1: If date is filled, then either normal > 0 or ep > 0 must be given
+    if (date !== "") {
+      if ((parseInt(normal) || 0) === 0 && (parseInt(ep) || 0) === 0) {
+        showToast(`Row ${index + 1}: Please provide either Normal or EP pensioners when date is filled.`);
+        isValid = false;
+        return false; // break out of forEach
       }
-   });
-
-     if (!isRowFilled) {
-       showToast("Please fill at least one row with a valid date and beneficiaries count (normal or EP > 0).");
-       return false;
     }
 
-    return true;
- }
+    // Rule 2: Check number format (only "0" allowed, but no leading zero in multi-digit numbers)
+    const numberPattern = /^(0|[1-9][0-9]*)$/;
+
+    if (normal !== "" && !numberPattern.test(normal)) {
+      showToast(`Row ${index + 1}: Invalid Normal Pensioners count. Only 0 or numbers without leading zeros allowed.`);
+      isValid = false;
+      return false;
+    }
+
+    if (ep !== "" && !numberPattern.test(ep)) {
+      showToast(`Row ${index + 1}: Invalid EP Pensioners count. Only 0 or numbers without leading zeros allowed.`);
+      isValid = false;
+      return false;
+    }
+  });
+
+  return isValid;
+}
+
 </script>
 @endsection
