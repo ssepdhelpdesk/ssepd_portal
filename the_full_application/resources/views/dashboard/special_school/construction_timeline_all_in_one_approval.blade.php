@@ -87,7 +87,7 @@ Special School || Construction Progress Details
                                     @foreach($special_school_construction as $data)
                                     <div class="sl-item">
                                        <div class="sl-left">
-                                          <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" 
+                                          {{ $loop->iteration }}<img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" 
                                              alt="user" class="img-circle" />
                                        </div>
                                        <div class="sl-right">
