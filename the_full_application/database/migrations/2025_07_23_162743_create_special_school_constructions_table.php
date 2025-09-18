@@ -55,6 +55,7 @@ return new class extends Migration
             $table->string('is_active')->default('active');
             $table->tinyInteger('approve_status')->default(0);
             $table->string('approver_remarks')->nullable();
+            $table->date('approved_date')->nullable();
             $table->date('created_date');
             $table->time('created_time');
             $table->foreignId('created_by');
