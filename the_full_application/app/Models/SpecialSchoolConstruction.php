@@ -46,6 +46,10 @@ class SpecialSchoolConstruction extends Model implements Auditable
         return $this->belongsTo(Municipality::class, 'municipality_id', 'municipality_id');
     }
 
+    public function ward() {
+        return $this->belongsTo(WardMaster::class, 'ward_id', 'ward_code');
+    }
+
     public function specialschool() {
         return $this->belongsTo(SpecialSchool::class, 'special_school_id', 'special_school_id');
     }
