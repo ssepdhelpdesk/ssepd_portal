@@ -195,6 +195,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('construction_timeline_store', 'construction_timeline_store')->name('construction_timeline_store');
         Route::get('{id}/approve_construction_status', 'approve_construction_status')->name('approve_construction_status');
         Route::post('{id}/approve_construction_status_store', 'approve_construction_status_store')->name('approve_construction_status_store');
+        Route::get('all_in_one_approval', 'all_in_one_approval')->name('all_in_one_approval');
     });
 
     Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
@@ -222,6 +223,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::get('index_block_ulb', 'index_block_ulb')->name('index_block_ulb');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');

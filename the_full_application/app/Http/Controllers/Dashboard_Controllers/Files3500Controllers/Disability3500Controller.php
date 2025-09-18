@@ -115,6 +115,77 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500data');
     }
 
+    public function index_block_ulb(Request $request)
+    {        
+        
+            $user = auth()->user();
+            $userRole = $user->role_id;
+
+            $query = Disability3500Pensioner::query();
+
+            if ($userRole == 4) {
+                $postedBlock = $user->posted_block;
+
+                $activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
+                ->where('is_active', 'active')
+                ->pluck('gp_id')
+                ->toArray();
+
+                $query->where('block_id', $postedBlock)
+                ->where('status', 'Active');
+
+                if (!empty($activeGPIds)) {
+                    $query->whereNotIn('gp_id', $activeGPIds);
+                }
+            }
+
+            if ($userRole == 5) {
+                $postedMunicipality = $user->posted_municipality;
+
+                $activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
+                ->where('is_active', '1')
+                ->pluck('ward_code')
+                ->toArray();
+
+
+                $query->where('municipality_id', $postedMunicipality)
+                ->where('status', 'Active')->get();
+
+                if (!empty($activeWardIds)) {
+                    $query->whereNotIn('ward_id', $activeWardIds);
+                }
+            }
+            
+
+            return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('complete_address', function ($row) {
+                $parts = array_filter([
+                    $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
+                    $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
+                    $row->village !== 'Not Provided By District' ? $row->village : ''
+                ]);
+
+                return implode(', ', $parts);
+            })
+            ->addColumn('action', function ($row) {
+                $buttons = '';
+
+                if (auth()->user()->can('pension-3500-edit')) {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
+                    $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+                }
+
+                return $buttons;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+        
+
+        return view('dashboard.benf_3500_files.disability3500data');
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */

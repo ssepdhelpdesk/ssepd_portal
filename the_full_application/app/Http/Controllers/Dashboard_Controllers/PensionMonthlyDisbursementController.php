@@ -510,7 +510,7 @@ $summary[$key]['Data_not_provided_by_ward'] = $pendingCount;
 
 $summaryReport = $summary->values();
 
-return view('dashboard.pension.monthly_pension_disbursement_report_abstract', compact(
+return view('dashboard.pension.monthlypension.monthly_pension_disbursement_report_abstract', compact(
 'summaryReport',
 'startDate',
 'endDate',
@@ -703,7 +703,7 @@ public function edit(string $id)
     $forTheMonth = $dateConfig->for_the_month;
     $monthly_pension_disbursemenet = MonthlyPensionDisbursemenet::findOrFail($id);
 
-    return view('dashboard.pension.monthly_pension_disbursement_edit', compact('monthly_pension_disbursemenet', 'startDate', 'endDate', 'forTheMonth',));
+    return view('dashboard.pension.monthlypension.monthly_pension_disbursement_edit', compact('monthly_pension_disbursemenet', 'startDate', 'endDate', 'forTheMonth',));
 }
 
 /**

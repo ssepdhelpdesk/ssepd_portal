@@ -392,6 +392,10 @@ public function approve_construction_status_store(Request $request, $id)
     }
 }
 
+public function all_in_one_approval()
+{
+//
+}
 
 /**
 * Display the specified resource.
