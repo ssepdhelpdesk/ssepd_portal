@@ -62,10 +62,13 @@ Special School || Construction Progress Details
                <div id="alert-container"></div>
                <div class="col-sm-12 col-xs-12">
                   <div class="col-lg-8 col-xlg-9 col-md-7">
-                     <div class="card">
+                     <button onclick="printDiv('printSection')" class="btn btn-primary mb-3">
+   <i class="fa fa-print"></i> Print Construction Status
+</button>
+                     <div id="printSection" class="card">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs profile-tab" role="tablist">
-                           <li class="nav-item"> <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab">Timeline</a> </li>
+                           <li class="nav-item"> <a class="nav-link active" data-bs-toggle="tab" href="#home" role="tab">Special School Toilet Construction Status</a> </li>
                         </ul>
                         <!-- Tab panes -->
                         <div class="tab-content">
@@ -88,9 +91,9 @@ Special School || Construction Progress Details
                                                 @endphp Phase Updated On</a>
                                              <span class="sl-date">{{ \Carbon\Carbon::parse($data->created_date)->format('d F Y') }}</span>
                                              <p>
-                                                Management Name 
+                                                Management Name: 
                                                 <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
-                                                School Name 
+                                                School Name: 
                                                 <a href="javascript:void(0)">{{ $data->special_school_name }},</a>
                                                  Address:
                                                 @if($data->school_address_type == 1)
@@ -150,14 +153,10 @@ Special School || Construction Progress Details
                                     <div class="sl-item">
                                        <div class="sl-left"> <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" alt="user" class="img-circle" /> </div>
                                        <div class="sl-right">
-                                          <div>
-                                             <a href="javascript:void(0)" class="link">Upload the identified location for toilet construction.</a><small style="color: red;">Please use Google Chrome to fill out this form. Other browsers may not be supported.</small> <span class="sl-date"></span>
-                                             <div class="m-t-20 row">
-                                             </div>
-                                          </div>
+                                          
                                        </div>
                                     </div>
-                                    <hr>
+                                    
                                     @endcan
                                  </div>
                               </div>
@@ -177,4 +176,15 @@ Special School || Construction Progress Details
 </div>
 @endsection 
 @section('script')
+<script>
+   function printDiv(divId) {
+      var printContents = document.getElementById(divId).innerHTML;
+      var originalContents = document.body.innerHTML;
+
+      document.body.innerHTML = printContents;
+      window.print();
+      document.body.innerHTML = originalContents;
+      location.reload(); // reload to restore JS & styles
+   }
+</script>
 @endsection
