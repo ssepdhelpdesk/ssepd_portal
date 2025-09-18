@@ -109,6 +109,7 @@ public function create()
 public function construction_timeline_store(Request $request)
 {
     $validationRules = [
+        'new_or_existing' => 'required',
         'file_construction_image_1' => 'required|mimes:jpg,jpeg,png|max:3072',
         'latitude_1' => 'required|numeric|between:-90,90',
         'longitude_1' => 'required|numeric|between:-180,180',
@@ -127,6 +128,7 @@ public function construction_timeline_store(Request $request)
         'any_remarks' => 'nullable|string|max:1000',
     ];
     $customMessages = [
+        'new_or_existing.required' => 'Please select any option.',
         'file_construction_image_1.required' => 'Geo tagged image 1 is required.',
         'file_construction_image_1.mimes' => 'Image 1 must be a JPG, JPEG, or PNG file.',
         'file_construction_image_1.max' => 'Image 1 size must not exceed 3MB.',
@@ -274,6 +276,7 @@ public function construction_timeline_store(Request $request)
         $school_construction->special_school_id = $specialSchool->special_school_id;
         $school_construction->special_school_name = $specialSchool->special_school_name;
         $school_construction->school_system_gen_reg_no = $specialSchool->school_system_gen_reg_no;
+        $school_construction->new_or_existing = $validatedData['new_or_existing'];
         $school_construction->file_construction_image_1 = $constructionStoredPath_1;
         $school_construction->latitude_1 = $validatedData['latitude_1'];
         $school_construction->longitude_1 = $validatedData['longitude_1'];
@@ -352,6 +355,7 @@ public function approve_construction_status_store(Request $request, $id)
         $special_school->update([
             'approve_status'    => $validatedData['approve_status'],
             'approver_remarks'  => $validatedData['approver_remarks'],
+            'approved_date'     => now()->setTimezone('Asia/Kolkata')->toDateString(),
         ]);
 
         $applicationstagehistory = new ApplicationStageHistory();

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('special_school_id')->index('idx_special_school');
             $table->string('special_school_name', 255);
             $table->string('school_system_gen_reg_no', 255);
+            $table->tinyInteger('new_or_existing')->default(0);
             $table->string('file_construction_image_1');
             $table->decimal('latitude_1', 10, 7);
             $table->decimal('longitude_1', 10, 7);

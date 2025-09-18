@@ -54,6 +54,7 @@ Special School || List
                            <th>School Name</th>
                            <th>Staff Info Status</th>
                            <th>Toilet Construction</th>
+                           <th>Construction Type</th>
                            <th>Status</th>
                         </tr>
                      </thead>
@@ -65,6 +66,7 @@ Special School || List
                            <th>School Name</th>
                            <th>Staff Info Status</th>
                            <th>Toilet Construction</th>
+                           <th>Construction Type</th>
                            <th>Status</th>
                         </tr>
                      </tfoot>
@@ -104,10 +106,23 @@ Special School || List
                        $construction = DB::table('special_school_constructions')
                        ->where('special_school_id', $schoolDetails->special_school_id)
                        ->where('status', 1)
-                       ->select('approve_status', 'approved_date')
+                       ->select('approve_status', 'approved_date', 'new_or_existing')
                        ->first();
                        @endphp
 
+                       @if($construction)
+                       @if($construction->new_or_existing == 0)
+                       Not Submitted                       
+                       @elseif($construction->new_or_existing == 1)
+                       New
+                       @elseif($construction->new_or_existing == 2)
+                       Existing
+                       @endif
+                       @else
+                       <span class="text-muted">Not Submitted</span>
+                       @endif
+                    </td>
+                    <td>
                        @if($construction)
                        @if($construction->approve_status == 0)
                        Pending for Approval                       
@@ -123,7 +138,7 @@ Special School || List
                  </tr>
                  @empty
                  <tr>
-                    <td colspan="6" class="text-center">No records found.</td>
+                    <td colspan="8" class="text-center">No records found.</td>
                  </tr>
                  @endforelse
               </tbody>

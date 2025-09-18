@@ -145,6 +145,20 @@ Special School || Construction Progress Details
                                                       <div class="row">
                                                          <input type="hidden" class="form-control" id="system_stored_latitude" name="system_stored_latitude" value="{{ old('system_stored_latitude') }}">
                                                          <input type="hidden" class="form-control" id="system_stored_longitude" name="system_stored_longitude" value="{{ old('system_stored_longitude') }}">
+                                                         <div class="col-md-12">
+                                                            <div class="form-group" id="new_or_existing_div">
+                                                            <label for="new_or_existing" class="form-label">Construction Type</label>
+                                                            <select class="form-control" name="new_or_existing" id="new_or_existing" required>
+                                                               <option value="">--Select--</option>
+                                                               <option value="1">New</option>
+                                                               <option value="2">Existing</option>
+                                                            </select>
+                                                            <div class="invalid-feedback">Please select an action (New or Existing).</div>
+                                                            @error('new_or_existing')
+                                                            <label class="error">{{ $message }}</label>
+                                                            @enderror
+                                                         </div>
+                                                         </div>
                                                          <div class="col-md-4">
                                                             <div class="form-group" id="file_construction_image_1_div">
                                                                <label class="form-label">Upload Geo tagged Image 1<span class="itsrequired"> *</span></label>
