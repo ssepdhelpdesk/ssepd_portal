@@ -394,7 +394,7 @@ public function approve_construction_status_store(Request $request, $id)
 
 public function all_in_one_approval()
 {
-    $special_school_construction = SpecialSchoolConstruction::where('status', 1)->orderBy('special_school_id')->get();
+    $special_school_construction = SpecialSchoolConstruction::where('status', 1)->orderBy('management_id', 'asc')->orderBy('special_school_id', 'asc')->get();
     return view('dashboard.special_school.construction_timeline_all_in_one_approval', compact('special_school_construction'));
 }
 

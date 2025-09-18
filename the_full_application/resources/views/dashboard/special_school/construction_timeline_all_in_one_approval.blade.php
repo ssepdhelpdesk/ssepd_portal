@@ -35,9 +35,6 @@ Special School || Construction Progress Details
       </div>
       <div class="col-md-5 align-self-center text-end">
          <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
-         @can('role-create')
-         <a href="{{ route('admin.roles.create') }}"><button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-success"><i class="fas fa-plus-square"></i> Add New</button></a>
-         @endcan
       </div>
    </div>
    <!-- ============================================================== -->
@@ -75,7 +72,7 @@ Special School || Construction Progress Details
                            <div class="tab-pane active" id="home" role="tabpanel">
                               <div class="card-body">
                                  <div class="profiletimeline">
-                                    @if ($special_school_construction && $special_school_construction->count() > 0)
+                                    @if($special_school_construction && $special_school_construction->count() > 0)
                                     @foreach($special_school_construction as $data)
                                     <div class="sl-item">
                                        <div class="sl-left">
@@ -91,6 +88,8 @@ Special School || Construction Progress Details
                                                 @endphp Phase Updated On</a>
                                              <span class="sl-date">{{ \Carbon\Carbon::parse($data->created_date)->format('d F Y') }}</span>
                                              <p>
+                                                Management Name 
+                                                <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
                                                 School Name 
                                                 <a href="javascript:void(0)">{{ $data->special_school_name }},</a>
                                                  Address:
