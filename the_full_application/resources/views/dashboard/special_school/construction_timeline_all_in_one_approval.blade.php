@@ -101,7 +101,7 @@ Special School || Construction Progress Details
                                              </a>
                                              <span class="sl-date">{{ \Carbon\Carbon::parse($data->created_date)->format('d F Y') }}</span>
                                              <p>
-                                                ID: {{ $data->id }},Management Name: <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
+                                                ID: {{ $data->id }}, Management Name: <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
                                                 School Name: <a href="javascript:void(0)">{{ $data->special_school_name }},</a>
                                                 Address:
                                                 @if($data->school_address_type == 1)
