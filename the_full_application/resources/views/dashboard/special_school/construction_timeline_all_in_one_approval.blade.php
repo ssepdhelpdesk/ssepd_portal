@@ -101,15 +101,11 @@ Special School || Construction Progress Details
                                              </a>
                                              <span class="sl-date">{{ \Carbon\Carbon::parse($data->created_date)->format('d F Y') }}</span>
                                              <p>
-                                                ID: {{ $data->id }}, Management Name: <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
+                                                Management Name: <a href="javascript:void(0)">{{ $data->special_school_management_name }},</a>
                                                 School Name: <a href="javascript:void(0)">{{ $data->special_school_name }},</a>
-                                                Address:
-                                                @if($data->school_address_type == 1)
-                                                <a href="javascript:void(0)">{{$data->village->village_name}}, {{$data->grampanchayat->gp_name}}, {{$data->district->district_name}}</a>
-                                                @elseif($data->school_address_type == 2)
-                                                <a href="javascript:void(0)">{{ optional($data->ward)->ward_name }}, {{$data->municipality->municipalities}}, {{$data->district->district_name}}</a>
-                                                @endif
+                                                Address: @if($data->school_address_type == 1)<a href="javascript:void(0)">{{$data->village->village_name}}, {{$data->grampanchayat->gp_name}}, {{$data->district->district_name}}</a>@elseif($data->school_address_type == 2)<a href="javascript:void(0)">{{ optional($data->ward)->ward_name }}, {{$data->municipality->municipalities}}, {{$data->district->district_name}}</a>@endif
                                              </p>
+                                             <p>Construction Type: <a href="javascript:void(0)">{{ $data->new_or_existing == 1 ? 'New' : ($data->new_or_existing == 2 ? 'Existing' : '') }}</a></p>
                                              <div class="row">
                                                 @for ($i = 1; $i <= 5; $i++)
                                                 @php
