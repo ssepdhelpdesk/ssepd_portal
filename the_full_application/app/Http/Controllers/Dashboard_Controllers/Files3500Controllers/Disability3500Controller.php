@@ -177,7 +177,7 @@ class Disability3500Controller extends Controller
 
             return DataTables::eloquent($query)
             ->addIndexColumn()
-            /*->addColumn('complete_address', function ($row) {
+            ->addColumn('complete_address', function ($row) {
                 $parts = array_filter([
                     $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
                     $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
@@ -185,7 +185,7 @@ class Disability3500Controller extends Controller
                 ]);
 
                 return implode(', ', $parts);
-            })*/
+            })
             ->addColumn('action', function ($row) {
                 $buttons = '';
 
