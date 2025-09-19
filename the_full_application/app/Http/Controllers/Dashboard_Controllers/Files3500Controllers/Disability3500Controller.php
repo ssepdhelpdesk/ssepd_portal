@@ -152,7 +152,7 @@ class Disability3500Controller extends Controller
                 ->where('status', 'Active');
 
                 if (!empty($activeGPIds)) {
-                    $query->whereNull('gp_id');
+                    $query->whereIn('gp_id', $activeGPIds);
                 }
             }
 
