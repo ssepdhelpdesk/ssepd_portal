@@ -171,9 +171,7 @@ class Disability3500Controller extends Controller
                 if (!empty($activeWardIds)) {
                     $query->whereNull('ward_id');
                 }
-
             }
-
 
             return DataTables::eloquent($query)
             ->addIndexColumn()
@@ -260,6 +258,7 @@ class Disability3500Controller extends Controller
                 'state' => 'required',
                 'district' => 'required',
                 'municipality' => 'required',
+                'ward' => 'required',
                 'pin' => 'required',
             ]);
         }
@@ -285,11 +284,11 @@ class Disability3500Controller extends Controller
                 $block_id = NULL;
                 $municipality_id = $validatedData['municipality'];
                 $block_or_ulb_id = $validatedData['municipality'];
-                $ward_master_name = WardMaster3500::where('district_code', $request->district)->where('municipal_area_code', $municipality_id)->inRandomOrder()->first();
-                $gp_or_ward = $ward_master_name ? $ward_master_name->ward_name : null;
+                $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
+                $gp_or_ward = $ward_master_name;
                 $gp_id = NULL;
-                $ward_id = $ward_master_name->ward_code;
-                $gp_or_ward_id = $ward_master_name->ward_code;
+                $ward_id = $validatedData['ward'];
+                $gp_or_ward_id = $validatedData['ward'];
                 $village = NULL;
                 $village_id = NULL;
             }

@@ -133,7 +133,7 @@ Special School || Staff Details
                               @enderror
                            </div>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                            <div class="form-group" id="gp_or_ward_div">
                               <label class="form-label">GP/Ward Name<span class="itsrequired"> *</span></label>
                               <input type="text" id="gp_or_ward" name="gp_or_ward" value="{{old('gp_or_ward', $disability3500Pensioner->gp_or_ward)}}" class="form-control" placeholder="Name of the Staff" readonly>
@@ -142,8 +142,8 @@ Special School || Staff Details
                               <label class="error">{{ $message }}</label>
                               @enderror
                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        </div> -->
+                        <!-- <div class="col-md-3">
                            <div class="form-group" id="village_div">
                               <label class="form-label">Village Name<span class="itsrequired"> *</span></label>
                               <input type="text" id="village" name="village" value="{{old('village', $disability3500Pensioner->village)}}" class="form-control" placeholder="Name of the Staff" readonly>
@@ -152,7 +152,7 @@ Special School || Staff Details
                               <label class="error">{{ $message }}</label>
                               @enderror
                            </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                            <div class="form-group" id="ngo_address_type_div">
                               <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
@@ -245,6 +245,7 @@ Special School || Staff Details
                   $('#grampanchayat-dropdown').html('<option value="">-- Select Grampanchayat --</option>');
                   $('#village-dropdown').html('<option value="">-- Select Village --</option>');
                   $('#municipality-dropdown').html('<option value="">-- Select Municipality --</option>');
+                  $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
                }
             });
          });
@@ -265,6 +266,7 @@ Special School || Staff Details
                   $.each(res.municipalities, function (key, value) {
                      $("#municipality-dropdown").append('<option value="' + value.municipality_id + '">' + value.municipality_name + '</option>');
                   });
+                  $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
                }
             });
          });
@@ -334,6 +336,28 @@ Special School || Staff Details
                }
             });
          });
+
+         $('#municipality-dropdown').on('change', function () {
+            var idMunicipality = this.value;
+            console.log(idMunicipality);
+            $("#ward-dropdown").html('');
+            $.ajax({
+                url: "{{url('dashboard/locations/fetch-ward')}}",
+                type: "POST",
+                data: {
+                    municipality_id: idMunicipality,
+                    _token: '{{csrf_token()}}'
+                },
+                dataType: 'json',
+                success: function (res) {
+                    $('#ward-dropdown').html('<option value="">-- Select Ward --</option>');
+                    $.each(res.wards, function (key, value) {
+                        $("#ward-dropdown").append('<option value="' + value
+                            .ward_code + '">' + value.ward_name + '</option>');
+                    });
+                }
+            });
+        });
       }
 
       radios.forEach(radio => {
@@ -469,6 +493,7 @@ Special School || Staff Details
          { id: 'state-dropdown', message: 'Please select State.' },
          { id: 'district-dropdown', message: 'Please select District.' },
          { id: 'municipality-dropdown', message: 'Please select Municipality.' },
+         { id: 'ward-dropdown', message: 'Please select Ward.' },
          { id: 'pin', message: 'Please provide PIN.' },
          { id: 'ngo_postal_address_at', message: 'Please provide At.' },
          { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
