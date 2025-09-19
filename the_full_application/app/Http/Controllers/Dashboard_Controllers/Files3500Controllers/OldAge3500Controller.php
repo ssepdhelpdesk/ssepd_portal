@@ -116,7 +116,7 @@ class OldAge3500Controller extends Controller
         return view('dashboard.benf_3500_files.oldage3500data');
     }
 
-    public function index_district_block_ulb(Request $request)
+    public function oldage_index_district_block_ulb(Request $request)
     {        
         if ($request->ajax()) {
             $user = auth()->user();
@@ -207,7 +207,7 @@ class OldAge3500Controller extends Controller
             ->make(true);
 
         }
-        return view('dashboard.benf_3500_files.disability3500dataDistBlockUlb');
+        return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
     }
 
     /**

@@ -75,7 +75,7 @@ Benf3500 || Index
      $('#example23').DataTable({
        processing: true,
        serverSide: true,
-       ajax: "{{ route('admin.disability3500data.index_district_block_ulb') }}",
+       ajax: "{{ route('admin.disability3500data.disability_index_district_block_ulb') }}",
        columns: [
         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
         { data: 'scheme_name', name: 'scheme_name' },

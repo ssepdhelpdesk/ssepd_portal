@@ -102,8 +102,8 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
                      <ul aria-expanded="false" class="collapse">
-                        <li><a href="{{route('admin.oldage3500data.index_district_block_ulb')}}">OldAge Pension</a></li>
-                        <li><a href="{{route('admin.disability3500data.index_district_block_ulb')}}">Disability Pension</a></li>
+                        <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OldAge Pension</a></li>
+                        <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">Disability Pension</a></li>
                         @can('pension-3500-list')
                         <!-- <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li> -->

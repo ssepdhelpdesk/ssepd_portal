@@ -116,7 +116,7 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500data');
     }
 
-    public function index_district_block_ulb(Request $request)
+    public function disability_index_district_block_ulb(Request $request)
     {        
         if ($request->ajax()) {
             $user = auth()->user();
