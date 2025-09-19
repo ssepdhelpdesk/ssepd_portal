@@ -19,13 +19,6 @@ Benf3500 || Index
          <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info">
             <i class="fas fa-arrow-alt-circle-left"></i> Go Back
          </button>
-         @can('user-create')
-         <a href="{{ route('admin.users.create') }}">
-            <button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-success">
-               <i class="fas fa-plus-square"></i> Add New
-            </button>
-         </a>
-         @endcan
       </div>
    </div>
    <div class="row">

@@ -1,5 +1,5 @@
 @section('title') 
-Special School || Staff Details
+Benf3500 || OldAge Address Update
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -133,7 +133,7 @@ Special School || Staff Details
                               @enderror
                            </div>
                         </div>
-                        <div class="col-md-3">
+                        <!-- <div class="col-md-3">
                            <div class="form-group" id="gp_or_ward_div">
                               <label class="form-label">GP/Ward Name<span class="itsrequired"> *</span></label>
                               <input type="text" id="gp_or_ward" name="gp_or_ward" value="{{old('gp_or_ward', $oldAge3500Pensioner->gp_or_ward)}}" class="form-control" placeholder="Name of the Staff" readonly>
@@ -152,7 +152,7 @@ Special School || Staff Details
                               <label class="error">{{ $message }}</label>
                               @enderror
                            </div>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                            <div class="form-group" id="ngo_address_type_div">
                               <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
