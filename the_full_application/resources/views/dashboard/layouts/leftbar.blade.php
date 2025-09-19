@@ -102,9 +102,10 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
                      <ul aria-expanded="false" class="collapse">
+                        @can('pension-3500-list')
                         <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">Disability Pension</a></li>
-                        @can('pension-3500-list')
+                        
                         <!-- <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li> -->
                         @endcan
@@ -138,7 +139,7 @@
                      </ul>
                   </li>
                   <li>
-                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">EP Pension</a>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-3500-access')
                         <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
