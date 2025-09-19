@@ -27,6 +27,7 @@ use DB;
 
 /*Controller Requirements*/
 use App\Models\Disability3500Pensioner;
+use App\Models\District3500;
 use App\Models\Blocks3500;
 use App\Models\Municipality3500;
 use App\Models\Grampanchyat3500;
@@ -115,13 +116,29 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500data');
     }
 
-    public function index_block_ulb(Request $request)
+    public function index_district_block_ulb(Request $request)
     {        
-        
+        if ($request->ajax()) {
             $user = auth()->user();
             $userRole = $user->role_id;
 
             $query = Disability3500Pensioner::query();
+
+            if ($userRole == 9) {
+                $postedDistrict = $user->posted_district;
+
+                $activeDistrictIds = District3500::where('district_id', $postedDistrict)
+                ->where('is_iap', 'a')
+                ->pluck('district_id')
+                ->toArray();
+
+                $query->where('district_id', $postedDistrict)
+                ->where('status', 'Active');
+
+                if (!empty($activeDistrictIds)) {
+                    $query->whereNull('gp_id')->OrwhereNull('ward_id');
+                }
+            }
 
             if ($userRole == 4) {
                 $postedBlock = $user->posted_block;
@@ -135,7 +152,7 @@ class Disability3500Controller extends Controller
                 ->where('status', 'Active');
 
                 if (!empty($activeGPIds)) {
-                    $query->whereNotIn('gp_id', $activeGPIds);
+                    $query->whereNull('gp_id');
                 }
             }
 
@@ -147,15 +164,14 @@ class Disability3500Controller extends Controller
                 ->pluck('ward_code')
                 ->toArray();
 
-
                 $query->where('municipality_id', $postedMunicipality)
                 ->where('status', 'Active')->get();
 
                 if (!empty($activeWardIds)) {
-                    $query->whereNotIn('ward_id', $activeWardIds);
+                    $query->whereNull('ward_id');
                 }
             }
-            
+
 
             return DataTables::eloquent($query)
             ->addIndexColumn()
@@ -180,7 +196,7 @@ class Disability3500Controller extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-        
+        }
 
         return view('dashboard.benf_3500_files.disability3500data');
     }

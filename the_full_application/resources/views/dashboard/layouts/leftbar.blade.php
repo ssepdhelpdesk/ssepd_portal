@@ -102,7 +102,7 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">₹3500 Pension</a>
                      <ul aria-expanded="false" class="collapse">
-                        <!-- <li><a href="{{route('admin.disability3500data.index_block_ulb')}}">₹3500 OldAge Pension</a></li> -->
+                        <li><a href="{{route('admin.disability3500data.index_district_block_ulb')}}">₹3500 OldAge Pension1</a></li>
                         @can('pension-3500-list')
                         <li><a href="{{route('admin.oldage3500data.index')}}">₹3500 OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index')}}">₹3500 Disability Pension</a></li>
