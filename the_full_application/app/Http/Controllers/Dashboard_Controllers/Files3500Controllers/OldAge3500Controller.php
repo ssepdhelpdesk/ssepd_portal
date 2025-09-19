@@ -197,7 +197,7 @@ class OldAge3500Controller extends Controller
                 $buttons = '';
 
                 if (auth()->user()->can('pension-3500-edit')) {
-                    $editUrl = route('admin.disability3500data.edit', $row->id);
+                    $editUrl = route('admin.oldage3500data.edit', $row->id);
                     $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
                 }
 
