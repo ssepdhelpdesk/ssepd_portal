@@ -167,11 +167,11 @@ class Disability3500Controller extends Controller
 
                 $query->where('municipality_id', $postedMunicipality)
                 ->where('status', 'Active');
-                return DataTables::eloquent($query)->make(true);
+                
                 if (!empty($activeWardIds)) {
                     $query->whereNull('ward_id');
                 }
-
+return DataTables::eloquent($query)->make(true);
             }
 
 
