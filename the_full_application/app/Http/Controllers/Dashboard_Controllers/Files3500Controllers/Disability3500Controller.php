@@ -136,7 +136,16 @@ class Disability3500Controller extends Controller
                 ->where('status', 'Active');
 
                 if (!empty($activeDistrictIds)) {
-                    $query->whereNull('gp_id')->OrwhereNull('ward_id');
+                    $query->where(function($q) {
+                        $q->where(function($sub) {
+                            $sub->whereNotNull('block_id')
+                            ->whereNull('gp_id');
+                        })
+                        ->orWhere(function($sub) {
+                            $sub->whereNotNull('municipality_id')
+                            ->whereNull('ward_id');
+                        });
+                    });
                 }
             }
 
