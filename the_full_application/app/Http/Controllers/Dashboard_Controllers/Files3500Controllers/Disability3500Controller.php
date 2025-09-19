@@ -118,7 +118,7 @@ class Disability3500Controller extends Controller
 
     public function index_district_block_ulb(Request $request)
     {        
-        if ($request->ajax()) {
+        /*if ($request->ajax()) {*/
             $user = auth()->user();
             $userRole = $user->role_id;
 
@@ -152,8 +152,9 @@ class Disability3500Controller extends Controller
                 ->where('status', 'Active');
 
                 if (!empty($activeGPIds)) {
-                    $query->whereIn('gp_id', $activeGPIds);
+                    $query->whereNull('gp_id');
                 }
+                
             }
 
             if ($userRole == 5) {
@@ -165,11 +166,12 @@ class Disability3500Controller extends Controller
                 ->toArray();
 
                 $query->where('municipality_id', $postedMunicipality)
-                ->where('status', 'Active')->get();
-
+                ->where('status', 'Active');
+                return DataTables::eloquent($query)->make(true);
                 if (!empty($activeWardIds)) {
                     $query->whereNull('ward_id');
                 }
+
             }
 
 
@@ -196,9 +198,9 @@ class Disability3500Controller extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-        }
 
-        return view('dashboard.benf_3500_files.disability3500data');
+        /*}*/
+        return view('dashboard.benf_3500_files.disability3500dataDistBlockUlb');
     }
 
 
