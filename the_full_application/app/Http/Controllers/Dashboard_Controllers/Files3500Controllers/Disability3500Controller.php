@@ -118,7 +118,7 @@ class Disability3500Controller extends Controller
 
     public function index_district_block_ulb(Request $request)
     {        
-        /*if ($request->ajax()) {*/
+        if ($request->ajax()) {
             $user = auth()->user();
             $userRole = $user->role_id;
 
@@ -171,13 +171,13 @@ class Disability3500Controller extends Controller
                 if (!empty($activeWardIds)) {
                     $query->whereNull('ward_id');
                 }
-return DataTables::eloquent($query)->make(true);
+
             }
 
 
             return DataTables::eloquent($query)
             ->addIndexColumn()
-            ->addColumn('complete_address', function ($row) {
+            /*->addColumn('complete_address', function ($row) {
                 $parts = array_filter([
                     $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
                     $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
@@ -185,7 +185,7 @@ return DataTables::eloquent($query)->make(true);
                 ]);
 
                 return implode(', ', $parts);
-            })
+            })*/
             ->addColumn('action', function ($row) {
                 $buttons = '';
 
@@ -199,7 +199,7 @@ return DataTables::eloquent($query)->make(true);
             ->rawColumns(['action'])
             ->make(true);
 
-        /*}*/
+        }
         return view('dashboard.benf_3500_files.disability3500dataDistBlockUlb');
     }
 
