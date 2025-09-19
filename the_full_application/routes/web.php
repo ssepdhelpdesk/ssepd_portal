@@ -216,6 +216,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::get('index_district_block_ulb', 'index_district_block_ulb')->name('index_district_block_ulb');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
