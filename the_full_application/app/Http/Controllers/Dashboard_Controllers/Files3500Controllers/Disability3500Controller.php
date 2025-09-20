@@ -41,27 +41,109 @@ class Disability3500Controller extends Controller
     /**
      * Display a listing of the resource.
      */
-    /*public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            return DataTables::eloquent(
-                Disability3500Pensioner::select('*')
-            )
-            ->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $editUrl = route('admin.disability3500data.edit', $row->id);
-                $deleteUrl = route('admin.disability3500data.delete', $row->id);
+    
+    public function index(Request $request)
+{
+    ini_set('memory_limit', '512M');
+    $user = auth()->user();
+    $userRole = $user->role_id;
 
-                return '
-                <a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
-                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="'.$row->id.'">Delete</button>
-                ';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-        }
-        return view('dashboard.benf_3500_files.disability3500data');
-    }*/
+    $oldAgeData = Disability3500Pensioner::query();
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+    } elseif (in_array($userRole, [4, 6])) {
+        $oldAgeData->where('block_id', $user->posted_block);
+    } elseif ($userRole == 5) {
+        $oldAgeData->where('municipality_id', $user->posted_municipality);
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')
+        ->pluck('block_id');
+        $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')
+        ->pluck('municipality_id');
+
+        $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+            ->orWhereIn('municipality_id', $municipalityIds);
+        });
+    } elseif (in_array($userRole, [9, 11])) {
+        $oldAgeData->where('district_id', $user->posted_district);
+    }
+
+    if ($request->ajax()) {
+        return DataTables::eloquent($oldAgeData)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+            $buttons = '<div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+            </button>
+            <div class="dropdown-menu animated flipInX">';
+
+            if (
+                auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by)
+            ) {
+                $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
+                data-bs-toggle="modal" 
+                data-bs-target="#actionModal" 
+                data-id="'.$row->id.'"> Discontinue </a>';
+            }
+
+            $buttons .= '</div></div>';
+
+            return $buttons;
+        })
+
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    return view('dashboard.benf_3500_files.disability3500dataView');
+}
+
+public function update_status(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'status' => 'required|string',
+        'discontinue_date' => 'required|date',
+        'discontinued_reason' => 'required|string'
+    ]);
+
+    try {
+        $user = auth()->user();
+
+        $record = Disability3500Pensioner::find($request->id);
+        $record->status = $request->status;
+        $record->discontinued_date = $request->discontinue_date;
+        $record->discontinued_reason = $request->discontinued_reason;
+        $record->discontinued_by = $user->user_id ?? null;
+        $record->discontinued_system_gen_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+        $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+        $record->save();
+
+
+        DB::commit();
+        return response()->json([
+            'success' => true,
+            'message' => 'EP Old Age Beneficiary Discontinued Successfully.'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🏫 EP OldAge Pension Discontinued Modal Submission Failed.", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
+}
 
     public function index_district(Request $request)
     {

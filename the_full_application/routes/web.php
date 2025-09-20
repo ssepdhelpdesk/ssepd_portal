@@ -216,6 +216,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::post('update_status', 'update_status')->name('update_status');
         Route::get('index_district', 'index_district')->name('index_district');
         Route::get('oldage_index_district_block_ulb', 'oldage_index_district_block_ulb')->name('oldage_index_district_block_ulb');
         Route::get('{id}/edit', 'edit')->name('edit');
@@ -226,6 +227,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::post('update_status', 'update_status')->name('update_status');
         Route::get('index', 'index')->name('index');
         Route::get('index_district', 'index_district')->name('index_district');
         Route::get('disability_index_district_block_ulb', 'disability_index_district_block_ulb')->name('disability_index_district_block_ulb');

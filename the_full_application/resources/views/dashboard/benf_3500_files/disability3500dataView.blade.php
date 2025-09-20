@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || Index - OldAge
+EP Pension || Index - Disability
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -113,7 +113,7 @@ EP Pension || Index - OldAge
         $('#oldAgeTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('admin.oldage3500data.index') }}",
+            ajax: "{{ route('admin.disability3500data.index') }}",
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
                 { data: 'scheme_name', name: 'scheme_name' },
@@ -161,7 +161,7 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: "{{ route('admin.oldage3500data.update_status') }}",
+            url: "{{ route('admin.disability3500data.update_status') }}",
             method: 'POST',
             data: {
                 _token: "{{ csrf_token() }}",

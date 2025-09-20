@@ -101,13 +101,14 @@
                   </li>
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
-                     <ul aria-expanded="false" class="collapse">
-                        <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
+                     <ul aria-expanded="false" class="collapse">                        
                         @can('pension-3500-list')
-                        <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OldAge GP/Ward Correction</a></li>
-                        <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">Disability GP/Ward Correction</a></li>
-                        <li><a href="{{route('admin.oldage3500data.create')}}">OldAge Pension DataEnrty</a></li>
-                        <li><a href="{{route('admin.disability3500data.create')}}">Disability Pension DataEnrty</a></li>
+                        <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
+                        <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
+                        <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OAP GP/Ward Correction</a></li>
+                        <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">DP GP/Ward Correction</a></li>
+                        <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
+                        <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
                         <!-- <li><a href="{{route('admin.oldage3500data.index_district')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index_district')}}">Disability Pension</a></li> -->
                         @endcan
