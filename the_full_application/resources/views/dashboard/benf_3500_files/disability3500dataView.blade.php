@@ -39,9 +39,16 @@ EP Pension || Index - Disability
                                     <th>DOB</th>
                                     <th>Age</th>
                                     <th>Gender</th>
+                                    <th>UDID No</th>
+                                    <th>Category</th>
+                                    <th>Disability %age</th>
                                     <th>District</th>
+                                    <th>Block/ULB</th>
+                                    <th>GP/Ward</th>
+                                    <th>Village</th>
                                     <th>NSAP Sanction Order No</th>
                                     <th>Sub-Collector Sanction Order No</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -54,9 +61,16 @@ EP Pension || Index - Disability
                                     <th>DOB</th>
                                     <th>Age</th>
                                     <th>Gender</th>
+                                    <th>UDID No</th>
+                                    <th>Category</th>
+                                    <th>Disability %age</th>
                                     <th>District</th>
+                                    <th>Block/ULB</th>
+                                    <th>GP/Ward</th>
+                                    <th>Village</th>
                                     <th>NSAP Sanction Order No</th>
                                     <th>Sub-Collector Sanction Order No</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </tfoot>
@@ -122,9 +136,16 @@ EP Pension || Index - Disability
                 { data: 'date_of_birth', name: 'date_of_birth' },
                 { data: 'age', name: 'age' },
                 { data: 'gender', name: 'gender' },
+                { data: 'udid_no', name: 'udid_no' },
+                { data: 'disability_category', name: 'disability_category' },
+                { data: 'disability_percentage', name: 'disability_percentage' },
                 { data: 'district', name: 'district' },
+                { data: 'block_or_ulb', name: 'block_or_ulb' },
+                { data: 'gp_or_ward', name: 'gp_or_ward' },
+                { data: 'village', name: 'village' },
                 { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
                 { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
+                { data: 'discontinued_reason', name: 'discontinued_reason' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             dom: 'Blfrtip',
@@ -139,8 +160,6 @@ EP Pension || Index - Disability
 </script>
 <script>
 $(document).ready(function() {
-
-    // Handle modal show to get record ID (already added)
     $('#actionModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var recordId = button.data('id');
@@ -148,7 +167,6 @@ $(document).ready(function() {
         modal.find('#recordId').val(recordId);
     });
 
-    // AJAX Save Status
     $('#saveStatus').on('click', function() {
         var recordId = $('#recordId').val();
         var status = $('#statusSelect').val();

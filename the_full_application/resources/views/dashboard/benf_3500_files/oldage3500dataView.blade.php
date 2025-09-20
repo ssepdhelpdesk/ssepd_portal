@@ -40,8 +40,12 @@ EP Pension || Index - OldAge
                                     <th>Age</th>
                                     <th>Gender</th>
                                     <th>District</th>
+                                    <th>Block/ULB</th>
+                                    <th>GP/Ward</th>
+                                    <th>Village</th>
                                     <th>NSAP Sanction Order No</th>
                                     <th>Sub-Collector Sanction Order No</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -55,8 +59,12 @@ EP Pension || Index - OldAge
                                     <th>Age</th>
                                     <th>Gender</th>
                                     <th>District</th>
+                                    <th>Block/ULB</th>
+                                    <th>GP/Ward</th>
+                                    <th>Village</th>
                                     <th>NSAP Sanction Order No</th>
                                     <th>Sub-Collector Sanction Order No</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </tfoot>
@@ -123,8 +131,12 @@ EP Pension || Index - OldAge
                 { data: 'age', name: 'age' },
                 { data: 'gender', name: 'gender' },
                 { data: 'district', name: 'district' },
+                { data: 'block_or_ulb', name: 'block_or_ulb' },
+                { data: 'gp_or_ward', name: 'gp_or_ward' },
+                { data: 'village', name: 'village' },
                 { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
                 { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
+                { data: 'discontinued_reason', name: 'discontinued_reason' },
                 { data: 'action', name: 'action', orderable: false, searchable: false }
             ],
             dom: 'Blfrtip',

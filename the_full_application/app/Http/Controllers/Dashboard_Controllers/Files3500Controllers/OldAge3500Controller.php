@@ -77,7 +77,7 @@ public function index(Request $request)
         ->addIndexColumn()
         ->addColumn('action', function ($row) {
             $buttons = '<div class="btn-group">
-            <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Action
             </button>
             <div class="dropdown-menu animated flipInX">';

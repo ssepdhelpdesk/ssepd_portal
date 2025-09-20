@@ -101,7 +101,7 @@
                   </li>
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
-                     <ul aria-expanded="false" class="collapse">                        
+                     <ul aria-expanded="false" class="collapse">
                         @can('pension-3500-list')
                         <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
