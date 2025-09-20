@@ -216,18 +216,24 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::get('index_district', 'index_district')->name('index_district');
         Route::get('oldage_index_district_block_ulb', 'oldage_index_district_block_ulb')->name('oldage_index_district_block_ulb');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::get('index_district', 'index_district')->name('index_district');
         Route::get('disability_index_district_block_ulb', 'disability_index_district_block_ulb')->name('disability_index_district_block_ulb');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {

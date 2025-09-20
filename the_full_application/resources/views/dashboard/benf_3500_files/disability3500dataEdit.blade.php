@@ -1,5 +1,5 @@
 @section('title') 
-Benf3500 || Disability Address Update
+EP Pension || Disability Address Update
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')

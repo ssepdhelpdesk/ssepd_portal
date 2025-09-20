@@ -1,5 +1,5 @@
 @section('title') 
-Benf3500 || Index
+EP Pension || Index
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')

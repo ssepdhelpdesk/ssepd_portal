@@ -33,6 +33,7 @@ use App\Models\Municipality3500;
 use App\Models\Grampanchyat3500;
 use App\Models\Village3500;
 use App\Models\WardMaster3500;
+use App\Models\User3500;
 use Yajra\DataTables\Facades\DataTables;
 
 class Disability3500Controller extends Controller
@@ -62,7 +63,7 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500data');
     }*/
 
-    public function index(Request $request)
+    public function index_district(Request $request)
     {
         if ($request->ajax()) {
 
@@ -216,7 +217,7 @@ class Disability3500Controller extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.benf_3500_files.disabilityDataEntry');
     }
 
     /**
@@ -224,7 +225,135 @@ class Disability3500Controller extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validationRules = [
+            'scheme_name' => 'required',
+            'name_of_the_beneficiary' => 'required',
+            'father_or_husband_name' => 'required',
+            'date_of_birth' => 'required|date',
+            'age' => 'required',
+            'gender' => 'required',
+            'udid_no' => 'required',
+            'disability_category' => 'required',
+            'disability_percentage' => 'required',
+            'aadhaar_no' => 'required',
+            'nsap_sanction_order_no' => 'required',
+            'sub_collector_sanction_order_no' => 'required',
+            'pension_month' => 'required',
+            'ngo_address_type' => 'required|in:1,2',
+        ];
+
+        $addressMessage = '';
+
+        if ($request->ngo_address_type === "1") {
+            $validationRules = array_merge($validationRules, [
+                'state' => 'required',
+                'district' => 'required',
+                'block' => 'required',
+                'grampanchayat' => 'required',
+                'village' => 'required',
+                'pin' => 'required',
+                'ngo_postal_address_at' => 'required|string',
+                'ngo_postal_address_post' => 'required|string',
+                'ngo_postal_address_via' => 'required|string',
+                'ngo_postal_address_ps' => 'required|string',
+                'ngo_postal_address_district' => 'required|string',
+                'ngo_postal_address_pin' => 'required|digits:6',
+            ]);
+        } elseif ($request->ngo_address_type === "2") {
+            $validationRules = array_merge($validationRules, [
+                'state' => 'required',
+                'district' => 'required',
+                'municipality' => 'required',
+                'ward' => 'required',
+                'pin' => 'required',
+                'ngo_postal_address_at' => 'required|string',
+                'ngo_postal_address_post' => 'required|string',
+                'ngo_postal_address_via' => 'required|string',
+                'ngo_postal_address_ps' => 'required|string',
+                'ngo_postal_address_district' => 'required|string',
+                'ngo_postal_address_pin' => 'required|digits:6',
+            ]);
+        }
+        $validatedData = $request->validate($validationRules);
+
+        DB::beginTransaction();
+        try {
+            $user = auth()->user();
+
+            if ($request->ngo_address_type === "1") {
+                $district = District3500::where('district_id', $request->district)->value('district_name');
+                $district_id = $validatedData['district'];
+                $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
+                $block_id = $validatedData['block'];
+                $municipality_id = NULL;
+                $block_or_ulb_id = $validatedData['block'];
+                $gp_or_ward = Grampanchyat3500::where('gp_id', $request->grampanchayat)->value('gp_name');
+                $gp_id = $validatedData['grampanchayat'];
+                $ward_id = NULL;
+                $gp_or_ward_id = $validatedData['grampanchayat'];
+                $village = Village3500::where('village_id', $request->village)->value('village_name');
+                $village_id = $validatedData['village'];
+            } elseif ($request->ngo_address_type === "2") {
+                $district = District3500::where('district_id', $request->district)->value('district_name');
+                $district_id = $validatedData['district'];
+                $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
+                $block_id = NULL;
+                $municipality_id = $validatedData['municipality'];
+                $block_or_ulb_id = $validatedData['municipality'];
+                $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
+                $gp_or_ward = $ward_master_name;
+                $gp_id = NULL;
+                $ward_id = $validatedData['ward'];
+                $gp_or_ward_id = $validatedData['ward'];
+                $village = NULL;
+                $village_id = NULL;
+            }
+
+            $disability_pensioner = new Disability3500Pensioner;
+            $disability_pensioner->scheme_name = $validatedData['scheme_name'];
+            $disability_pensioner->updated_scheme_name = $validatedData['scheme_name'] === 'MBPDP' ? 'MBPSDP' : $validatedData['scheme_name'];          
+            $disability_pensioner->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'];
+            $disability_pensioner->father_or_husband_name = $validatedData['father_or_husband_name'];
+            $disability_pensioner->date_of_birth = $validatedData['date_of_birth'];
+            $disability_pensioner->age = $validatedData['age'];
+            $disability_pensioner->gender = $validatedData['gender'];
+            $disability_pensioner->udid_no = $validatedData['udid_no'];
+            $disability_pensioner->disability_category = $validatedData['disability_category'];
+            $disability_pensioner->disability_percentage = $validatedData['disability_percentage'];
+            $disability_pensioner->district = $district;
+            $disability_pensioner->district_id = $district_id;
+            $disability_pensioner->block_or_ulb = $block_or_ulb;
+            $disability_pensioner->block_id = $block_id;
+            $disability_pensioner->municipality_id = $municipality_id;
+            $disability_pensioner->block_or_ulb_id = $block_or_ulb_id;
+            $disability_pensioner->gp_or_ward = $gp_or_ward;
+            $disability_pensioner->gp_id = $gp_id;
+            $disability_pensioner->ward_id = $ward_id;
+            $disability_pensioner->gp_or_ward_id = $gp_or_ward_id;
+            $disability_pensioner->village = $village;
+            $disability_pensioner->village_id = $village_id;
+            $disability_pensioner->aadhaar_no = $validatedData['aadhaar_no'];
+            $disability_pensioner->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
+            $disability_pensioner->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
+            $disability_pensioner->pension_month = $validatedData['pension_month'];
+            $disability_pensioner->created_by = $user->user_id ?? null;
+            $disability_pensioner->created_by_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $disability_pensioner->create_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $disability_pensioner->save();
+        DB::commit();
+        return redirect()->back()->with('success', 'EP Disability Beneficiary data has been successfully added.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🏫 EP Disability Beneficiary data Form Submission failed.", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
     }
 
     /**
