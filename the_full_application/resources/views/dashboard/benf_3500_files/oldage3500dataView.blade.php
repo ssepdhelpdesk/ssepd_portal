@@ -1,42 +1,80 @@
-@extends('layouts.app')
-@section('title', 'Old Age Pensioner Data (80 and Above)')
+@extends('dashboard.layouts.main')
+
+@section('title') 
+EP Pension || Index
+@endsection 
+
+@section('style')
+<!-- You can add custom CSS here if needed -->
+@endsection 
 
 @section('content')
 <div class="container-fluid">
-    <h4 class="mb-4">Old Age Pensioner Beneficiaries (80 Years & Above)</h4>
+    <div class="row page-titles">
+        <div class="col-md-7 align-self-center">
+            <div class="d-flex align-items-center">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item active">@yield('title')</li>
+                </ol>
+            </div>
+        </div>
+        <div class="col-md-5 align-self-center text-end">
+            <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info">
+                <i class="fas fa-arrow-alt-circle-left"></i> Go Back
+            </button>         
+        </div>
+    </div>
 
-    <table id="oldAgeTable" class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Scheme Name</th>
-                <th>Updated Scheme</th>
-                <th>Beneficiary Name</th>
-                <th>Father/Husband Name</th>
-                <th>DOB</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>District</th>
-                <th>Block / ULB</th>
-                <th>GP / Ward</th>
-                <th>Village</th>
-                <th>Aadhaar No</th>
-                <th>NSAP Sanction Order</th>
-                <th>Sub-Collector Sanction Order</th>
-                <th>Pension Month</th>
-                <th>Status</th>
-                <th>Created By</th>
-                <th>Created Date</th>
-                <th>Discontinued Date</th>
-                <th>Discontinued Reason</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-    </table>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title"></h4>
+                    @include('dashboard.component.message')
+                    <div class="table-responsive m-t-40">
+                        <table id="oldAgeTable" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Scheme</th>
+                                    <th>Beneficiary Name</th>
+                                    <th>Care of</th>
+                                    <th>DOB</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>District</th>
+                                    <th>NSAP Sanction Order No</th>
+                                    <th>Sub-Collector Sanction Order No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Sl No</th>
+                                    <th>Scheme</th>
+                                    <th>Beneficiary Name</th>
+                                    <th>Care of</th>
+                                    <th>DOB</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>District</th>
+                                    <th>NSAP Sanction Order No</th>
+                                    <th>Sub-Collector Sanction Order No</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-@endsection
 
-@push('scripts')
+@endsection 
+
+@section('script')
 <script>
 $(function () {
     $('#oldAgeTable').DataTable({
@@ -44,31 +82,25 @@ $(function () {
         serverSide: true,
         ajax: "{{ route('admin.oldage3500data.index') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
-            {data: 'scheme_name', name: 'scheme_name'},
-            {data: 'updated_scheme_name', name: 'updated_scheme_name'},
-            {data: 'name_of_the_beneficiary', name: 'name_of_the_beneficiary'},
-            {data: 'father_or_husband_name', name: 'father_or_husband_name'},
-            {data: 'date_of_birth', name: 'date_of_birth'},
-            {data: 'age', name: 'age'},
-            {data: 'gender', name: 'gender'},
-            {data: 'district', name: 'district'},
-            {data: 'block_or_ulb', name: 'block_or_ulb'},
-            {data: 'gp_or_ward', name: 'gp_or_ward'},
-            {data: 'village', name: 'village'},
-            {data: 'aadhaar_no', name: 'aadhaar_no'},
-            {data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no'},
-            {data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no'},
-            {data: 'pension_month', name: 'pension_month'},
-            {data: 'status', name: 'status'},
-            {data: 'created_by', name: 'created_by'},
-            {data: 'created_by_date', name: 'created_by_date'},
-            {data: 'discontinued_date', name: 'discontinued_date'},
-            {data: 'discontinued_reason', name: 'discontinued_reason'},
-            {data: 'action', name: 'action', orderable: false, searchable: false}
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'scheme_name', name: 'scheme_name' },
+            { data: 'name_of_the_beneficiary', name: 'name_of_the_beneficiary' },
+            { data: 'father_or_husband_name', name: 'father_or_husband_name' },
+            { data: 'date_of_birth', name: 'date_of_birth' },
+            { data: 'age', name: 'age' },
+            { data: 'gender', name: 'gender' },
+            { data: 'district', name: 'district' },
+            { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
+            { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
-        order: [[8, 'asc']]
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 50, 100, 500], [10, 50, 100, 500]],
     });
+
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
 });
 </script>
-@endpush
+@endsection

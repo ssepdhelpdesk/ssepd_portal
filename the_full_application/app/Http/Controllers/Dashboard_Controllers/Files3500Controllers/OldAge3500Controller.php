@@ -50,10 +50,7 @@ class OldAge3500Controller extends Controller
 
         $oldAgeData = OldAge3500Pensioner::query();
 
-    // Apply role-based filtering
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-
-        } elseif (in_array($userRole, [4, 6])) {
+        if (in_array($userRole, [4, 6])) {
             $oldAgeData->where('block_id', $user->posted_block);
         } elseif ($userRole == 5) {
             $oldAgeData->where('municipality_id', $user->posted_municipality);
@@ -73,9 +70,8 @@ class OldAge3500Controller extends Controller
             $oldAgeData->where('district_id', $user->posted_district);
         }
 
-    // If AJAX, return DataTables JSON
         if ($request->ajax()) {
-            return DataTables::eloquent($oldAgeData->orderBy('district_id'))
+            return DataTables::eloquent($oldAgeData)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 $buttons = '';
@@ -86,12 +82,12 @@ class OldAge3500Controller extends Controller
                 return $buttons;
             })
             ->rawColumns(['action'])
-            ->toJson();
+            ->make(true);
         }
 
-    // For initial page load
-        //return view('dashboard.benf_3500_files.oldage3500dataView');
+        return view('dashboard.benf_3500_files.oldage3500dataView');
     }
+
 
     public function index_district(Request $request)
     {
