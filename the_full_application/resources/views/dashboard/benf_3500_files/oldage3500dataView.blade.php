@@ -1,67 +1,48 @@
-{{-- resources/views/dashboard/benf_3500_files/oldage3500dataView.blade.php --}}
 @extends('layouts.app')
-
-@section('title', 'Old Age Pensioner Data (80 & Above)')
+@section('title', 'Old Age Pensioner Data (80 and Above)')
 
 @section('content')
 <div class="container-fluid">
     <h4 class="mb-4">Old Age Pensioner Beneficiaries (80 Years & Above)</h4>
 
-    {{-- Success / error messages --}}
-    @if(session('message'))
-        <div class="alert alert-success">{{ session('message') }}</div>
-    @endif
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $err)
-                    <li>{{ $err }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <div class="table-responsive">
-        <table id="oldAgeTable" class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Scheme Name</th>
-                    <th>Updated Scheme</th>
-                    <th>Beneficiary Name</th>
-                    <th>Father/Husband Name</th>
-                    <th>DOB</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>District</th>
-                    <th>Block / ULB</th>
-                    <th>GP / Ward</th>
-                    <th>Village</th>
-                    <th>Aadhaar No</th>
-                    <th>NSAP Sanction Order</th>
-                    <th>Sub-Collector Sanction Order</th>
-                    <th>Pension Month</th>
-                    <th>Status</th>
-                    <th>Created By</th>
-                    <th>Created Date</th>
-                    <th>Discontinued Date</th>
-                    <th>Discontinued Reason</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <table id="oldAgeTable" class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Scheme Name</th>
+                <th>Updated Scheme</th>
+                <th>Beneficiary Name</th>
+                <th>Father/Husband Name</th>
+                <th>DOB</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>District</th>
+                <th>Block / ULB</th>
+                <th>GP / Ward</th>
+                <th>Village</th>
+                <th>Aadhaar No</th>
+                <th>NSAP Sanction Order</th>
+                <th>Sub-Collector Sanction Order</th>
+                <th>Pension Month</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Discontinued Date</th>
+                <th>Discontinued Reason</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-$(document).ready(function() {
+$(function () {
     $('#oldAgeTable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('admin.oldage3500data.index') }}", // adjust route name
+        ajax: "{{ route('admin.oldage3500data.index') }}",
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
             {data: 'scheme_name', name: 'scheme_name'},
@@ -84,12 +65,9 @@ $(document).ready(function() {
             {data: 'created_by_date', name: 'created_by_date'},
             {data: 'discontinued_date', name: 'discontinued_date'},
             {data: 'discontinued_reason', name: 'discontinued_reason'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
+            {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
-        order: [[8, 'asc']], // default order by district
-        pageLength: 25,
-        lengthMenu: [10, 25, 50, 100],
-        responsive: true
+        order: [[8, 'asc']]
     });
 });
 </script>
