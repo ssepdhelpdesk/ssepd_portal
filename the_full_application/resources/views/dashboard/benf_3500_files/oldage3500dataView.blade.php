@@ -1,7 +1,7 @@
 {{-- resources/views/dashboard/benf_3500_files/oldage3500dataView.blade.php --}}
-@extends('layouts.app') {{-- adjust if you use another layout --}}
+@extends('layouts.app')
 
-@section('title', 'Old Age Pensioner Data (80 and Above)')
+@section('title', 'Old Age Pensioner Data (80 & Above)')
 
 @section('content')
 <div class="container-fluid">
@@ -46,39 +46,10 @@
                     <th>Created Date</th>
                     <th>Discontinued Date</th>
                     <th>Discontinued Reason</th>
+                    <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @forelse($old_age_ep_data as $index => $row)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $row->scheme_name }}</td>
-                        <td>{{ $row->updated_scheme_name }}</td>
-                        <td>{{ $row->name_of_the_beneficiary }}</td>
-                        <td>{{ $row->father_or_husband_name }}</td>
-                        <td>{{ $row->date_of_birth }}</td>
-                        <td>{{ $row->age }}</td>
-                        <td>{{ $row->gender }}</td>
-                        <td>{{ $row->district }}</td>
-                        <td>{{ $row->block_or_ulb }}</td>
-                        <td>{{ $row->gp_or_ward }}</td>
-                        <td>{{ $row->village }}</td>
-                        <td>{{ $row->aadhaar_no }}</td>
-                        <td>{{ $row->nsap_sanction_order_no }}</td>
-                        <td>{{ $row->sub_collector_sanction_order_no }}</td>
-                        <td>{{ $row->pension_month }}</td>
-                        <td>{{ $row->status }}</td>
-                        <td>{{ $row->created_by }}</td>
-                        <td>{{ $row->created_by_date }}</td>
-                        <td>{{ $row->discontinued_date }}</td>
-                        <td>{{ $row->discontinued_reason }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="21" class="text-center text-danger">No data available</td>
-                    </tr>
-                @endforelse
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>
@@ -86,40 +57,39 @@
 
 @push('scripts')
 <script>
-$(document).ready(function () {
-    function loadOldAgeData(page = 1) {
-        $.ajax({
-            url: "/oldage-data?page=" + page, // adjust route name
-            type: "GET",
-            dataType: "json",
-            success: function (res) {
-                let rows = "";
-                $.each(res.data, function (i, item) {
-                    rows += `
-                        <tr>
-                            <td>${item.id}</td>
-                            <td>${item.name ?? ''}</td>
-                            <td>${item.district_id}</td>
-                            <td>${item.block_id ?? ''}</td>
-                            <td>${item.municipality_id ?? ''}</td>
-                        </tr>
-                    `;
-                });
-                $("#oldageDataTable tbody").html(rows);
-
-                // handle pagination buttons
-            }
-        });
-    }
-
-    // Initial load
-    loadOldAgeData();
-
-    // Handle pagination
-    $(document).on("click", ".pagination a", function (e) {
-        e.preventDefault();
-        let page = $(this).attr("href").split("page=")[1];
-        loadOldAgeData(page);
+$(document).ready(function() {
+    $('#oldAgeTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('admin.oldage3500data.index') }}", // adjust route name
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+            {data: 'scheme_name', name: 'scheme_name'},
+            {data: 'updated_scheme_name', name: 'updated_scheme_name'},
+            {data: 'name_of_the_beneficiary', name: 'name_of_the_beneficiary'},
+            {data: 'father_or_husband_name', name: 'father_or_husband_name'},
+            {data: 'date_of_birth', name: 'date_of_birth'},
+            {data: 'age', name: 'age'},
+            {data: 'gender', name: 'gender'},
+            {data: 'district', name: 'district'},
+            {data: 'block_or_ulb', name: 'block_or_ulb'},
+            {data: 'gp_or_ward', name: 'gp_or_ward'},
+            {data: 'village', name: 'village'},
+            {data: 'aadhaar_no', name: 'aadhaar_no'},
+            {data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no'},
+            {data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no'},
+            {data: 'pension_month', name: 'pension_month'},
+            {data: 'status', name: 'status'},
+            {data: 'created_by', name: 'created_by'},
+            {data: 'created_by_date', name: 'created_by_date'},
+            {data: 'discontinued_date', name: 'discontinued_date'},
+            {data: 'discontinued_reason', name: 'discontinued_reason'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ],
+        order: [[8, 'asc']], // default order by district
+        pageLength: 25,
+        lengthMenu: [10, 25, 50, 100],
+        responsive: true
     });
 });
 </script>
