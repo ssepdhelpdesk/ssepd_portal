@@ -42,43 +42,58 @@ class OldAge3500Controller extends Controller
      * Display a listing of the resource.
      */
     
-    public function index()
-    {
-        ini_set('memory_limit', '512M');
-        $user = auth()->user();
-        $userRole = $user->role_id;
+    public function index(Request $request)
+{
+    ini_set('memory_limit', '512M');
+    $user = auth()->user();
+    $userRole = $user->role_id;
 
-        $oldAgeData = OldAge3500Pensioner::query();
+    $oldAgeData = OldAge3500Pensioner::query();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-            
-        } elseif (in_array($userRole, [4, 6])) {
-            $oldAgeData->where('block_id', $user->posted_block);
-        } elseif ($userRole == 5) {
-            $oldAgeData->where('municipality_id', $user->posted_municipality);
-        } elseif (in_array($userRole, [8, 10])) {
-            $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        // No filter (full data)
+    } elseif (in_array($userRole, [4, 6])) {
+        $oldAgeData->where('block_id', $user->posted_block);
+    } elseif ($userRole == 5) {
+        $oldAgeData->where('municipality_id', $user->posted_municipality);
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
             ->where('is_active', 'active')
             ->pluck('block_id');
 
-            $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+        $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
             ->where('is_active', 'active')
             ->pluck('municipality_id');
 
-            $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
-                $query->whereIn('block_id', $blockIds)
-                ->orWhereIn('municipality_id', $municipalityIds);
-            });
-        } elseif (in_array($userRole, [9, 11])) {
-            $oldAgeData->where('district_id', $user->posted_district);
-        }
-
-        $old_age_ep_data = $oldAgeData
-        ->orderBy('district_id')
-        ->get();
-
-        return view('dashboard.benf_3500_files.oldage3500dataView', compact('old_age_ep_data'));
+        $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+                  ->orWhereIn('municipality_id', $municipalityIds);
+        });
+    } elseif (in_array($userRole, [9, 11])) {
+        $oldAgeData->where('district_id', $user->posted_district);
     }
+
+    $old_age_ep_data = $oldAgeData
+        ->orderBy('district_id')
+        ->paginate(50); // ✅ Better for AJAX DataTables
+
+    // If AJAX request → return JSON
+    if ($request->ajax()) {
+        return response()->json([
+            'data' => $old_age_ep_data->items(),
+            'pagination' => [
+                'total' => $old_age_ep_data->total(),
+                'per_page' => $old_age_ep_data->perPage(),
+                'current_page' => $old_age_ep_data->currentPage(),
+                'last_page' => $old_age_ep_data->lastPage(),
+            ]
+        ]);
+    }
+
+    // If normal request → return view
+    return view('dashboard.benf_3500_files.oldage3500dataView', compact('old_age_ep_data'));
+}
+
 
 
     public function index_district(Request $request)

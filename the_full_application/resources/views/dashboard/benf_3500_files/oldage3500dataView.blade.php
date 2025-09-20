@@ -87,10 +87,39 @@
 @push('scripts')
 <script>
 $(document).ready(function () {
-    $('#oldAgeTable').DataTable({
-        pageLength: 25,
-        ordering: true,
-        searching: true,
+    function loadOldAgeData(page = 1) {
+        $.ajax({
+            url: "/oldage-data?page=" + page, // adjust route name
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                let rows = "";
+                $.each(res.data, function (i, item) {
+                    rows += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td>${item.name ?? ''}</td>
+                            <td>${item.district_id}</td>
+                            <td>${item.block_id ?? ''}</td>
+                            <td>${item.municipality_id ?? ''}</td>
+                        </tr>
+                    `;
+                });
+                $("#oldageDataTable tbody").html(rows);
+
+                // handle pagination buttons
+            }
+        });
+    }
+
+    // Initial load
+    loadOldAgeData();
+
+    // Handle pagination
+    $(document).on("click", ".pagination a", function (e) {
+        e.preventDefault();
+        let page = $(this).attr("href").split("page=")[1];
+        loadOldAgeData(page);
     });
 });
 </script>
