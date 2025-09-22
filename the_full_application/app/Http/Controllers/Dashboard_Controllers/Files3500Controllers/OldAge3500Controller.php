@@ -89,6 +89,9 @@ public function index(Request $request)
                 data-bs-toggle="modal" 
                 data-bs-target="#actionModal" 
                 data-id="'.$row->id.'"> Discontinue </a>';
+            } {
+                $editUrl = route('admin.oldage3500data.edit', $row->id);
+                $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Update Address</a> ';                
             }
 
             $buttons .= '</div></div>';
