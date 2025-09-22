@@ -839,8 +839,8 @@ document.addEventListener("DOMContentLoaded", function () {
          }
          $('#age').val(age);
 
-         if(age < 80){
-            alert('Age should not be less than 80 years.');
+         if(age < 0){
+            alert('Age should not be less than 0 years.');
             $('#date_of_birth').val('');
             $('#age').val('');
             $('#submitButton').prop('disabled', true);

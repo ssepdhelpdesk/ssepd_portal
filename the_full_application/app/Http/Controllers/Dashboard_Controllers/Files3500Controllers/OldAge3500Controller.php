@@ -189,13 +189,8 @@ public function index_district(Request $request)
                 $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
             }
 
-/*if (auth()->user()->can('pension-3500-delete')) {
-$deleteUrl = route('admin.oldage3500data.delete', $row->id);
-$buttons .= '<a href="'.$deleteUrl.'" class="btn btn-sm btn-danger">Delete</a>';
-}*/
-
-return $buttons;
-})
+            return $buttons;
+        })
         ->rawColumns(['action'])
         ->make(true);
     }
@@ -315,7 +310,7 @@ public function store(Request $request)
         'name_of_the_beneficiary' => 'required',
         'father_or_husband_name' => 'required',
         'date_of_birth' => 'required|date',
-        'age' => 'required',
+        'age' => 'required|integer|between:80,140',
         'gender' => 'required',
         'aadhaar_no' => 'required',
         'nsap_sanction_order_no' => 'required',
@@ -458,6 +453,16 @@ public function edit(string $id)
 public function update(Request $request, string $id)
 {
     $validationRules = [
+        'scheme_name' => 'required',
+        'name_of_the_beneficiary' => 'required',
+        'father_or_husband_name' => 'required',
+        'date_of_birth' => 'required|date',
+        'age' => 'required|integer|between:80,140',
+        'gender' => 'required',
+        'aadhaar_no' => 'required',
+        'nsap_sanction_order_no' => 'required',
+        'sub_collector_sanction_order_no' => 'required',
+        'pension_month' => 'required',
         'ngo_address_type' => 'required|in:1,2',
     ];
 
@@ -510,7 +515,27 @@ public function update(Request $request, string $id)
             $village_id = NULL;
         }
 
+        if ($validatedData['scheme_name'] == 'MBPOAP') {
+                $updated_scheme_name = 'MBPOAP';
+            } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
+                $updated_scheme_name = 'IGNOAP';
+            } elseif (empty($validatedData['scheme_name'])) {
+                return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
+            } else {
+                return redirect()->back()->withErrors(['scheme_name' => 'Invalid Scheme Name selected']);
+            }
+
         OldAge3500Pensioner::where('id', $id)->update([
+            'scheme_name' => $validatedData['scheme_name'],
+            'updated_scheme_name' => $updated_scheme_name,
+            'name_of_the_beneficiary' => $validatedData['name_of_the_beneficiary'],
+            'father_or_husband_name' => $validatedData['father_or_husband_name'],
+            'date_of_birth' => $validatedData['date_of_birth'],
+            'age' => $validatedData['age'],
+            'gender' => $validatedData['gender'],
+            'aadhaar_no' => $validatedData['aadhaar_no'],
+            'nsap_sanction_order_no' => $validatedData['nsap_sanction_order_no'],
+            'sub_collector_sanction_order_no' => $validatedData['sub_collector_sanction_order_no'],
             'block_or_ulb' => $block_or_ulb,
             'block_id' => $block_id,
             'municipality_id' => $municipality_id,
@@ -523,20 +548,20 @@ public function update(Request $request, string $id)
             'village_id' => $village_id,
         ]);
 
-DB::commit();
-return redirect()->route('admin.oldage3500data.index')->with('info', 'Address Updated successfully.');
-} catch (\Exception $e) {
-    DB::rollBack();
-    \Log::error("🏫 OldAge 3500 Benf Address Update form submission failed", [
-        'message' => $e->getMessage(),
-        'file'    => $e->getFile(),
-        'line'    => $e->getLine(),
-        'trace'   => $e->getTraceAsString(),
-        'time'    => now()->toDateTimeString(),
-        'user_id' => auth()->id(),
-    ]);
-    return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
-}
+        DB::commit();
+        return redirect()->route('admin.oldage3500data.index')->with('info', 'Address Updated successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🏫 OldAge 3500 Benf Address Update form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
 }
 
 public function check_benf_aadhar(Request $request): JsonResponse

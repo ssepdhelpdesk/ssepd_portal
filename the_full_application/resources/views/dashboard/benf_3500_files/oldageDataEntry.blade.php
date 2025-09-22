@@ -97,7 +97,7 @@ EP Pension || OldAge Data Entry
                         <div class="col-md-3">
                            <div class="form-group" id="date_of_birth_div">
                               <label class="form-label">DOB (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
-                              <input type="date" id="date_of_birth" name="date_of_birth" value="" class="form-control" placeholder="Name of the Staff">
+                              <input type="date" id="date_of_birth" name="date_of_birth" value="" class="form-control" placeholder="DOB">
                               <div id="date_of_birth_error"></div>
                               @error('date_of_birth')
                               <label class="error">{{ $message }}</label>

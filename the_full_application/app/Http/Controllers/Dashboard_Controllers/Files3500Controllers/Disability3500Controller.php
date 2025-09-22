@@ -319,7 +319,7 @@ class Disability3500Controller extends Controller
             'gender' => 'required',
             'udid_no' => 'required',
             'disability_category' => 'required',
-            'disability_percentage' => 'required',
+            'disability_percentage' => 'required|integer|between:80,100',
             'aadhaar_no' => 'required',
             'nsap_sanction_order_no' => 'required',
             'sub_collector_sanction_order_no' => 'required',
@@ -464,6 +464,19 @@ class Disability3500Controller extends Controller
     public function update(Request $request, string $id)
     {
         $validationRules = [
+            'scheme_name' => 'required',
+            'name_of_the_beneficiary' => 'required',
+            'father_or_husband_name' => 'required',
+            'date_of_birth' => 'required|date',
+            'age' => 'required',
+            'gender' => 'required',
+            'udid_no' => 'required',
+            'disability_category' => 'required',
+            'disability_percentage' => 'required|integer|between:80,100',
+            'aadhaar_no' => 'required',
+            'nsap_sanction_order_no' => 'required',
+            'sub_collector_sanction_order_no' => 'required',
+            'pension_month' => 'required',
             'ngo_address_type' => 'required|in:1,2',
         ];
 
@@ -516,7 +529,30 @@ class Disability3500Controller extends Controller
                 $village_id = NULL;
             }
 
+            if ($validatedData['scheme_name'] == 'MBPDP') {
+                $updated_scheme_name = 'MBPSDP';
+            } elseif ($validatedData['scheme_name'] == 'IGNDP') {
+                $updated_scheme_name = 'IGNDP';
+            } elseif (empty($validatedData['scheme_name'])) {
+                return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
+            } else {
+                return redirect()->back()->withErrors(['scheme_name' => 'Invalid Scheme Name selected']);
+            }
+
             Disability3500Pensioner::where('id', $id)->update([
+                'scheme_name' => $validatedData['scheme_name'],
+                'updated_scheme_name' => $updated_scheme_name,
+                'name_of_the_beneficiary' => $validatedData['name_of_the_beneficiary'],
+                'father_or_husband_name' => $validatedData['father_or_husband_name'],
+                'date_of_birth' => $validatedData['date_of_birth'],
+                'age' => $validatedData['age'],
+                'gender' => $validatedData['gender'],
+                'udid_no' => $validatedData['udid_no'],
+                'disability_category' => $validatedData['disability_category'],
+                'disability_percentage' => $validatedData['disability_percentage'],
+                'aadhaar_no' => $validatedData['aadhaar_no'],
+                'nsap_sanction_order_no' => $validatedData['nsap_sanction_order_no'],
+                'sub_collector_sanction_order_no' => $validatedData['sub_collector_sanction_order_no'],
                 'block_or_ulb' => $block_or_ulb,
                 'block_id' => $block_id,
                 'municipality_id' => $municipality_id,
