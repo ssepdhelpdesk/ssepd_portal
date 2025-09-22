@@ -224,6 +224,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
+
+        Route::get('check-benf-aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
+        Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
@@ -237,6 +240,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
+
+        Route::get('check-benf-aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
+        Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
+        Route::get('check-benf-udidno', 'check_benf_udidno')->name('check_benf_udidno');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {

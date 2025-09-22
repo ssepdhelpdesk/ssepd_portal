@@ -520,22 +520,6 @@ public function update(Request $request, string $id)
             'village_id' => $village_id,
         ]);
 
-/*\DB::connection('rupees_3500')
-->table('oldAge_Pensioner_Beneficiaries_WithAge_80AndAbove_04_03_2025')
-->where('id', $id)
-->update([
-'block_or_ulb'     => $block_or_ulb,
-'block_id'         => $block_id,
-'municipality_id'  => $municipality_id,
-'block_or_ulb_id'  => $block_or_ulb_id,
-'gp_or_ward'       => $gp_or_ward,
-'gp_id'            => $gp_id,
-'ward_id'          => $ward_id,
-'gp_or_ward_id'    => $gp_or_ward_id,
-'village'          => $village,
-'village_id'       => $village_id,
-]);*/
-
 DB::commit();
 return redirect()->route('admin.oldage3500data.index')->with('info', 'Address Updated successfully.');
 } catch (\Exception $e) {
@@ -552,6 +536,26 @@ return redirect()->route('admin.oldage3500data.index')->with('info', 'Address Up
 }
 }
 
+public function check_benf_aadhar(Request $request): JsonResponse
+{
+    $aadhaar_no = $request->get('aadhaar_no');
+    if (empty($aadhaar_no)) {
+        return response()->json(2);
+    }
+    $aadharExistsInNgo = OldAge3500Pensioner::where('aadhaar_no', $aadhaar_no)->exists();
+    return response()->json($aadharExistsInNgo ? 1 : 0);
+}
+
+public function check_benf_nsap_sanction_or_no(Request $request)
+{
+    $nsap_sanction_order_no = $request->nsap_sanction_order_no;
+
+    if (!$nsap_sanction_order_no) {
+        return response()->json(2);
+    }
+    $exists = OldAge3500Pensioner::where('nsap_sanction_order_no', $nsap_sanction_order_no)->exists();
+    return response()->json($exists ? 1 : 0);
+}
 
 /**
 * Remove the specified resource from storage.

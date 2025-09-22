@@ -27,9 +27,6 @@ EP Pension || OldAge Data Entry
    </div>
    <div class="col-md-5 align-self-center text-end">
       <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
-      @can('role-create')
-      <a href="{{ route('admin.roles.create') }}"><button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-success"><i class="fas fa-plus-square"></i> Add New</button></a>
-      @endcan
    </div>
 </div>
 <!-- ============================================================== -->
@@ -136,6 +133,7 @@ EP Pension || OldAge Data Entry
                               <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
                               <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{old('aadhaar_no')}}" class="form-control" placeholder="Aadhaar Number" >
                               <div id="aadhaar_no_error"></div>
+                              <div id="check_aadhaar_no"></div>
                               @error('aadhaar_no')
                               <label class="error">{{ $message }}</label>
                               @enderror
@@ -146,6 +144,7 @@ EP Pension || OldAge Data Entry
                               <label class="form-label">NSAP Sanction Order No<span class="itsrequired"> *</span></label>
                               <input type="text" id="nsap_sanction_order_no" name="nsap_sanction_order_no" value="{{old('nsap_sanction_order_no')}}" class="form-control" placeholder="NSAP Sanction Order No" >
                               <div id="nsap_sanction_order_no_error"></div>
+                              <div id="check_nsap_sanction_order_no"></div>
                               @error('nsap_sanction_order_no')
                               <label class="error">{{ $message }}</label>
                               @enderror
@@ -209,6 +208,129 @@ EP Pension || OldAge Data Entry
 </div>
 @endsection 
 @section('script')
+<script type="text/javascript">
+   $(document).ready(function () {
+      $("#aadhaar_no").blur(function () {
+         const staffAadhar = $(this).val().trim();
+         const is12DigitNumber = /^\d{12}$/.test(staffAadhar);
+   
+         $('#check_aadhaar_no').html('');
+   
+         if (!staffAadhar) {
+            $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide an Aadhar number.</span>');
+            return;
+         }
+   
+         if (!is12DigitNumber) {
+            $('#check_aadhaar_no').html('<span style="color:#FF0000">Aadhar must be exactly 12 digits.</span>');
+            return;
+         }
+   
+         $.get("{{ route('admin.oldage3500data.check_benf_aadhar') }}", 
+            { aadhaar_no: staffAadhar }, 
+            function (data) {
+               if (data == 0) {
+                  $('#check_aadhaar_no').html('<span style="color:#03713E">This Aadhar is available.</span>');
+               } else if (data == 1) {
+                  $('#check_aadhaar_no').html('<span style="color:#FF0000">This Aadhar is already registered.</span>');
+                  $("#aadhaar_no").val('');
+               } else if (data == 2) {
+                  $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide a valid Aadhar.</span>');
+               }
+            }
+         ).fail(function () {
+            $('#check_aadhaar_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+         });
+      });
+   });
+</script>
+<script>
+   const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
+   aadhaarInputs.forEach(function(input) {
+      input.addEventListener('blur', function(event) {
+         const uid = event.target.value.trim();
+         const fieldName = event.target.name;
+         const errorDiv = document.querySelector(`#${fieldName}_error`);
+         if (errorDiv) errorDiv.innerHTML = '';
+         
+         const Verhoeff = {
+            d: [
+                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+                  [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+                  [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+                  [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+                  [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+                  [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+                  [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+                  [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+                  [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+               ],
+            p: [
+                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                  [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+                  [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+                  [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+                  [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+                  [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+                  [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+                  [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+               ],
+            j: [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
+            check: function(str) {
+               var c = 0;
+               str.replace(/\D+/g, "").split("").reverse().join("").replace(/[\d]/g, function(u, i) {
+                  c = Verhoeff.d[c][Verhoeff.p[i % 8][parseInt(u, 10)]];
+               });
+               return c;
+            }
+         };
+
+         if (uid === "") return;
+
+         if (Verhoeff.check(uid) === 0) {
+            event.target.style.borderColor = '';
+         } else {
+            if (errorDiv) {
+               errorDiv.innerHTML = '<label class="error">Aadhaar number is not valid!</label>';
+               errorDiv.style.color = 'red';
+            }
+            event.target.style.borderColor = 'red';
+            event.target.value = '';
+         }
+      });
+   });
+</script>
+<script type="text/javascript">
+   $(document).ready(function () {
+      $("#nsap_sanction_order_no").blur(function () {
+         const sanctionNo = $(this).val().trim();
+
+         $('#check_nsap_sanction_order_no').html('');
+
+         if (!sanctionNo) {
+            $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">Please provide NSAP Sanction Order No.</span>');
+            return;
+         }
+
+         $.get("{{ route('admin.oldage3500data.check_benf_nsap_sanction_or_no') }}", 
+            { nsap_sanction_order_no: sanctionNo }, 
+            function (data) {
+               if (data == 0) {
+                  $('#check_nsap_sanction_order_no').html('<span style="color:#03713E">This NSAP Sanction Order No is available.</span>');
+               } else if (data == 1) {
+                  $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">This NSAP Sanction Order No is already registered.</span>');
+                  $("#nsap_sanction_order_no").val('');
+               } else if (data == 2) {
+                  $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">Please provide a valid NSAP Sanction Order No.</span>');
+               }
+            }
+         ).fail(function () {
+            $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+         });
+      });
+   });
+</script>
 <script>
    function Validate() {
       let isValid = true;
