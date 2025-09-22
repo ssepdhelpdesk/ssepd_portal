@@ -27,9 +27,6 @@ Special School || Index
       </div>
       <div class="col-md-5 align-self-center text-end">
          <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
-         @can('role-create')
-         <a href="{{ route('admin.roles.create') }}"><button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-success"><i class="fas fa-plus-square"></i> Add New</button></a>
-         @endcan
       </div>
    </div>
    <!-- ============================================================== -->

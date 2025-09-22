@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('pension_fund_requirement_dates', function (Blueprint $table) {
             $table->id();
             $table->date('start_date');
+            $table->time('start_time');
             $table->date('end_date');
+            $table->time('end_time');
             $table->string('for_the_month');
             $table->string('for_which_page');
             $table->string('is_active')->default('active');
