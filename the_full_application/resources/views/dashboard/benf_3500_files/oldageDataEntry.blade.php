@@ -575,6 +575,22 @@ EP Pension || OldAge Data Entry
       });
 
       function bindValidation(type) {
+         const naFields = [
+           'ngo_postal_address_at',
+           'ngo_postal_address_post',
+           'ngo_postal_address_via',
+           'ngo_postal_address_ps',
+           'ngo_postal_address_district',
+           'ngo_postal_address_pin'
+        ];
+
+        naFields.forEach(function (id) {
+           const el = document.getElementById(id);
+           if (el) {
+            el.value = 'Not Required to Provide';
+            el.readOnly = true;
+         }
+      });
          const pinField = document.getElementById('ngo_postal_address_pin');
          const submitButton = document.getElementById('submitButton');
 
@@ -592,7 +608,7 @@ EP Pension || OldAge Data Entry
             if (initialPinValue.length === 6 && /^\d+$/.test(initialPinValue)) {
                submitButton.style.display = 'inline-block';
             } else {
-               submitButton.style.display = 'none';
+               submitButton.style.display = 'inline-block';
             }
          }
 

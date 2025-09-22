@@ -89,6 +89,9 @@ class Disability3500Controller extends Controller
                     data-bs-toggle="modal" 
                     data-bs-target="#actionModal" 
                     data-id="'.$row->id.'"> Discontinue </a>';
+                } {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
+                    $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Update Address</a> ';                
                 }
 
                 $buttons .= '</div></div>';
