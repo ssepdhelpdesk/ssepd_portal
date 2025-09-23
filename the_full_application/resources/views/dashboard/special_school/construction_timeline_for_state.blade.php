@@ -5,17 +5,17 @@ Special School || Construction Progress Details
 @section('style')
 <style>
    .readonly-input {
-   pointer-events: none;
-   background-color: #f8f9fa;
-   cursor: default;
+      pointer-events: none;
+      background-color: #f8f9fa;
+      cursor: default;
    }
    .custom-shadow {
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-   border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
    }
    .card.custom-shadow:hover {
-   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-   transition: box-shadow 0.3s ease-in-out;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+      transition: box-shadow 0.3s ease-in-out;
    }
 </style>
 @endsection 
@@ -88,9 +88,14 @@ Special School || Construction Progress Details
                                              @if ($construction)
                                              <a href="javascript:void(0)" class="link">Phase {{ $phase_no }} Updated On</a>
                                              <span class="sl-date">
-                                             {{ \Carbon\Carbon::parse($construction->created_date)->format('d F Y') }}
+                                                {{ \Carbon\Carbon::parse($construction->created_date)->format('d F Y') }}
                                              </span>
-                                             <p>All Photos Uploaded By <a href="javascript:void(0)">{{ $specialSchool->special_school_name }}</a></p>
+                                             <p>
+                                                Management Name: <a href="javascript:void(0)">{{ $specialSchool->special_school_management_name }},</a>
+                                                School Name: <a href="javascript:void(0)">{{ $specialSchool->special_school_name }},</a>
+                                                Address: @if($specialSchool->school_address_type == 1)<a href="javascript:void(0)">{{$specialSchool->village->village_name}}, {{$specialSchool->grampanchayat->gp_name}}, {{$specialSchool->district->district_name}}</a>@elseif($specialSchool->school_address_type == 2)<a href="javascript:void(0)">{{ optional($specialSchool->ward)->ward_name }}, {{$specialSchool->municipality->municipalities}}, {{$specialSchool->district->district_name}}</a>@endif
+                                             </p>
+                                             <p>Construction Type: <a href="javascript:void(0)">{{ $specialSchool->new_or_existing == 1 ? 'New' : ($specialSchool->new_or_existing == 2 ? 'Existing' : '') }}</a></p>
                                              <div class="row">
                                                 @foreach(range(1, 5) as $i)
                                                 @php
@@ -104,9 +109,9 @@ Special School || Construction Progress Details
                                                       <a href="{{ url('storage/' . $construction->$image) }}" target="_blank">
                                                          <div style="height: 200px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
                                                             <img class="card-img-top img-fluid"
-                                                               src="{{ url('storage/' . $construction->$image) }}"
-                                                               alt="Card image cap"
-                                                               style="width: 100%; height: 100%; object-fit: contain;">
+                                                            src="{{ url('storage/' . $construction->$image) }}"
+                                                            alt="Card image cap"
+                                                            style="width: 100%; height: 100%; object-fit: contain;">
                                                          </div>
                                                       </a>
                                                       <div class="card-body">
@@ -206,10 +211,10 @@ Special School || Construction Progress Details
             function (position) {
                let lat = position.coords.latitude.toFixed(6);
                let lon = position.coords.longitude.toFixed(6);
-   
+               
                document.getElementById("system_stored_latitude").value = lat;
                document.getElementById("system_stored_longitude").value = lon;
-   
+               
                console.log("📍 Location captured:", lat, lon);
             },
             function (error) {
@@ -242,40 +247,40 @@ Special School || Construction Progress Details
 </script>
 <script>
    document.addEventListener("DOMContentLoaded", function () {
-     const form = document.getElementById("approvalForm");
+    const form = document.getElementById("approvalForm");
+    
+    form.addEventListener("submit", function (event) {
+     let isValid = true;
+     
+     const approveStatus = document.getElementById("approve_status");
+     if (!approveStatus.value) {
+      approveStatus.classList.add("is-invalid");
+      isValid = false;
+   } else {
+      approveStatus.classList.remove("is-invalid");
+   }
    
-     form.addEventListener("submit", function (event) {
-       let isValid = true;
+   const remarks = document.getElementById("approver_remarks");
+   if (!remarks.value.trim()) {
+      remarks.classList.add("is-invalid");
+      isValid = false;
+   } else {
+      remarks.classList.remove("is-invalid");
+   }
    
-       const approveStatus = document.getElementById("approve_status");
-       if (!approveStatus.value) {
-         approveStatus.classList.add("is-invalid");
-         isValid = false;
-      } else {
-         approveStatus.classList.remove("is-invalid");
-      }
-   
-      const remarks = document.getElementById("approver_remarks");
-      if (!remarks.value.trim()) {
-         remarks.classList.add("is-invalid");
-         isValid = false;
-      } else {
-         remarks.classList.remove("is-invalid");
-      }
-   
-      if (!isValid) {
-         event.preventDefault();
-         event.stopPropagation();
-      }
-   });
-   
-     document.querySelectorAll("#approvalForm select, #approvalForm textarea").forEach(input => {
-       input.addEventListener("input", () => {
-         if (input.value.trim()) {
-           input.classList.remove("is-invalid");
-        }
-     });
-    });
-   });
+   if (!isValid) {
+      event.preventDefault();
+      event.stopPropagation();
+   }
+});
+    
+    document.querySelectorAll("#approvalForm select, #approvalForm textarea").forEach(input => {
+     input.addEventListener("input", () => {
+      if (input.value.trim()) {
+       input.classList.remove("is-invalid");
+    }
+ });
+  });
+ });
 </script>
 @endsection
