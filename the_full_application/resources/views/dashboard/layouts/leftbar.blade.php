@@ -153,7 +153,7 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('special-school-access')
-                        <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li>
+                        <!-- <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li> -->
                         <li><a href="{{route('admin.specialschoolconstructions.all_in_one_approval')}}">Toilet Construction</a></li>
                         @endcan
                      </ul>
