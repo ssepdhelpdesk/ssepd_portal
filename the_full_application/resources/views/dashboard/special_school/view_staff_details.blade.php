@@ -42,6 +42,7 @@ Staff Details || Special School
 									<th>School Name</th>
 									<th>Image</th>
 									<th>Name</th>
+									<th>Qualification</th>
 									<th>Engagement Date</th>
 									<th>Designation</th>
 									<th>Employment Type</th>
@@ -57,6 +58,7 @@ Staff Details || Special School
 									<th>School Name</th>
 									<th>Image</th>
 									<th>Name</th>
+									<th>Qualification</th>
 									<th>Engagement Date</th>
 									<th>Designation</th>
 									<th>Employment Type</th>
@@ -75,6 +77,7 @@ Staff Details || Special School
 									<td>{{ $staffDetails->special_school_name }}</td>
 									<td><a href="{{ url('storage/' . $staffDetails->file_staff_image) }}" target="_blank"> <img src="{{ url('storage/' . $staffDetails->file_staff_image) }}" alt="Staff Image" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"></a></td>
 									<td>{{ $staffDetails->special_school_staff_name }}</td>
+									<td>{{ $staffDetails->highest_qualification }}</td>
 									<td>{{ \Carbon\Carbon::parse($staffDetails->staff_engagement_date)->format('jS F, Y') }}</td>
 									<td>
 										@php
