@@ -10,11 +10,11 @@ Special School || No of Staffs in Schools
         max-width: 200px;
     }
     /* Gallery container */
-.image-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-}
+    .image-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
 
 /* Each image styling */
 .image-gallery img {
@@ -99,35 +99,41 @@ Special School || No of Staffs in Schools
                                 <td>{{ substr($school->special_school_name, 0, 35) }}</td>
                                 <td>{{ $school->new_or_existing_text }}</td>
                                 <td>
-    @if($school->latest_construction_id)
-        @php
-            $images = [
-                $school->construction()->find($school->latest_construction_id)->file_construction_image_1 ?? null,
-                $school->construction()->find($school->latest_construction_id)->file_construction_image_2 ?? null,
-                $school->construction()->find($school->latest_construction_id)->file_construction_image_3 ?? null,
-                $school->construction()->find($school->latest_construction_id)->file_construction_image_4 ?? null,
-                $school->construction()->find($school->latest_construction_id)->file_construction_image_5 ?? null,
-            ];
-        @endphp
+                                    @if($school->latest_construction_id)
+                                    @php
+                                    $images = [
+                                    $school->construction()->find($school->latest_construction_id)->file_construction_image_1 ?? null,
+                                    $school->construction()->find($school->latest_construction_id)->file_construction_image_2 ?? null,
+                                    $school->construction()->find($school->latest_construction_id)->file_construction_image_3 ?? null,
+                                    $school->construction()->find($school->latest_construction_id)->file_construction_image_4 ?? null,
+                                    $school->construction()->find($school->latest_construction_id)->file_construction_image_5 ?? null,
+                                    ];
+                                    @endphp
 
-        <div class="image-gallery">
-            @foreach($images as $img)
-                @if($img)
-                    <a href="{{ asset('storage/' . $img) }}" target="_blank">
-                        <img src="{{ asset('storage/' . $img) }}" alt="Construction Image">
-                    </a>
-                @endif
-            @endforeach
-        </div>
-    @else
-        <span class="text-muted">Not Yet Uploaded</span>
-    @endif
-</td>
+                                    <div class="image-gallery">
+                                        @foreach($images as $img)
+                                        @if($img)
+                                        <a href="{{ asset('storage/' . $img) }}" target="_blank">
+                                            <img src="{{ asset('storage/' . $img) }}" alt="Construction Image">
+                                        </a>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                    @else
+                                    <span class="text-muted">Not Yet Uploaded</span>
+                                    @endif
+                                </td>
 
                                 <td>{{ $school->construction_status }}</td>
-                                <td><a href="{{ $school->latest_construction_school_id ? route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) : '#' }}" target="_blank">
+                                <td>
+                                    @if($school->latest_construction_school_id)
+                                    <a href="{{ route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) }}" target="_blank">
+                                        {{ $school->approve_status_text }}
+                                    </a>
+                                    @else
                                     {{ $school->approve_status_text }}
-                                </a></td>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
