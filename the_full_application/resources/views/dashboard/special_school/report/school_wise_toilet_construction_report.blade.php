@@ -9,6 +9,29 @@ Special School || No of Staffs in Schools
         word-break: break-word;
         max-width: 200px;
     }
+    /* Gallery container */
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+/* Each image styling */
+.image-gallery img {
+    width: 60px;       /* Thumbnail size */
+    height: 60px;
+    object-fit: cover; /* Crop without distortion */
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Hover effect */
+.image-gallery img:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 10;
+}
 </style>
 @endsection 
 @section('content')
@@ -77,23 +100,27 @@ Special School || No of Staffs in Schools
                                 <td>{{ $school->new_or_existing_text }}</td>
                                 <td>
     @if($school->latest_construction_id)
-        @php $images = [
-            $school->construction()->find($school->latest_construction_id)->file_construction_image_1 ?? null,
-            $school->construction()->find($school->latest_construction_id)->file_construction_image_2 ?? null,
-            $school->construction()->find($school->latest_construction_id)->file_construction_image_3 ?? null,
-            $school->construction()->find($school->latest_construction_id)->file_construction_image_4 ?? null,
-            $school->construction()->find($school->latest_construction_id)->file_construction_image_5 ?? null,
-        ]; @endphp
+        @php
+            $images = [
+                $school->construction()->find($school->latest_construction_id)->file_construction_image_1 ?? null,
+                $school->construction()->find($school->latest_construction_id)->file_construction_image_2 ?? null,
+                $school->construction()->find($school->latest_construction_id)->file_construction_image_3 ?? null,
+                $school->construction()->find($school->latest_construction_id)->file_construction_image_4 ?? null,
+                $school->construction()->find($school->latest_construction_id)->file_construction_image_5 ?? null,
+            ];
+        @endphp
 
-        @foreach($images as $img)
-            @if($img)
-                <a href="{{ asset('storage/' . $img) }}" target="_blank">
-                    <img src="{{ asset('storage/' . $img) }}" alt="Construction Image" style="width:50px;height:50px;margin-right:5px;">
-                </a>
-            @endif
-        @endforeach
+        <div class="image-gallery">
+            @foreach($images as $img)
+                @if($img)
+                    <a href="{{ asset('storage/' . $img) }}" target="_blank">
+                        <img src="{{ asset('storage/' . $img) }}" alt="Construction Image">
+                    </a>
+                @endif
+            @endforeach
+        </div>
     @else
-        N/A
+        <span class="text-muted">Not Yet Uploaded</span>
     @endif
 </td>
 
