@@ -50,6 +50,7 @@ Special School || No of Staffs in Schools
                                 <th>Management Name</th>
                                 <th>School Name</th>
                                 <th>New/Existing</th>
+                                <th>Images</th>
                                 <th>Construction Status</th>
                                 <th>Approve Status</th>
                             </tr>
@@ -60,7 +61,8 @@ Special School || No of Staffs in Schools
                                 <th>District</th>
                                 <th>Management Name</th>
                                 <th>School Name</th>
-                                <th>New/Existing</th>                                
+                                <th>New/Existing</th>
+                                <th>Images</th>                                
                                 <th>Construction Status</th>
                                 <th>Approve Status</th>
                             </tr>
@@ -72,7 +74,29 @@ Special School || No of Staffs in Schools
                                 <td>{{ $school->district->district_name ?? 'N/A' }}</td>
                                 <td>{{ substr($school->management_name, 0, 55) }}</td>
                                 <td>{{ substr($school->special_school_name, 0, 35) }}</td>
-                                <td>{{ $school->new_or_existing_text }}</td>                 
+                                <td>{{ $school->new_or_existing_text }}</td>
+                                <td>
+    @if($school->latest_construction_id)
+        @php $images = [
+            $school->construction()->find($school->latest_construction_id)->file_construction_image_1 ?? null,
+            $school->construction()->find($school->latest_construction_id)->file_construction_image_2 ?? null,
+            $school->construction()->find($school->latest_construction_id)->file_construction_image_3 ?? null,
+            $school->construction()->find($school->latest_construction_id)->file_construction_image_4 ?? null,
+            $school->construction()->find($school->latest_construction_id)->file_construction_image_5 ?? null,
+        ]; @endphp
+
+        @foreach($images as $img)
+            @if($img)
+                <a href="{{ asset('storage/' . $img) }}" target="_blank">
+                    <img src="{{ asset('storage/' . $img) }}" alt="Construction Image" style="width:50px;height:50px;margin-right:5px;">
+                </a>
+            @endif
+        @endforeach
+    @else
+        N/A
+    @endif
+</td>
+
                                 <td>{{ $school->construction_status }}</td>
                                 <td><a href="{{ $school->latest_construction_school_id ? route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) : '#' }}" target="_blank">
                                     {{ $school->approve_status_text }}
