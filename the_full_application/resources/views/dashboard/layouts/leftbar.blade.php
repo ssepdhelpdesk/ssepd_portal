@@ -155,7 +155,8 @@
                         @can('special-school-access')
                         <!-- <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li> -->
                         <li><a href="{{route('admin.specialschool.school_wise_staff_count_report')}}">Staff Details</a></li>
-                        <li><a href="{{route('admin.specialschoolconstructions.all_in_one_approval')}}">Toilet Construction</a></li>
+                        <li><a href="{{route('admin.specialschoolconstructions.school_wise_toilet_construction_report')}}">Toilet Construction</a></li>
+                        <!-- <li><a href="{{route('admin.specialschoolconstructions.all_in_one_approval')}}">Toilet Construction</a></li> -->
                         @endcan
                      </ul>
                   </li>

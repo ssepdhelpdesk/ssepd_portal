@@ -197,6 +197,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/approve_construction_status', 'approve_construction_status')->name('approve_construction_status');
         Route::post('{id}/approve_construction_status_store', 'approve_construction_status_store')->name('approve_construction_status_store');
         Route::get('all_in_one_approval', 'all_in_one_approval')->name('all_in_one_approval');
+
+        Route::get('school_wise_toilet_construction_report', 'school_wise_toilet_construction_report')->name('school_wise_toilet_construction_report');
     });
 
     Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {

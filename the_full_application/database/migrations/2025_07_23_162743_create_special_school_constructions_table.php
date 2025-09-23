@@ -57,6 +57,7 @@ return new class extends Migration
             $table->tinyInteger('approve_status')->default(0);
             $table->string('approver_remarks')->nullable();
             $table->date('approved_date')->nullable();
+            $table->bigInteger('no_of_phase_approved');
             $table->date('created_date');
             $table->time('created_time');
             $table->foreignId('created_by');

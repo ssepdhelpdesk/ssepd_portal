@@ -86,6 +86,7 @@ public function construction_timeline()
     $latestImage = $allConstructionRecords->sortByDesc('created_date')->first();
 
     return view('dashboard.special_school.construction_timeline', compact(
+        'latestImage',
         'specialSchoolMapping',
         'specialSchool',
         'phaseNumbers',
@@ -356,6 +357,7 @@ public function approve_construction_status_store(Request $request, $id)
             'approve_status'    => $validatedData['approve_status'],
             'approver_remarks'  => $validatedData['approver_remarks'],
             'approved_date'     => now()->setTimezone('Asia/Kolkata')->toDateString(),
+            'no_of_phase_approved' => $special_school->phase_no,
         ]);
 
         $applicationstagehistory = new ApplicationStageHistory();
@@ -400,6 +402,10 @@ public function all_in_one_approval()
 {
     $special_school_construction = SpecialSchoolConstruction::where('status', 1)->orderBy('management_id', 'asc')->orderBy('special_school_id', 'asc')->get();
     return view('dashboard.special_school.construction_timeline_all_in_one_approval', compact('special_school_construction'));
+}
+
+public function school_wise_toilet_construction_report() {
+    //
 }
 
 /**

@@ -128,6 +128,7 @@ Special School || Construction Progress Details
                                     </div>
                                     <hr>
                                     @endforeach
+                                    @if($latestImage->approve_status == 1 && $latestImage->approver_remarks != NULL && $latestImage->approved_date != NULL && $latestImage->no_of_phase_approved != 0)
                                     @can('special-school-create')
                                     <div class="sl-item">
                                        <div class="sl-left"> <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" alt="user" class="img-circle" /> </div>
@@ -144,17 +145,17 @@ Special School || Construction Progress Details
                                                          <input type="hidden" class="form-control" id="system_stored_longitude" name="system_stored_longitude" value="{{ old('system_stored_longitude') }}">
                                                          <div class="col-md-12">
                                                             <div class="form-group" id="new_or_existing_div">
-                                                            <label for="new_or_existing" class="form-label">Construction Type</label>
-                                                            <select class="form-control" name="new_or_existing" id="new_or_existing" required>
-                                                               <option value="">--Select--</option>
-                                                               <option value="1">New</option>
-                                                               <option value="2">Existing</option>
-                                                            </select>
-                                                            <div class="invalid-feedback">Please select an action (New or Existing).</div>
-                                                            @error('new_or_existing')
-                                                            <label class="error">{{ $message }}</label>
-                                                            @enderror
-                                                         </div>
+                                                               <label for="new_or_existing" class="form-label">Construction Type</label>
+                                                               <select class="form-control" name="new_or_existing" id="new_or_existing" required>
+                                                                  <option value="">--Select--</option>
+                                                                  <option value="1">New</option>
+                                                                  <option value="2">Existing</option>
+                                                               </select>
+                                                               <div class="invalid-feedback">Please select an action (New or Existing).</div>
+                                                               @error('new_or_existing')
+                                                               <label class="error">{{ $message }}</label>
+                                                               @enderror
+                                                            </div>
                                                          </div>
                                                          <div class="col-md-4">
                                                             <div class="form-group" id="file_construction_image_1_div">
@@ -328,21 +329,26 @@ Special School || Construction Progress Details
                                     </div>
                                     <hr>
                                     @endcan
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <!-- row -->
-   <!-- ============================================================== -->
-   <!-- End Page Content -->
-   <!-- ============================================================== -->
+                                    @else
+                                    <p class="text-danger">
+                                     The construction status that you have uploaded is pending at HO.
+                                  </p>
+                                  @endif
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- row -->
+ <!-- ============================================================== -->
+ <!-- End Page Content -->
+ <!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')

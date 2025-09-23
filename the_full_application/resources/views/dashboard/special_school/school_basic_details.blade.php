@@ -63,7 +63,7 @@ Special School || Index
                            <div class="col-md-3">
                               <div class="form-group" id="special_school_name_div">
                                  <label class="form-label">Special School Name<span class="itsrequired"> *</span></label>
-                                 <input type="text" id="special_school_name" name="special_school_name" value="{{old('special_school_name', $specialSchoolMapping->special_school_name)}}" class="form-control" placeholder="Special School Name">
+                                 <input type="text" id="special_school_name" name="special_school_name" value="{{old('special_school_name', $specialSchoolMapping->special_school_name)}}" class="form-control" placeholder="Special School Name" readonly>
                                  <div id="special_school_name_error"></div>
                                  @error('special_school_name')
                                  <label class="error">{{ $message }}</label>
@@ -73,7 +73,7 @@ Special School || Index
                            <div class="col-md-3">
                               <div class="form-group" id="special_school_management_name_div">
                                  <label class="form-label">Management Name<span class="itsrequired"> *</span></label>
-                                 <input type="text" id="special_school_management_name" name="special_school_management_name" value="{{old('special_school_management_name', $specialSchoolMapping->management_name)}}" class="form-control" placeholder="Management Name">
+                                 <input type="text" id="special_school_management_name" name="special_school_management_name" value="{{old('special_school_management_name', $specialSchoolMapping->management_name)}}" class="form-control" placeholder="Management Name" readonly>
                                  <div id="special_school_management_name_error"></div>
                                  @error('special_school_management_name')
                                  <label class="error">{{ $message }}</label>
