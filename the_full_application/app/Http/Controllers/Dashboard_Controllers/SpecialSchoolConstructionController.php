@@ -439,7 +439,7 @@ public function school_wise_toilet_construction_report()
                 ->with('info', 'Kindly provide the basic information of the school to proceed further.');
         }
 
-        $specialSchoolMapping = collect([$specialSchoolMapping]); // wrap in collection
+        $specialSchoolMapping = collect([$specialSchoolMapping]);
     } else {
         $specialSchoolMapping = $specialSchoolMappingQuery->get();
     }
@@ -456,11 +456,11 @@ public function school_wise_toilet_construction_report()
         if (!$latestConstruction || $latestConstruction->approve_status == 0) {
             $school->approve_status_text = 'Pending at HO';
         } elseif ($latestConstruction->approve_status == 1) {
-            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' Approved';
+            $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved . ' Approved';
         } elseif ($latestConstruction->approve_status == 2) {
-            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' Rejected';
+            $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved . ' Rejected';
         } elseif ($latestConstruction->approve_status == 3) {
-            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' is waiting for verification';
+            $school->approve_status_text = 'Phase ' . $latestConstruction->phase_no . ' is waiting for verification';
         } else {
             $school->approve_status_text = 'N/A';
         }
