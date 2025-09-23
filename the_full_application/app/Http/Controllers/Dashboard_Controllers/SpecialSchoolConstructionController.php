@@ -36,11 +36,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
- }
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+   }
 
 /**
 * Display a listing of the resource.
@@ -372,6 +372,9 @@ public function approve_construction_status_store(Request $request, $id)
         } elseif ($special_school->approve_status == 2) {
             $applicationstagehistory->stage_id = 21;
             $applicationstagehistory->stage_name = 'Rejected by HO';
+        } elseif ($special_school->approve_status == 3) {
+            $applicationstagehistory->stage_id = 21;
+            $applicationstagehistory->stage_name = 'Waiting for Varification';
         }      
         $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
         $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
@@ -410,11 +413,11 @@ public function school_wise_toilet_construction_report()
     $userRole = $user->role_id;
 
     $specialSchoolMappingQuery = SpecialSchoolMapping::where('status', 1)
-        ->with(['district', 'construction'])
-        ->withMax('construction as latest_phase_no', 'phase_no');
+    ->with(['district', 'construction'])
+    ->withMax('construction as latest_phase_no', 'phase_no');
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-        
+
     } elseif (in_array($userRole, [4, 6])) {
         $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
         $specialSchoolMappingQuery->where('district_id', $district_id);
@@ -430,13 +433,13 @@ public function school_wise_toilet_construction_report()
 
     if ($userRole == 22) {
         $specialSchoolMapping = SpecialSchoolMapping::where('status', 1)->with(['district', 'construction'])
-            ->withMax('construction as latest_phase_no', 'phase_no')
-            ->where('user_table_id', $user->user_table_id)
-            ->first();
+        ->withMax('construction as latest_phase_no', 'phase_no')
+        ->where('user_table_id', $user->user_table_id)
+        ->first();
 
         if (!$specialSchoolMapping) {
             return redirect()->route('admin.specialschool.create')
-                ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
         }
 
         $specialSchoolMapping = collect([$specialSchoolMapping]);
@@ -447,22 +450,36 @@ public function school_wise_toilet_construction_report()
     $specialSchoolMapping->transform(function ($school, $index) {
         if ($school->latest_phase_no) {
             $school->construction_status = "Phase {$school->latest_phase_no} Photo Updated";
+
+            $latestConstruction = $school->construction()->latest('phase_no')->first();
+
+            if (!$latestConstruction || $latestConstruction->approve_status == 0) {
+                $school->approve_status_text = 'Pending at HO';
+            } elseif ($latestConstruction->approve_status == 1) {
+                $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved
+                . ' Approved on ' . Carbon::parse($latestConstruction->approved_date)->format('d-m-Y');
+            } elseif ($latestConstruction->approve_status == 2) {
+                $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved
+                . ' Rejected on ' . Carbon::parse($latestConstruction->approved_date)->format('d-m-Y');
+            } elseif ($latestConstruction->approve_status == 3) {
+                $school->approve_status_text = 'Phase ' . $latestConstruction->phase_no . ' is waiting for verification';
+            } else {
+                $school->approve_status_text = 'Not Yet Uploaded';
+            }
+
+            if ($latestConstruction) {
+                $school->new_or_existing_text = $latestConstruction->new_or_existing == 1 ? 'New' :
+                ($latestConstruction->new_or_existing == 2 ? 'Existing' : 'Not Yet Uploaded');
+                $school->latest_construction_id = $latestConstruction->id;
+            } else {
+                $school->new_or_existing_text = 'Not Yet Uploaded';
+                $school->latest_construction_id = null;
+            }
         } else {
             $school->construction_status = "Not Yet Uploaded";
-        }
-
-        $latestConstruction = $school->construction()->latest('phase_no')->first();
-
-        if (!$latestConstruction || $latestConstruction->approve_status == 0) {
-            $school->approve_status_text = 'Pending at HO';
-        } elseif ($latestConstruction->approve_status == 1) {
-            $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved . ' Approved';
-        } elseif ($latestConstruction->approve_status == 2) {
-            $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved . ' Rejected';
-        } elseif ($latestConstruction->approve_status == 3) {
-            $school->approve_status_text = 'Phase ' . $latestConstruction->phase_no . ' is waiting for verification';
-        } else {
-            $school->approve_status_text = 'N/A';
+            $school->approve_status_text = "Not Yet Uploaded";
+            $school->new_or_existing_text = 'Not Yet Uploaded';
+            $school->latest_construction_id = null;
         }
 
         $school->sl_no = $index + 1;

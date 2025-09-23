@@ -93,7 +93,7 @@ Special School || List
                         @endphp
 
                         @if($phase)
-                        <a href="{{ route('admin.specialschoolconstructions.index', $schoolDetails->special_school_id) }}" target="_blank">{{ $phaseMap[$phase] ?? 'Phase ' . $phase }} Phase uploaded</a>
+                        <a href="{{ route('admin.specialschoolconstructions.index', $schoolDetails->special_school_id) }}" target="_blank">{{ $phaseMap[$phase] ?? 'Phase ' . $phase }} Phase uploaded123</a>
                         @else
                         Pending to upload
                         @endif
