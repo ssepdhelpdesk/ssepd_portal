@@ -46,7 +46,6 @@ Special School || No of Staffs in Schools
                         <thead>
                             <tr>
                                 <th>Sl.No</th>
-                                <th>ID</th>
                                 <th>District</th>
                                 <th>Management Name</th>
                                 <th>School Name</th>
@@ -58,7 +57,6 @@ Special School || No of Staffs in Schools
                         <tfoot>
                             <tr>
                                 <th>Sl.No</th>
-                                <th>ID</th>
                                 <th>District</th>
                                 <th>Management Name</th>
                                 <th>School Name</th>
@@ -71,15 +69,14 @@ Special School || No of Staffs in Schools
                             @foreach($specialSchoolMapping as $school)
                             <tr>
                                 <td>{{ $school->sl_no }}</td>
-                                <td>{{ $school->latest_construction_id ?? '' }}</td>
                                 <td>{{ $school->district->district_name ?? 'N/A' }}</td>
                                 <td>{{ substr($school->management_name, 0, 55) }}</td>
                                 <td>{{ substr($school->special_school_name, 0, 35) }}</td>
                                 <td>{{ $school->new_or_existing_text }}</td>                 
                                 <td>{{ $school->construction_status }}</td>
-                                <td><a href="{{ $school->latest_construction_id ? route('admin.specialschoolconstructions.index', $school->latest_construction_id) : '#' }}" target="_blank">
-    {{ $school->approve_status_text }}
-</a></td>
+                                <td><a href="{{ $school->latest_construction_school_id ? route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) : '#' }}" target="_blank">
+                                    {{ $school->approve_status_text }}
+                                </a></td>
                             </tr>
                             @endforeach
                         </tbody>
