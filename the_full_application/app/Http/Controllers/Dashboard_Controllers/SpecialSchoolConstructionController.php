@@ -404,9 +404,75 @@ public function all_in_one_approval()
     return view('dashboard.special_school.construction_timeline_all_in_one_approval', compact('special_school_construction'));
 }
 
-public function school_wise_toilet_construction_report() {
-    //
+public function school_wise_toilet_construction_report()
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $specialSchoolMappingQuery = SpecialSchoolMapping::where('status', 1)
+        ->with(['district', 'construction'])
+        ->withMax('construction as latest_phase_no', 'phase_no');
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        
+    } elseif (in_array($userRole, [4, 6])) {
+        $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif ($userRole == 5) {
+        $district_id = DB::table('municipalities')->where('municipality_id', $user->posted_municipality)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [8, 10])) {
+        $district_id = DB::table('subdivisions')->where('subdivision_id', $user->posted_subdiv)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [9, 11])) {
+        $specialSchoolMappingQuery->where('district_id', $user->posted_district);
+    }
+
+    if ($userRole == 22) {
+        $specialSchoolMapping = SpecialSchoolMapping::where('status', 1)->with(['district', 'construction'])
+            ->withMax('construction as latest_phase_no', 'phase_no')
+            ->where('user_table_id', $user->user_table_id)
+            ->first();
+
+        if (!$specialSchoolMapping) {
+            return redirect()->route('admin.specialschool.create')
+                ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+        }
+
+        $specialSchoolMapping = collect([$specialSchoolMapping]); // wrap in collection
+    } else {
+        $specialSchoolMapping = $specialSchoolMappingQuery->get();
+    }
+
+    $specialSchoolMapping->transform(function ($school, $index) {
+        if ($school->latest_phase_no) {
+            $school->construction_status = "Phase {$school->latest_phase_no} Photo Updated";
+        } else {
+            $school->construction_status = "Not Yet Uploaded";
+        }
+
+        $latestConstruction = $school->construction()->latest('phase_no')->first();
+
+        if (!$latestConstruction || $latestConstruction->approve_status == 0) {
+            $school->approve_status_text = 'Pending at HO';
+        } elseif ($latestConstruction->approve_status == 1) {
+            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' Approved';
+        } elseif ($latestConstruction->approve_status == 2) {
+            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' Rejected';
+        } elseif ($latestConstruction->approve_status == 3) {
+            $school->approve_status_text = $latestConstruction->no_of_phase_approved . ' is waiting for verification';
+        } else {
+            $school->approve_status_text = 'N/A';
+        }
+
+        $school->sl_no = $index + 1;
+
+        return $school;
+    });
+
+    return view('dashboard.special_school.report.school_wise_toilet_construction_report', compact('specialSchoolMapping'));
 }
+
 
 /**
 * Display the specified resource.

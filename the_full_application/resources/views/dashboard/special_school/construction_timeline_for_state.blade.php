@@ -157,6 +157,7 @@ Special School || Construction Progress Details
                                                          <option value="">--Select--</option>
                                                          <option value="1">Approve</option>
                                                          <option value="2">Reject</option>
+                                                         <option value="3">In Waiting</option>
                                                       </select>
                                                       <div class="invalid-feedback">Please select an action (Approve or Reject).</div>
                                                       @error('approve_status')
