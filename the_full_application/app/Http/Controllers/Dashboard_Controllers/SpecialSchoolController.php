@@ -35,11 +35,11 @@ class SpecialSchoolController extends Controller
 
     function __construct()
     {
-     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
-     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
-     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-     $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
- }
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
+   }
 /**
 * Display a listing of the resource.
 */
@@ -83,8 +83,8 @@ public function index()
         /*SSSO, SubCollector — filter by posted_subdiv*/
 
         /*Get all block_ids and municipality_ids under user's subdivision*/
-        $blockIds = \App\Models\Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
-        $municipalityIds = \App\Models\Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+        $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
 
         $specialSchoolQuery->where(function ($query) use ($blockIds, $municipalityIds) {
             $query->whereIn('block_id', $blockIds)
@@ -676,7 +676,7 @@ public function cumulative_report()
     $specialSchoolMappingQuery = SpecialSchoolMapping::where('status', 1)->with(['district'])->withCount('staff')->withMax('construction', 'phase_no');
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-        
+
     } elseif (in_array($userRole, [4, 6])) {
         $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
         $specialSchoolMappingQuery->where('district_id', $district_id);
@@ -708,6 +708,45 @@ public function cumulative_report()
     }
 
     return view('dashboard.special_school.report.cumulative_report', compact('specialSchoolMapping'));
+}
+
+public function school_wise_staff_count_report() {
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $specialSchoolMappingQuery = SpecialSchoolMapping::where('status', 1)->with(['district'])->withCount('staff');
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+    } elseif (in_array($userRole, [4, 6])) {
+        $district_id = DB::table('blocks')->where('block_id', $user->posted_block)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif ($userRole == 5) {
+        $district_id = DB::table('municipalities')->where('municipality_id', $user->posted_municipality)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [8, 10])) {
+        $district_id = DB::table('subdivisions')->where('subdivision_id', $user->posted_subdiv)->value('district_id');
+        $specialSchoolMappingQuery->where('district_id', $district_id);
+    } elseif (in_array($userRole, [9, 11])) {
+        $specialSchoolMappingQuery->where('district_id', $user->posted_district);
+    }
+
+    if ($userRole == 22) {
+        $specialSchoolMapping = SpecialSchoolMapping::with(['district'])
+        ->withCount('staff')
+        ->where('user_table_id', $user->user_table_id)
+        ->first();
+
+        if (!$specialSchoolMapping) {
+            return redirect()->route('admin.specialschool.create')
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+        }
+
+        $specialSchoolMapping = collect([$specialSchoolMapping]);
+    } else {
+        $specialSchoolMapping = $specialSchoolMappingQuery->get();
+    }
+
+    return view('dashboard.special_school.report.school_wise_staff_count_report', compact('specialSchoolMapping'));
 }
 
 }
