@@ -143,7 +143,7 @@ public function fetchBlock(Request $request): JsonResponse
         $query->where('district_id', $user->posted_district);
     }
 
-    $data['municipalities'] = $query->get(["block_name", "block_id"]);
+    $data['blocks'] = $query->get(["block_name", "block_id"]);
     return response()->json($data);
 }
 
