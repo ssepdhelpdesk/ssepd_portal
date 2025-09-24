@@ -87,7 +87,7 @@ EP Pension || OldAge Beneficiary Data Update
                         <div class="col-md-3">
                            <div class="form-group" id="father_or_husband_name_div">
                               <label class="form-label">Father/Husband Name<span class="itsrequired"> *</span></label>
-                              <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name', $oldAge3500Pensioner->father_or_husband_name)}}" class="form-control" placeholder="Name of the Staff" readonly>
+                              <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name', $oldAge3500Pensioner->father_or_husband_name)}}" class="form-control" placeholder="Name of the Staff">
                               <div id="father_or_husband_name_error"></div>
                               @error('father_or_husband_name')
                               <label class="error">{{ $message }}</label>
