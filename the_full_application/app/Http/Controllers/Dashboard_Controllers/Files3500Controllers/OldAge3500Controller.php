@@ -329,12 +329,6 @@ public function store(Request $request)
             'grampanchayat' => 'required',
             'village' => 'required',
             'pin' => 'required',
-            'ngo_postal_address_at' => 'required|string',
-            'ngo_postal_address_post' => 'required|string',
-            'ngo_postal_address_via' => 'required|string',
-            'ngo_postal_address_ps' => 'required|string',
-            'ngo_postal_address_district' => 'required|string',
-            'ngo_postal_address_pin' => 'required|digits:6',
         ]);
     } elseif ($request->ngo_address_type === "2") {
         $validationRules = array_merge($validationRules, [
@@ -343,12 +337,6 @@ public function store(Request $request)
             'municipality' => 'required',
             'ward' => 'required',
             'pin' => 'required',
-            'ngo_postal_address_at' => 'required|string',
-            'ngo_postal_address_post' => 'required|string',
-            'ngo_postal_address_via' => 'required|string',
-            'ngo_postal_address_ps' => 'required|string',
-            'ngo_postal_address_district' => 'required|string',
-            'ngo_postal_address_pin' => 'required|digits:6',
         ]);
     }
     $validatedData = $request->validate($validationRules);
