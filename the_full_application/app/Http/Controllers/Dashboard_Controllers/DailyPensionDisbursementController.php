@@ -213,11 +213,17 @@ public function listing_report(Request $request)
     $userRole = $user->role_id;
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-        ->where('status', 1)
-        ->first();
+    ->where('status', 1)
+    ->first();
 
     if (!$dateConfig) {
-        return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
+        if ($request->ajax()) {
+            return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
+        }
+
+        return redirect()
+        ->back()
+        ->with('error', 'Submission dates are not configured. Please contact admin.');
     }
 
     $forTheMonth = $dateConfig->for_the_month;
@@ -243,14 +249,14 @@ public function listing_report(Request $request)
     ];
 
     $bssosQuery = DailyPensionDisbursement::where('status', 1)
-        ->where('for_the_month', $forTheMonth)
-        ->where('staff_address_type', 1)
-        ->with(['grampanchayat.block', 'grampanchayat.district']);
+    ->where('for_the_month', $forTheMonth)
+    ->where('staff_address_type', 1)
+    ->with(['grampanchayat.block', 'grampanchayat.district']);
 
     $meosQuery = DailyPensionDisbursement::where('status', 1)
-        ->where('for_the_month', $forTheMonth)
-        ->where('staff_address_type', 2)
-        ->with(['ward.municipality', 'ward.district']);
+    ->where('for_the_month', $forTheMonth)
+    ->where('staff_address_type', 2)
+    ->with(['ward.municipality', 'ward.district']);
 
     if (!in_array($userRole, [1, 2, 12, 13, 14, 15])) {
         if (in_array($userRole, [4, 6])) {
@@ -276,26 +282,26 @@ public function listing_report(Request $request)
 
     $grouped = $allRecords->groupBy(function ($item) {
         return $item->staff_address_type == 1
-            ? 'gp_' . $item->gp_id
-            : 'ward_' . $item->ward_id;
+        ? 'gp_' . $item->gp_id
+        : 'ward_' . $item->ward_id;
     })->map(function ($group) use ($numericColumns) {
         $first = $group->first();
         $row = [
             'staff_address_type' => $first->staff_address_type,
             'district_name'      => $first->staff_address_type == 1
-                ? ($first->grampanchayat->district->district_name ?? '')
-                : ($first->ward->district->district_name ?? ''),
+            ? ($first->grampanchayat->district->district_name ?? '')
+            : ($first->ward->district->district_name ?? ''),
             'block_ulb_name'     => $first->staff_address_type == 1
-                ? ($first->grampanchayat->block->block_name ?? '')
-                : ($first->ward->municipality->municipality_name ?? ''),
+            ? ($first->grampanchayat->block->block_name ?? '')
+            : ($first->ward->municipality->municipality_name ?? ''),
             'gp_ward_name'       => $first->staff_address_type == 1
-                ? ($first->grampanchayat->gp_name ?? '')
-                : ($first->ward->ward_name ?? ''),
+            ? ($first->grampanchayat->gp_name ?? '')
+            : ($first->ward->ward_name ?? ''),
             'disbursement_dates' => $group->pluck('disbursement_start_date')
-                ->sort()
-                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('D, d-M-Y'))
-                ->unique()
-                ->implode(' | '),
+            ->sort()
+            ->map(fn($d) => \Carbon\Carbon::parse($d)->format('D, d-M-Y'))
+            ->unique()
+            ->implode(' | '),
         ];
 
         foreach ($numericColumns as $col) {
@@ -307,9 +313,9 @@ public function listing_report(Request $request)
 
     if ($request->ajax()) {
         return DataTables::of($grouped)
-            ->addIndexColumn()
-            ->rawColumns(['disbursement_dates'])
-            ->make(true);
+        ->addIndexColumn()
+        ->rawColumns(['disbursement_dates'])
+        ->make(true);
     }
 
     return view(
