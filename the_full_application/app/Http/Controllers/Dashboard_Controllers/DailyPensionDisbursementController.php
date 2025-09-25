@@ -36,94 +36,317 @@ use App\Models\WardMaster;
 use App\Models\PensionDisbursementAuthority;
 use App\Models\PensionFundRequirementDates;
 use App\Models\MonthlyPensionDisbursemenet;
+use App\Models\DailyPensionDisbursement;
 use Yajra\DataTables\Facades\DataTables;
 
 class DailyPensionDisbursementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $user = auth()->user();
-        $userRole = $user->role_id;
-        $today_date = Carbon::today('Asia/Kolkata')->format('Y-m-d');
+/**
+* Display a listing of the resource.
+*/
+public function index()
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+    $today_date = Carbon::today('Asia/Kolkata')->format('Y-m-d');
 
-        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $startDate   = $dateConfig->start_date;
+    $endDate     = $dateConfig->end_date;
+    $forTheMonth = $dateConfig->for_the_month;
+
+    if ($user->role_name == 'BSSO') {
+        $gp_ward_id = Grampanchayat::where('block_id', $user->posted_block)
+        ->where('is_active', 'active')
+        ->get();
+        $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
+        $wardIds = [];
+    } elseif ($user->role_name == 'MEO') {
+        $gp_ward_id = WardMaster::where('municipal_area_code', $user->posted_municipality)
+        ->where('is_active', '1')
+        ->get();
+        $gpIds   = [];
+        $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
+    } else {
+        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+    }
+    return view('dashboard.pension.dailypension.daily_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
+}
+
+/**
+* Show the form for creating a new resource.
+*/
+public function create()
+{
+//
+}
+
+/**
+* Store a newly created resource in storage.
+*/
+
+public function store(Request $request)
+{
+    $rows = count($request->gp_ward_id ?? []);
+    $user = auth()->user();
+    $atLeastOneRowCompleted = false;
+    $errors = [];
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $forTheMonth = $dateConfig->for_the_month;
+
+    if ($user->role_name == 'BSSO') {
+        $staff_address_type = 1;
+        $block_id = $user->posted_block;
+        $district_id = Block::where('block_id', $block_id)->value('district_id');
+        $municipality_id = null;
+    } elseif ($user->role_name == 'MEO') {
+        $staff_address_type = 2;
+        $block_id = null;
+        $municipality_id = $user->posted_municipality;
+        $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
+    } else {
+        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+    }
+
+    for ($i = 0; $i < $rows; $i++) {
+        $rowFields = [
+            'disbursement_start_date'     => $request->disbursement_start_date[$i] ?? null,
+            'mbpy_oap_below_80_years'    => $request->mbpy_oap_below_80_years[$i] ?? null,
+            'mbpy_oap_above_80_years'    => $request->mbpy_oap_above_80_years[$i] ?? null,
+            'mbpy_wp'                     => $request->mbpy_wp[$i] ?? null,
+            'mbpy_dp'                     => $request->mbpy_dp[$i] ?? null,
+            'mbpy_sdp_below_80_percent'  => $request->mbpy_sdp_below_80_percent[$i] ?? null,
+            'mbpy_sdp_above_80_percent'  => $request->mbpy_sdp_above_80_percent[$i] ?? null,
+            'mbpy_sdoap'                  => $request->mbpy_sdoap[$i] ?? null,
+            'mbpy_clp'                    => $request->mbpy_clp[$i] ?? null,
+            'mbpy_wp_aids'                => $request->mbpy_wp_aids[$i] ?? null,
+            'mbpy_dp_aids'                => $request->mbpy_dp_aids[$i] ?? null,
+            'mbpy_unmarried_women'        => $request->mbpy_unmarried_women[$i] ?? null,
+            'mbpy_orphan_due_to_covide'   => $request->mbpy_orphan_due_to_covide[$i] ?? null,
+            'mbpy_widow_due_to_covid'     => $request->mbpy_widow_due_to_covid[$i] ?? null,
+            'mbpy_divorce_or_destitute'   => $request->mbpy_divorce_or_destitute[$i] ?? null,
+            'mbpy_transgender'            => $request->mbpy_transgender[$i] ?? null,
+            'no_of_normal_pensioners'     => $request->no_of_normal_pensioners[$i] ?? null,
+            'no_of_ep_pensioners'         => $request->no_of_ep_pensioners[$i] ?? null,
+        ];
+
+        $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+
+        if ($hasAnyValue) {
+            $missingFields = collect($rowFields)->filter(fn($v) => $v === null || $v === '')->keys();
+
+            if ($missingFields->isNotEmpty()) {
+                foreach ($missingFields as $field) {
+                    $errors["{$field}.{$i}"] = "Row ".($i+1).": The field ".str_replace('_',' ',$field)." is required when filling this row.";
+                }
+            } else {
+                $atLeastOneRowCompleted = true;
+
+                $gp_id = $user->role_name == 'BSSO' ? $request->gp_ward_id[$i] : null;
+                $ward_id = $user->role_name == 'MEO' ? $request->gp_ward_id[$i] : null;
+
+                $rowFields = array_merge($rowFields, [
+                    'for_the_month'     => $forTheMonth,
+                    'gp_ward_id'        => $request->gp_ward_id[$i],
+                    'gp_ward_name'      => $request->gp_ward_name[$i],
+                    'staff_address_type'=> $staff_address_type,
+                    'state_id'          => 228,
+                    'district_id'       => $district_id,
+                    'municipality_id'   => $municipality_id,
+                    'block_id'          => $block_id,
+                    'gp_id'             => $gp_id,
+                    'ward_id'           => $ward_id,
+                    'disbursement_started'=> 1,
+                    'is_active'         => 'active',
+                    'created_date'      => now()->setTimezone('Asia/Kolkata')->toDateString(),
+                    'created_time'      => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+                    'created_by'        => $user->user_table_id,
+                    'status'            => 1,
+                ]);
+
+                $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
+                $checkValue  = $request->gp_ward_id[$i];
+                $existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
+                ->where('disbursement_start_date', $request->disbursement_start_date[$i])
+                ->first();
+
+                if ($existingRecord) {
+                    $existingRecord->update($rowFields);
+                } else {
+                    DailyPensionDisbursement::create($rowFields);
+                }
+            }
+        }
+    }
+
+    if (!empty($errors)) {
+        return back()->withErrors($errors)->withInput();
+    }
+
+    if (!$atLeastOneRowCompleted) {
+        return back()->withErrors([
+            'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
+        ])->withInput();
+    }
+
+    return redirect()->route('admin.dailypensiondisbursement.index')->with('success', 'Pension disbursement records saved successfully.');
+}
+
+public function listing_report(Request $request)
+{
+    $user = Auth::user();
+    $userRole = $user->role_id;
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
         ->where('status', 1)
         ->first();
 
-        if (!$dateConfig) {
-            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    if (!$dateConfig) {
+        return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
+    }
+
+    $forTheMonth = $dateConfig->for_the_month;
+
+    $numericColumns = [
+        'mbpy_oap_below_80_years',
+        'mbpy_oap_above_80_years',
+        'mbpy_wp',
+        'mbpy_dp',
+        'mbpy_sdp_below_80_percent',
+        'mbpy_sdp_above_80_percent',
+        'mbpy_sdoap',
+        'mbpy_clp',
+        'mbpy_wp_aids',
+        'mbpy_dp_aids',
+        'mbpy_unmarried_women',
+        'mbpy_orphan_due_to_covide',
+        'mbpy_widow_due_to_covid',
+        'mbpy_divorce_or_destitute',
+        'mbpy_transgender',
+        'no_of_normal_pensioners',
+        'no_of_ep_pensioners',
+    ];
+
+    $bssosQuery = DailyPensionDisbursement::where('status', 1)
+        ->where('for_the_month', $forTheMonth)
+        ->where('staff_address_type', 1)
+        ->with(['grampanchayat.block', 'grampanchayat.district']);
+
+    $meosQuery = DailyPensionDisbursement::where('status', 1)
+        ->where('for_the_month', $forTheMonth)
+        ->where('staff_address_type', 2)
+        ->with(['ward.municipality', 'ward.district']);
+
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [4, 6])) {
+            $bssosQuery->where('block_id', $user->posted_block);
+            $meosQuery = collect();
+        } elseif ($userRole == 5) {
+            $meosQuery->where('municipality_id', $user->posted_municipality);
+            $bssosQuery = collect();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+            $bssosQuery->whereIn('block_id', $blockIds);
+            $meosQuery->whereIn('municipality_id', $municipalityIds);
+        } elseif (in_array($userRole, [9, 11])) {
+            $bssosQuery->where('district_id', $user->posted_district);
+            $meosQuery->where('district_id', $user->posted_district);
+        }
+    }
+
+    $bssos = $bssosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $bssosQuery->get() : $bssosQuery;
+    $meos  = $meosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $meosQuery->get() : $meosQuery;
+    $allRecords = collect($bssos)->merge($meos);
+
+    $grouped = $allRecords->groupBy(function ($item) {
+        return $item->staff_address_type == 1
+            ? 'gp_' . $item->gp_id
+            : 'ward_' . $item->ward_id;
+    })->map(function ($group) use ($numericColumns) {
+        $first = $group->first();
+        $row = [
+            'staff_address_type' => $first->staff_address_type,
+            'district_name'      => $first->staff_address_type == 1
+                ? ($first->grampanchayat->district->district_name ?? '')
+                : ($first->ward->district->district_name ?? ''),
+            'block_ulb_name'     => $first->staff_address_type == 1
+                ? ($first->grampanchayat->block->block_name ?? '')
+                : ($first->ward->municipality->municipality_name ?? ''),
+            'gp_ward_name'       => $first->staff_address_type == 1
+                ? ($first->grampanchayat->gp_name ?? '')
+                : ($first->ward->ward_name ?? ''),
+            'disbursement_dates' => $group->pluck('disbursement_start_date')
+                ->sort()
+                ->map(fn($d) => \Carbon\Carbon::parse($d)->format('D, d-M-Y'))
+                ->unique()
+                ->implode(' | '),
+        ];
+
+        foreach ($numericColumns as $col) {
+            $row['totals']['total_' . $col] = $group->sum($col);
         }
 
-        $startDate   = $dateConfig->start_date;
-        $endDate     = $dateConfig->end_date;
-        $forTheMonth = $dateConfig->for_the_month;
+        return $row;
+    })->values();
 
-        if ($user->role_name == 'BSSO') {
-            $gp_ward_id = Grampanchayat::where('block_id', $user->posted_block)
-            ->where('is_active', 'active')
-            ->get();
-            $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
-            $wardIds = [];
-        } elseif ($user->role_name == 'MEO') {
-            $gp_ward_id = WardMaster::where('municipal_area_code', $user->posted_municipality)
-            ->where('is_active', '1')
-            ->get();
-            $gpIds   = [];
-            $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
-        } else {
-            return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
-        }
-        return view('dashboard.pension.dailypension.daily_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
+    if ($request->ajax()) {
+        return DataTables::of($grouped)
+            ->addIndexColumn()
+            ->rawColumns(['disbursement_dates'])
+            ->make(true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    return view(
+        'dashboard.pension.dailypension.daily_pension_disbursement_listing',
+        compact('forTheMonth', 'numericColumns')
+    );
+}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+/**
+* Display the specified resource.
+*/
+public function show(string $id)
+{
+//
+}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+/**
+* Show the form for editing the specified resource.
+*/
+public function edit(string $id)
+{
+//
+}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+/**
+* Update the specified resource in storage.
+*/
+public function update(Request $request, string $id)
+{
+//
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+/**
+* Remove the specified resource from storage.
+*/
+public function destroy(string $id)
+{
+//
+}
 }

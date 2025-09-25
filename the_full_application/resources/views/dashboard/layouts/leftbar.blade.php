@@ -79,11 +79,11 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                      <ul aria-expanded="false" class="collapse">
-                        @can('pension-create')
-                        <li><a href="{{route('admin.dailypensiondisbursementcontroller.index')}}">Daily Pension Disbursement1</a></li>
+                        @can('pension-create')                        
                         <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Daily Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.dailypensiondisbursement.index')}}">Daily Pension Disbursement1</a></li>
+                        <!-- <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Daily Pension Disbursement</a></li> -->
                         @endcan                        
                      </ul>
                   </li>
@@ -135,10 +135,11 @@
                         @can('pension-access')
                         <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">Daily Pension Disbursement1</a></li>
+                        <!-- <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>                        
                         <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_submission')}}">Pension Disbursement – Daily Submissions</a></li>
                         <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
-                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report_abstract')}}">Daily Pension Disbursement Abstract</a></li>
+                        <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report_abstract')}}">Daily Pension Disbursement Abstract</a></li> -->
                         @endcan                        
                      </ul>
                   </li>

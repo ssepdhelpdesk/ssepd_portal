@@ -13,6 +13,43 @@ return new class extends Migration
     {
         Schema::create('daily_pension_disbursements', function (Blueprint $table) {
             $table->id();
+            $table->string('for_the_month');
+            $table->date('disbursement_start_date')->nullable();
+            $table->date('disbursement_end_date')->nullable();
+            $table->bigInteger('mbpy_oap_below_80_years')->nullable();
+            $table->bigInteger('mbpy_oap_above_80_years')->nullable();
+            $table->bigInteger('mbpy_wp')->nullable();
+            $table->bigInteger('mbpy_dp')->nullable();
+            $table->bigInteger('mbpy_sdp_below_80_percent')->nullable();
+            $table->bigInteger('mbpy_sdp_above_80_percent')->nullable();
+            $table->bigInteger('mbpy_sdoap')->nullable();
+            $table->bigInteger('mbpy_clp')->nullable();
+            $table->bigInteger('mbpy_wp_aids')->nullable();
+            $table->bigInteger('mbpy_dp_aids')->nullable();
+            $table->bigInteger('mbpy_unmarried_women')->nullable();
+            $table->bigInteger('mbpy_orphan_due_to_covide')->nullable();
+            $table->bigInteger('mbpy_widow_due_to_covid')->nullable();
+            $table->bigInteger('mbpy_divorce_or_destitute')->nullable();
+            $table->bigInteger('mbpy_transgender')->nullable();
+            $table->bigInteger('no_of_normal_pensioners')->nullable();
+            $table->bigInteger('no_of_ep_pensioners')->nullable();            
+            $table->tinyInteger('staff_address_type')->nullable();
+            $table->bigInteger('state_id')->nullable();
+            $table->bigInteger('district_id')->nullable();
+            $table->bigInteger('municipality_id')->nullable();
+            $table->bigInteger('ward_id')->nullable();
+            $table->bigInteger('block_id')->nullable();
+            $table->bigInteger('gp_id')->nullable();
+            $table->bigInteger('village_id')->nullable();
+            $table->string('disbursement_started')->default(0);
+            $table->string('is_active')->default('active');
+            $table->date('created_date');
+            $table->time('created_time');
+            $table->foreignId('created_by');
+            $table->date('updated_date')->nullable();
+            $table->time('updated_time')->nullable();
+            $table->foreignId('updated_by')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

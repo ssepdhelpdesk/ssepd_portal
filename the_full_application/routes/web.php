@@ -279,8 +279,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('daily_pension_disbursement_submission', 'daily_pension_disbursement_submission')->name('daily_pension_disbursement_submission');
     });
 
-    Route::prefix('DailyPensionDisbursementController')->name('dailypensiondisbursementcontroller.')->controller(DailyPensionDisbursementController::class)->group(function () {
+    Route::prefix('DailyPensionDisbursement')->name('dailypensiondisbursement.')->controller(DailyPensionDisbursementController::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::get('listing_report', 'listing_report')->name('listing_report');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

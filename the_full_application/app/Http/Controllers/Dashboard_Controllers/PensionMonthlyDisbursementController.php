@@ -260,7 +260,6 @@ public function store(Request $request)
         }
         DB::commit();
 
-        //return redirect()->back()->with('success', 'Pension disbursement dates saved successfully.');
         return redirect()->route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')->with('message', 'Pension disbursement dates saved successfully.');
         
     } catch (\Exception $e) {
