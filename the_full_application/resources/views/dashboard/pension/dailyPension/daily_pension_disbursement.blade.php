@@ -1,0 +1,296 @@
+@section('title') 
+Pension || GP/Ward wise Pension Daily Disbursement
+@endsection 
+@extends('dashboard.layouts.main')
+@section('style')
+<style>
+   .readonly-input {
+      pointer-events: none;
+      background-color: #f8f9fa;
+      cursor: default;
+   }
+   .form-control {
+     color: #212529;
+     min-height: 38px;
+     display: initial;
+     width: auto;
+  }
+
+  .toast {
+     visibility: hidden;
+     min-width: 300px;
+     margin-left: -150px;
+     background-color: #f44336; /* red for error */
+     color: white;
+     text-align: center;
+     border-radius: 8px;
+     padding: 16px;
+     position: fixed;
+     z-index: 9999;
+     left: 50%;
+     top: 20px;
+     font-size: 16px;
+     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+     opacity: 0;
+     transition: opacity 0.5s, top 0.5s;
+  }
+
+  .toast.show {
+     visibility: visible;
+     opacity: 1;
+     top: 40px;
+  }
+</style>
+@endsection 
+@section('content')
+<div class="container-fluid">
+   <!-- ============================================================== -->
+   <!-- Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <div class="row page-titles">
+      <div class="col-md-7 align-self-center">
+         <div class="d-flex align-items-center">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+               <li class="breadcrumb-item active">@yield('title')</li>
+            </ol>
+         </div>
+      </div>
+      <div class="col-md-5 align-self-center text-end">
+         <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>         
+      </div>
+   </div>
+   <!-- ============================================================== -->
+   <!-- End Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <!-- Start Page Content -->
+   <!-- ============================================================== -->
+   <!-- row -->
+   <div class="row">
+      <div class="col-12">
+         <div class="card">
+            <div class="card-body">
+               <h4 class="card-title"></h4>
+               @include('dashboard.component.message')
+               @if (count($errors) > 0)
+               <div class="alert alert-danger">
+                  <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                  <ul>
+                     @foreach ($errors->all() as $error)
+                     <li>{{ $error }}</li>
+                     @endforeach
+                  </ul>
+               </div>
+               @endif
+               <div id="alert-container"></div>
+               <div id="toast"></div>
+               <div class="col-sm-12 col-xs-12">
+                  <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.monthlypensiondisbursement.store')}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
+                     @csrf
+                     @method('post')                     
+                     <div class="form-body">
+                        <h5 class="card-title">GP/Ward wise Pension Daily Disbursement <small class="text-primary"></small></h5>
+                        <hr>
+                        <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+                           <thead>
+                              <tr>
+                                 <!-- <th>Sl No</th> -->
+                                 @if($user->role_name == 'BSSO')
+                                 <th>GP Name</th>
+                                 @elseif($user->role_name == 'MEO')
+                                 <th>Ward Name</th>
+                                 @endif                                 
+                                 <th>For the Month</th>
+                                 <th>Disbursement Date</th>
+                                 <th>MBPOAP (Below 80 Years)</th>
+                                 <th>MBPOAP (Above 80 Years)</th>
+                                 <th>No of Beneficiaries Received Normal Pension</th>
+                                 <th>No of Beneficiaries Received EP Pension</th>                                 
+                              </tr>
+                           </thead>
+                           <tbody>
+                              @forelse($gp_ward_id as $index => $gpward)
+                              <tr>
+                                 <td>
+                                    <div class="col-md-3">                              
+                                       @if($user->role_name == 'BSSO')
+                                       <div class="form-group" id="gp_ward_name_div">
+                                          <input type="hidden" name="gp_ward_id[]" value="{{ $gpward->gp_id }}" class="form-control">
+                                          <input 
+                                          type="text" id="gp_ward_name" name="gp_ward_name[]" value="{{ $gpward->gp_name }}" class="form-control" placeholder="Enter GP Name">
+                                          <div id="gp_ward_name_error"></div>
+                                          @error('gp_ward_name')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                       @endif
+                                       @if($user->role_name == 'MEO')
+                                       <div class="form-group" id="gp_ward_name_div">
+                                          <input type="hidden" name="gp_ward_id[]" value="{{ $gpward->ward_code }}" class="form-control">
+                                          <input 
+                                          type="text" id="gp_ward_name" name="gp_ward_name[]" value="{{ $gpward->ward_name }}" class="form-control" placeholder="Enter Ward Name">
+                                          <div id="gp_ward_name_error"></div>
+                                          @error('gp_ward_name')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                       @endif
+                                    </div>
+                                 </td>
+                                 <td>
+                                    {{ $forTheMonth }}
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                                       <div class="form-group" id="disbursement_start_date_div">
+                                          <input 
+                                          type="date" id="disbursement_start_date" name="disbursement_start_date[]" value="" max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="form-control" placeholder="">
+                                          <div id="disbursement_start_date_error"></div>
+                                          @error('disbursement_start_date')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                    </div>    
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                              <div class="form-group" id="mbpy_oap_below_80_years_div">
+                                 <input 
+                                 type="number" id="mbpy_oap_below_80_years" name="mbpy_oap_below_80_years" value="{{ old('mbpy_oap_below_80_years') }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                 <div id="mbpy_oap_below_80_years_error"></div>
+                                 @error('mbpy_oap_below_80_years')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                              <div class="form-group" id="mbpy_oap_above_80_years_div">
+                                 <input 
+                                 type="number" id="mbpy_oap_above_80_years" name="mbpy_oap_above_80_years" value="{{ old('mbpy_oap_above_80_years') }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                 <div id="mbpy_oap_above_80_years_error"></div>
+                                 @error('mbpy_oap_above_80_years')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                        </td>
+                                 <td>
+                                    <div class="col-md-3">
+                                       <div class="form-group" id="no_of_normal_pensioners_div">
+                                          <input 
+                                          type="number" id="no_of_normal_pensioners" name="no_of_normal_pensioners[]" value="{{ old('no_of_normal_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          <div id="no_of_normal_pensioners_error"></div>
+                                          @error('no_of_normal_pensioners')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                    </div>
+                                 </td>
+                                 <td>
+                                    <div class="col-md-3">
+                                       <div class="form-group" id="no_of_ep_pensioners_div">
+                                          <input 
+                                          type="number" id="no_of_ep_pensioners" name="no_of_ep_pensioners[]" value="{{ old('no_of_ep_pensioners', 0) }}" class="form-control" placeholder="Enter beneficiary count" min="0" step="1">
+                                          <div id="no_of_ep_pensioners_error"></div>
+                                          @error('no_of_ep_pensioners')
+                                          <label class="error">{{ $message }}</label>
+                                          @enderror
+                                       </div>
+                                    </div>
+                                 </td>
+                              </tr>
+                              @empty
+                              <tr>
+                                 <td colspan="8" class="text-center text-muted">No Records Found Yet</td>
+                              </tr>
+                              @endforelse
+                           </tbody>
+                        </table>
+                     </div>
+                     @php
+                     $today = \Carbon\Carbon::today();
+                     @endphp
+
+                     @if($today->between(\Carbon\Carbon::parse($startDate), \Carbon\Carbon::parse($endDate)))
+                     <div class="form-actions">
+                       <button type="submit" onclick="return IsEmpty();" name="register"
+                       class="btn btn-primary text-white from-prevent-multiple-submits">
+                       <i class="spinner fa fa-spinner fa-spin"></i> Submit
+                    </button>
+                 </div>
+                 @else
+                 <div class="alert alert-warning">
+                    Form submission is allowed only between 
+                    {{ \Carbon\Carbon::parse($startDate)->format('d M, Y') }} and 
+                    {{ \Carbon\Carbon::parse($endDate)->format('d M, Y') }}.
+                 </div>
+                 @endif
+              </form>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
+</div>
+@endsection 
+@section('script')
+<script>
+   function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.className = "toast show";
+
+  setTimeout(() => {
+    toast.className = toast.className.replace("show", "");
+  }, 3000);
+}
+
+function Validate() {
+  let rows = document.querySelectorAll("#example23 tbody tr");
+  let isValid = true;
+
+  rows.forEach((row, index) => {
+    let normalInput = row.querySelector("input[name='no_of_normal_pensioners[]']");
+    let epInput = row.querySelector("input[name='no_of_ep_pensioners[]']");
+    let dateInput = row.querySelector("input[name='disbursement_start_date[]']");
+
+    let normal = normalInput.value.trim();
+    let ep = epInput.value.trim();
+    let date = dateInput.value.trim();
+
+    // Rule 1: If date is filled, then either normal > 0 or ep > 0 must be given
+    if (date !== "") {
+      if ((parseInt(normal) || 0) === 0 && (parseInt(ep) || 0) === 0) {
+        showToast(`Row ${index + 1}: Please provide either Normal or EP pensioners when date is filled.`);
+        isValid = false;
+        return false; // break out of forEach
+      }
+    }
+
+    // Rule 2: Check number format (only "0" allowed, but no leading zero in multi-digit numbers)
+    const numberPattern = /^(0|[1-9][0-9]*)$/;
+
+    if (normal !== "" && !numberPattern.test(normal)) {
+      showToast(`Row ${index + 1}: Invalid Normal Pensioners count. Only 0 or numbers without leading zeros allowed.`);
+      isValid = false;
+      return false;
+    }
+
+    if (ep !== "" && !numberPattern.test(ep)) {
+      showToast(`Row ${index + 1}: Invalid EP Pensioners count. Only 0 or numbers without leading zeros allowed.`);
+      isValid = false;
+      return false;
+    }
+  });
+
+  return isValid;
+}
+
+</script>
+@endsection

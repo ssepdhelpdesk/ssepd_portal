@@ -15,7 +15,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     SpecialSchoolConstructionController,
     PensionFundsRequirementsController,
     DdrcController,
-    PensionMonthlyDisbursementController
+    PensionMonthlyDisbursementController,
+    DailyPensionDisbursementController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -274,7 +275,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('monthly_pension_disbursement_report', 'monthly_pension_disbursement_report')->name('monthly_pension_disbursement_report');
         Route::get('pension_disbursement_daily_submission', 'pension_disbursement_daily_submission')->name('pension_disbursement_daily_submission');
         Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
-        Route::get('monthly_pension_disbursement_report_abstract', 'monthly_pension_disbursement_report_abstract')->name('monthly_pension_disbursement_report_abstract');        
+        Route::get('monthly_pension_disbursement_report_abstract', 'monthly_pension_disbursement_report_abstract')->name('monthly_pension_disbursement_report_abstract');
+        Route::get('daily_pension_disbursement_submission', 'daily_pension_disbursement_submission')->name('daily_pension_disbursement_submission');
+    });
+
+    Route::prefix('DailyPensionDisbursementController')->name('dailypensiondisbursementcontroller.')->controller(DailyPensionDisbursementController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

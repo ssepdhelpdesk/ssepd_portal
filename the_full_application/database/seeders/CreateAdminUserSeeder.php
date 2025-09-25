@@ -18,7 +18,7 @@ class CreateAdminUserSeeder extends Seeder
     {
         $SuperAdminUser = User::create([
             'user_table_id' => '1',
-            'name' => 'Waris Patel', 
+            'name' => 'Super Admin', 
             'email' => 'super_admin@gmail.com',
             'user_id' => 'suraj7196',
             'password' => bcrypt('123456'),
@@ -34,7 +34,7 @@ class CreateAdminUserSeeder extends Seeder
 
         $AdminUser = User::create([
             'user_table_id' => '2',
-            'name' => 'Suraj Prasim Patel', 
+            'name' => 'Admin', 
             'email' => 'admin@gmail.com',
             'user_id' => 'admin7196',
             'password' => bcrypt('123456'),

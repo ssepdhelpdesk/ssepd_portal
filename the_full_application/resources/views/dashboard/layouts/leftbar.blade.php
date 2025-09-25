@@ -57,7 +57,7 @@
             @endif
             @can('location-access')
             <li>
-               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Locations</span></a>
+               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-location-arrow"></i><span class="hide-menu">Locations</span></a>
                <ul aria-expanded="false" class="collapse">
                   @can('location-list')
                   <li><a href="{{route('admin.locations.blockwise.index')}}">Block Wise</a></li>
@@ -74,12 +74,13 @@
             @endif
             <li class="nav-small-cap">--- BENEFICIARY SERVICES</li>
             <li>
-               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-align-left"></i><span class="hide-menu">Beneficiary Services</span></a>
+               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-book-open-page-variant"></i><span class="hide-menu">Beneficiary Services</span></a>
                <ul aria-expanded="false" class="collapse in">                  
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-create')
+                        <li><a href="{{route('admin.dailypensiondisbursementcontroller.index')}}">Daily Pension Disbursement1</a></li>
                         <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
                         <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Daily Pension Disbursement</a></li>
@@ -95,7 +96,7 @@
                         @can('special-school-create')
                         <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
                         <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
-                        <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
+                        <!-- <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li> -->
                         @endcan
                      </ul>
                   </li>
@@ -126,11 +127,11 @@
             </li>
             <li class="nav-small-cap">--- REPORTS</li>
             <li>
-               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-align-left"></i><span class="hide-menu">Reports</span></a>
+               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Reports</span></a>
                <ul aria-expanded="false" class="collapse in">                  
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
-                     <ul aria-expanded="false" class="collapse">
+                     <ul aria-expanded="false" class="collapse">                        
                         @can('pension-access')
                         <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>

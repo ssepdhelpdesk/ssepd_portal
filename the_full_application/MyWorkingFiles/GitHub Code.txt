@@ -138,7 +138,7 @@ Example flow when editing code:
 # Inside repo folder
 git status                       # See changes
 git add .                        # Add all changes
-git commit -m "Location Controller"
+git commit -m "EP Controller"
 git push origin main            # Push to GitHub
 ```
 
@@ -206,3 +206,39 @@ Let me know if you want this, and I’ll guide you.
 ---
 
 Would you like me to write a **Windows batch script** or **Linux shell script** to help with push/pull automation?
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+1 SuperAdmin
+2 Admin
+12 HO
+13 BO
+14 Director
+15 Secretary
+
+role like 1, 2, 12, 13, 14, 15 can see all the data presnet in SpecialSchoolConstruction Table, but first it will fetch the special_school_id column id from SpecialSchool table i.e. SpecialSchool.special_school_id = SpecialSchoolConstruction.special_school_id
+
+
+4 BSSO
+6 BDO
+
+role like 4 & 6 can see only those data where user.posted_block = SpecialSchoolConstruction.block_id
+
+5 MEO
+
+role like 5 can see only those data where user.posted_municipality = SpecialSchoolConstruction.municipality_id
+
+8 SSSO
+10 SubCollector
+
+role like 8 & 10 can see only those data where user.posted_subdiv (Check all block.subdivision_id and get all block_id as well as municipalities.subdivision_id and get all municipality_id), then agian show those data which are matched with block_id & municipality_id in special_schools table
+
+9 DSSO
+11 Collector
+
+role like 9 & 11 can see only those data where users.posted_district = SpecialSchoolConstruction.district_id
+
+22 SpecialSchoolConstruction
+role like 22 can should use below this
