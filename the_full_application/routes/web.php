@@ -283,6 +283,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('index', 'index')->name('index');
         Route::post('store', 'store')->name('store');
         Route::get('listing_report', 'listing_report')->name('listing_report');
+        Route::get('combined_report', 'combined_report')->name('combined_report');
+        Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

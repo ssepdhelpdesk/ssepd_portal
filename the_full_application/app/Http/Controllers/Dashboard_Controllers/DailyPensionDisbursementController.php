@@ -324,6 +324,281 @@ public function listing_report(Request $request)
     );
 }
 
+public function combined_report(Request $request)
+{
+    $user = Auth::user();
+    $userRole = $user->role_id;
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+        ->where('status', 1)
+        ->first();
+
+    if (!$dateConfig) {
+        if ($request->ajax()) {
+            return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
+        }
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $forTheMonth = $dateConfig->for_the_month;
+
+    $numericColumns = [
+        'mbpy_oap_below_80_years','mbpy_oap_above_80_years','mbpy_wp','mbpy_dp',
+        'mbpy_sdp_below_80_percent','mbpy_sdp_above_80_percent','mbpy_sdoap','mbpy_clp',
+        'mbpy_wp_aids','mbpy_dp_aids','mbpy_unmarried_women','mbpy_orphan_due_to_covide',
+        'mbpy_widow_due_to_covid','mbpy_divorce_or_destitute','mbpy_transgender',
+        'no_of_normal_pensioners','no_of_ep_pensioners',
+    ];
+
+    $bssosQuery = DailyPensionDisbursement::where('status', 1)
+        ->where('for_the_month', $forTheMonth)
+        ->where('staff_address_type', 1)
+        ->with(['grampanchayat.block', 'grampanchayat.district']);
+
+    $meosQuery = DailyPensionDisbursement::where('status', 1)
+        ->where('for_the_month', $forTheMonth)
+        ->where('staff_address_type', 2)
+        ->with(['ward.municipality', 'ward.district']);
+
+    if (!in_array($userRole, [1,2,12,13,14,15])) {
+        if (in_array($userRole, [4,6])) {
+            $bssosQuery->where('block_id', $user->posted_block);
+            $meosQuery = collect();
+        } elseif ($userRole == 5) {
+            $meosQuery->where('municipality_id', $user->posted_municipality);
+            $bssosQuery = collect();
+        } elseif (in_array($userRole, [8,10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+            $bssosQuery->whereIn('block_id', $blockIds);
+            $meosQuery->whereIn('municipality_id', $municipalityIds);
+        } elseif (in_array($userRole, [9,11])) {
+            $bssosQuery->where('district_id', $user->posted_district);
+            $meosQuery->where('district_id', $user->posted_district);
+        }
+    }
+
+    $bssos = $bssosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $bssosQuery->get() : $bssosQuery;
+    $meos  = $meosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $meosQuery->get() : $meosQuery;
+
+    $allRecords = collect($bssos)->merge($meos);
+
+    $submitted = $allRecords->groupBy(function($item){
+        return $item->staff_address_type==1 ? 'gp_'.$item->gp_id : 'ward_'.$item->ward_id;
+    })->map(function($group) use($numericColumns){
+        $first = $group->first();
+        $row = [
+            'staff_address_type'=>$first->staff_address_type,
+            'district_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->district->district_name ?? '') : ($first->ward->district->district_name ?? ''),
+            'block_ulb_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->block->block_name ?? '') : ($first->ward->municipality->municipality_name ?? ''),
+            'gp_ward_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->gp_name ?? '') : ($first->ward->ward_name ?? ''),
+            'disbursement_dates'=>$group->pluck('disbursement_start_date')->sort()
+                ->map(fn($d)=>\Carbon\Carbon::parse($d)->format('D, d-M-Y'))
+                ->unique()->implode(' | '),
+            'status' => 'Submitted'
+        ];
+        foreach($numericColumns as $col){
+            $row['totals']['total_'.$col] = $group->sum($col);
+        }
+        return $row;
+    })->values();
+
+    $submittedGpIds   = $allRecords->where('staff_address_type',1)->pluck('gp_id')->unique();
+    $submittedWardIds = $allRecords->where('staff_address_type',2)->pluck('ward_id')->unique();
+
+    $gpQuery = Grampanchayat::with('block.district');
+    $wardQuery = WardMaster::with('municipality.district');
+
+    if (!in_array($userRole, [1,2,12,13,14,15])) {
+        if (in_array($userRole, [4,6])) {
+            $gpQuery->where('block_id', $user->posted_block);
+            $wardQuery = collect();
+        } elseif ($userRole == 5) {
+            $wardQuery->where('municipality_id', $user->posted_municipality);
+            $gpQuery = collect();
+        } elseif (in_array($userRole, [8,10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+            $gpQuery->whereIn('block_id', $blockIds);
+            $wardQuery->whereIn('municipality_id', $municipalityIds);
+        } elseif (in_array($userRole, [9,11])) {
+            $gpQuery->where('district_id', $user->posted_district);
+            $wardQuery->where('district_id', $user->posted_district);
+        }
+    }
+
+    $gps = $gpQuery instanceof \Illuminate\Database\Eloquent\Builder ? $gpQuery->get() : collect();
+    $wards = $wardQuery instanceof \Illuminate\Database\Eloquent\Builder ? $wardQuery->get() : collect();
+
+    $missing = collect();
+
+    foreach($gps as $gp){
+        if(!$submittedGpIds->contains($gp->gp_id)){
+            $missing->push([
+                'staff_address_type'=>1,
+                'district_name'=>$gp->block->district->district_name ?? '',
+                'block_ulb_name'=>$gp->block->block_name ?? '',
+                'gp_ward_name'=>$gp->gp_name ?? '',
+                'disbursement_dates'=>'<span class="badge bg-danger">Not Submitted</span>',
+                'status'=>'Not Submitted'
+            ]);
+        }
+    }
+
+    foreach($wards as $ward){
+        if(!$submittedWardIds->contains($ward->ward_id)){
+            $missing->push([
+                'staff_address_type'=>2,
+                'district_name'=>$ward->municipality->district->district_name ?? '',
+                'block_ulb_name'=>$ward->municipality->municipality_name ?? '',
+                'gp_ward_name'=>$ward->ward_name ?? '',
+                'disbursement_dates'=>'<span class="badge bg-danger">Not Submitted</span>',
+                'status'=>'Not Submitted'
+            ]);
+        }
+    }
+
+    $combined = $submitted->merge($missing)->values();
+
+    if($request->ajax()){
+        return DataTables::of($combined)
+            ->addIndexColumn()
+            ->rawColumns(['disbursement_dates'])
+            ->make(true);
+    }
+
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_combined_listing', compact('forTheMonth','numericColumns'));
+}
+
+
+public function pension_disbursement_daily_not_submission()
+{
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $startDate   = $dateConfig->start_date;
+    $endDate     = $dateConfig->end_date;
+    $forTheMonth = $dateConfig->for_the_month;
+
+    ini_set('memory_limit', '512M');
+    $user     = auth()->user();
+    $userRole = $user->role_id;
+
+    $dailyPensionDisbursemenetQuery = DailyPensionDisbursement::where('disbursement_started', 1)
+    ->where('for_the_month', $forTheMonth)
+    ->where('is_active', 'active')
+    ->where('status', 1)
+    ->with(['state', 'district', 'block', 'grampanchayat', 'municipality', 'ward']);
+
+    $allGps   = collect();
+    $allWards = collect();
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        $allGps = Grampanchayat::with(['district', 'block'])
+        ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+        ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [4, 6])) {
+        $dailyPensionDisbursemenetQuery->where('block_id', $user->posted_block);
+        $allGps = Grampanchayat::with(['district', 'block'])
+        ->where('block_id', $user->posted_block)
+        ->where('is_active', 'active')->get();
+    } elseif ($userRole == 5) {
+        $dailyPensionDisbursemenetQuery->where('municipality_id', $user->posted_municipality);
+        $allWards = WardMaster::with(['district', 'municipality'])
+        ->where('municipal_area_code', $user->posted_municipality)
+        ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds        = Block::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')->pluck('block_id');
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')->pluck('municipality_id');
+
+        $dailyPensionDisbursemenetQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+            ->orWhereIn('municipality_id', $municipalityIds);
+        });
+
+        $allGps = Grampanchayat::with(['district', 'block'])
+        ->whereIn('block_id', $blockIds)
+        ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+        ->whereIn('municipal_area_code', $municipalityIds)
+        ->where('is_active', '1')->get();
+    } elseif (in_array($userRole, [9, 11])) {
+        $dailyPensionDisbursemenetQuery->where('district_id', $user->posted_district);
+
+        $allGps = Grampanchayat::with(['district', 'block'])
+        ->where('district_id', $user->posted_district)
+        ->where('is_active', 'active')->get();
+        $allWards = WardMaster::with(['district', 'municipality'])
+        ->where('district_code', $user->posted_district)
+        ->where('is_active', '1')->get();
+    }
+
+    $monthlyPension = $dailyPensionDisbursemenetQuery
+    ->where('is_active', 'active')
+    ->where('status', 1)
+    ->where('disbursement_started', 1)
+    ->get();
+
+    $submittedGpIds   = $monthlyPension->pluck('gp_id')->filter()->unique();
+    $submittedWardIds = $monthlyPension->pluck('ward_id')->filter()->unique();
+
+    $pendingGps = $allGps->whereNotIn('gp_id', $submittedGpIds)->map(function ($gp) {
+        return (object)[
+            'id'                       => null,
+            'district'                 => $gp->district,
+            'block'                    => $gp->block,
+            'grampanchayat'            => $gp,
+            'municipality'             => null,
+            'ward'                     => null,
+            'staff_address_type'       => 1,
+            'for_the_month'            => null,
+            'disbursement_start_date'  => null,
+            'no_of_normal_pensioners'  => null,
+            'no_of_ep_pensioners'      => null,
+            'disbursement_started'     => 0,
+        ];
+    });
+
+    $pendingWards = $allWards->whereNotIn('ward_code', $submittedWardIds)->map(function ($ward) {
+        return (object)[
+            'id'                       => null,
+            'district'                 => $ward->district,
+            'block'                    => null,
+            'grampanchayat'            => null,
+            'municipality'             => $ward->municipality,
+            'ward'                     => $ward,
+            'staff_address_type'       => 2,
+            'for_the_month'            => null,
+            'disbursement_start_date'  => null,
+            'no_of_normal_pensioners'  => null,
+            'no_of_ep_pensioners'      => null,
+            'disbursement_started'     => 0,
+        ];
+    });
+
+    $monthlyPensionDisbursemenet = $pendingGps
+    ->concat($pendingWards)
+    ->sortBy(function ($item) {
+        return $item->district->district_name ?? '';
+    })
+    ->values();
+
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_pending_listing', compact(
+        'monthlyPensionDisbursemenet',
+        'startDate',
+        'endDate',
+        'forTheMonth'
+    ));
+}
+
 /**
 * Display the specified resource.
 */
