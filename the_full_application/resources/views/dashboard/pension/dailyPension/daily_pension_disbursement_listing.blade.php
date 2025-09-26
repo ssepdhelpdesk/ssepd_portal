@@ -65,7 +65,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
             <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                <thead>
                   <tr>
-                     <th>Sl. No</th>
+                     <th>Sl.No</th>
                      <th>District</th>
                      <th>Month</th>
                      <th>Block / ULB Name</th>
@@ -78,7 +78,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                </thead>
                <tfoot>
                   <tr>
-                     <th>Sl. No</th>
+                     <th>Sl.No</th>
                      <th>District</th>
                      <th>Month</th>
                      <th>Block / ULB Name</th>
