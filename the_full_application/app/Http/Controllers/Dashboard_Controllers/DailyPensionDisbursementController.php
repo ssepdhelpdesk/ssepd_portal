@@ -214,19 +214,11 @@ public function listing_report(Request $request)
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
     ->where('status', 1)
-    ->first();
+    ->get();
 
-    if (!$dateConfig) {
-        if ($request->ajax()) {
-            return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
-        }
-
-        return redirect()
-        ->back()
-        ->with('error', 'Submission dates are not configured. Please contact admin.');
-    }
-
-    $forTheMonth = $dateConfig->for_the_month;
+    
+    $forTheMonth = $request->for_the_month 
+        ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
 
     $numericColumns = [
         'mbpy_oap_below_80_years',
@@ -297,6 +289,7 @@ public function listing_report(Request $request)
             'gp_ward_name'       => $first->staff_address_type == 1
             ? ($first->grampanchayat->gp_name ?? '')
             : ($first->ward->ward_name ?? ''),
+            'forTheMonth'        => $first->for_the_month,
             'disbursement_dates' => $group->pluck('disbursement_start_date')
             ->sort()
             ->map(fn($d) => \Carbon\Carbon::parse($d)->format('D, d-M-Y'))
@@ -320,7 +313,7 @@ public function listing_report(Request $request)
 
     return view(
         'dashboard.pension.dailypension.daily_pension_disbursement_listing',
-        compact('forTheMonth', 'numericColumns')
+        compact('forTheMonth', 'numericColumns', 'dateConfig')
     );
 }
 
@@ -331,16 +324,10 @@ public function combined_report(Request $request)
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
         ->where('status', 1)
-        ->first();
+        ->get();
 
-    if (!$dateConfig) {
-        if ($request->ajax()) {
-            return response()->json(['error' => 'Submission dates are not configured. Please contact admin.'], 400);
-        }
-        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
-    }
-
-    $forTheMonth = $dateConfig->for_the_month;
+    $forTheMonth = $request->for_the_month
+        ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
 
     $numericColumns = [
         'mbpy_oap_below_80_years','mbpy_oap_above_80_years','mbpy_wp','mbpy_dp',
@@ -392,6 +379,7 @@ public function combined_report(Request $request)
             'district_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->district->district_name ?? '') : ($first->ward->district->district_name ?? ''),
             'block_ulb_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->block->block_name ?? '') : ($first->ward->municipality->municipality_name ?? ''),
             'gp_ward_name'=>$first->staff_address_type==1 ? ($first->grampanchayat->gp_name ?? '') : ($first->ward->ward_name ?? ''),
+            'forTheMonth' => $first->for_the_month ?? $forTheMonth,
             'disbursement_dates'=>$group->pluck('disbursement_start_date')->sort()
                 ->map(fn($d)=>\Carbon\Carbon::parse($d)->format('D, d-M-Y'))
                 ->unique()->implode(' | '),
@@ -439,6 +427,7 @@ public function combined_report(Request $request)
                 'district_name'=>$gp->block->district->district_name ?? '',
                 'block_ulb_name'=>$gp->block->block_name ?? '',
                 'gp_ward_name'=>$gp->gp_name ?? '',
+                'forTheMonth' => $forTheMonth,
                 'disbursement_dates'=>'<span class="badge bg-danger">Not Submitted</span>',
                 'status'=>'Not Submitted'
             ]);
@@ -452,6 +441,7 @@ public function combined_report(Request $request)
                 'district_name'=>$ward->municipality->district->district_name ?? '',
                 'block_ulb_name'=>$ward->municipality->municipality_name ?? '',
                 'gp_ward_name'=>$ward->ward_name ?? '',
+                'forTheMonth' => $forTheMonth,
                 'disbursement_dates'=>'<span class="badge bg-danger">Not Submitted</span>',
                 'status'=>'Not Submitted'
             ]);
@@ -467,7 +457,7 @@ public function combined_report(Request $request)
             ->make(true);
     }
 
-    return view('dashboard.pension.dailypension.daily_pension_disbursement_combined_listing', compact('forTheMonth','numericColumns'));
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_combined_listing', compact('forTheMonth','numericColumns', 'dateConfig'));
 }
 
 

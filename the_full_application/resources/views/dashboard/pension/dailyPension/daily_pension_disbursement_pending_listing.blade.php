@@ -34,8 +34,9 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
          <div class="card-body">
             <h4 class="card-title">GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}}</h4>
             @include('dashboard.component.message')
+            
             <div class="table-responsive m-t-40">
-              <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+             <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                <thead>
                   <tr>
                      <th>Sl No</th>
