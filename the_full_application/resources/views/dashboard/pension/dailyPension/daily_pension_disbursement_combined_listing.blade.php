@@ -62,39 +62,39 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                   </div>
                </div>
             </form>
-              <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
+            <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                <thead>
                   <tr>
-                    <th>Sl. No</th>
-                    <th>District</th>
-                    <th>Month</th>
-                    <th>Block / ULB Name</th>
-                    <th>GP / Ward Name</th>
-                    <th>Disbursement Dates</th>
-                    <th>Status</th>
-                    @foreach($numericColumns as $col)
-                    <th>{{ str_replace('_',' ',ucfirst($col)) }}</th>
-                    @endforeach
-                 </tr>
-              </thead>
-              <tfoot>
+                     <th>Sl.No</th>
+                   <th>District</th>
+                   <th>Month</th>
+                   <th>Block / ULB Name</th>
+                   <th>GP / Ward Name</th>
+                   <th>Disbursement Dates</th>
+                   <th>Status</th>
+                   @foreach($numericColumns as $col)
+                   <th>{{ str_replace('_',' ',ucfirst($col)) }}</th>
+                   @endforeach
+                </tr>
+             </thead>
+             <tfoot>
                <tr>
-                 <th>Sl. No</th>
-                 <th>District</th>
-                 <th>Month</th>
-                 <th>Block / ULB Name</th>
-                 <th>GP / Ward Name</th>
-                 <th>Disbursement Dates</th>
-                 <th>Status</th>
-                 @foreach($numericColumns as $col)
-                 <th>{{ str_replace('_',' ',ucfirst($col)) }}</th>
-                 @endforeach
-              </tr>
-           </tfoot>
+                  <th>Sl.No</th>
+                <th>District</th>
+                <th>Month</th>
+                <th>Block / ULB Name</th>
+                <th>GP / Ward Name</th>
+                <th>Disbursement Dates</th>
+                <th>Status</th>
+                @foreach($numericColumns as $col)
+                <th>{{ str_replace('_',' ',ucfirst($col)) }}</th>
+                @endforeach
+             </tr>
+          </tfoot>
 
-        </table>
-     </div>
-  </div>
+       </table>
+    </div>
+ </div>
 </div>
 </div>
 </div>
@@ -125,23 +125,23 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
             {data: 'gp_ward_name', name: 'gp_ward_name'},
             {data: 'disbursement_dates', name: 'disbursement_dates'},
             { data: 'status', name: 'status',
-       render: function(data, type, row) {
-         if(data === 'Submitted') {
-           return '<span class="badge bg-success">Submitted</span>';
-        } else {
-           return '<span class="badge bg-danger">Not Submitted</span>';
-        }
-     }
-  },
-            @foreach($numericColumns as $col)
-            {data: 'totals.{{ "total_".$col }}', name: '{{ "total_".$col }}'},
-            @endforeach
-         ],
-         scrollX: true,
-         lengthMenu: [[10, 50, 100, -1],[10, 50, 100, "All"]],
-         dom: 'Blfrtip',
-         buttons: ['copy','csv','excel','pdf','print']
-      });
+              render: function(data, type, row) {
+               if(data === 'Submitted') {
+                return '<span class="badge bg-success">Submitted</span>';
+             } else {
+                return '<span class="badge bg-danger">Not Submitted</span>';
+             }
+          }
+       },
+       @foreach($numericColumns as $col)
+       {data: 'totals.{{ "total_".$col }}', name: '{{ "total_".$col }}'},
+       @endforeach
+    ],
+    scrollX: true,
+    lengthMenu: [[10, 50, 100, -1],[10, 50, 100, "All"]],
+    dom: 'Blfrtip',
+    buttons: ['copy','csv','excel','pdf','print']
+ });
 
       $('select[name=for_the_month]').on('change', function() {
          table.ajax.reload();
