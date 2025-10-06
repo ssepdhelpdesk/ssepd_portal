@@ -213,7 +213,8 @@ public function listing_report(Request $request)
     $userRole = $user->role_id;
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-    ->where('status', 1)
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
     ->get();
 
     
@@ -323,8 +324,9 @@ public function combined_report(Request $request)
     $userRole = $user->role_id;
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-        ->where('status', 1)
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $forTheMonth = $request->for_the_month
         ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
