@@ -133,7 +133,8 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                      <ul aria-expanded="false" class="collapse">                        
                         @can('pension-access')
-                        <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li>
+                        <!-- <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement</a></li> -->
+                        <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">Daily Pension Disbursement</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">Combined Daily Pension Disbursement</a></li>

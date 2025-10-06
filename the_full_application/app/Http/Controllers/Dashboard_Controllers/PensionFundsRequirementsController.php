@@ -394,6 +394,12 @@ class PensionFundsRequirementsController extends Controller
             ->addColumn('fund_unmarried_women', fn($row) => ($row->mbpy_unmarried_women ?? 0) * 1000)
             ->addColumn('mbpy_orphan_due_to_covide', fn($row) => $row->mbpy_orphan_due_to_covide ?? 0)
             ->addColumn('fund_mbpy_orphan_due_to_covide', fn($row) => ($row->mbpy_orphan_due_to_covide ?? 0) * 1000)
+            ->addColumn('mbpy_widow_due_to_covid', fn($row) => $row->mbpy_widow_due_to_covid ?? 0)
+            ->addColumn('fund_widow_covid', fn($row) => ($row->mbpy_widow_due_to_covid ?? 0) * 1000)
+            ->addColumn('mbpy_divorce_or_destitute', fn($row) => $row->mbpy_divorce_or_destitute ?? 0)
+            ->addColumn('fund_divorce_destitute', fn($row) => ($row->mbpy_divorce_or_destitute ?? 0) * 1000)
+            ->addColumn('mbpy_transgender', fn($row) => $row->mbpy_transgender ?? 0)
+            ->addColumn('fund_transgender', fn($row) => ($row->mbpy_transgender ?? 0) * 1000)
             ->addColumn('total_fund', function($row){
                 $total = ($row->mbpy_oap_below_80_years ?? 0)*1000 +
                 ($row->mbpy_oap_above_80_years ?? 0)*3500 +
@@ -406,7 +412,10 @@ class PensionFundsRequirementsController extends Controller
                 ($row->mbpy_wp_aids ?? 0)*1000 +
                 ($row->mbpy_dp_aids ?? 0)*1000 +
                 ($row->mbpy_unmarried_women ?? 0)*1000 +
-                ($row->mbpy_orphan_due_to_covide ?? 0)*1000;
+                ($row->mbpy_orphan_due_to_covide ?? 0)*1000+
+                ($row->mbpy_widow_due_to_covid ?? 0)*1000 +
+                ($row->mbpy_divorce_or_destitute ?? 0)*1000 +
+                ($row->mbpy_transgender ?? 0)*1000;
                 return number_format($total);
             })
             ->addColumn('account', function($row){
@@ -449,6 +458,85 @@ class PensionFundsRequirementsController extends Controller
         }
 
         return view('dashboard.pension.pension_funds_requirements_report', compact('startDate','endDate','forTheMonth','dateConfig'));
+    }
+
+    public function report_without_ajax()
+    {
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')->where('status', 1)->first();
+
+        if (!$dateConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+        }
+
+        $startDate = $dateConfig->start_date;
+        $endDate   = $dateConfig->end_date;
+        $forTheMonth = $dateConfig->for_the_month;
+
+        $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])->whereBetween('created_date', [$startDate, $endDate]);
+        $allBlocks = collect();
+        $allMunicipalities = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allBlocks = Block::where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+            $allBlocks = Block::where('block_id', $user->posted_block)->where('is_active', 'active')->get();
+        } elseif ($userRole == 5) {
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+            $allMunicipalities = Municipality::where('municipality_id', $user->posted_municipality)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $allBlocks = Block::whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::whereIn('municipality_id', $municipalityIds)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [9, 11])) {
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+
+            $allBlocks = Block::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+        }
+
+        $filledRequirements = $pensionFundsRequirementQuery->get();
+
+        $submittedBlockIds = $filledRequirements->pluck('block_id')->filter()->unique();
+        $submittedMunicipalityIds = $filledRequirements->pluck('municipality_id')->filter()->unique();
+
+        $pendingBlocks = $allBlocks->whereNotIn('block_id', $submittedBlockIds)->map(function ($block) {
+            return (object)[
+                'id' => 'block-'.$block->block_id,
+                'district' => $block->district,
+                'block' => $block,
+                'municipality' => null,
+                'address_type' => 1,
+            ];
+        });
+
+        $pendingUlbs = $allMunicipalities->whereNotIn('municipality_id', $submittedMunicipalityIds)->map(function ($ulb) {
+            return (object)[
+                'id' => 'ulb-'.$ulb->municipality_id,
+                'district' => $ulb->district,
+                'block' => null,
+                'municipality' => $ulb,
+                'address_type' => 2,
+            ];
+        });
+
+        $combined = $filledRequirements->concat($pendingBlocks)->concat($pendingUlbs);
+        $pensionFundsRequirements = $combined->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })->values();
+
+        return view('dashboard.pension.pension_funds_requirements_report_BKP_26_09_2025', compact('pensionFundsRequirements', 'startDate', 'endDate', 'forTheMonth'));
     }
 
     /**

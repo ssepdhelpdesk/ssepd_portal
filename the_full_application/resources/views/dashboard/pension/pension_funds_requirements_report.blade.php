@@ -208,11 +208,9 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
        }
     });
 
-    // Add Bootstrap classes to buttons
     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
         .addClass('btn btn-primary me-1');
 
-    // Reload table when month changes
     $('#for_the_month').on('change', function(){
         table.ajax.reload();
     });
