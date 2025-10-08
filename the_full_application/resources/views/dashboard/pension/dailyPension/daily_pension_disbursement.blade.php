@@ -194,13 +194,19 @@ Pension || GP/Ward wise Pension Daily Disbursement
 
                                  @foreach($fields as $field)
                                  <td>
+                                    @php
+                                    $isReadonly = in_array($field, ['no_of_normal_pensioners', 'no_of_ep_pensioners']);
+                                    @endphp
+
                                     <input 
                                     type="number" 
                                     name="{{ $field }}[]" 
                                     value="{{ old($field.'.'.$index) }}" 
-                                    class="form-control" 
+                                    class="form-control {{ $isReadonly ? 'readonly-input' : '' }}" 
                                     min="0" step="1" 
-                                    placeholder="Enter beneficiary count">
+                                    placeholder="{{ $isReadonly ? 'Auto Calculated' : 'Enter beneficiary count' }}"
+                                    {{ $isReadonly ? 'readonly' : '' }}>
+                                    
                                     @error($field.'.'.$index)
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror
@@ -309,5 +315,51 @@ Pension || GP/Ward wise Pension Daily Disbursement
 
       return isValid;
    }
+</script>
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+      const normalFields = [
+         'mbpy_oap_below_80_years', 'mbpy_wp', 'mbpy_dp', 'mbpy_sdp_below_80_percent',
+         'mbpy_clp', 'mbpy_wp_aids', 'mbpy_dp_aids', 'mbpy_unmarried_women',
+         'mbpy_orphan_due_to_covide', 'mbpy_widow_due_to_covid',
+         'mbpy_divorce_or_destitute', 'mbpy_transgender'
+      ];
+
+      const epFields = [
+         'mbpy_oap_above_80_years', 'mbpy_sdp_above_80_percent', 'mbpy_sdoap'
+      ];
+
+      function recalcRow(row) {
+         let normalTotal = 0;
+         let epTotal = 0;
+
+         normalFields.forEach(field => {
+            const input = row.querySelector(`input[name="${field}[]"]`);
+            if (input && input.value.trim() !== "") {
+               normalTotal += parseInt(input.value) || 0;
+            }
+         });
+
+         epFields.forEach(field => {
+            const input = row.querySelector(`input[name="${field}[]"]`);
+            if (input && input.value.trim() !== "") {
+               epTotal += parseInt(input.value) || 0;
+            }
+         });
+
+         const normalField = row.querySelector(`input[name="no_of_normal_pensioners[]"]`);
+         const epField = row.querySelector(`input[name="no_of_ep_pensioners[]"]`);
+
+         if (normalField) normalField.value = normalTotal;
+         if (epField) epField.value = epTotal;
+      }
+
+      document.querySelectorAll("#example23 tbody tr").forEach(row => {
+         const allNumberInputs = row.querySelectorAll('input[type="number"]');
+         allNumberInputs.forEach(input => {
+            input.addEventListener('input', () => recalcRow(row));
+         });
+      });
+   });
 </script>
 @endsection
