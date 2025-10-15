@@ -371,7 +371,7 @@ class Disability3500Controller extends Controller
                 $district = District3500::where('district_id', $request->district)->value('district_name');
                 $district_id = $validatedData['district'];
                 $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-                $block_id = 'NULL1';
+                $block_id = 'NULL';
                 $municipality_id = $validatedData['municipality'];
                 $block_or_ulb_id = $validatedData['municipality'];
                 $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
