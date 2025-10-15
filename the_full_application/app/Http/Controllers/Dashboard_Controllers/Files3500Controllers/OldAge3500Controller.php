@@ -344,17 +344,18 @@ public function store(Request $request)
     DB::beginTransaction();
     try {
         $user = auth()->user();
+        /*SET NULL*/
 
         if ($request->ngo_address_type === "1") {
             $district = District3500::where('district_id', $request->district)->value('district_name');
             $district_id = $validatedData['district'];
             $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
             $block_id = $validatedData['block'];
-            $municipality_id = NULL;
+            $municipality_id = 'NULL';
             $block_or_ulb_id = $validatedData['block'];
             $gp_or_ward = Grampanchyat3500::where('gp_id', $request->grampanchayat)->value('gp_name');
             $gp_id = $validatedData['grampanchayat'];
-            $ward_id = NULL;
+            $ward_id = 'NULL';
             $gp_or_ward_id = $validatedData['grampanchayat'];
             $village = Village3500::where('village_id', $request->village)->value('village_name');
             $village_id = $validatedData['village'];
@@ -362,16 +363,16 @@ public function store(Request $request)
             $district = District3500::where('district_id', $request->district)->value('district_name');
             $district_id = $validatedData['district'];
             $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-            $block_id = NULL;
+            $block_id = 'NULL';
             $municipality_id = $validatedData['municipality'];
             $block_or_ulb_id = $validatedData['municipality'];
             $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
             $gp_or_ward = $ward_master_name;
-            $gp_id = NULL;
+            $gp_id = 'NULL';
             $ward_id = $validatedData['ward'];
             $gp_or_ward_id = $validatedData['ward'];
-            $village = NULL;
-            $village_id = NULL;
+            $village = 'NULL';
+            $village_id = 'NULL';
         }
 
         $old_age_pensioner = new OldAge3500Pensioner;
@@ -481,26 +482,26 @@ public function update(Request $request, string $id)
         if ($request->ngo_address_type === "1") {
             $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
             $block_id = $validatedData['block'];
-            $municipality_id = NULL;
+            $municipality_id = 'NULL';
             $block_or_ulb_id = $validatedData['block'];
             $gp_or_ward = Grampanchyat3500::where('gp_id', $request->grampanchayat)->value('gp_name');
             $gp_id = $validatedData['grampanchayat'];
-            $ward_id = NULL;
+            $ward_id = 'NULL';
             $gp_or_ward_id = $validatedData['grampanchayat'];
             $village = Village3500::where('village_id', $request->village)->value('village_name');
             $village_id = $validatedData['village'];
         } elseif ($request->ngo_address_type === "2") {
             $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-            $block_id = NULL;
+            $block_id = 'NULL';
             $municipality_id = $validatedData['municipality'];
             $block_or_ulb_id = $validatedData['municipality'];
             $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
             $gp_or_ward = $ward_master_name;
-            $gp_id = NULL;
+            $gp_id = 'NULL';
             $ward_id = $validatedData['ward'];
             $gp_or_ward_id = $validatedData['ward'];
-            $village = NULL;
-            $village_id = NULL;
+            $village = 'NULL';
+            $village_id = 'NULL';
         }
 
         if ($validatedData['scheme_name'] == 'MBPOAP') {
