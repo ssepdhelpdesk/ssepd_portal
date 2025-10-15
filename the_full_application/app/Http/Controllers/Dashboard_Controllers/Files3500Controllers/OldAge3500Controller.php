@@ -492,7 +492,7 @@ public function update(Request $request, string $id)
             $village_id = $validatedData['village'];
         } elseif ($request->ngo_address_type === "2") {
             $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-            $block_id = 'NULL';
+            $block_id = 'NULL1';
             $municipality_id = $validatedData['municipality'];
             $block_or_ulb_id = $validatedData['municipality'];
             $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
