@@ -127,4 +127,69 @@ class ReportOf3500Controller extends Controller
 
         return view('dashboard.benf_3500_files.report.active_ineligible', compact('final_data', 'from_date', 'to_date'));
     }
+
+    public function sanction_report(Request $request)
+    {
+        $request->validate([
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date|after_or_equal:from_date',
+        ]);
+
+        $from_date = $request->get('from_date');
+        $to_date   = $request->get('to_date');
+
+        $oldAgeQuery = OldAge3500Pensioner::selectRaw('district, COUNT(*) as total_oldage')
+        ->groupBy('district');
+
+        $oldAgeSanctionedQuery = OldAge3500Pensioner::selectRaw('district, COUNT(*) as sanctioned_oldage')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('created_by_date', [$from_date, $to_date]))
+        ->groupBy('district');
+
+        $disabilityQuery = Disability3500Pensioner::selectRaw('district, COUNT(*) as total_disability')
+        ->groupBy('district');
+
+        $disabilitySanctionedQuery = Disability3500Pensioner::selectRaw('district, COUNT(*) as sanctioned_disability')
+        ->when($from_date && $to_date, fn($q) => $q->whereBetween('created_by_date', [$from_date, $to_date]))
+        ->groupBy('district');
+
+        $oldage_total = $oldAgeQuery->pluck('total_oldage', 'district')->toArray();
+        $sanctioned_oldage = $oldAgeSanctionedQuery->pluck('sanctioned_oldage', 'district')->toArray();
+
+        $disability_total = $disabilityQuery->pluck('total_disability', 'district')->toArray();
+        $sanctioned_disability = $disabilitySanctionedQuery->pluck('sanctioned_disability', 'district')->toArray();
+
+        $all_districts = collect(array_merge(
+            array_keys($oldage_total),
+            array_keys($sanctioned_oldage),
+            array_keys($disability_total),
+            array_keys($sanctioned_disability),
+        ))->unique()->sort()->values();
+
+        $final_data = [];
+        $slno = 1;
+
+        foreach ($all_districts as $district) {
+            $totalOld = $oldage_total[$district] ?? 0;
+            $oldSanctioned = $sanctioned_oldage[$district] ?? 0;
+
+            $totalDis = $disability_total[$district] ?? 0;
+            $disSanctioned = $sanctioned_disability[$district] ?? 0;
+
+            $totalBenf = $totalOld + $totalDis;
+            $totalSanction = $oldSanctioned + $disSanctioned;
+
+            $final_data[] = [
+                'SlNo' => $slno++,
+                'District' => $district,
+                'TotalOldage' => $totalOld,
+                'OldageSanctioned' => $oldSanctioned,
+                'TotalDisability' => $totalDis,
+                'DisabilitySanctioned' => $disSanctioned,
+                'TotalBenf' => $totalBenf,
+                'TotalSanction' => $totalSanction,
+            ];
+        }
+
+        return view('dashboard.benf_3500_files.report.sanction_report', compact('final_data', 'from_date', 'to_date'));
+    }
 }
