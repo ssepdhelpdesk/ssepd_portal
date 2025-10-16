@@ -359,11 +359,11 @@ class Disability3500Controller extends Controller
                 $district_id = $validatedData['district'];
                 $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
                 $block_id = $validatedData['block'];
-                $municipality_id = null;
+                $municipality_id = 'NULL';
                 $block_or_ulb_id = $validatedData['block'];
                 $gp_or_ward = Grampanchyat3500::where('gp_id', $request->grampanchayat)->value('gp_name');
                 $gp_id = $validatedData['grampanchayat'];
-                $ward_id = null;
+                $ward_id = 'NULL';
                 $gp_or_ward_id = $validatedData['grampanchayat'];
                 $village = Village3500::where('village_id', $request->village)->value('village_name');
                 $village_id = $validatedData['village'];
@@ -371,16 +371,16 @@ class Disability3500Controller extends Controller
                 $district = District3500::where('district_id', $request->district)->value('district_name');
                 $district_id = $validatedData['district'];
                 $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-                $block_id = null;
+                $block_id = 'NULL';
                 $municipality_id = $validatedData['municipality'];
                 $block_or_ulb_id = $validatedData['municipality'];
                 $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
                 $gp_or_ward = $ward_master_name;
-                $gp_id = null;
+                $gp_id = 'NULL';
                 $ward_id = $validatedData['ward'];
                 $gp_or_ward_id = $validatedData['ward'];
-                $village = null;
-                $village_id = null;
+                $village = 'NULL';
+                $village_id = 'NULL';
             }
 
             $disability_pensioner = new Disability3500Pensioner;
@@ -496,26 +496,26 @@ class Disability3500Controller extends Controller
             if ($request->ngo_address_type === "1") {
                 $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
                 $block_id = $validatedData['block'];
-                $municipality_id = null;
+                $municipality_id = 'NULL';
                 $block_or_ulb_id = $validatedData['block'];
                 $gp_or_ward = Grampanchyat3500::where('gp_id', $request->grampanchayat)->value('gp_name');
                 $gp_id = $validatedData['grampanchayat'];
-                $ward_id = null;
+                $ward_id = 'NULL';
                 $gp_or_ward_id = $validatedData['grampanchayat'];
                 $village = Village3500::where('village_id', $request->village)->value('village_name');
                 $village_id = $validatedData['village'];
             } elseif ($request->ngo_address_type === "2") {
                 $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
-                $block_id = null;
+                $block_id = 'NULL';
                 $municipality_id = $validatedData['municipality'];
                 $block_or_ulb_id = $validatedData['municipality'];
                 $ward_master_name = WardMaster3500::where('ward_code', $request->ward)->value('ward_name');
                 $gp_or_ward = $ward_master_name;
-                $gp_id = null;
+                $gp_id = 'NULL';
                 $ward_id = $validatedData['ward'];
                 $gp_or_ward_id = $validatedData['ward'];
-                $village = null;
-                $village_id = null;
+                $village = 'NULL';
+                $village_id = 'NULL';
             }
 
             if ($validatedData['scheme_name'] == 'MBPDP') {

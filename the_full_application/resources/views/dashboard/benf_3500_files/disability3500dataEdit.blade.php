@@ -64,7 +64,7 @@ EP Pension || Disability Beneficiary Data Update
                               <div class="form-group" id="scheme_name_div">
                                  <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
                                  <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
-                                    <option value="">Please Select</option>
+                                    <option>Please Select</option>
                                     <option value="MBPDP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'MBPDP' ? 'selected' : '' }}>MBPDP</option>
                                     <option value="IGNDP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'IGNDP' ? 'selected' : '' }}>IGNDP</option>
                                  </select>
