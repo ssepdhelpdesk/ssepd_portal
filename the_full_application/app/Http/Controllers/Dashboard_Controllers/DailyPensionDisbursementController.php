@@ -413,7 +413,7 @@ public function listing_report(Request $request)
             $meosQuery->whereIn('municipality_id', $municipalityIds);
         } elseif (in_array($userRole, [9, 11])) {
             $bssosQuery->where('district_id', $user->posted_district);
-            $meosQuery->where('district_id', $user->posted_district);
+            $meosQuery->where('district_code', $user->posted_district);
         }
     }
 
@@ -561,7 +561,7 @@ public function combined_report(Request $request)
             $wardQuery->whereIn('municipality_id', $municipalityIds);
         } elseif (in_array($userRole, [9,11])) {
             $gpQuery->where('district_id', $user->posted_district);
-            $wardQuery->where('district_id', $user->posted_district);
+            $wardQuery->where('district_code', $user->posted_district);
         }
     }
 
