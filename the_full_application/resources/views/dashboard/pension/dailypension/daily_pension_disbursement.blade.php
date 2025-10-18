@@ -121,7 +121,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
                                  @elseif($user->role_name == 'MEO')
                                  <th>Ward Name</th>
                                  @endif
-                                 <th>For the Month1</th>
+                                 <th>For the Month</th>
                                  <th>Disbursement Date</th>
                                  <th>MBPOAP (Below 80 Years)</th>
                                  <th>MBPOAP (Above 80 Years)</th>
