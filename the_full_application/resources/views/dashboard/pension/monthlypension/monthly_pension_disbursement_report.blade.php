@@ -122,7 +122,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                   </tr>
                   @empty
                   <tr>
-                     <td colspan="8" class="text-center text-muted">No Records Found Yet</td>
+                     <td colspan="10" class="text-center text-muted">No Records Found Yet</td>
                   </tr>
                   @endforelse
                </tbody>
