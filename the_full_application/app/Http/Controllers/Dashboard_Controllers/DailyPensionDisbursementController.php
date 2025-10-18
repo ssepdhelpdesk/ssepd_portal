@@ -215,8 +215,8 @@ public function store(Request $request)
     $errors = [];
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-        ->where('status', 1)
-        ->first();
+    ->where('status', 1)
+    ->first();
 
     if (!$dateConfig) {
         return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
@@ -258,6 +258,25 @@ public function store(Request $request)
             'mbpy_transgender'             => $request->mbpy_transgender[$i] ?? null,
             'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[$i] ?? null,
             'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[$i] ?? null,
+            /*'no_of_normal_pensioners' => collect([
+                $request->mbpy_oap_below_80_years[$i] ?? 0,
+                $request->mbpy_wp[$i] ?? 0,
+                $request->mbpy_dp[$i] ?? 0,
+                $request->mbpy_sdp_below_80_percent[$i] ?? 0,
+                $request->mbpy_clp[$i] ?? 0,
+                $request->mbpy_wp_aids[$i] ?? 0,
+                $request->mbpy_dp_aids[$i] ?? 0,
+                $request->mbpy_unmarried_women[$i] ?? 0,
+                $request->mbpy_orphan_due_to_covide[$i] ?? 0,
+                $request->mbpy_widow_due_to_covid[$i] ?? 0,
+                $request->mbpy_divorce_or_destitute[$i] ?? 0,
+                $request->mbpy_transgender[$i] ?? 0,
+            ])->sum(),
+            'no_of_ep_pensioners' => collect([
+                $request->mbpy_oap_above_80_years[$i] ?? 0,
+                $request->mbpy_sdp_above_80_percent[$i] ?? 0,
+                $request->mbpy_sdoap[$i] ?? 0,
+            ])->sum(),*/
         ];
 
         $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
@@ -330,8 +349,8 @@ public function store(Request $request)
             $checkValue  = $request->gp_ward_id[$i];
 
             $existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
-                ->where('disbursement_start_date', $request->disbursement_start_date[$i])
-                ->first();
+            ->where('disbursement_start_date', $request->disbursement_start_date[$i])
+            ->first();
 
             if ($existingRecord) {
                 $existingRecord->update($rowFields);
@@ -352,7 +371,7 @@ public function store(Request $request)
     }
 
     return redirect()->route('admin.dailypensiondisbursement.index')
-        ->with('success', 'Pension disbursement records saved successfully.');
+    ->with('success', 'Pension disbursement records saved successfully.');
 }
 
 public function listing_report(Request $request)
@@ -413,7 +432,7 @@ public function listing_report(Request $request)
             $meosQuery->whereIn('municipality_id', $municipalityIds);
         } elseif (in_array($userRole, [9, 11])) {
             $bssosQuery->where('district_id', $user->posted_district);
-            $meosQuery->where('district_code', $user->posted_district);
+            $meosQuery->where('district_id', $user->posted_district);
         }
     }
 
