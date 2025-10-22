@@ -106,6 +106,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
       let table = $('#example23').DataTable({
          processing: true,
          serverSide: true,
+         responsive: true,
          ajax: {
             url: "{{ route('admin.dailypensiondisbursement.listing_report') }}",
             data: function (d) {
@@ -183,7 +184,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                  day: '2-digit',
                  month: 'short',
                  year: 'numeric'
-                }).replace(',', ''); // remove extra comma if needed
+                }).replace(',', '');
 
                 dropdownHtml += `
                     <a class="dropdown-item" href="{{ url('dashboard/DailyPensionDisbursement') }}/${id}/edit">

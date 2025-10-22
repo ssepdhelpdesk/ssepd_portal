@@ -163,7 +163,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
                                     name="disbursement_start_date[]" 
                                     max="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" 
                                     value="{{ old('disbursement_start_date.'.$index) }}" 
-                                    class="form-control">
+                                    class="form-control" onkeydown="return false" onpaste="return false">
                                     @error('disbursement_start_date.'.$index)
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                     @enderror

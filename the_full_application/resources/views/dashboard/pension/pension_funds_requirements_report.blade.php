@@ -151,7 +151,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
     let table = $('#example23').DataTable({
        processing: true,
        serverSide: true,
-       responsive: false,
+       responsive: true,
        ordering: true,
        scrollX: true,
        ajax: {
