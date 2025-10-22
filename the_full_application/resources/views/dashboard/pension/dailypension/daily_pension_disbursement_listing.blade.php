@@ -66,27 +66,25 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                <thead>
                   <tr>
                      <th>Sl.No</th>
-                     <th>District</th>
                      <th>Month</th>
-                     <th>Block / ULB Name</th>
-                     <th>GP / Ward Name</th>
+                     <th>Address</th>
                      <th>Disbursement Dates</th>
                      @foreach($numericColumns as $col)
                      <th>{{ str_replace('_', ' ', ucfirst($col)) }}</th>
                      @endforeach
+                     <th>Action</th>
                   </tr>
                </thead>
                <tfoot>
                   <tr>
                      <th>Sl.No</th>
-                     <th>District</th>
                      <th>Month</th>
-                     <th>Block / ULB Name</th>
-                     <th>GP / Ward Name</th>
+                     <th>Address</th>
                      <th>Disbursement Dates</th>
                      @foreach($numericColumns as $col)
                      <th>{{ str_replace('_', ' ', ucfirst($col)) }}</th>
                      @endforeach
+                     <th>Action</th>
                   </tr>
                </tfoot>
 
@@ -116,24 +114,102 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
          },
          columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'district_name', name: 'district_name'},
             {data: 'forTheMonth', name: 'forTheMonth'},
-            {data: 'block_ulb_name', name: 'block_ulb_name'},
-            {data: 'gp_ward_name', name: 'gp_ward_name'},
-            {data: 'disbursement_dates', name: 'disbursement_dates'},
-            @foreach($numericColumns as $col)
-            {data: 'totals.{{ "total_".$col }}', name: '{{ "total_".$col }}'},
-            @endforeach
-         ],
-         scrollX: true,
-         lengthMenu: [[10, 50, 100, -1],[10, 50, 100, "All"]],
-         dom: 'Blfrtip',
-         buttons: ['copy','csv','excel','pdf','print']
-      });
+            {
+               data: null,
+               name: 'address',
+               render: function(data, type, row) {
+                  let district = row.district_name ?? 'N/A';
+                  let blockUlb = row.block_ulb_name ?? 'N/A';
+                  let gpWard = row.gp_ward_name ?? 'N/A';
+                  return `<strong>District:</strong> ${district}<br><strong>Block/ULB:</strong> ${blockUlb}<br><small>GP/Ward:</small> ${gpWard}`;
+               }
+            },
+            {
+              data: 'disbursement_dates', 
+              name: 'disbursement_dates',
+              render: function(data, type, row) {
+                if (!data) return '';
+
+                return Object.keys(data).map(dateStr => {
+                  let dateObj = new Date(dateStr);
+                  return dateObj.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                 }).replace(',', '');
+               }).join('<br>');
+             }
+          },
+          @foreach($numericColumns as $col)
+          {data: 'totals.{{ "total_".$col }}', name: '{{ "total_".$col }}'},
+          @endforeach
+          {
+             data: null,
+             name: 'action',
+             render: function(data, type, row) {
+              let dateIdMap = row.disbursement_dates || {};
+              let dropdownHtml = '';
+
+              let today = new Date().toISOString().slice(0,10);
+
+              let monthConfig = @json($dateConfig);
+              let startDate = null;
+              let endDate = null;
+
+              monthConfig.forEach(cfg => {
+               if(cfg.for_the_month === row.forTheMonth) {
+                startDate = cfg.start_date;
+                endDate = cfg.end_date;
+             }
+          });
+
+              if(startDate && endDate && today >= startDate && today <= endDate) {
+               dropdownHtml = `
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Edit
+                </button>
+                <div class="dropdown-menu animated flipInX">
+               `;
+
+               Object.keys(dateIdMap).forEach(dateStr => {
+                let id = dateIdMap[dateStr];
+                let dateObj = new Date(dateStr);
+
+                let formattedDate = dateObj.toLocaleDateString('en-US', {
+                 weekday: 'short',
+                 day: '2-digit',
+                 month: 'short',
+                 year: 'numeric'
+                }).replace(',', ''); // remove extra comma if needed
+
+                dropdownHtml += `
+                    <a class="dropdown-item" href="{{ url('dashboard/DailyPensionDisbursement') }}/${id}/edit">
+                        Edit - ${formattedDate}
+                </a>`;
+             });
+
+               dropdownHtml += `</div></div>`;
+            } else {
+               dropdownHtml = `<span class="text-muted">Edit not allowed</span>`;
+            }
+
+            return dropdownHtml;
+         }
+      }
+   ],
+   scrollX: true,
+   lengthMenu: [[10, 50, 100, -1],[10, 50, 100, "All"]],
+   dom: 'Blfrtip',
+   buttons: ['copy','csv','excel','pdf','print']
+});
 
       $('select[name=for_the_month]').on('change', function() {
          table.ajax.reload();
       });
    });
 </script>
+
 @endsection

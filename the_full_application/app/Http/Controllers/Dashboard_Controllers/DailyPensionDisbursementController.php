@@ -94,117 +94,117 @@ public function create()
 
 /*public function store(Request $request)
 {
-    $rows = count($request->gp_ward_id ?? []);
-    $user = auth()->user();
-    $atLeastOneRowCompleted = false;
-    $errors = [];
+$rows = count($request->gp_ward_id ?? []);
+$user = auth()->user();
+$atLeastOneRowCompleted = false;
+$errors = [];
 
-    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-    ->where('status', 1)
-    ->first();
+$dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+->where('status', 1)
+->first();
 
-    if (!$dateConfig) {
-        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
-    }
+if (!$dateConfig) {
+return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+}
 
-    $forTheMonth = $dateConfig->for_the_month;
+$forTheMonth = $dateConfig->for_the_month;
 
-    if ($user->role_name == 'BSSO') {
-        $staff_address_type = 1;
-        $block_id = $user->posted_block;
-        $district_id = Block::where('block_id', $block_id)->value('district_id');
-        $municipality_id = null;
-    } elseif ($user->role_name == 'MEO') {
-        $staff_address_type = 2;
-        $block_id = null;
-        $municipality_id = $user->posted_municipality;
-        $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
-    } else {
-        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
-    }
+if ($user->role_name == 'BSSO') {
+$staff_address_type = 1;
+$block_id = $user->posted_block;
+$district_id = Block::where('block_id', $block_id)->value('district_id');
+$municipality_id = null;
+} elseif ($user->role_name == 'MEO') {
+$staff_address_type = 2;
+$block_id = null;
+$municipality_id = $user->posted_municipality;
+$district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
+} else {
+return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+}
 
-    for ($i = 0; $i < $rows; $i++) {
-        $rowFields = [
-            'disbursement_start_date'     => $request->disbursement_start_date[$i] ?? null,
-            'mbpy_oap_below_80_years'    => $request->mbpy_oap_below_80_years[$i] ?? null,
-            'mbpy_oap_above_80_years'    => $request->mbpy_oap_above_80_years[$i] ?? null,
-            'mbpy_wp'                     => $request->mbpy_wp[$i] ?? null,
-            'mbpy_dp'                     => $request->mbpy_dp[$i] ?? null,
-            'mbpy_sdp_below_80_percent'  => $request->mbpy_sdp_below_80_percent[$i] ?? null,
-            'mbpy_sdp_above_80_percent'  => $request->mbpy_sdp_above_80_percent[$i] ?? null,
-            'mbpy_sdoap'                  => $request->mbpy_sdoap[$i] ?? null,
-            'mbpy_clp'                    => $request->mbpy_clp[$i] ?? null,
-            'mbpy_wp_aids'                => $request->mbpy_wp_aids[$i] ?? null,
-            'mbpy_dp_aids'                => $request->mbpy_dp_aids[$i] ?? null,
-            'mbpy_unmarried_women'        => $request->mbpy_unmarried_women[$i] ?? null,
-            'mbpy_orphan_due_to_covide'   => $request->mbpy_orphan_due_to_covide[$i] ?? null,
-            'mbpy_widow_due_to_covid'     => $request->mbpy_widow_due_to_covid[$i] ?? null,
-            'mbpy_divorce_or_destitute'   => $request->mbpy_divorce_or_destitute[$i] ?? null,
-            'mbpy_transgender'            => $request->mbpy_transgender[$i] ?? null,
-            'no_of_normal_pensioners'     => $request->no_of_normal_pensioners[$i] ?? null,
-            'no_of_ep_pensioners'         => $request->no_of_ep_pensioners[$i] ?? null,
-        ];
+for ($i = 0; $i < $rows; $i++) {
+$rowFields = [
+'disbursement_start_date'     => $request->disbursement_start_date[$i] ?? null,
+'mbpy_oap_below_80_years'    => $request->mbpy_oap_below_80_years[$i] ?? null,
+'mbpy_oap_above_80_years'    => $request->mbpy_oap_above_80_years[$i] ?? null,
+'mbpy_wp'                     => $request->mbpy_wp[$i] ?? null,
+'mbpy_dp'                     => $request->mbpy_dp[$i] ?? null,
+'mbpy_sdp_below_80_percent'  => $request->mbpy_sdp_below_80_percent[$i] ?? null,
+'mbpy_sdp_above_80_percent'  => $request->mbpy_sdp_above_80_percent[$i] ?? null,
+'mbpy_sdoap'                  => $request->mbpy_sdoap[$i] ?? null,
+'mbpy_clp'                    => $request->mbpy_clp[$i] ?? null,
+'mbpy_wp_aids'                => $request->mbpy_wp_aids[$i] ?? null,
+'mbpy_dp_aids'                => $request->mbpy_dp_aids[$i] ?? null,
+'mbpy_unmarried_women'        => $request->mbpy_unmarried_women[$i] ?? null,
+'mbpy_orphan_due_to_covide'   => $request->mbpy_orphan_due_to_covide[$i] ?? null,
+'mbpy_widow_due_to_covid'     => $request->mbpy_widow_due_to_covid[$i] ?? null,
+'mbpy_divorce_or_destitute'   => $request->mbpy_divorce_or_destitute[$i] ?? null,
+'mbpy_transgender'            => $request->mbpy_transgender[$i] ?? null,
+'no_of_normal_pensioners'     => $request->no_of_normal_pensioners[$i] ?? null,
+'no_of_ep_pensioners'         => $request->no_of_ep_pensioners[$i] ?? null,
+];
 
-        $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+$hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
 
-        if ($hasAnyValue) {
-            $missingFields = collect($rowFields)->filter(fn($v) => $v === null || $v === '')->keys();
+if ($hasAnyValue) {
+$missingFields = collect($rowFields)->filter(fn($v) => $v === null || $v === '')->keys();
 
-            if ($missingFields->isNotEmpty()) {
-                foreach ($missingFields as $field) {
-                    $errors["{$field}.{$i}"] = "Row ".($i+1).": The field ".str_replace('_',' ',$field)." is required when filling this row.";
-                }
-            } else {
-                $atLeastOneRowCompleted = true;
+if ($missingFields->isNotEmpty()) {
+foreach ($missingFields as $field) {
+$errors["{$field}.{$i}"] = "Row ".($i+1).": The field ".str_replace('_',' ',$field)." is required when filling this row.";
+}
+} else {
+$atLeastOneRowCompleted = true;
 
-                $gp_id = $user->role_name == 'BSSO' ? $request->gp_ward_id[$i] : null;
-                $ward_id = $user->role_name == 'MEO' ? $request->gp_ward_id[$i] : null;
+$gp_id = $user->role_name == 'BSSO' ? $request->gp_ward_id[$i] : null;
+$ward_id = $user->role_name == 'MEO' ? $request->gp_ward_id[$i] : null;
 
-                $rowFields = array_merge($rowFields, [
-                    'for_the_month'     => $forTheMonth,
-                    'gp_ward_id'        => $request->gp_ward_id[$i],
-                    'gp_ward_name'      => $request->gp_ward_name[$i],
-                    'staff_address_type'=> $staff_address_type,
-                    'state_id'          => 228,
-                    'district_id'       => $district_id,
-                    'municipality_id'   => $municipality_id,
-                    'block_id'          => $block_id,
-                    'gp_id'             => $gp_id,
-                    'ward_id'           => $ward_id,
-                    'disbursement_started'=> 1,
-                    'is_active'         => 'active',
-                    'created_date'      => now()->setTimezone('Asia/Kolkata')->toDateString(),
-                    'created_time'      => now()->setTimezone('Asia/Kolkata')->toTimeString(),
-                    'created_by'        => $user->user_table_id,
-                    'status'            => 1,
-                ]);
+$rowFields = array_merge($rowFields, [
+'for_the_month'     => $forTheMonth,
+'gp_ward_id'        => $request->gp_ward_id[$i],
+'gp_ward_name'      => $request->gp_ward_name[$i],
+'staff_address_type'=> $staff_address_type,
+'state_id'          => 228,
+'district_id'       => $district_id,
+'municipality_id'   => $municipality_id,
+'block_id'          => $block_id,
+'gp_id'             => $gp_id,
+'ward_id'           => $ward_id,
+'disbursement_started'=> 1,
+'is_active'         => 'active',
+'created_date'      => now()->setTimezone('Asia/Kolkata')->toDateString(),
+'created_time'      => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+'created_by'        => $user->user_table_id,
+'status'            => 1,
+]);
 
-                $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
-                $checkValue  = $request->gp_ward_id[$i];
-                $existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
-                ->where('disbursement_start_date', $request->disbursement_start_date[$i])
-                ->first();
+$checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
+$checkValue  = $request->gp_ward_id[$i];
+$existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
+->where('disbursement_start_date', $request->disbursement_start_date[$i])
+->first();
 
-                if ($existingRecord) {
-                    $existingRecord->update($rowFields);
-                } else {
-                    DailyPensionDisbursement::create($rowFields);
-                }
-            }
-        }
-    }
+if ($existingRecord) {
+$existingRecord->update($rowFields);
+} else {
+DailyPensionDisbursement::create($rowFields);
+}
+}
+}
+}
 
-    if (!empty($errors)) {
-        return back()->withErrors($errors)->withInput();
-    }
+if (!empty($errors)) {
+return back()->withErrors($errors)->withInput();
+}
 
-    if (!$atLeastOneRowCompleted) {
-        return back()->withErrors([
-            'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
-        ])->withInput();
-    }
+if (!$atLeastOneRowCompleted) {
+return back()->withErrors([
+'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
+])->withInput();
+}
 
-    return redirect()->route('admin.dailypensiondisbursement.index')->with('success', 'Pension disbursement records saved successfully.');
+return redirect()->route('admin.dailypensiondisbursement.index')->with('success', 'Pension disbursement records saved successfully.');
 }*/
 
 public function store(Request $request)
@@ -238,140 +238,136 @@ public function store(Request $request)
         return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
     }
 
-    for ($i = 0; $i < $rows; $i++) {
-        $rowFields = [
-            'disbursement_start_date'      => $request->disbursement_start_date[$i] ?? null,
-            'mbpy_oap_below_80_years'      => $request->mbpy_oap_below_80_years[$i] ?? null,
-            'mbpy_oap_above_80_years'      => $request->mbpy_oap_above_80_years[$i] ?? null,
-            'mbpy_wp'                      => $request->mbpy_wp[$i] ?? null,
-            'mbpy_dp'                      => $request->mbpy_dp[$i] ?? null,
-            'mbpy_sdp_below_80_percent'    => $request->mbpy_sdp_below_80_percent[$i] ?? null,
-            'mbpy_sdp_above_80_percent'    => $request->mbpy_sdp_above_80_percent[$i] ?? null,
-            'mbpy_sdoap'                   => $request->mbpy_sdoap[$i] ?? null,
-            'mbpy_clp'                     => $request->mbpy_clp[$i] ?? null,
-            'mbpy_wp_aids'                 => $request->mbpy_wp_aids[$i] ?? null,
-            'mbpy_dp_aids'                 => $request->mbpy_dp_aids[$i] ?? null,
-            'mbpy_unmarried_women'         => $request->mbpy_unmarried_women[$i] ?? null,
-            'mbpy_orphan_due_to_covide'    => $request->mbpy_orphan_due_to_covide[$i] ?? null,
-            'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[$i] ?? null,
-            'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[$i] ?? null,
-            'mbpy_transgender'             => $request->mbpy_transgender[$i] ?? null,
-            'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[$i] ?? null,
-            'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[$i] ?? null,
-            /*'no_of_normal_pensioners' => collect([
-                $request->mbpy_oap_below_80_years[$i] ?? 0,
-                $request->mbpy_wp[$i] ?? 0,
-                $request->mbpy_dp[$i] ?? 0,
-                $request->mbpy_sdp_below_80_percent[$i] ?? 0,
-                $request->mbpy_clp[$i] ?? 0,
-                $request->mbpy_wp_aids[$i] ?? 0,
-                $request->mbpy_dp_aids[$i] ?? 0,
-                $request->mbpy_unmarried_women[$i] ?? 0,
-                $request->mbpy_orphan_due_to_covide[$i] ?? 0,
-                $request->mbpy_widow_due_to_covid[$i] ?? 0,
-                $request->mbpy_divorce_or_destitute[$i] ?? 0,
-                $request->mbpy_transgender[$i] ?? 0,
-            ])->sum(),
-            'no_of_ep_pensioners' => collect([
-                $request->mbpy_oap_above_80_years[$i] ?? 0,
-                $request->mbpy_sdp_above_80_percent[$i] ?? 0,
-                $request->mbpy_sdoap[$i] ?? 0,
-            ])->sum(),*/
-        ];
+    DB::beginTransaction();
+    try {
 
-        $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
-
-        if ($hasAnyValue) {
-            $missingFields = collect($rowFields)->filter(fn($v) => $v === null || $v === '')->keys();
-            if ($missingFields->isNotEmpty()) {
-                foreach ($missingFields as $field) {
-                    $errors["{$field}.{$i}"] = "Row " . ($i + 1) . ": The field " . str_replace('_', ' ', $field) . " is required.";
-                }
-                continue;
-            }
-
-            $atLeastOneRowCompleted = true;
-
-            $fundMultipliers = [
-                'mbpy_oap_below_80_years'       => 1000,
-                'mbpy_oap_above_80_years'       => 3500,
-                'mbpy_wp'                        => 1000,
-                'mbpy_dp'                        => 1000,
-                'mbpy_sdp_below_80_percent'      => 1200,
-                'mbpy_sdp_above_80_percent'      => 3500,
-                'mbpy_sdoap'                     => 3500,
-                'mbpy_clp'                       => 1000,
-                'mbpy_wp_aids'                   => 1000,
-                'mbpy_dp_aids'                   => 1000,
-                'mbpy_unmarried_women'           => 1000,
-                'mbpy_orphan_due_to_covide'      => 1000,
-                'mbpy_widow_due_to_covid'        => 1000,
-                'mbpy_divorce_or_destitute'      => 1000,
-                'mbpy_transgender'               => 1000,
+        for ($i = 0; $i < $rows; $i++) {
+            $rowFields = [
+                'disbursement_start_date'      => $request->disbursement_start_date[$i] ?? null,
+                'mbpy_oap_below_80_years'      => $request->mbpy_oap_below_80_years[$i] ?? null,
+                'mbpy_oap_above_80_years'      => $request->mbpy_oap_above_80_years[$i] ?? null,
+                'mbpy_wp'                      => $request->mbpy_wp[$i] ?? null,
+                'mbpy_dp'                      => $request->mbpy_dp[$i] ?? null,
+                'mbpy_sdp_below_80_percent'    => $request->mbpy_sdp_below_80_percent[$i] ?? null,
+                'mbpy_sdp_above_80_percent'    => $request->mbpy_sdp_above_80_percent[$i] ?? null,
+                'mbpy_sdoap'                   => $request->mbpy_sdoap[$i] ?? null,
+                'mbpy_clp'                     => $request->mbpy_clp[$i] ?? null,
+                'mbpy_wp_aids'                 => $request->mbpy_wp_aids[$i] ?? null,
+                'mbpy_dp_aids'                 => $request->mbpy_dp_aids[$i] ?? null,
+                'mbpy_unmarried_women'         => $request->mbpy_unmarried_women[$i] ?? null,
+                'mbpy_orphan_due_to_covide'    => $request->mbpy_orphan_due_to_covide[$i] ?? null,
+                'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[$i] ?? null,
+                'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[$i] ?? null,
+                'mbpy_transgender'             => $request->mbpy_transgender[$i] ?? null,
+                'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[$i] ?? null,
+                'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[$i] ?? null,
             ];
 
-            $totalBeneficiaries = 0;
-            $totalFunds = 0;
+            $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
 
-            foreach ($fundMultipliers as $field => $rate) {
-                $count = (int)($rowFields[$field] ?? 0);
-                $rowFields["funds_{$field}"] = $count * $rate;
-                $totalBeneficiaries += $count;
-                $totalFunds += ($count * $rate);
-            }
+            if ($hasAnyValue) {
+                $missingFields = collect($rowFields)->filter(fn($v) => $v === null || $v === '')->keys();
+                if ($missingFields->isNotEmpty()) {
+                    foreach ($missingFields as $field) {
+                        $errors["{$field}.{$i}"] = "Row " . ($i + 1) . ": The field " . str_replace('_', ' ', $field) . " is required.";
+                    }
+                    continue;
+                }
 
-            $rowFields['mbpy_total_beneficiaries'] = $totalBeneficiaries;
-            $rowFields['funds_mbpy_total_beneficiaries'] = $totalFunds;
+                $atLeastOneRowCompleted = true;
 
-            $gp_id = $user->role_name == 'BSSO' ? $request->gp_ward_id[$i] : null;
-            $ward_id = $user->role_name == 'MEO' ? $request->gp_ward_id[$i] : null;
+                $fundMultipliers = [
+                    'mbpy_oap_below_80_years'       => 1000,
+                    'mbpy_oap_above_80_years'       => 3500,
+                    'mbpy_wp'                        => 1000,
+                    'mbpy_dp'                        => 1000,
+                    'mbpy_sdp_below_80_percent'      => 1200,
+                    'mbpy_sdp_above_80_percent'      => 3500,
+                    'mbpy_sdoap'                     => 3500,
+                    'mbpy_clp'                       => 1000,
+                    'mbpy_wp_aids'                   => 1000,
+                    'mbpy_dp_aids'                   => 1000,
+                    'mbpy_unmarried_women'           => 1000,
+                    'mbpy_orphan_due_to_covide'      => 1000,
+                    'mbpy_widow_due_to_covid'        => 1000,
+                    'mbpy_divorce_or_destitute'      => 1000,
+                    'mbpy_transgender'               => 1000,
+                ];
 
-            $rowFields = array_merge($rowFields, [
-                'for_the_month'          => $forTheMonth,
-                'gp_ward_id'             => $request->gp_ward_id[$i],
-                'gp_ward_name'           => $request->gp_ward_name[$i],
-                'staff_address_type'     => $staff_address_type,
-                'state_id'               => 228,
-                'district_id'            => $district_id,
-                'municipality_id'        => $municipality_id,
-                'block_id'               => $block_id,
-                'gp_id'                  => $gp_id,
-                'ward_id'                => $ward_id,
-                'disbursement_started'   => 1,
-                'is_active'              => 'active',
-                'created_date'           => now('Asia/Kolkata')->toDateString(),
-                'created_time'           => now('Asia/Kolkata')->toTimeString(),
-                'created_by'             => $user->user_table_id,
-                'status'                 => 1,
-            ]);
+                $totalBeneficiaries = 0;
+                $totalFunds = 0;
 
-            $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
-            $checkValue  = $request->gp_ward_id[$i];
+                foreach ($fundMultipliers as $field => $rate) {
+                    $count = (int)($rowFields[$field] ?? 0);
+                    $rowFields["funds_{$field}"] = $count * $rate;
+                    $totalBeneficiaries += $count;
+                    $totalFunds += ($count * $rate);
+                }
 
-            $existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
-            ->where('disbursement_start_date', $request->disbursement_start_date[$i])
-            ->first();
+                $rowFields['mbpy_total_beneficiaries'] = $totalBeneficiaries;
+                $rowFields['funds_mbpy_total_beneficiaries'] = $totalFunds;
 
-            if ($existingRecord) {
-                $existingRecord->update($rowFields);
-            } else {
-                DailyPensionDisbursement::create($rowFields);
+                $gp_id = $user->role_name == 'BSSO' ? $request->gp_ward_id[$i] : null;
+                $ward_id = $user->role_name == 'MEO' ? $request->gp_ward_id[$i] : null;
+
+                $rowFields = array_merge($rowFields, [
+                    'for_the_month'          => $forTheMonth,
+                    'gp_ward_id'             => $request->gp_ward_id[$i],
+                    'gp_ward_name'           => $request->gp_ward_name[$i],
+                    'staff_address_type'     => $staff_address_type,
+                    'state_id'               => 228,
+                    'district_id'            => $district_id,
+                    'municipality_id'        => $municipality_id,
+                    'block_id'               => $block_id,
+                    'gp_id'                  => $gp_id,
+                    'ward_id'                => $ward_id,
+                    'disbursement_started'   => 1,
+                    'is_active'              => 'active',
+                    'created_date'           => now('Asia/Kolkata')->toDateString(),
+                    'created_time'           => now('Asia/Kolkata')->toTimeString(),
+                    'created_by'             => $user->user_table_id,
+                    'status'                 => 1,
+                ]);
+
+                $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
+                $checkValue  = $request->gp_ward_id[$i];
+
+                $existingRecord = DailyPensionDisbursement::where($checkColumn, $checkValue)
+                ->where('disbursement_start_date', $request->disbursement_start_date[$i])
+                ->first();
+
+                if ($existingRecord) {
+                    $existingRecord->update($rowFields);
+                } else {
+                    DailyPensionDisbursement::create($rowFields);
+                }
             }
         }
-    }
 
-    if (!empty($errors)) {
-        return back()->withErrors($errors)->withInput();
-    }
+        if (!empty($errors)) {
+            return back()->withErrors($errors)->withInput();
+        }
 
-    if (!$atLeastOneRowCompleted) {
-        return back()->withErrors([
-            'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
-        ])->withInput();
-    }
+        if (!$atLeastOneRowCompleted) {
+            return back()->withErrors([
+                'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
+            ])->withInput();
+        }
+        DB::commit();
 
-    return redirect()->route('admin.dailypensiondisbursement.index')
-    ->with('success', 'Pension disbursement records saved successfully.');
+        return redirect()->route('admin.dailypensiondisbursement.index')->with('success', 'Daily Pension disbursement records saved successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Daily Pension disbursement form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
 }
 
 public function listing_report(Request $request)
@@ -383,7 +379,6 @@ public function listing_report(Request $request)
     ->where('is_active', 'active')
     ->orderBy('id', 'desc')
     ->get();
-
 
     $forTheMonth = $request->for_the_month 
     ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
@@ -446,6 +441,12 @@ public function listing_report(Request $request)
         : 'ward_' . $item->ward_id;
     })->map(function ($group) use ($numericColumns) {
         $first = $group->first();
+
+        $dateIdMap = $group->mapWithKeys(function($item) {
+            $date = \Carbon\Carbon::parse($item->disbursement_start_date)->format('Y-m-d');
+            return [$date => $item->id];
+        });
+
         $row = [
             'staff_address_type' => $first->staff_address_type,
             'district_name'      => $first->staff_address_type == 1
@@ -458,11 +459,7 @@ public function listing_report(Request $request)
             ? ($first->grampanchayat->gp_name ?? '')
             : ($first->ward->ward_name ?? ''),
             'forTheMonth'        => $first->for_the_month,
-            'disbursement_dates' => $group->pluck('disbursement_start_date')
-            ->sort()
-            ->map(fn($d) => \Carbon\Carbon::parse($d)->format('D, d-M-Y'))
-            ->unique()
-            ->implode(' | '),
+            'disbursement_dates' => $dateIdMap,
         ];
 
         foreach ($numericColumns as $col) {
@@ -484,6 +481,7 @@ public function listing_report(Request $request)
         compact('forTheMonth', 'numericColumns', 'dateConfig')
     );
 }
+
 
 public function combined_report(Request $request)
 {
@@ -771,7 +769,39 @@ public function show(string $id)
 */
 public function edit(string $id)
 {
-//
+    $user = auth()->user();
+    $userRole = $user->role_id;
+    $today_date = Carbon::today('Asia/Kolkata')->format('Y-m-d');
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $startDate   = $dateConfig->start_date;
+    $endDate     = $dateConfig->end_date;
+    $forTheMonth = $dateConfig->for_the_month;
+
+    if ($user->role_name == 'BSSO') {
+        $gp_ward_id = Grampanchayat::where('block_id', $user->posted_block)
+        ->where('is_active', 'active')
+        ->get();
+        $gpIds   = $gp_ward_id->pluck('gp_id')->toArray();
+        $wardIds = [];
+    } elseif ($user->role_name == 'MEO') {
+        $gp_ward_id = WardMaster::where('municipal_area_code', $user->posted_municipality)
+        ->where('is_active', '1')
+        ->get();
+        $gpIds   = [];
+        $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
+    } else {
+        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+    }
+    $dailypensiondisbursementdata =  DailyPensionDisbursement::whereId($id)->firstOrFail();
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_edit', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth', 'dailypensiondisbursementdata'));
 }
 
 /**
@@ -779,8 +809,120 @@ public function edit(string $id)
 */
 public function update(Request $request, string $id)
 {
-//
+    $user = auth()->user();
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $forTheMonth = $dateConfig->for_the_month;
+
+    if ($user->role_name == 'BSSO') {
+        $staff_address_type = 1;
+        $block_id = $user->posted_block;
+        $district_id = Block::where('block_id', $block_id)->value('district_id');
+        $municipality_id = null;
+    } elseif ($user->role_name == 'MEO') {
+        $staff_address_type = 2;
+        $municipality_id = $user->posted_municipality;
+        $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
+        $block_id = null;
+    } else {
+        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+    }
+
+    DB::beginTransaction();
+    try {
+
+        $dailypensiondisbursementdata = DailyPensionDisbursement::findOrFail($id);
+
+        $rowFields = [
+            'mbpy_oap_below_80_years'      => $request->mbpy_oap_below_80_years[0] ?? null,
+            'mbpy_oap_above_80_years'      => $request->mbpy_oap_above_80_years[0] ?? null,
+            'mbpy_wp'                      => $request->mbpy_wp[0] ?? null,
+            'mbpy_dp'                      => $request->mbpy_dp[0] ?? null,
+            'mbpy_sdp_below_80_percent'    => $request->mbpy_sdp_below_80_percent[0] ?? null,
+            'mbpy_sdp_above_80_percent'    => $request->mbpy_sdp_above_80_percent[0] ?? null,
+            'mbpy_sdoap'                   => $request->mbpy_sdoap[0] ?? null,
+            'mbpy_clp'                     => $request->mbpy_clp[0] ?? null,
+            'mbpy_wp_aids'                 => $request->mbpy_wp_aids[0] ?? null,
+            'mbpy_dp_aids'                 => $request->mbpy_dp_aids[0] ?? null,
+            'mbpy_unmarried_women'         => $request->mbpy_unmarried_women[0] ?? null,
+            'mbpy_orphan_due_to_covide'    => $request->mbpy_orphan_due_to_covide[0] ?? null,
+            'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[0] ?? null,
+            'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[0] ?? null,
+            'mbpy_transgender'             => $request->mbpy_transgender[0] ?? null,
+            'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[0] ?? null,
+            'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[0] ?? null,
+        ];
+
+        $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+
+        if (!$hasAnyValue) {
+            return back()->withErrors([
+                'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
+            ])->withInput();
+        }
+
+        $fundMultipliers = [
+            'mbpy_oap_below_80_years'       => 1000,
+            'mbpy_oap_above_80_years'       => 3500,
+            'mbpy_wp'                        => 1000,
+            'mbpy_dp'                        => 1000,
+            'mbpy_sdp_below_80_percent'      => 1200,
+            'mbpy_sdp_above_80_percent'      => 3500,
+            'mbpy_sdoap'                     => 3500,
+            'mbpy_clp'                       => 1000,
+            'mbpy_wp_aids'                   => 1000,
+            'mbpy_dp_aids'                   => 1000,
+            'mbpy_unmarried_women'           => 1000,
+            'mbpy_orphan_due_to_covide'      => 1000,
+            'mbpy_widow_due_to_covid'        => 1000,
+            'mbpy_divorce_or_destitute'      => 1000,
+            'mbpy_transgender'               => 1000,
+        ];
+
+        $totalBeneficiaries = 0;
+        $totalFunds = 0;
+
+        foreach ($fundMultipliers as $field => $rate) {
+            $count = (int)($rowFields[$field] ?? 0);
+            $rowFields["funds_{$field}"] = $count * $rate;
+            $totalBeneficiaries += $count;
+            $totalFunds += ($count * $rate);
+        }
+
+        $rowFields['mbpy_total_beneficiaries'] = $totalBeneficiaries;
+        $rowFields['funds_mbpy_total_beneficiaries'] = $totalFunds;
+
+        $rowFields = array_merge($rowFields, [
+            'updated_date'           => now('Asia/Kolkata')->toDateString(),
+            'updated_time'           => now('Asia/Kolkata')->toTimeString(),
+            'updated_by'             => $user->user_table_id,
+        ]);
+
+        $dailypensiondisbursementdata->update($rowFields);
+        DB::commit();
+
+        return redirect()->route('admin.dailypensiondisbursement.listing_report')->with('success', 'Pension disbursement record updated successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Daily Pension disbursement update form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
 }
+
 
 /**
 * Remove the specified resource from storage.
