@@ -128,7 +128,12 @@ Special School || Construction Progress Details
                                     </div>
                                     <hr>
                                     @endforeach
-                                    @if($latestImage->approve_status == 1 && $latestImage->approver_remarks != NULL && $latestImage->approved_date != NULL && $latestImage->no_of_phase_approved != 0)
+                                    @if(!$latestImage || 
+    ($latestImage->approve_status == 1 && 
+     $latestImage->approver_remarks != NULL && 
+     $latestImage->approved_date != NULL && 
+     $latestImage->no_of_phase_approved != 0))
+
                                     @can('special-school-create')
                                     <div class="sl-item">
                                        <div class="sl-left"> <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" alt="user" class="img-circle" /> </div>
