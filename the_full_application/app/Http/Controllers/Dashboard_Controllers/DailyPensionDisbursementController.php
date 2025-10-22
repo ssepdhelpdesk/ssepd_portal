@@ -73,7 +73,7 @@ public function index()
         ->where('is_active', '1')
         ->get();
         $gpIds   = [];
-        $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
+        $wardIds = $gp_ward_id->pluck('ward_code')->toArray();
     } else {
         return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
     }
@@ -796,7 +796,7 @@ public function edit(string $id)
         ->where('is_active', '1')
         ->get();
         $gpIds   = [];
-        $wardIds = $gp_ward_id->pluck('ward_id')->toArray();
+        $wardIds = $gp_ward_id->pluck('ward_code')->toArray();
     } else {
         return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
     }
