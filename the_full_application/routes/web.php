@@ -292,7 +292,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('update_record', 'update_record')->name('update_record');
 
         Route::get('daily_pension_disbursement_vs_funds_requirements', 'daily_pension_disbursement_vs_funds_requirements')->name('daily_pension_disbursement_vs_funds_requirements');
-        Route::get('daily_pension_disbursement_vs_funds_requirements_role_based', 'daily_pension_disbursement_vs_funds_requirements_role_based')->name('daily_pension_disbursement_vs_funds_requirements_role_based');
+        Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries');
+        Route::get('daily_pension_disbursement_fund_vs_funds_requirements', 'daily_pension_disbursement_fund_vs_funds_requirements')->name('daily_pension_disbursement_fund_vs_funds_requirements');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {
