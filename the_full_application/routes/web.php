@@ -290,6 +290,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('combined_report', 'combined_report')->name('combined_report');
         Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
         Route::post('update_record', 'update_record')->name('update_record');
+
+        Route::get('daily_pension_disbursement_vs_funds_requirements', 'daily_pension_disbursement_vs_funds_requirements')->name('daily_pension_disbursement_vs_funds_requirements');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

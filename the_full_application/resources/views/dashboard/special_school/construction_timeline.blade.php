@@ -128,11 +128,7 @@ Special School || Construction Progress Details
                                     </div>
                                     <hr>
                                     @endforeach
-                                    @if(!$latestImage || 
-    ($latestImage->approve_status == 1 && 
-     $latestImage->approver_remarks != NULL && 
-     $latestImage->approved_date != NULL && 
-     $latestImage->no_of_phase_approved != 0))
+                                    @if(!$latestImage || ($latestImage->approve_status == 1 && $latestImage->approver_remarks != NULL && $latestImage->approved_date != NULL && $latestImage->no_of_phase_approved != 0))
 
                                     @can('special-school-create')
                                     <div class="sl-item">

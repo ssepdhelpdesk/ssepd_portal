@@ -139,6 +139,7 @@
                         <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">Daily Pension Disbursement</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward wise Combined Daily Pension Disbursement</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
+                        <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements')}}">Disbursement vs Funds Requirements</a></li>
                         <!-- <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>                        
                         <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_submission')}}">Pension Disbursement – Daily Submissions</a></li>
                         <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
