@@ -222,7 +222,7 @@ Pension || Daily Pension Disbursement vs Funds Requirements
    $(function () {
      $('#example23').DataTable({
        processing: true,
-       responsive: false,
+       responsive: true,
        ordering: true,
        scrollX: true,
        lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
