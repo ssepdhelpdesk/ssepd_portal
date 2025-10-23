@@ -932,38 +932,37 @@ public function destroy(string $id)
 //
 }
 
-
 public function daily_pension_disbursement_vs_funds_requirements()
 {
     $month = 'October-2025';
 
     $fundsRaw = DB::table('pension_funds_requirements')
-        ->selectRaw("
-            address_type,
-            district_id,
-            block_id,
-            municipality_id,
-            SUM(mbpy_oap_below_80_years) AS oap_below_80,
-            SUM(mbpy_oap_above_80_years) AS oap_above_80,
-            SUM(mbpy_wp) AS widow_pension,
-            SUM(mbpy_dp) AS disabled_pension,
-            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
-            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
-            SUM(mbpy_sdoap) AS sdoap,
-            SUM(mbpy_clp) AS clp,
-            SUM(mbpy_wp_aids) AS wp_aids,
-            SUM(mbpy_dp_aids) AS dp_aids,
-            SUM(mbpy_unmarried_women) AS unmarried_women,
-            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
-            SUM(mbpy_widow_due_to_covid) AS widow_covid,
-            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-            SUM(mbpy_transgender) AS transgender,
-            SUM(mbpy_total_beneficiaries) AS total_benf
+    ->selectRaw("
+        address_type,
+        district_id,
+        block_id,
+        municipality_id,
+        SUM(mbpy_oap_below_80_years) AS oap_below_80,
+        SUM(mbpy_oap_above_80_years) AS oap_above_80,
+        SUM(mbpy_wp) AS widow_pension,
+        SUM(mbpy_dp) AS disabled_pension,
+        SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+        SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+        SUM(mbpy_sdoap) AS sdoap,
+        SUM(mbpy_clp) AS clp,
+        SUM(mbpy_wp_aids) AS wp_aids,
+        SUM(mbpy_dp_aids) AS dp_aids,
+        SUM(mbpy_unmarried_women) AS unmarried_women,
+        SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+        SUM(mbpy_widow_due_to_covid) AS widow_covid,
+        SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_total_beneficiaries) AS total_benf
         ")
-        ->where('for_the_month', $month)
-        ->where('status', 1)
-        ->groupBy('address_type', 'district_id', 'block_id', 'municipality_id')
-        ->get();
+    ->where('for_the_month', $month)
+    ->where('status', 1)
+    ->groupBy('address_type', 'district_id', 'block_id', 'municipality_id')
+    ->get();
 
     $funds = $fundsRaw->keyBy(function ($r) {
         $addr = (int) ($r->address_type ?? 0);
@@ -974,32 +973,32 @@ public function daily_pension_disbursement_vs_funds_requirements()
     });
 
     $disbRaw = DB::table('daily_pension_disbursements')
-        ->selectRaw("
-            staff_address_type AS address_type,
-            district_id AS district_id,
-            block_id,
-            municipality_id,
-            SUM(mbpy_oap_below_80_years) AS oap_below_80,
-            SUM(mbpy_oap_above_80_years) AS oap_above_80,
-            SUM(mbpy_wp) AS widow_pension,
-            SUM(mbpy_dp) AS disabled_pension,
-            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
-            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
-            SUM(mbpy_sdoap) AS sdoap,
-            SUM(mbpy_clp) AS clp,
-            SUM(mbpy_wp_aids) AS wp_aids,
-            SUM(mbpy_dp_aids) AS dp_aids,
-            SUM(mbpy_unmarried_women) AS unmarried_women,
-            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
-            SUM(mbpy_widow_due_to_covid) AS widow_covid,
-            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-            SUM(mbpy_transgender) AS transgender,
-            SUM(mbpy_total_beneficiaries) AS total_benf
+    ->selectRaw("
+        staff_address_type AS address_type,
+        district_id AS district_id,
+        block_id,
+        municipality_id,
+        SUM(mbpy_oap_below_80_years) AS oap_below_80,
+        SUM(mbpy_oap_above_80_years) AS oap_above_80,
+        SUM(mbpy_wp) AS widow_pension,
+        SUM(mbpy_dp) AS disabled_pension,
+        SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+        SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+        SUM(mbpy_sdoap) AS sdoap,
+        SUM(mbpy_clp) AS clp,
+        SUM(mbpy_wp_aids) AS wp_aids,
+        SUM(mbpy_dp_aids) AS dp_aids,
+        SUM(mbpy_unmarried_women) AS unmarried_women,
+        SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+        SUM(mbpy_widow_due_to_covid) AS widow_covid,
+        SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_total_beneficiaries) AS total_benf
         ")
-        ->where('for_the_month', $month)
-        ->where('status', 1)
-        ->groupBy('staff_address_type', 'district_id', 'block_id', 'municipality_id')
-        ->get();
+    ->where('for_the_month', $month)
+    ->where('status', 1)
+    ->groupBy('staff_address_type', 'district_id', 'block_id', 'municipality_id')
+    ->get();
 
     $disbursements = $disbRaw->keyBy(function ($r) {
         $addr = (int) ($r->address_type ?? 0);
@@ -1095,14 +1094,14 @@ public function daily_pension_disbursement_vs_funds_requirements()
         ], $vals));
     }
 
-    $finalReport = $report->values()->map(function ($item, $index) {
+    $finalReport = $report->sortBy('district_name')
+    ->values()
+    ->map(function ($item, $index) {
         $item['sl_no'] = $index + 1;
         return $item;
     });
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements', compact('finalReport'));
 }
-
-
 
 }
