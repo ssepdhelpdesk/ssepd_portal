@@ -5,10 +5,10 @@ Pension || Daily Pension Disbursement vs Funds Requirements
 @section('style')
 <style>
    .wrap-text {
-     white-space: normal !important;
-     word-break: break-word;
-     max-width: 200px;
-  }
+    white-space: normal !important;
+    word-break: break-word;
+    max-width: 200px;
+ }
 </style>
 @endsection 
 @section('content')
@@ -45,87 +45,87 @@ Pension || Daily Pension Disbursement vs Funds Requirements
                   <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                      <thead>
                         <tr>
-                          <th class="text-center">Sl.No</th>
-                          <th class="text-center">Block / ULB</th>
-                          <th class="text-center">Address</th>
+                         <th class="text-center">Sl.No</th>
+                         <th class="text-center">Block / ULB</th>
+                         <th class="text-center">Address</th>
 
-                          <th class="text-center">OAP Below 80 Requirement</th>
-                          <th class="text-center">OAP Below 80 Disbursement</th>
-                          <th class="text-center">OAP Below 80 Difference</th>
+                         <th class="text-center">OAP Below 80 Requirement</th>
+                         <th class="text-center">OAP Below 80 Disbursement</th>
+                         <th class="text-center">OAP Below 80 Difference</th>
 
-                          <th class="text-center">OAP Above 80 Requirement</th>
-                          <th class="text-center">OAP Above 80 Disbursement</th>
-                          <th class="text-center">OAP Above 80 Difference</th>
+                         <th class="text-center">OAP Above 80 Requirement</th>
+                         <th class="text-center">OAP Above 80 Disbursement</th>
+                         <th class="text-center">OAP Above 80 Difference</th>
 
-                          <th class="text-center">Widow Pension Requirement</th>
-                          <th class="text-center">Widow Pension Disbursement</th>
-                          <th class="text-center">Widow Pension Difference</th>
+                         <th class="text-center">Widow Pension Requirement</th>
+                         <th class="text-center">Widow Pension Disbursement</th>
+                         <th class="text-center">Widow Pension Difference</th>
 
-                          <th class="text-center">Disabled Pension Requirement</th>
-                          <th class="text-center">Disabled Pension Disbursement</th>
-                          <th class="text-center">Disabled Pension Difference</th>
+                         <th class="text-center">Disabled Pension Requirement</th>
+                         <th class="text-center">Disabled Pension Disbursement</th>
+                         <th class="text-center">Disabled Pension Difference</th>
 
-                          <th class="text-center">SDP Below 80% Requirement</th>
-                          <th class="text-center">SDP Below 80% Disbursement</th>
-                          <th class="text-center">SDP Below 80% Difference</th>
+                         <th class="text-center">SDP Below 80% Requirement</th>
+                         <th class="text-center">SDP Below 80% Disbursement</th>
+                         <th class="text-center">SDP Below 80% Difference</th>
 
-                          <th class="text-center">SDP Above 80% Requirement</th>
-                          <th class="text-center">SDP Above 80% Disbursement</th>
-                          <th class="text-center">SDP Above 80% Difference</th>
+                         <th class="text-center">SDP Above 80% Requirement</th>
+                         <th class="text-center">SDP Above 80% Disbursement</th>
+                         <th class="text-center">SDP Above 80% Difference</th>
 
-                          <th class="text-center">SDOAP Requirement</th>
-                          <th class="text-center">SDOAP Disbursement</th>
-                          <th class="text-center">SDOAP Difference</th>
+                         <th class="text-center">SDOAP Requirement</th>
+                         <th class="text-center">SDOAP Disbursement</th>
+                         <th class="text-center">SDOAP Difference</th>
 
-                          <th class="text-center">CLP Requirement</th>
-                          <th class="text-center">CLP Disbursement</th>
-                          <th class="text-center">CLP Difference</th>
+                         <th class="text-center">CLP Requirement</th>
+                         <th class="text-center">CLP Disbursement</th>
+                         <th class="text-center">CLP Difference</th>
 
-                          <th class="text-center">WP AIDS Requirement</th>
-                          <th class="text-center">WP AIDS Disbursement</th>
-                          <th class="text-center">WP AIDS Difference</th>
+                         <th class="text-center">WP AIDS Requirement</th>
+                         <th class="text-center">WP AIDS Disbursement</th>
+                         <th class="text-center">WP AIDS Difference</th>
 
-                          <th class="text-center">DP AIDS Requirement</th>
-                          <th class="text-center">DP AIDS Disbursement</th>
-                          <th class="text-center">DP AIDS Difference</th>
+                         <th class="text-center">DP AIDS Requirement</th>
+                         <th class="text-center">DP AIDS Disbursement</th>
+                         <th class="text-center">DP AIDS Difference</th>
 
-                          <th class="text-center">Unmarried Women Requirement</th>
-                          <th class="text-center">Unmarried Women Disbursement</th>
-                          <th class="text-center">Unmarried Women Difference</th>
+                         <th class="text-center">Unmarried Women Requirement</th>
+                         <th class="text-center">Unmarried Women Disbursement</th>
+                         <th class="text-center">Unmarried Women Difference</th>
 
-                          <th class="text-center">Orphan COVID Requirement</th>
-                          <th class="text-center">Orphan COVID Disbursement</th>
-                          <th class="text-center">Orphan COVID Difference</th>
+                         <th class="text-center">Orphan COVID Requirement</th>
+                         <th class="text-center">Orphan COVID Disbursement</th>
+                         <th class="text-center">Orphan COVID Difference</th>
 
-                          <th class="text-center">Widow COVID Requirement</th>
-                          <th class="text-center">Widow COVID Disbursement</th>
-                          <th class="text-center">Widow COVID Difference</th>
+                         <th class="text-center">Widow COVID Requirement</th>
+                         <th class="text-center">Widow COVID Disbursement</th>
+                         <th class="text-center">Widow COVID Difference</th>
 
-                          <th class="text-center">Divorce / Destitute Requirement</th>
-                          <th class="text-center">Divorce / Destitute Disbursement</th>
-                          <th class="text-center">Divorce / Destitute Difference</th>
+                         <th class="text-center">Divorce / Destitute Requirement</th>
+                         <th class="text-center">Divorce / Destitute Disbursement</th>
+                         <th class="text-center">Divorce / Destitute Difference</th>
 
-                          <th class="text-center">Transgender Requirement</th>
-                          <th class="text-center">Transgender Disbursement</th>
-                          <th class="text-center">Transgender Difference</th>
+                         <th class="text-center">Transgender Requirement</th>
+                         <th class="text-center">Transgender Disbursement</th>
+                         <th class="text-center">Transgender Difference</th>
 
-                          <!-- Summary -->
-                          <th class="text-center">Normal Pension Requirement</th>
-                          <th class="text-center">Normal Pension Disbursement</th>
-                          <th class="text-center">Normal Pension Difference</th>
+                         <!-- Summary -->
+                         <th class="text-center">Normal Pension Requirement</th>
+                         <th class="text-center">Normal Pension Disbursement</th>
+                         <th class="text-center">Normal Pension Difference</th>
 
-                          <th class="text-center">EP Pension Requirement</th>
-                          <th class="text-center">EP Pension Disbursement</th>
-                          <th class="text-center">EP Pension Difference</th>
+                         <th class="text-center">EP Pension Requirement</th>
+                         <th class="text-center">EP Pension Disbursement</th>
+                         <th class="text-center">EP Pension Difference</th>
 
-                          <th class="text-center">Total Beneficiaries Requirement</th>
-                          <th class="text-center">Total Beneficiaries Disbursement</th>
-                          <th class="text-center">Total Beneficiaries Difference</th>
-                       </tr>
-                    </thead>
+                         <th class="text-center">Total Beneficiaries Requirement</th>
+                         <th class="text-center">Total Beneficiaries Disbursement</th>
+                         <th class="text-center">Total Beneficiaries Difference</th>
+                      </tr>
+                   </thead>
 
-                 <tbody>
-                   @foreach($finalReport as $row)
+                   <tbody>
+                    @foreach($finalReport as $row)
                     @php
                     $normalRequirement = $row['oap_below_80_requirement'] + 
                     $row['widow_pension_requirement'] +
@@ -165,16 +165,16 @@ Pension || Daily Pension Disbursement vs Funds Requirements
 
                     $epDiff = $epRequirement - $epDisbursement;
 
-                    $totalRequirement = $row['total_benf_requirement'];
-                    $totalDisbursement = $row['total_benf_disbursement'];
+                    $totalRequirement = $normalRequirement + $epRequirement;
+                    $totalDisbursement = $normalDisbursement + $epDisbursement;
                     $totalDiff = $totalRequirement - $totalDisbursement;
                     @endphp
                     <tr>
-                       <td class="text-center">{{ $row['sl_no'] }}</td>
-                       <td class="border px-4 py-2 text-center">{{ $row['area_type'] }} - {{ $row['area_id'] }}</td>
-                       <td class="border px-4 py-2 text-center">{{ $row['district_name'] }} : {{ $row['area_name'] }}</td>
+                      <td class="text-center">{{ $row['sl_no'] }}</td>
+                      <td class="border px-4 py-2 text-center">{{ $row['area_type'] }} - {{ $row['area_id'] }}</td>
+                      <td class="border px-4 py-2 text-center">{{ $row['district_name'] }} : {{ $row['area_name'] }}</td>
 
-                       {{-- Categories --}}
+                      {{-- Categories --}}
                       @foreach([
                       'oap_below_80','oap_above_80','widow_pension','disabled_pension',
                       'sdp_below_80','sdp_above_80','sdoap','clp',
@@ -202,13 +202,13 @@ Pension || Daily Pension Disbursement vs Funds Requirements
                      <td class="border px-4 py-2 text-center font-semibold">{{ $totalRequirement }}</td>
                      <td class="border px-4 py-2 text-center font-semibold">{{ $totalDisbursement }}</td>
                      <td class="border px-4 py-2 text-center font-semibold {{ $totalDiff < 0 ? 'text-red-600' : 'text-green-600' }}">{{ $totalDiff }}</td>
-                    </tr>
-                    @endforeach
-              </tbody>
-           </table>
-        </div>
-     </div>
-  </div>
+                  </tr>
+                  @endforeach
+               </tbody>
+            </table>
+         </div>
+      </div>
+   </div>
 </div>
 </div>
 <!-- row -->
@@ -220,18 +220,18 @@ Pension || Daily Pension Disbursement vs Funds Requirements
 @section('script')
 <script>
    $(function () {
-    $('#example23').DataTable({
-     processing: true,
-     responsive: false,
-     ordering: true,
-     scrollX: true,
-     lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-     dom: 'Blfrtip',
-     buttons: [
-      'copy', 'csv', 'excel', 'pdf', 'print'
-   ]
-});
-    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
- });   
+     $('#example23').DataTable({
+       processing: true,
+       responsive: false,
+       ordering: true,
+       scrollX: true,
+       lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+       dom: 'Blfrtip',
+       buttons: [
+         'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+   });
+     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+  });   
 </script>
 @endsection
