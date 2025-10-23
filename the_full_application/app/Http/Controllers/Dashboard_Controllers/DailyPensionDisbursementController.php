@@ -1104,65 +1104,20 @@ public function daily_pension_disbursement_vs_funds_requirements()
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements', compact('finalReport'));
 }
 
-public function daily_pension_disbursement_vs_funds_requirements_op()
+public function daily_pension_disbursement_vs_funds_requirements_role_based(Request $request)
 {
-    $month = 'October-2025';
+    $month = $request->for_the_month ?? now()->format('F-Y');
     $user = Auth::user();
     $userRole = $user->role_id;
 
-    // ===========================
-    // Base Queries
-    // ===========================
     $fundsQuery = DB::table('pension_funds_requirements')
-        ->selectRaw("
-            address_type, district_id, block_id, municipality_id,
-            SUM(mbpy_oap_below_80_years) AS oap_below_80,
-            SUM(mbpy_oap_above_80_years) AS oap_above_80,
-            SUM(mbpy_wp) AS widow_pension,
-            SUM(mbpy_dp) AS disabled_pension,
-            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
-            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
-            SUM(mbpy_sdoap) AS sdoap,
-            SUM(mbpy_clp) AS clp,
-            SUM(mbpy_wp_aids) AS wp_aids,
-            SUM(mbpy_dp_aids) AS dp_aids,
-            SUM(mbpy_unmarried_women) AS unmarried_women,
-            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
-            SUM(mbpy_widow_due_to_covid) AS widow_covid,
-            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-            SUM(mbpy_transgender) AS transgender,
-            SUM(mbpy_total_beneficiaries) AS total_benf
-        ")
         ->where('for_the_month', $month)
         ->where('status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
-        ->selectRaw("
-            staff_address_type AS address_type,
-            district_id, block_id, municipality_id,
-            SUM(mbpy_oap_below_80_years) AS oap_below_80,
-            SUM(mbpy_oap_above_80_years) AS oap_above_80,
-            SUM(mbpy_wp) AS widow_pension,
-            SUM(mbpy_dp) AS disabled_pension,
-            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
-            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
-            SUM(mbpy_sdoap) AS sdoap,
-            SUM(mbpy_clp) AS clp,
-            SUM(mbpy_wp_aids) AS wp_aids,
-            SUM(mbpy_dp_aids) AS dp_aids,
-            SUM(mbpy_unmarried_women) AS unmarried_women,
-            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
-            SUM(mbpy_widow_due_to_covid) AS widow_covid,
-            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-            SUM(mbpy_transgender) AS transgender,
-            SUM(mbpy_total_beneficiaries) AS total_benf
-        ")
         ->where('for_the_month', $month)
         ->where('status', 1);
 
-    // ===========================
-    // Role-based Filtering
-    // ===========================
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
             $fundsQuery->where('block_id', $user->posted_block);
@@ -1174,28 +1129,69 @@ public function daily_pension_disbursement_vs_funds_requirements_op()
             $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
             $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
 
-            $fundsQuery->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
-            $disbQuery->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+            $fundsQuery->where(function($q) use($blockIds, $municipalityIds){
+                $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $disbQuery->where(function($q) use($blockIds, $municipalityIds){
+                $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+            });
         } elseif (in_array($userRole, [9,11])) {
             $fundsQuery->where('district_id', $user->posted_district);
             $disbQuery->where('district_id', $user->posted_district);
         }
     }
 
-    // ===========================
-    // Execute Queries
-    // ===========================
-    $funds = $fundsQuery->groupBy('address_type', 'district_id', 'block_id', 'municipality_id')
-        ->get()->keyBy(fn($r) => "{$r->address_type}_{$r->district_id}_{$r->block_id}_{$r->municipality_id}");
+    $fundsRaw = $fundsQuery->selectRaw("
+        address_type, district_id, block_id, municipality_id,
+        SUM(mbpy_oap_below_80_years) AS oap_below_80,
+        SUM(mbpy_oap_above_80_years) AS oap_above_80,
+        SUM(mbpy_wp) AS widow_pension,
+        SUM(mbpy_dp) AS disabled_pension,
+        SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+        SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+        SUM(mbpy_sdoap) AS sdoap,
+        SUM(mbpy_clp) AS clp,
+        SUM(mbpy_wp_aids) AS wp_aids,
+        SUM(mbpy_dp_aids) AS dp_aids,
+        SUM(mbpy_unmarried_women) AS unmarried_women,
+        SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+        SUM(mbpy_widow_due_to_covid) AS widow_covid,
+        SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_total_beneficiaries) AS total_benf
+    ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
-    $disbursements = $disbQuery->groupBy('staff_address_type', 'district_id', 'block_id', 'municipality_id')
-        ->get()->keyBy(fn($r) => "{$r->address_type}_{$r->district_id}_{$r->block_id}_{$r->municipality_id}");
+    $funds = $fundsRaw->keyBy(fn($r) => 
+        ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
+    );
 
-    // ===========================
-    // Load Accessible Areas
-    // ===========================
-    $blocksQuery = Block::where('is_active', 'active');
-    $municipalitiesQuery = Municipality::where('is_active', 'active');
+    $disbRaw = $disbQuery->selectRaw("
+        staff_address_type AS address_type, district_id, block_id, municipality_id,
+        SUM(mbpy_oap_below_80_years) AS oap_below_80,
+        SUM(mbpy_oap_above_80_years) AS oap_above_80,
+        SUM(mbpy_wp) AS widow_pension,
+        SUM(mbpy_dp) AS disabled_pension,
+        SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+        SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+        SUM(mbpy_sdoap) AS sdoap,
+        SUM(mbpy_clp) AS clp,
+        SUM(mbpy_wp_aids) AS wp_aids,
+        SUM(mbpy_dp_aids) AS dp_aids,
+        SUM(mbpy_unmarried_women) AS unmarried_women,
+        SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+        SUM(mbpy_widow_due_to_covid) AS widow_covid,
+        SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_total_beneficiaries) AS total_benf
+    ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
+
+    $disbursements = $disbRaw->keyBy(fn($r) => 
+        ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
+    );
+
+    $blocksQuery = Block::where('is_active','active');
+    $municipalitiesQuery = Municipality::where('is_active','active');
 
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
@@ -1205,6 +1201,8 @@ public function daily_pension_disbursement_vs_funds_requirements_op()
             $municipalitiesQuery->where('municipality_id', $user->posted_municipality);
             $blocksQuery = collect();
         } elseif (in_array($userRole, [8,10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
             $blocksQuery->whereIn('block_id', $blockIds);
             $municipalitiesQuery->whereIn('municipality_id', $municipalityIds);
         } elseif (in_array($userRole, [9,11])) {
@@ -1216,46 +1214,8 @@ public function daily_pension_disbursement_vs_funds_requirements_op()
     $blocks = $blocksQuery instanceof \Illuminate\Database\Eloquent\Builder ? $blocksQuery->get() : $blocksQuery;
     $municipalities = $municipalitiesQuery instanceof \Illuminate\Database\Eloquent\Builder ? $municipalitiesQuery->get() : $municipalitiesQuery;
 
-    // ===========================
-    // Preload District Names
-    // ===========================
-    $districtIds = $blocks->pluck('district_id')->merge($municipalities->pluck('district_id'))->unique();
-    $districtsMap = District::whereIn('district_id', $districtIds)
-        ->pluck('district_name', 'district_id')->toArray();
-
-    // ===========================
-    // Merge Blocks & ULBs for Single Loop
-    // ===========================
-    $areas = collect();
-
-    foreach ($blocks as $block) {
-        $areas->push([
-            'type' => 'Block',
-            'id' => $block->block_id,
-            'district_id' => $block->district_id,
-            'name' => $block->block_name ?? 'NA',
-            'address_type' => 1,
-            'block_id' => $block->block_id,
-            'municipality_id' => 0,
-        ]);
-    }
-
-    foreach ($municipalities as $mun) {
-        $areas->push([
-            'type' => 'ULB',
-            'id' => $mun->municipality_id,
-            'district_id' => $mun->district_id,
-            'name' => $mun->municipality_name ?? 'NA',
-            'address_type' => 2,
-            'block_id' => 0,
-            'municipality_id' => $mun->municipality_id,
-        ]);
-    }
-
-    // ===========================
-    // Build Report
-    // ===========================
     $report = collect();
+
     $getValues = function ($key) use ($funds, $disbursements) {
         $f = $funds[$key] ?? null;
         $d = $disbursements[$key] ?? null;
@@ -1297,18 +1257,32 @@ public function daily_pension_disbursement_vs_funds_requirements_op()
         ];
     };
 
-    foreach ($areas as $area) {
-        $key = "{$area['address_type']}_{$area['district_id']}_{$area['block_id']}_{$area['municipality_id']}";
+    foreach ($blocks as $block) {
+        $key = "1_{$block->district_id}_{$block->block_id}_0";
         $vals = $getValues($key);
+        $district_name = District::where('district_id', $block->district_id)->value('district_name') ?? 'NA';
         $report->push(array_merge([
-            'area_type' => $area['type'],
-            'area_id' => $area['id'],
-            'district_name' => $districtsMap[$area['district_id']] ?? 'NA',
-            'area_name' => $area['name'],
+            'area_type' => 'Block',
+            'area_id' => $block->block_id,
+            'district_name' => $district_name,
+            'area_name' => $block->block_name ?? 'NA',
         ], $vals));
     }
 
-    $finalReport = $report->sortBy('district_name')->values()
+    foreach ($municipalities as $mun) {
+        $key = "2_{$mun->district_id}_0_{$mun->municipality_id}";
+        $vals = $getValues($key);
+        $district_name = District::where('district_id', $mun->district_id)->value('district_name') ?? 'NA';
+        $report->push(array_merge([
+            'area_type' => 'ULB',
+            'area_id' => $mun->municipality_id,
+            'district_name' => $district_name,
+            'area_name' => $mun->municipality_name ?? 'NA',
+        ], $vals));
+    }
+
+    $finalReport = $report->sortBy('district_name')
+        ->values()
         ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements', compact('finalReport'));
