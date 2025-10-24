@@ -42,6 +42,19 @@ Pension || Funds Requirements vs Daily Pension Disbursement Funds
                <h4 class="card-title"></h4>
                @include('dashboard.component.message')
                <div class="table-responsive m-t-40">
+                  <div class="card-header bg-light mb-3">
+                     <h5 class="mb-2">📅 Filter by Month</h5>
+                     <form method="GET" action="{{ route('admin.dailypensiondisbursement.daily_pension_disbursement_fund_vs_funds_requirements') }}" class="d-flex align-items-center">
+                        <label class="me-2 fw-bold">Select Month:</label>
+                        <select name="for_the_month" class="form-select w-auto me-2" onchange="this.form.submit()">
+                           @foreach($dateConfig as $config)
+                           <option value="{{ $config->for_the_month }}" {{ $month == $config->for_the_month ? 'selected' : '' }}>
+                              {{ $config->for_the_month }}
+                           </option>
+                           @endforeach
+                        </select>
+                     </form>
+                  </div>
                   <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                      <thead>
                         <tr>

@@ -1106,7 +1106,14 @@ public function daily_pension_disbursement_vs_funds_requirements()
 
 public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(Request $request)
 {
-    $month = $request->for_the_month ?? now()->format('F-Y');
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $month = $request->for_the_month 
+        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
     $user = Auth::user();
     $userRole = $user->role_id;
 
@@ -1285,12 +1292,19 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
         ->values()
         ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
 
-    return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries', compact('finalReport'));
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries', compact('finalReport', 'dateConfig', 'month'));
 }
 
 public function daily_pension_disbursement_fund_vs_funds_requirements(Request $request)
 {
-    $month = $request->for_the_month ?? now()->format('F-Y');
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $month = $request->for_the_month 
+        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
     $user = Auth::user();
     $userRole = $user->role_id;
 
@@ -1469,12 +1483,19 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
         ->values()
         ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
 
-    return view('dashboard.pension.dailypension.daily_pension_disbursement_fund_vs_funds_requirements', compact('finalReport'));
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_fund_vs_funds_requirements', compact('finalReport', 'dateConfig', 'month'));
 }
 
 public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds(Request $request)
 {
-    $month = $request->for_the_month ?? now()->format('F-Y');
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $month = $request->for_the_month 
+        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+        
     $user = Auth::user();
     $userRole = $user->role_id;
 
@@ -1656,7 +1677,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
             return $row;
         });
 
-    return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', compact('finalReport'));
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', compact('finalReport', 'dateConfig', 'month'));
 }
 
 
