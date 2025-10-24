@@ -46,6 +46,8 @@ return new class extends Migration
             $table->bigInteger('funds_mbpy_transgender')->default(0);
             $table->bigInteger('mbpy_total_beneficiaries')->default(0);
             $table->bigInteger('funds_mbpy_total_beneficiaries')->default(0);
+            $table->bigInteger('no_of_normal_pensioners')->nullable();
+            $table->bigInteger('no_of_ep_pensioners')->nullable();
             $table->string('mbpy_bank_account_number')->nullable();
             $table->string('mbpy_bank_ifsc_code')->nullable();
             $table->tinyInteger('address_type')->nullable();
