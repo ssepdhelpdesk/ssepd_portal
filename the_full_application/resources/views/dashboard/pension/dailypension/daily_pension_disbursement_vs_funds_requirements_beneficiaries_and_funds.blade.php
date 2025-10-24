@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Daily Pension Disbursement vs Funds Requirements
+Pension || Funds Requirements vs Daily Disbursement
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')

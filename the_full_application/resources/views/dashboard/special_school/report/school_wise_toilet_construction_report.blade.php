@@ -95,8 +95,8 @@ Special School || No of Staffs in Schools
                             <tr>
                                 <td>{{ $school->sl_no }}</td>
                                 <td>{{ $school->district->district_name ?? 'N/A' }}</td>
-                                <td>{{ substr($school->management_name, 0, 55) }}</td>
-                                <td>{{ substr($school->special_school_name, 0, 35) }}</td>
+                                <td class="wrap-text">{{ substr($school->management_name, 0, 200) }}</td>
+                                <td class="wrap-text">{{ substr($school->special_school_name, 0, 200) }}</td>
                                 <td>{{ $school->new_or_existing_text }}</td>
                                 <td>
                                     @if($school->latest_construction_id)
