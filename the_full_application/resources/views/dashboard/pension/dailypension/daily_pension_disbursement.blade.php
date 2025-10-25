@@ -107,9 +107,8 @@ Pension || GP/Ward wise Pension Daily Disbursement
 
                <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.dailypensiondisbursement.store')}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
                   @csrf
-                  @method('post')                     
-
-                  <div class="form-body">
+                  @method('post')
+                  <div class="form-body">                     
                      <h5 class="card-title">GP/Ward wise Pension Daily Disbursement</h5>
                      <hr>
                      <div class="table-responsive-scroll">
@@ -251,7 +250,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
 
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+<!-- <script>
    function Validate() {
       let isValid = true;
       let rows = document.querySelectorAll("#example23 tbody tr");
@@ -315,7 +314,82 @@ Pension || GP/Ward wise Pension Daily Disbursement
 
       return isValid;
    }
+</script> -->
+<script>
+function Validate() {
+    let isValid = true;
+    let rows = document.querySelectorAll("#example23 tbody tr");
+    let atLeastOneRowCompleted = false;
+    let fullyFilledRows = [];
+
+    rows.forEach((row) => {
+        let inputs = row.querySelectorAll("input[type='number'], input[type='date']");
+        let hasAnyValue = false;
+        let rowErrors = [];
+
+        inputs.forEach(input => {
+            if (input.value.trim() !== "") {
+                hasAnyValue = true;
+            }
+        });
+
+        if (hasAnyValue) {
+            let rowComplete = true;
+            inputs.forEach(input => {
+                if (input.value.trim() === "") {
+                    isValid = false;
+                    rowComplete = false;
+                    rowErrors.push(input);
+                    input.classList.add("is-invalid");
+                } else {
+                    input.classList.remove("is-invalid");
+                }
+            });
+
+            if (rowComplete) {
+                atLeastOneRowCompleted = true;
+                fullyFilledRows.push(row);
+            }
+        } else {
+            inputs.forEach(input => input.classList.remove("is-invalid"));
+        }
+
+        if (rowErrors.length > 0) {
+            if (!row.querySelector(".row-error-msg")) {
+                let errorMsg = document.createElement("div");
+                errorMsg.className = "row-error-msg text-danger small mt-1";
+                errorMsg.innerText = "⚠ Please complete all fields in this row.";
+                row.appendChild(errorMsg);
+            }
+        } else {
+            let errorMsg = row.querySelector(".row-error-msg");
+            if (errorMsg) errorMsg.remove();
+        }
+    });
+
+    if (!atLeastOneRowCompleted) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Incomplete Submission',
+            text: 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+        isValid = false;
+    }
+
+    if (isValid && fullyFilledRows.length > 0) {
+        rows.forEach(row => {
+            if (!fullyFilledRows.includes(row)) {
+                row.remove();
+            }
+        });
+    }
+
+    return isValid;
+}
 </script>
+
 <script>
    document.addEventListener('DOMContentLoaded', function () {
       const normalFields = [
