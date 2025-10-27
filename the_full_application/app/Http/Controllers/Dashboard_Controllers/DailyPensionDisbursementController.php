@@ -739,8 +739,11 @@ public function combined_report(Request $request)
 
     $missing = collect();
 
+    $submittedGpIds   = $submittedGpIds->map(fn($id) => (string)$id);
+    $submittedWardIds = $submittedWardIds->map(fn($id) => (string)$id);
+
     foreach($gps as $gp){
-        if(!$submittedGpIds->contains($gp->gp_id)){
+        if(!$submittedGpIds->contains((string)$gp->gp_id)){
             $missing->push([
                 'staff_address_type' => 1,
                 'district_name' => $gp->block->district->district_name ?? '',
@@ -754,7 +757,7 @@ public function combined_report(Request $request)
     }
 
     foreach($wards as $ward){
-        if(!$submittedWardIds->contains($ward->ward_code)){
+        if(!$submittedWardIds->contains((string)$ward->ward_code)){
             $missing->push([
                 'staff_address_type' => 2,
                 'district_name' => $ward->municipality->district->district_name ?? '',
@@ -780,6 +783,7 @@ public function combined_report(Request $request)
         'forTheMonth', 'numericColumns', 'dateConfig'
     ));
 }
+
 
 public function pension_disbursement_daily_not_submission()
 {

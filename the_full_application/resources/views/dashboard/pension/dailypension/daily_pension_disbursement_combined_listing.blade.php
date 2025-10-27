@@ -124,7 +124,8 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
             {data: 'block_ulb_name', name: 'block_ulb_name'},
             {data: 'gp_ward_name', name: 'gp_ward_name'},
             {data: 'disbursement_dates', name: 'disbursement_dates'},
-            { data: 'status', name: 'status',
+            { data: 'status', name: 'status' },
+            /*{ data: 'status', name: 'status',
               render: function(data, type, row) {
                if(data === 'Submitted') {
                 return '<span class="badge bg-success">Submitted</span>';
@@ -132,7 +133,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
                 return '<span class="badge bg-danger">Not Submitted</span>';
              }
           }
-       },
+       },*/
        @foreach($numericColumns as $col)
        {data: 'totals.{{ "total_".$col }}', name: '{{ "total_".$col }}'},
        @endforeach
