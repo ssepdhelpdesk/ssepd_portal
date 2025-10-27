@@ -721,13 +721,13 @@ public function combined_report(Request $request)
             $gpQuery->where('block_id', $user->posted_block);
             $wardQuery = collect();
         } elseif ($userRole == 5) {
-            $wardQuery->where('municipality_id', $user->posted_municipality);
+            $wardQuery->where('municipal_area_code', $user->posted_municipality);
             $gpQuery = collect();
         } elseif (in_array($userRole, [8,10])) {
             $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
             $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
             $gpQuery->whereIn('block_id', $blockIds);
-            $wardQuery->whereIn('municipality_id', $municipalityIds);
+            $wardQuery->whereIn('municipal_area_code', $municipalityIds);
         } elseif (in_array($userRole, [9,11])) {
             $gpQuery->where('district_id', $user->posted_district);
             $wardQuery->where('district_code', $user->posted_district);
