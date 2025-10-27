@@ -835,6 +835,7 @@ class PensionFundsRequirementsController extends Controller
 
                     if ($gp) {
                         $pension_authority = new PensionDisbursementAuthority();
+                        $pension_authority->for_the_month        = $forTheMonth;
                         $pension_authority->authority_name        = $validatedData['authority_name'];
                         $pension_authority->authority_mobile_no   = $validatedData['authority_mobile_no'];
                         $pension_authority->authority_email_id    = $validatedData['authority_mobile_no']."@gmail.com";
@@ -916,7 +917,7 @@ class PensionFundsRequirementsController extends Controller
         $user = auth()->user();
         $userRole = $user->role_id;
 
-        $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::with([
+        $pensionDisbursementAuthorityQuery = PensionDisbursementAuthority::where('for_the_month', $forTheMonth)->with([
             'state', 'district', 'block', 'grampanchayat', 'municipality', 'ward'
         ]);
 
