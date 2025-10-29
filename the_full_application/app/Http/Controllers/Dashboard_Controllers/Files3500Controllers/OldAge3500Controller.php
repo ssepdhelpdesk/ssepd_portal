@@ -26,14 +26,26 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 
 /*Controller Requirements*/
-use App\Models\OldAge3500Pensioner;
-use App\Models\District3500;
-use App\Models\Blocks3500;
-use App\Models\Municipality3500;
-use App\Models\Grampanchyat3500;
-use App\Models\Village3500;
-use App\Models\WardMaster3500;
-use App\Models\User3500;
+use App\Models\{
+    OldAge3500Pensioner,
+    District3500,
+    Blocks3500,
+    Municipality3500,
+    Grampanchyat3500,
+    Village3500,
+    WardMaster3500,
+    User3500
+};
+
+use App\Models\PensionVerificationAppModels\{
+    PensionVerificationAppBeneficiary,
+    PensionVerificationAppDistrict,
+    PensionVerificationAppBlock,
+    PensionVerificationAppGramaPanchayat,
+    PensionVerificationAppVillage,
+    PensionVerificationAppWard
+};
+
 use Yajra\DataTables\Facades\DataTables;
 
 class OldAge3500Controller extends Controller
@@ -91,7 +103,7 @@ public function index(Request $request)
                 data-id="'.$row->id.'"> Discontinue </a>';
             } {
                 $editUrl = route('admin.oldage3500data.edit', $row->id);
-                $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Update Address</a> ';                
+                $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
             }
 
             $buttons .= '</div></div>';

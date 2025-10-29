@@ -33,6 +33,9 @@
                   @can('user-create')
                   <li><a href="{{route('admin.users.create')}}">Create Users</a></li>
                   @endcan
+                  @can('user-list')
+                  <li><a href="{{route('admin.ssepdnotification.create')}}">Create Notification</a></li>
+                  @endcan
                </ul>
             </li>
             @endcan

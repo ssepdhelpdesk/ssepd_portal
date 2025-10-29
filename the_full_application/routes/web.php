@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Dashboard_Controllers\{
+    DashboardController,
     HomeController,
     RoleController,
     PermissionController,
@@ -16,7 +17,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     PensionFundsRequirementsController,
     DdrcController,
     PensionMonthlyDisbursementController,
-    DailyPensionDisbursementController
+    DailyPensionDisbursementController,
+    SsepdNotificationController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -93,7 +95,9 @@ Route::get('/refresh_captcha', [HomeController::class, 'refreshCaptcha'])->name(
 
 Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 'verified'], 'prefix' => 'dashboard', 'as' => 'admin.'], function () {
 
-    Route::view('/', 'dashboard.layouts.index')->name('dashboard');
+    //Route::view('/', 'dashboard.layouts.index')->name('dashboard');
+
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('roles')->name('roles.')->controller(RoleController::class)->group(function () {
         Route::get('index', 'index')->name('index');
@@ -295,6 +299,14 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries');
         Route::get('daily_pension_disbursement_fund_vs_funds_requirements', 'daily_pension_disbursement_fund_vs_funds_requirements')->name('daily_pension_disbursement_fund_vs_funds_requirements');
         Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds');
+    });
+
+    Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {
