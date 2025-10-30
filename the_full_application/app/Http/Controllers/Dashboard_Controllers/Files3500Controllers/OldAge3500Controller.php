@@ -139,7 +139,7 @@ public function update_status(Request $request)
         $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
         $record->save();
 
-        $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where->('ssepd_id', $request->id)->first();
+        $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $request->id)->first();
         if ($record_pensoin_verification_app) {
             $record_pensoin_verification_app->status = 0;
             $record_pensoin_verification_app->save();
