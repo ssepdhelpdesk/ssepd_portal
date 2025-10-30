@@ -56,7 +56,7 @@ class OldAge3500Controller extends Controller
 
 public function index(Request $request)
 {
-    ini_set('memory_limit', '512M');
+    ini_set('memory_limit', '512M');    
     $user = auth()->user();
     $userRole = $user->role_id;
 
@@ -138,6 +138,12 @@ public function update_status(Request $request)
         $record->discontinued_system_gen_date = now()->setTimezone('Asia/Kolkata')->toDateString();
         $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
         $record->save();
+
+        $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where->('ssepd_id', $request->id)->first();
+        if ($record_pensoin_verification_app) {
+            $record_pensoin_verification_app->status = 0;
+            $record_pensoin_verification_app->save();
+        }
 
 
         DB::commit();
@@ -517,14 +523,14 @@ public function update(Request $request, string $id)
         }
 
         if ($validatedData['scheme_name'] == 'MBPOAP') {
-                $updated_scheme_name = 'MBPOAP';
-            } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
-                $updated_scheme_name = 'IGNOAP';
-            } elseif (empty($validatedData['scheme_name'])) {
-                return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
-            } else {
-                return redirect()->back()->withErrors(['scheme_name' => 'Invalid Scheme Name selected']);
-            }
+            $updated_scheme_name = 'MBPOAP';
+        } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
+            $updated_scheme_name = 'IGNOAP';
+        } elseif (empty($validatedData['scheme_name'])) {
+            return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
+        } else {
+            return redirect()->back()->withErrors(['scheme_name' => 'Invalid Scheme Name selected']);
+        }
 
         OldAge3500Pensioner::where('id', $id)->update([
             'scheme_name' => $validatedData['scheme_name'],
