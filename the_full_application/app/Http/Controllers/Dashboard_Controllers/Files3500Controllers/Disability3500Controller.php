@@ -136,22 +136,21 @@ class Disability3500Controller extends Controller
             $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $record->save();
 
-            $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
+            /*$record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
             if ($record_pensoin_verification_app) {
                 $record_pensoin_verification_app->status = '0';
                 $record_pensoin_verification_app->save();
-            }
-
+            }*/
 
             DB::commit();
             return response()->json([
                 'success' => true,
-                'message' => 'EP Old Age Beneficiary Discontinued Successfully.'
+                'message' => 'EP Disability Beneficiary Discontinued Successfully.'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error("🏫 EP OldAge Pension Discontinued Modal Submission Failed.", [
+            \Log::error("🏫 EP Disability Pension Discontinued Modal Submission Failed.", [
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine(),
@@ -367,8 +366,6 @@ class Disability3500Controller extends Controller
         DB::beginTransaction();
         try {
             $user = auth()->user();
-            /*SET NULL*/
-
             if ($request->ngo_address_type === "1") {
                 $district = District3500::where('district_id', $request->district)->value('district_name');
                 $district_id = $validatedData['district'];
@@ -429,6 +426,71 @@ class Disability3500Controller extends Controller
             $disability_pensioner->created_by_date = now()->setTimezone('Asia/Kolkata')->toDateString();
             $disability_pensioner->create_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $disability_pensioner->save();
+
+            /*if ($request->ngo_address_type === "1") {
+                $user_level_of_verification_app = 'block';
+                $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+                $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+                $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('id');
+                $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('name');            
+                $gp_id_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('id');
+                $gp_name_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('name');
+                $village_id_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('id');
+                $village_name_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('name'); 
+            } elseif ($request->ngo_address_type === "2") {
+                $user_level_of_verification_app = 'municipality';
+                $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+                $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+                $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('id');
+                $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('name'); 
+                $ward_id_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('id');
+                $ward_name_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('name');
+            }
+
+            $disability_pensioner_verification_app = new PensionVerificationAppBeneficiary;
+            $disability_pensioner_verification_app->sanction_number = $validatedData['nsap_sanction_order_no'];
+            $disability_pensioner_verification_app->name = $validatedData['name_of_the_beneficiary'];
+            $disability_pensioner_verification_app->gender = $validatedData['gender'];
+            $disability_pensioner_verification_app->dob = $validatedData['date_of_birth'];
+            $disability_pensioner_verification_app->father_name = $validatedData['father_or_husband_name'];
+            $disability_pensioner_verification_app->state_id = 21;
+            $disability_pensioner_verification_app->district_id = $district_id_of_verification_app;
+            $disability_pensioner_verification_app->district_name = $district_name_of_verification_app;
+            $disability_pensioner_verification_app->block_id = $block_id_of_verification_app;
+            $disability_pensioner_verification_app->block_name = $block_name_of_verification_app;
+            if ($request->ngo_address_type === "1") {
+                $disability_pensioner_verification_app->gp_id = $gp_id_of_verification_app;
+                $disability_pensioner_verification_app->gp_name = $gp_name_of_verification_app;
+                $disability_pensioner_verification_app->village_id = $village_id_of_verification_app;
+                $disability_pensioner_verification_app->village_name = $village_name_of_verification_app;
+            } elseif ($request->ngo_address_type === "2") {
+                $disability_pensioner_verification_app->ward_id = $ward_id_of_verification_app;
+                $disability_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
+            }        
+
+            if ($validatedData['scheme_name'] === 'MBPDP') {
+                $disability_pensioner_verification_app->scheme = 'MBPDP';
+                $disability_pensioner_verification_app->scheme_type = 'MBPY';
+                $disability_pensioner_verification_app->updated_scheme_name = 'MBPSDP';
+            } else {
+                $disability_pensioner_verification_app->scheme = 'IGNDP';
+                $disability_pensioner_verification_app->scheme_type = 'NSAP';
+                $disability_pensioner_verification_app->updated_scheme_name = 'IGNDP';
+            }
+            $disability_pensioner_verification_app->age = $validatedData['age'];
+            $disability_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+            $disability_pensioner_verification_app->month = $validatedData['pension_month'];
+            $disability_pensioner_verification_app->user_level = $user_level_of_verification_app;        
+            $disability_pensioner_verification_app->disability_percentage = $validatedData['disability_percentage'];
+            $disability_pensioner_verification_app->disability_category = $validatedData['disability_category'];
+            $disability_pensioner_verification_app->import_type = 'Created By USER_ID_' . ($user->user_id ?? 'Unknown');
+            $disability_pensioner_verification_app->udid_no = $validatedData['udid_no'];
+            $disability_pensioner_verification_app->excel_data_type = 'DPEP';
+            $disability_pensioner_verification_app->ssepd_id = (string) $disability_pensioner->id;
+            $disability_pensioner_verification_app->status = '1';
+            $disability_pensioner_verification_app->is_new = '1';
+            $disability_pensioner_verification_app->save();*/
+
             DB::commit();
             return redirect()->back()->with('success', 'EP Disability Beneficiary data has been successfully added.');
         } catch (\Exception $e) {
@@ -568,6 +630,71 @@ class Disability3500Controller extends Controller
                 'village' => $village,
                 'village_id' => $village_id,
             ]);
+
+            /*$disability_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $id)->first();
+            if ($disability_pensioner_verification_app) {
+                if ($request->ngo_address_type === "1") {
+                    $user_level_of_verification_app = 'block';
+                    $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+                    $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+                    $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('id');
+                    $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('name');            
+                    $gp_id_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('id');
+                    $gp_name_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('name');
+                    $village_id_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('id');
+                    $village_name_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('name'); 
+                } elseif ($request->ngo_address_type === "2") {
+                    $user_level_of_verification_app = 'municipality';
+                    $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+                    $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+                    $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('id');
+                    $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('name'); 
+                    $ward_id_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('id');
+                    $ward_name_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('name');
+                }
+
+                $disability_pensioner_verification_app->sanction_number = $validatedData['nsap_sanction_order_no'];
+                $disability_pensioner_verification_app->name = $validatedData['name_of_the_beneficiary'];
+                $disability_pensioner_verification_app->gender = $validatedData['gender'];
+                $disability_pensioner_verification_app->dob = $validatedData['date_of_birth'];
+                $disability_pensioner_verification_app->father_name = $validatedData['father_or_husband_name'];
+                $disability_pensioner_verification_app->state_id = 21;
+                $disability_pensioner_verification_app->district_id = $district_id_of_verification_app;
+                $disability_pensioner_verification_app->district_name = $district_name_of_verification_app;
+                $disability_pensioner_verification_app->block_id = $block_id_of_verification_app;
+                $disability_pensioner_verification_app->block_name = $block_name_of_verification_app;
+                if ($request->ngo_address_type === "1") {
+                    $disability_pensioner_verification_app->gp_id = $gp_id_of_verification_app;
+                    $disability_pensioner_verification_app->gp_name = $gp_name_of_verification_app;
+                    $disability_pensioner_verification_app->village_id = $village_id_of_verification_app;
+                    $disability_pensioner_verification_app->village_name = $village_name_of_verification_app;
+                } elseif ($request->ngo_address_type === "2") {
+                    $disability_pensioner_verification_app->ward_id = $ward_id_of_verification_app;
+                    $disability_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
+                }        
+
+                if ($validatedData['scheme_name'] === 'MBPDP') {
+                    $disability_pensioner_verification_app->scheme = 'MBPDP';
+                    $disability_pensioner_verification_app->scheme_type = 'MBPY';
+                    $disability_pensioner_verification_app->updated_scheme_name = 'MBPSDP';
+                } else {
+                    $disability_pensioner_verification_app->scheme = 'IGNDP';
+                    $disability_pensioner_verification_app->scheme_type = 'NSAP';
+                    $disability_pensioner_verification_app->updated_scheme_name = 'IGNDP';
+                }
+                $disability_pensioner_verification_app->age = $validatedData['age'];
+                $disability_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+                $disability_pensioner_verification_app->month = $validatedData['pension_month'];
+                $disability_pensioner_verification_app->user_level = $user_level_of_verification_app;        
+                $disability_pensioner_verification_app->disability_percentage = $validatedData['disability_percentage'];
+                $disability_pensioner_verification_app->disability_category = $validatedData['disability_category'];
+                $disability_pensioner_verification_app->udid_no = $validatedData['udid_no'];
+                $disability_pensioner_verification_app->excel_data_type = 'DPEP';
+                $disability_pensioner_verification_app->ssepd_id = (string) $id;
+                $disability_pensioner_verification_app->status = '1';
+                $disability_pensioner_verification_app->is_new = '1';
+                $disability_pensioner_verification_app->save();
+            }*/
 
             DB::commit();
             return redirect()->route('admin.disability3500data.index')->with('info', 'Address Updated successfully.');

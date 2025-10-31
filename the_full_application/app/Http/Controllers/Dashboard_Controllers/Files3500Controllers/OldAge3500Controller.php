@@ -362,8 +362,6 @@ public function store(Request $request)
     DB::beginTransaction();
     try {
         $user = auth()->user();
-        /*SET NULL*/
-
         if ($request->ngo_address_type === "1") {
             $district = District3500::where('district_id', $request->district)->value('district_name');
             $district_id = $validatedData['district'];
