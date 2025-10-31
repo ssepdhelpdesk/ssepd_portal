@@ -58,8 +58,10 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $totalPensions = PensionFundsRequirement::count();
+        $ssepdNotification = SsepdNotification::where('status', 1)->get();
+        $ssepdNotificationFirst = SsepdNotification::where('status', 1)->first();
 
-        return view('dashboard.layouts.index', compact('user', 'totalPensions'));
+        return view('dashboard.layouts.index', compact('user', 'totalPensions', 'ssepdNotification', 'ssepdNotificationFirst'));
     }
 
     /**

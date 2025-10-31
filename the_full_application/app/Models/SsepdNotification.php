@@ -11,6 +11,7 @@ class SsepdNotification extends Model implements Auditable
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
     protected $guarded = [''];
+    public $timestamps = false;
 
     public function applicationStage()
     {
