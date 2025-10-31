@@ -78,9 +78,9 @@ SSEPD PORTAL
 
   <small class="text-muted d-block mt-2">
      <i class="fa fa-calendar me-1"></i>
-     From: {{ \Carbon\Carbon::parse($notification->start_date . ' ' . $notification->start_time)->format('d M Y, g:i A') }}
+     <b>From:</b> {{ \Carbon\Carbon::parse($notification->start_date . ' ' . $notification->start_time)->format('d M Y, g:i A') }}
      &nbsp;→&nbsp;
-     To: {{ \Carbon\Carbon::parse($notification->end_date . ' ' . $notification->end_time)->format('d M Y, g:i A') }}
+     <b>To:</b> {{ \Carbon\Carbon::parse($notification->end_date . ' ' . $notification->end_time)->format('d M Y, g:i A') }}
   </small>
 </div>
 @endforeach
