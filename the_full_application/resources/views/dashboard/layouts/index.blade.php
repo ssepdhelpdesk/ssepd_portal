@@ -73,7 +73,7 @@ SSEPD PORTAL
                 #{{ $loop->iteration }} • {{ $priorityConfig['label'] }}
             </h5>
 
-            <h6 class="fw-semibold">{{ $notification->title }}</h6>
+            <h6 class="fw-semibold"><strong>{{ $notification->title }}</strong></h6>
             <p class="mb-1">{{ $notification->message }}</p>
 
             <small class="text-muted d-block mt-2">
