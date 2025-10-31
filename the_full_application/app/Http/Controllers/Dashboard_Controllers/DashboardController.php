@@ -58,10 +58,26 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $totalPensions = PensionFundsRequirement::count();
-        $ssepdNotification = SsepdNotification::where('status', 1)->get();
-        $ssepdNotificationFirst = SsepdNotification::where('status', 1)->first();
 
-        return view('dashboard.layouts.index', compact('user', 'totalPensions', 'ssepdNotification', 'ssepdNotificationFirst'));
+        $now = Carbon::now();
+
+        $ssepdNotification = SsepdNotification::where('status', 1)
+        ->where(function ($query) use ($now) {
+            $query->whereRaw("CONCAT(start_date, ' ', start_time) <= ?", [$now])
+            ->whereRaw("CONCAT(end_date, ' ', end_time) >= ?", [$now]);
+        })
+        ->orderBy('priority', 'desc')
+        ->orderBy('start_date', 'desc')
+        ->get();
+
+        $ssepdNotificationFirst = $ssepdNotification->first();
+
+        return view('dashboard.layouts.index', compact(
+            'user',
+            'totalPensions',
+            'ssepdNotification',
+            'ssepdNotificationFirst'
+        ));
     }
 
     /**
