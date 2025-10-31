@@ -135,7 +135,7 @@ Special School || Construction Progress Details
                                        <div class="sl-left"> <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" alt="user" class="img-circle" /> </div>
                                        <div class="sl-right">
                                           <div>
-                                             <a href="javascript:void(0)" class="link">Upload the identified location for toilet construction.</a><small style="color: red;">Please use Google Chrome to fill out this form. Other browsers may not be supported.</small> <span class="sl-date"></span>
+                                             <a href="javascript:void(0)" class="link">Upload the identified location for toilet construction.</a><small style="color: red;"> Please use Google Chrome to fill out this form. Other browsers may not be supported.</small> <span class="sl-date"></span>
                                              <div class="m-t-20 row">
                                                 <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.specialschoolconstructions.construction_timeline_store')}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
                                                    @csrf

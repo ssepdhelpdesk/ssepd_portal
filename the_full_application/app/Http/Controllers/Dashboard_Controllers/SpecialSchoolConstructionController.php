@@ -195,7 +195,7 @@ public function construction_timeline_store(Request $request)
     ];
 
     $validatedData = $request->validate($validationRules, $customMessages);
-    return redirect()->route('admin.specialschool.create')->with('info', 'The uploaded image is not in proper format.');
+    abort(415, 'The uploaded image is not in proper format.');
     DB::beginTransaction();
     try {
 
