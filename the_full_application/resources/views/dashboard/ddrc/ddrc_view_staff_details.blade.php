@@ -87,6 +87,8 @@ Staff Details || Special School
 										8  => 'Multipurpose Rehabilitation Worker',
 										9  => 'Accountant-cum-Clerk-cum-Storekeeper',
 										10 => 'Attendant-cum-Peon-cum-Messenger',
+										11 => 'Special Educator VI',
+										12 => 'Special Educator HI',
 										];
 										@endphp
 

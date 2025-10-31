@@ -36,6 +36,15 @@ use App\Models\WardMaster3500;
 use App\Models\User3500;
 use Yajra\DataTables\Facades\DataTables;
 
+use App\Models\PensionVerificationAppModels\{
+    PensionVerificationAppBeneficiary,
+    PensionVerificationAppDistrict,
+    PensionVerificationAppBlock,
+    PensionVerificationAppGramaPanchayat,
+    PensionVerificationAppVillage,
+    PensionVerificationAppWard
+};
+
 class Disability3500Controller extends Controller
 {
     /**
@@ -126,6 +135,12 @@ class Disability3500Controller extends Controller
             $record->discontinued_system_gen_date = now()->setTimezone('Asia/Kolkata')->toDateString();
             $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $record->save();
+
+            $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
+            if ($record_pensoin_verification_app) {
+                $record_pensoin_verification_app->status = '0';
+                $record_pensoin_verification_app->save();
+            }
 
 
             DB::commit();

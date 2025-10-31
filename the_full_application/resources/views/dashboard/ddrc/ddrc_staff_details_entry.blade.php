@@ -95,6 +95,8 @@ DDRC || Staff Details
                                     <option value="8">Multipurpose Rehabilitation Worker</option>
                                     <option value="9">Accountant-cum-Clerk-cum-Storekeeper</option>
                                     <option value="10">Attendant-cum-Peon-cum-Messenger</option>
+                                    <option value="11">Special Educator VI</option>
+                                    <option value="12">Special Educator HI</option>
                                  </select>
                                  <div id="staff_designation_error"></div>
                                  @error('staff_designation')
