@@ -125,13 +125,29 @@ return [
             'engine' => null,
         ],
 
-        'pension_verification_app' => [
+        /*'pension_verification_app' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => 'dev_db_ssepd',
             'username' => env('DB_USERNAME', 'mysqladmin'),
             'password' => env('DB_PASSWORD', 'T(a<8Gy7Wk9K'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],*/
+
+        'pension_verification_app' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '164.164.122.101'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => 'dev_db_ssepd',
+            'username' => env('DB_USERNAME', 'devuser'),
+            'password' => env('DB_PASSWORD', 'g57Uo4o8eLy@'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

@@ -136,11 +136,11 @@ class Disability3500Controller extends Controller
             $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $record->save();
 
-            /*$record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
+            $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
             if ($record_pensoin_verification_app) {
                 $record_pensoin_verification_app->status = '0';
                 $record_pensoin_verification_app->save();
-            }*/
+            }
 
             DB::commit();
             return response()->json([
@@ -427,7 +427,7 @@ class Disability3500Controller extends Controller
             $disability_pensioner->create_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $disability_pensioner->save();
 
-            /*if ($request->ngo_address_type === "1") {
+            if ($request->ngo_address_type === "1") {
                 $user_level_of_verification_app = 'block';
                 $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
                 $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
@@ -489,7 +489,7 @@ class Disability3500Controller extends Controller
             $disability_pensioner_verification_app->ssepd_id = (string) $disability_pensioner->id;
             $disability_pensioner_verification_app->status = '1';
             $disability_pensioner_verification_app->is_new = '1';
-            $disability_pensioner_verification_app->save();*/
+            $disability_pensioner_verification_app->save();
 
             DB::commit();
             return redirect()->back()->with('success', 'EP Disability Beneficiary data has been successfully added.');
@@ -631,7 +631,7 @@ class Disability3500Controller extends Controller
                 'village_id' => $village_id,
             ]);
 
-            /*$disability_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $id)->first();
+            $disability_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $id)->first();
             if ($disability_pensioner_verification_app) {
                 if ($request->ngo_address_type === "1") {
                     $user_level_of_verification_app = 'block';
@@ -694,7 +694,7 @@ class Disability3500Controller extends Controller
                 $disability_pensioner_verification_app->status = '1';
                 $disability_pensioner_verification_app->is_new = '1';
                 $disability_pensioner_verification_app->save();
-            }*/
+            }
 
             DB::commit();
             return redirect()->route('admin.disability3500data.index')->with('info', 'Address Updated successfully.');
