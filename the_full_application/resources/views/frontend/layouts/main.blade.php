@@ -30,7 +30,7 @@
    </head>
    <body>
       <!-- Pre Loader -->
-      <div id="preloader">
+      <!-- <div id="preloader">
          <div id="preloader-area">
             <div class="spinner"></div>
             <div class="spinner"></div>
@@ -43,7 +43,7 @@
          </div>
          <div class="preloader-section preloader-left"></div>
          <div class="preloader-section preloader-right"></div>
-      </div>
+      </div> -->
       <!-- End Pre Loader -->
       <!-- Top Header -->
       @include('frontend.layouts.header')

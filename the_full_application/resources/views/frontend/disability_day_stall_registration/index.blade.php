@@ -5,171 +5,202 @@ SSEPD || Stall Registration
 @section('style')
 @endsection 
 @section('content')
-<!-- Hero Slider Area -->
-<div class="hero-slider-area">
-   <div class="hero-slider owl-carousel owl-theme">
-      <div class="hero-item">
-         <div class="container-fluid">
-            <div class="row align-items-center">
-               <div class="col-lg-6">
-                  <div class="hero-content">
-                     <span class="top-title">CHOOSE YOUR BEST COURSE</span>
-                     <h1>A course is essential for building career</h1>
-                     <p>
-                        Flexible easy to access learning opportunities can bring a significant change in how
-                        to learn! The Ellen can offer you to enjoy the beauty of eLearning!
-                     </p>
-                     <div class="banner-btn">
-                        <a href="courses.html" class="default-btn border-radius-50">Find courses</a>
-                        <a href="https://www.youtube.com/watch?v=Zd00oIDAt60" class="play-btn">
-                           <i class='flaticon-play-button-arrowhead'></i>
-                           <span class="title-text">Watch video</span>
-                        </a>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6">
-                  <div class="hero-img">
-                     <img src="{{ asset('frontend_assets/assets/images/home-three/hero-img1.jpg') }}" class="hero" alt="Hero" />
-                     <div class="hero-bg-shape">
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape1.png') }}" class="bg-img-shape1" alt="Hero" />
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape2.png') }}" class="bg-img-shape2" alt="Hero" />
-                     </div>
-                     <div class="top-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-student"></i>
-                           <div class="content">
-                              <h3>250K</h3>
-                              <p>Assisted student</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="right-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-checked"></i>
-                           <div class="content">
-                              <h3>Congratulations</h3>
-                              <p>Your admission completed</p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="hero-item">
-         <div class="container-fluid">
-            <div class="row align-items-center">
-               <div class="col-lg-6">
-                  <div class="hero-content">
-                     <span class="top-title">CHOOSE YOUR BEST COURSE</span>
-                     <h1>Start learning from best platform</h1>
-                     <p>
-                        Flexible easy to access learning opportunities can bring a significant change in how
-                        to learn! The Ellen can offer you to enjoy the beauty of eLearning!
-                     </p>
-                     <div class="banner-btn">
-                        <a href="courses.html" class="default-btn border-radius-50">Find courses</a>
-                        <a href="https://www.youtube.com/watch?v=Zd00oIDAt60" class="play-btn">
-                           <i class='flaticon-play-button-arrowhead'></i>
-                           <span class="title-text">Watch video</span>
-                        </a>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6">
-                  <div class="hero-img">
-                     <img src="{{ asset('frontend_assets/assets/images/home-three/hero-img3.jpg') }}" class="hero" alt="Hero" />
-                     <div class="hero-bg-shape">
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape1.png') }}" class="bg-img-shape1" alt="Hero" />
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape2.png') }}" class="bg-img-shape2" alt="Hero" />
-                     </div>
-                     <div class="top-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-student"></i>
-                           <div class="content">
-                              <h3>250K</h3>
-                              <p>Assisted student</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="right-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-checked"></i>
-                           <div class="content">
-                              <h3>Congratulations</h3>
-                              <p>Your admission completed</p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="hero-item">
-         <div class="container-fluid">
-            <div class="row align-items-center">
-               <div class="col-lg-6">
-                  <div class="hero-content">
-                     <span class="top-title">CHOOSE YOUR BEST COURSE</span>
-                     <h1>Improve your skills by study with us</h1>
-                     <p>
-                        Flexible easy to access learning opportunities can bring a significant change in how
-                        to learn! The Ellen can offer you to enjoy the beauty of eLearning!
-                     </p>
-                     <div class="banner-btn">
-                        <a href="courses.html" class="default-btn border-radius-50">Find courses</a>
-                        <a href="https://www.youtube.com/watch?v=Zd00oIDAt60" class="play-btn">
-                           <i class='flaticon-play-button-arrowhead'></i>
-                           <span class="title-text">Watch video</span>
-                        </a>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-6">
-                  <div class="hero-img">
-                     <img src="{{ asset('frontend_assets/assets/images/home-three/hero-img2.jpg') }}" class="hero" alt="Hero" />
-                     <div class="hero-bg-shape">
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape1.png') }}" class="bg-img-shape1" alt="Hero" />
-                        <img src="{{ asset('frontend_assets/assets/images/home-three/bg-shape2.png') }}" class="bg-img-shape2" alt="Hero" />
-                     </div>
-                     <div class="top-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-student"></i>
-                           <div class="content">
-                              <h3>250K</h3>
-                              <p>Assisted student</p>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="right-content">
-                        <div class="hero-img-content">
-                           <i class="flaticon-checked"></i>
-                           <div class="content">
-                              <h3>Congratulations</h3>
-                              <p>Your admission completed</p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <div class="hero-shape">
-      <div class="shape1">
-         <img src="{{ asset('frontend_assets/assets/images/home-three/shape.png') }}" alt="Shape" />
-      </div>
-      <div class="shape2">
-         <img src="{{ asset('frontend_assets/assets/images/home-three/shape2.png') }}" alt="Shape" />
-      </div>
-   </div>
+<!-- Inner Banner -->
+<div class="inner-banner inner-banner-bg">
+	<div class="container">
+		<div class="inner-title text-center">
+			<h3>Stall Registration</h3>
+			<ul>
+				<li>
+					<a href="{{route('frontend.disabilitydaystallregistration.index')}}">Home</a>
+				</li>
+				<li>Stall Registration</li>
+			</ul>
+		</div>
+	</div>
 </div>
-<!-- Hero Slider Area End -->
+<!-- Inner Banner End -->
+<!-- Contact Widget Area -->
+<div class="contact-widget-area pb-70">
+	<div class="container">
+		<div class="section-title text-center mb-45">
+			<!-- <span>SEND MESSAGE</span>
+			<h2>Please fillout this registration from.</h2> -->
+			@if(session('success'))
+			<div class="alert alert-success">{{ session('success') }}</div>
+			@endif
+			@if(session('error'))
+			<div class="alert alert-danger">{{ session('error') }}</div>
+			@endif
+		</div>
+		
+		<div class="contact-form">
+			<form class="from-prevent-multiple-submits" method="POST" 
+			action="{{ route('frontend.disabilitydaystallregistration.store') }}" 
+			onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
+			@csrf
+			@method('post')
+			<div class="row">
+				{{-- Organization Name --}}
+				<div class="col-lg-12">
+					<div class="form-group">
+						<input type="text" name="name_of_the_organization" id="name_of_the_organization"
+						value="{{ old('name_of_the_organization') }}"
+						class="form-control @error('name_of_the_organization') is-invalid @enderror"
+						required placeholder="Organization Name">
+						@error('name_of_the_organization')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
 
+				{{-- Contact Person Name --}}
+				<div class="col-lg-6">
+					<div class="form-group">
+						<input type="text" name="contact_person_name" id="contact_person_name"
+						value="{{ old('contact_person_name') }}"
+						class="form-control @error('contact_person_name') is-invalid @enderror"
+						required placeholder="Contact Person Name">
+						@error('contact_person_name')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
+
+				{{-- Email --}}
+				<div class="col-lg-6">
+					<div class="form-group">
+						<input type="email" name="email" id="email" 
+						value="{{ old('email') }}"
+						class="form-control @error('email') is-invalid @enderror"
+						required placeholder="Email">
+						@error('email')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
+
+				{{-- Mobile Number --}}
+				<div class="col-lg-6">
+					<div class="form-group">
+						<input type="text" name="phone_number" id="phone_number" maxlength="10" pattern="\d{10}" inputmode="numeric"
+						oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+						value="{{ old('phone_number') }}"
+						class="form-control @error('phone_number') is-invalid @enderror"
+						required placeholder="Mobile Number">
+						@error('phone_number')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
+
+				{{-- Purpose --}}
+				<div class="col-lg-6">
+					<div class="form-group">
+						<input type="text" name="purpose_of_requirement_of_stall" id="purpose_of_requirement_of_stall"
+						value="{{ old('purpose_of_requirement_of_stall') }}"
+						class="form-control @error('purpose_of_requirement_of_stall') is-invalid @enderror"
+						required placeholder="Your Purpose of Requirement of Stall">
+						@error('purpose_of_requirement_of_stall')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
+
+				{{-- Address --}}
+				<div class="col-lg-12">
+					<div class="form-group">
+						<textarea name="organization_address" id="organization_address" cols="20" rows="5"
+						class="form-control @error('organization_address') is-invalid @enderror"
+						required placeholder="Your organization address">{{ old('organization_address') }}</textarea>
+						@error('organization_address')
+						<small class="text-danger">{{ $message }}</small>
+						@enderror
+					</div>
+				</div>
+
+				{{-- Submit Button --}}
+				<div class="col-lg-12 col-md-12">
+					<button type="submit" class="default-btn">
+						Submit
+					</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+</div>
+</div>
+<!-- Contact Widget Area End -->
 @endsection 
 @section('script')
+<script>
+	document.addEventListener("DOMContentLoaded", () => {
+		const form = document.querySelector("form");
+		const submitBtn = form.querySelector("button[type='submit']");
+		let isSubmitting = false;
+
+		form.addEventListener("submit", function (e) {
+			e.preventDefault();
+			clearErrors();
+
+			if (!validateForm()) return;
+
+			if (isSubmitting) return;
+			isSubmitting = true;
+			submitBtn.disabled = true;
+			submitBtn.innerHTML = "Submitting...";
+
+			form.submit();
+		});
+
+		function validateForm() {
+			let valid = true;
+
+			const orgName = getValue("name_of_the_organization");
+			const contactPerson = getValue("contact_person_name");
+			const email = getValue("email");
+			const phone = getValue("phone_number");
+			const purpose = getValue("purpose_of_requirement_of_stall");
+			const address = getValue("organization_address");
+
+			if (!orgName) valid = showError("name_of_the_organization", "Organization name is required.");
+			if (!contactPerson) valid = showError("contact_person_name", "Contact person name is required.");
+			if (!email || !isValidEmail(email)) valid = showError("email", "Please enter a valid email address.");
+			if (!phone || !isValidPhone(phone)) valid = showError("phone_number", "Please enter a valid 10-digit mobile number.");
+			if (!purpose) valid = showError("purpose_of_requirement_of_stall", "Purpose of stall requirement is required.");
+			if (!address) valid = showError("organization_address", "Organization address is required.");
+
+			return valid;
+		}
+
+		function getValue(id) {
+			return document.getElementById(id).value.trim();
+		}
+
+		function showError(id, message) {
+			const input = document.getElementById(id);
+			const error = document.createElement("div");
+			error.className = "text-danger small mt-1";
+			error.innerText = message;
+			input.closest(".form-group").appendChild(error);
+			input.classList.add("is-invalid");
+			input.scrollIntoView({ behavior: "smooth", block: "center" });
+			return false;
+		}
+
+		function clearErrors() {
+			document.querySelectorAll(".text-danger").forEach(el => el.remove());
+			document.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
+		}
+
+		function isValidEmail(email) {
+			return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+		}
+
+		function isValidPhone(phone) {
+			return /^[6-9]\d{9}$/.test(phone);
+		}
+	});
+</script>
 @endsection

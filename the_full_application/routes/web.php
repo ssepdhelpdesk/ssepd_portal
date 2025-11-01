@@ -90,6 +90,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
 
     Route::prefix('disabilitydaystallregistration')->name('disabilitydaystallregistration.')->controller(DisabilityDayStallController::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
     });
 
 });
