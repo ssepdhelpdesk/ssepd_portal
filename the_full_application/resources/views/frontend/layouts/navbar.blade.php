@@ -22,7 +22,7 @@
          <div class="collapse navbar-collapse mean-menu" id="navbarSupportedContent">
             <ul class="navbar-nav">
                <li class="nav-item">
-                  <a href="{{'/ssepd_ngo_working_portal'}}" class="nav-link">
+                  <a href="https://ssepdit.in" class="nav-link">
                      Home
                   </a>
                </li>
