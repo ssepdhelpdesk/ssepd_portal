@@ -138,7 +138,7 @@ class Disability3500Controller extends Controller
 
             $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->where('ssepd_id', $request->id)->first();
             if ($record_pensoin_verification_app) {
-                $record_pensoin_verification_app->status = '0';
+                $record_pensoin_verification_app->is_active = '0';
                 $record_pensoin_verification_app->save();
             }
 

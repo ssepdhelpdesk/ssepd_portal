@@ -141,7 +141,7 @@ public function update_status(Request $request)
 
         $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $request->id)->first();
         if ($record_pensoin_verification_app) {
-            $record_pensoin_verification_app->status = '0';
+            $record_pensoin_verification_app->is_active = '0';
             $record_pensoin_verification_app->save();
         }
 
