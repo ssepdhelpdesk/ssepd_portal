@@ -150,7 +150,7 @@ EP Pension || Index - Disability
             ],
             dom: 'Blfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-            lengthMenu: [[10, 50, 100, 500], [10, 50, 100, 500]],
+            lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
         });
 
         $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
