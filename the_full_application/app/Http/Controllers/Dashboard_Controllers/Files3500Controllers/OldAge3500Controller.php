@@ -139,11 +139,11 @@ public function update_status(Request $request)
         $record->discontinued_system_gen_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
         $record->save();
 
-        /*$record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $request->id)->first();
+        $record_pensoin_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $request->id)->first();
         if ($record_pensoin_verification_app) {
             $record_pensoin_verification_app->status = '0';
             $record_pensoin_verification_app->save();
-        }*/
+        }
 
 
         DB::commit();
@@ -420,7 +420,7 @@ public function store(Request $request)
         $old_age_pensioner->create_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
         $old_age_pensioner->save();
 
-        /*if ($request->ngo_address_type === "1") {
+        if ($request->ngo_address_type === "1") {
             $user_level_of_verification_app = 'block';
             $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
             $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
@@ -481,7 +481,7 @@ public function store(Request $request)
         $old_age_pensioner_verification_app->ssepd_id = (string) $old_age_pensioner->id;
         $old_age_pensioner_verification_app->status = '1';
         $old_age_pensioner_verification_app->is_new = '1';
-        $old_age_pensioner_verification_app->save();*/
+        $old_age_pensioner_verification_app->save();
 
         DB::commit();
         return redirect()->back()->with('success', 'EP Old Age Beneficiary data has been successfully added.');
@@ -617,7 +617,7 @@ public function update(Request $request, string $id)
             'village_id' => $village_id,
         ]);
 
-        /*$old_age_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $id)->first();
+        $old_age_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $id)->first();
         if ($old_age_pensioner_verification_app) {
             if ($request->ngo_address_type === "1") {
                 $user_level_of_verification_app = 'block';
@@ -678,7 +678,7 @@ public function update(Request $request, string $id)
             $old_age_pensioner_verification_app->status = '1';
             $old_age_pensioner_verification_app->is_new = '1';
             $old_age_pensioner_verification_app->save();
-        }*/
+        }
 
         DB::commit();
         return redirect()->route('admin.oldage3500data.index')->with('info', 'Address Updated successfully.');
