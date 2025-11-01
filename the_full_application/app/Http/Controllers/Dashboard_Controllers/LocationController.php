@@ -37,14 +37,14 @@ class LocationController extends Controller
 {
     function __construct()
     {
-       $this->middleware('permission:location-list|location-create|location-edit|location-delete', ['only' => ['index','show', 'blockIndex', 'municipalityIndex']]);
-       $this->middleware('permission:location-create', ['only' => ['create','store']]);
-       $this->middleware('permission:location-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:location-delete', ['only' => ['destroy']]);
-   }
+     $this->middleware('permission:location-list|location-create|location-edit|location-delete', ['only' => ['index','show', 'blockIndex', 'municipalityIndex']]);
+     $this->middleware('permission:location-create', ['only' => ['create','store']]);
+     $this->middleware('permission:location-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:location-delete', ['only' => ['destroy']]);
+ }
 
-   public function blockIndex(): View
-   {
+ public function blockIndex(): View
+ {
     $data['states'] = State::orderBy("state_id", "asc")->get(["state_name", "state_id"]);
     return view('dashboard.locations.villages.index', $data);        
 }
@@ -61,11 +61,11 @@ public function fetchDistrict(Request $request): JsonResponse
     $userRole = $user->role_id;
 
     $query = District::query()
-        ->where("state_id", $request->state_id)
-        ->orderBy("district_name", "asc");
+    ->where("state_id", $request->state_id)
+    ->orderBy("district_name", "asc");
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
-    
+        
     } elseif (in_array($userRole, [4, 6])) {
         $district_id = Block::where('block_id', $user->posted_block)->value('district_id');
         $query->where('district_id', $district_id);
@@ -103,11 +103,11 @@ public function fetchMunicipality(Request $request): JsonResponse
 
     } elseif ($userRole == 5) {
         $query->where("district_id", $request->district_id)
-              ->where('municipality_id', $user->posted_municipality);
+        ->where('municipality_id', $user->posted_municipality);
 
     } elseif (in_array($userRole, [8, 10])) {
         $query->where("district_id", $request->district_id)
-              ->where('subdivision_id', $user->posted_subdiv);
+        ->where('subdivision_id', $user->posted_subdiv);
 
     } elseif (in_array($userRole, [9, 11])) {
         $query->where('district_id', $user->posted_district);
@@ -137,7 +137,7 @@ public function fetchBlock(Request $request): JsonResponse
 
     } elseif (in_array($userRole, [8, 10])) {
         $query->where("district_id", $request->district_id)
-              ->where('subdivision_id', $user->posted_subdiv);
+        ->where('subdivision_id', $user->posted_subdiv);
 
     } elseif (in_array($userRole, [9, 11])) {
         $query->where('district_id', $user->posted_district);

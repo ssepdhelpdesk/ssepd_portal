@@ -29,7 +29,8 @@ use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
 
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
-    LocationFrontendController
+    LocationFrontendController,
+    DisabilityDayStallController
 };
 
 use App\Http\Controllers\Api\{
@@ -85,6 +86,11 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
             'buttons' => $buttons,
         ]);
     })->name('get_address_type_content_data');
+
+
+    Route::prefix('disabilitydaystallregistration')->name('disabilitydaystallregistration.')->controller(DisabilityDayStallController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+    });
 
 });
 
