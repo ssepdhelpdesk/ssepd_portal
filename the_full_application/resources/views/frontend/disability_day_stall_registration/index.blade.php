@@ -6,7 +6,7 @@ SSEPD || Stall Registration
 @endsection 
 @section('content')
 <!-- Inner Banner -->
-<div class="inner-banner inner-banner-bg">
+<div class="inner-banner inner-banner-bg13">
 	<div class="container">
 		<div class="inner-title text-center">
 			<h3>Stall Registration</h3>
