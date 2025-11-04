@@ -1,5 +1,5 @@
 @section('title') 
-Pension || Block/ULB Wise Monthly Fund Comparison
+Pension || Block/ULB Wise Monthly Fund Comparison From {{ $from_the_month }} to {{ $to_the_month }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')

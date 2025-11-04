@@ -1,5 +1,5 @@
 @section('title') 
-Pension || District Wise Monthly Fund Comparison
+Pension || District Wise Monthly Fund Comparison From {{ $from_the_month }} to {{ $to_the_month }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
