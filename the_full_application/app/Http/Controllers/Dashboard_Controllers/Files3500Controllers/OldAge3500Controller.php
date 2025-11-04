@@ -469,7 +469,7 @@ public function store(Request $request)
             $old_age_pensioner_verification_app->scheme_type = 'NSAP';
         }
         $old_age_pensioner_verification_app->age = $validatedData['age'];
-        $old_age_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+        $old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
         $old_age_pensioner_verification_app->month = $validatedData['pension_month'];
         $old_age_pensioner_verification_app->user_level = $user_level_of_verification_app;        
         $old_age_pensioner_verification_app->disability_percentage = null;
@@ -666,7 +666,7 @@ public function update(Request $request, string $id)
                 $old_age_pensioner_verification_app->scheme_type = 'NSAP';
             }
             $old_age_pensioner_verification_app->age = $validatedData['age'];
-            $old_age_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+            $old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
             $old_age_pensioner_verification_app->month = $validatedData['pension_month'];
             $old_age_pensioner_verification_app->user_level = $user_level_of_verification_app;        
             $old_age_pensioner_verification_app->disability_percentage = null;

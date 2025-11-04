@@ -1837,5 +1837,75 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', compact('finalReport', 'dateConfig', 'month'));
 }
 
+public function month_wise_fund_requirement_comparison_for_district(Request $request)
+{
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+    $from_the_month = $request->from_the_month 
+        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
+    $to_the_month = $request->to_the_month 
+        ?? ($dateConfig->skip(1)->first()->for_the_month 
+            ?? $dateConfig->first()->for_the_month 
+            ?? now()->format('F-Y'));
+
+    $user = Auth::user();
+    $userRole = $user->role_id;
+
+    $fundsQuery = DB::table('pension_funds_requirements');
+
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [4, 6])) {
+            $fundsQuery->where('block_id', $user->posted_block);
+        } elseif ($userRole == 5) {
+            $fundsQuery->where('municipality_id', $user->posted_municipality);
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('id');
+            $fundsQuery->where(function($q) use ($blockIds, $municipalityIds) {
+                $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+            });
+        } elseif (in_array($userRole, [9, 11])) {
+            $fundsQuery->where('district_id', $user->posted_district);
+        }
+    }
+
+    $comparisonData = [];
+
+    $districts = District::orderBy('district_name')->get();
+
+    foreach ($districts as $district) {
+        $fundFrom = (clone $fundsQuery)
+            ->where('for_the_month', $from_the_month)
+            ->where('district_id', $district->district_id)
+            ->first();
+
+        $fundTo = (clone $fundsQuery)
+            ->where('for_the_month', $to_the_month)
+            ->where('district_id', $district->district_id)
+            ->first();
+
+        if ($fundFrom || $fundTo) {
+            $comparisonData[] = (object)[
+                'district_name' => $district->district_name,
+                'block_or_municipality_name' => '-',
+                'beneficiaries_from_month' => $fundFrom->mbpy_total_beneficiaries ?? 0,
+                'beneficiaries_to_month' => $fundTo->mbpy_total_beneficiaries ?? 0,
+                'funds_from_month' => $fundFrom->funds_mbpy_total_beneficiaries ?? 0,
+                'funds_to_month' => $fundTo->funds_mbpy_total_beneficiaries ?? 0,
+                'difference_of_funds' => (($fundTo->funds_mbpy_total_beneficiaries ?? 0) - ($fundFrom->funds_mbpy_total_beneficiaries ?? 0)),
+                'remarks' => '',
+            ];
+        }
+    }
+
+    return view('dashboard.pension.dailypension.month_wise_fund_requirement_comparison_for_district', compact(
+        'dateConfig', 'from_the_month', 'to_the_month', 'comparisonData'
+    ));
+}
+
 
 }

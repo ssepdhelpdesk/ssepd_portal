@@ -294,7 +294,8 @@ public function store_school_basic_details(Request $request)
         $specialSchool->created_by = Auth::id() ?? null;
         $specialSchool->application_stage_id = 1;
         $specialSchool->no_of_form_completed = 1;
-        $specialSchool->user_table_id = $specialSchoolMapping->user_table_id;;
+        $specialSchool->user_table_id = $specialSchoolMapping->user_table_id;
+        $specialSchool->which_govt = $specialSchoolMapping->which_govt;
         $specialSchool->status = 1;
         $specialSchool->save();
 
@@ -478,7 +479,8 @@ public function store_school_staff_details(Request $request)
         $specialSchoolStaff->created_by = Auth::id() ?? null;
         $specialSchoolStaff->application_stage_id = 2;
         $specialSchoolStaff->no_of_form_completed = 2;
-        $specialSchoolStaff->user_table_id = $specialSchool->user_table_id;;
+        $specialSchoolStaff->user_table_id = $specialSchool->user_table_id;
+        $specialSchoolStaff->which_govt = $specialSchool->which_govt;
         $specialSchoolStaff->status = 1;
         $specialSchoolStaff->save();
 

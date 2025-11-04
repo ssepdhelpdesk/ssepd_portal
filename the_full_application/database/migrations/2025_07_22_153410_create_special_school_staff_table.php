@@ -59,6 +59,7 @@ return new class extends Migration
             $table->foreignId('user_table_id');
             $table->bigInteger('no_of_form_completed');
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('which_govt')->default(1)->comment('1 = State, 2 = National');
             $table->timestamps();
         });
     }

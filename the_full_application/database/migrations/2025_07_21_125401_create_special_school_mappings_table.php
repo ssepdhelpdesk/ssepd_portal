@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('district_name', 100);
             $table->integer('user_table_id')->unique('uq_user_table');
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('which_govt')->default(1)->comment('1 = State, 2 = National');
             $table->timestamps();
         });
     }

@@ -478,7 +478,7 @@ class Disability3500Controller extends Controller
                 $disability_pensioner_verification_app->updated_scheme_name = 'IGNDP';
             }
             $disability_pensioner_verification_app->age = $validatedData['age'];
-            $disability_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+            $disability_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
             $disability_pensioner_verification_app->month = $validatedData['pension_month'];
             $disability_pensioner_verification_app->user_level = $user_level_of_verification_app;        
             $disability_pensioner_verification_app->disability_percentage = $validatedData['disability_percentage'];
@@ -683,7 +683,7 @@ class Disability3500Controller extends Controller
                     $disability_pensioner_verification_app->updated_scheme_name = 'IGNDP';
                 }
                 $disability_pensioner_verification_app->age = $validatedData['age'];
-                $disability_pensioner_verification_app->aadhar_no = $validatedData['aadhaar_no'];
+                $disability_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
                 $disability_pensioner_verification_app->month = $validatedData['pension_month'];
                 $disability_pensioner_verification_app->user_level = $user_level_of_verification_app;        
                 $disability_pensioner_verification_app->disability_percentage = $validatedData['disability_percentage'];
