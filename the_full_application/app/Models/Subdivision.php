@@ -11,4 +11,9 @@ class Subdivision extends Model implements Auditable
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
     protected $guarded = [''];
+
+    public function district()
+    {
+        return $this->belongsTo(District::class, 'district_id', 'district_id');
+    }
 }

@@ -30,6 +30,7 @@ use Illuminate\Support\Collection;
 use App\Models\PensionFundsRequirement;
 use App\Models\District;
 use App\Models\Block;
+use App\Models\Subdivision;
 use App\Models\Municipality;
 use App\Models\Grampanchayat;
 use App\Models\WardMaster;
@@ -633,12 +634,12 @@ public function combined_report(Request $request)
     $userRole = $user->role_id;
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $forTheMonth = $request->for_the_month
-        ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
+    ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
 
     $numericColumns = [
         'mbpy_oap_below_80_years','mbpy_oap_above_80_years','mbpy_wp','mbpy_dp',
@@ -649,14 +650,14 @@ public function combined_report(Request $request)
     ];
 
     $bssosQuery = DailyPensionDisbursement::where('status', 1)
-        ->where('for_the_month', $forTheMonth)
-        ->where('staff_address_type', 1)
-        ->with(['grampanchayat.block', 'grampanchayat.district']);
+    ->where('for_the_month', $forTheMonth)
+    ->where('staff_address_type', 1)
+    ->with(['grampanchayat.block', 'grampanchayat.district']);
 
     $meosQuery = DailyPensionDisbursement::where('status', 1)
-        ->where('for_the_month', $forTheMonth)
-        ->where('staff_address_type', 2)
-        ->with(['ward.municipality', 'ward.district']);
+    ->where('for_the_month', $forTheMonth)
+    ->where('staff_address_type', 2)
+    ->with(['ward.municipality', 'ward.district']);
 
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
@@ -688,19 +689,19 @@ public function combined_report(Request $request)
         $row = [
             'staff_address_type' => $first->staff_address_type,
             'district_name' => $first->staff_address_type == 1 
-                ? ($first->grampanchayat->district->district_name ?? '') 
-                : ($first->ward->district->district_name ?? ''),
+            ? ($first->grampanchayat->district->district_name ?? '') 
+            : ($first->ward->district->district_name ?? ''),
             'block_ulb_name' => $first->staff_address_type == 1 
-                ? ($first->grampanchayat->block->block_name ?? '') 
-                : ($first->ward->municipality->municipality_name ?? ''),
+            ? ($first->grampanchayat->block->block_name ?? '') 
+            : ($first->ward->municipality->municipality_name ?? ''),
             'gp_ward_name' => $first->staff_address_type == 1 
-                ? ($first->grampanchayat->gp_name ?? '') 
-                : ($first->ward->ward_name ?? ''),
+            ? ($first->grampanchayat->gp_name ?? '') 
+            : ($first->ward->ward_name ?? ''),
             'forTheMonth' => $first->for_the_month ?? null,
             'disbursement_dates' => $group->pluck('disbursement_start_date')->filter()
-                ->sort()
-                ->map(fn($d)=>\Carbon\Carbon::parse($d)->format('D, d-M-Y'))
-                ->unique()->implode(' | '),
+            ->sort()
+            ->map(fn($d)=>\Carbon\Carbon::parse($d)->format('D, d-M-Y'))
+            ->unique()->implode(' | '),
             'status' => '<span class="badge bg-success">Submitted</span>'
         ];
 
@@ -774,9 +775,9 @@ public function combined_report(Request $request)
 
     if ($request->ajax()) {
         return DataTables::of($combined)
-            ->addIndexColumn()
-            ->rawColumns(['disbursement_dates', 'status'])
-            ->make(true);
+        ->addIndexColumn()
+        ->rawColumns(['disbursement_dates', 'status'])
+        ->make(true);
     }
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_combined_listing', compact(
@@ -1264,23 +1265,23 @@ public function daily_pension_disbursement_vs_funds_requirements()
 public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(Request $request)
 {
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $month = $request->for_the_month 
-        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+    ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
 
     $user = Auth::user();
     $userRole = $user->role_id;
 
     $fundsQuery = DB::table('pension_funds_requirements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
@@ -1324,7 +1325,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
         SUM(mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
     $funds = $fundsRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1348,7 +1349,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
         SUM(mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
 
     $disbursements = $disbRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1446,8 +1447,8 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
     }
 
     $finalReport = $report->sortBy('district_name')
-        ->values()
-        ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
+    ->values()
+    ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries', compact('finalReport', 'dateConfig', 'month'));
 }
@@ -1455,23 +1456,23 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
 public function daily_pension_disbursement_fund_vs_funds_requirements(Request $request)
 {
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $month = $request->for_the_month 
-        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+    ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
 
     $user = Auth::user();
     $userRole = $user->role_id;
 
     $fundsQuery = DB::table('pension_funds_requirements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
@@ -1515,7 +1516,7 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
         SUM(funds_mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(funds_mbpy_transgender) AS transgender,
         SUM(funds_mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
     $funds = $fundsRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1539,7 +1540,7 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
         SUM(funds_mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(funds_mbpy_transgender) AS transgender,
         SUM(funds_mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
 
     $disbursements = $disbRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1637,8 +1638,8 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
     }
 
     $finalReport = $report->sortBy('district_name')
-        ->values()
-        ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
+    ->values()
+    ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]));
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_fund_vs_funds_requirements', compact('finalReport', 'dateConfig', 'month'));
 }
@@ -1646,13 +1647,13 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
 public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds(Request $request)
 {
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $month = $request->for_the_month 
-        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
-        
+    ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
     $user = Auth::user();
     $userRole = $user->role_id;
 
@@ -1675,12 +1676,12 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
     ];
 
     $fundsQuery = DB::table('pension_funds_requirements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
-        ->where('for_the_month', $month)
-        ->where('status', 1);
+    ->where('for_the_month', $month)
+    ->where('status', 1);
 
     if (!in_array($userRole, [1,2,12,13,14,15])) {
         if (in_array($userRole, [4,6])) {
@@ -1724,7 +1725,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
         SUM(mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
     $funds = $fundsRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1748,7 +1749,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
         SUM(mbpy_total_beneficiaries) AS total_benf
-    ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
+        ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
 
     $disbursements = $disbRaw->keyBy(fn($r) => 
         ((int)$r->address_type) . '_' . ((int)$r->district_id) . '_' . ((int)($r->block_id ?? 0)) . '_' . ((int)($r->municipality_id ?? 0))
@@ -1821,18 +1822,18 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
     }
 
     $finalReport = $report->sortBy('district_name')
-        ->values()
-        ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]))
-        ->map(function ($row) use ($fundRates) {
-            foreach ($fundRates as $scheme => $rate) {
-                $reqKey = "{$scheme}_requirement";
-                $disbKey = "{$scheme}_disbursement";
-                $row["funds_{$reqKey}"] = ($row[$reqKey] ?? 0) * $rate;
-                $row["funds_{$disbKey}"] = ($row[$disbKey] ?? 0) * $rate;
-                $row["funds_{$scheme}_diff"] = $row["funds_{$reqKey}"] - $row["funds_{$disbKey}"];
-            }
-            return $row;
-        });
+    ->values()
+    ->map(fn($item, $index) => array_merge($item, ['sl_no' => $index + 1]))
+    ->map(function ($row) use ($fundRates) {
+        foreach ($fundRates as $scheme => $rate) {
+            $reqKey = "{$scheme}_requirement";
+            $disbKey = "{$scheme}_disbursement";
+            $row["funds_{$reqKey}"] = ($row[$reqKey] ?? 0) * $rate;
+            $row["funds_{$disbKey}"] = ($row[$disbKey] ?? 0) * $rate;
+            $row["funds_{$scheme}_diff"] = $row["funds_{$reqKey}"] - $row["funds_{$disbKey}"];
+        }
+        return $row;
+    });
 
     return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', compact('finalReport', 'dateConfig', 'month'));
 }
@@ -1840,34 +1841,33 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
 public function month_wise_fund_requirement_comparison_for_district(Request $request)
 {
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
-    $from_the_month = $request->from_the_month 
-        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+    $from_the_month = $request->to_the_month 
+    ?? ($dateConfig->skip(1)->first()->for_the_month 
+        ?? $dateConfig->first()->for_the_month 
+        ?? now()->format('F-Y'));
 
-    $to_the_month = $request->to_the_month 
-        ?? ($dateConfig->skip(1)->first()->for_the_month 
-            ?? $dateConfig->first()->for_the_month 
-            ?? now()->format('F-Y'));
+    $to_the_month = $request->from_the_month 
+    ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
 
     $user = Auth::user();
     $userRole = $user->role_id;
 
-    $fundsQuery = DB::table('pension_funds_requirements');
+    $fundsQuery = DB::table('pension_funds_requirements')->where('status', 1);
 
     if (!in_array($userRole, [1, 2, 12, 13, 14, 15])) {
         if (in_array($userRole, [4, 6])) {
-            $fundsQuery->where('block_id', $user->posted_block);
+            $blockIds = Block::where('block_id', $user->posted_block)->pluck('district_id');
+            $fundsQuery->where('district_id', $blockIds);
         } elseif ($userRole == 5) {
-            $fundsQuery->where('municipality_id', $user->posted_municipality);
+            $municipalityIds = Municipality::where('municipality_id', $user->posted_municipality)->pluck('district_id');
+            $fundsQuery->where('district_id', $municipalityIds);
         } elseif (in_array($userRole, [8, 10])) {
-            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('id');
-            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('id');
-            $fundsQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
-            });
+            $subdivisionIds = Subdivision::where('subdivision_id', $user->posted_subdiv)->pluck('district_id');
+            $fundsQuery->where('district_id', $subdivisionIds);
         } elseif (in_array($userRole, [9, 11])) {
             $fundsQuery->where('district_id', $user->posted_district);
         }
@@ -1875,18 +1875,18 @@ public function month_wise_fund_requirement_comparison_for_district(Request $req
 
     $comparisonData = [];
 
-    $districts = District::orderBy('district_name')->get();
+    $districts = District::orderBy('district_name')->where('is_active', 'active')->get();
 
     foreach ($districts as $district) {
         $fundFrom = (clone $fundsQuery)
-            ->where('for_the_month', $from_the_month)
-            ->where('district_id', $district->district_id)
-            ->first();
+        ->where('for_the_month', $from_the_month)
+        ->where('district_id', $district->district_id)
+        ->first();
 
         $fundTo = (clone $fundsQuery)
-            ->where('for_the_month', $to_the_month)
-            ->where('district_id', $district->district_id)
-            ->first();
+        ->where('for_the_month', $to_the_month)
+        ->where('district_id', $district->district_id)
+        ->first();
 
         if ($fundFrom || $fundTo) {
             $comparisonData[] = (object)[
