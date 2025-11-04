@@ -1,5 +1,5 @@
 @section('title') 
-Pension || District Wise Monthly Fund Comparison
+Pension || Block/ULB Wise Monthly Fund Comparison
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -44,7 +44,7 @@ Pension || District Wise Monthly Fund Comparison
 					<div class="table-responsive m-t-40">
 						<div class="card-header bg-light mb-3">
 							<h5 class="mb-2">📅 Filter by Month</h5>
-							<form method="GET" action="{{ route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_district') }}" class="d-flex align-items-center">
+							<form method="GET" action="{{ route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_block_ulb') }}" class="d-flex align-items-center">
 								<div class="d-flex align-items-center flex-wrap">
 									<label class="me-2 fw-bold">From Month:</label>
 									<select name="from_the_month" class="form-select w-auto me-3">
@@ -77,6 +77,8 @@ Pension || District Wise Monthly Fund Comparison
 								<tr class="text-center">
 									<th>Sl. No</th>
 									<th>District</th>
+									<th>Address Type</th>
+									<th>Block / Municipality</th>
 									<th>Normal Pensioners<br>({{ $from_the_month }})</th>
 									<th>EP Pensioners<br>({{ $from_the_month }})</th>
 									<th>Total Beneficiaries<br>({{ $from_the_month }})</th>
@@ -99,6 +101,8 @@ Pension || District Wise Monthly Fund Comparison
 								<tr>
 									<td class="text-center">{{ $index + 1 }}</td>
 									<td>{{ $data->district_name ?? '-' }}</td>
+									<td>{{ $data->address_type }}</td>
+									<td>{{ $data->block_or_municipality_name ?? '-' }}</td>
 
 									<td class="text-end">{{ number_format($data->normal_pensioners_from ?? 0) }}</td>
 									<td class="text-end">{{ number_format($data->ep_pensioners_from ?? 0) }}</td>
@@ -145,7 +149,7 @@ Pension || District Wise Monthly Fund Comparison
 			responsive: false,
 			ordering: true,
 			scrollX: true,
-			lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
+			lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
 			dom: 'Blfrtip',
 			buttons: [
 				'copy', 'csv', 'excel', 'pdf', 'print'
