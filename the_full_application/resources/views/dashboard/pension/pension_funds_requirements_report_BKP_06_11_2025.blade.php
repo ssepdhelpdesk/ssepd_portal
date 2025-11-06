@@ -36,18 +36,18 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <div class="card-header bg-light mb-3">
-                     <h5 class="mb-2">📅 Filter by Month</h5>
-                     <form method="GET" action="{{ route('admin.pension.report_without_ajax') }}" class="d-flex align-items-center">
-                        <label class="me-2 fw-bold">Select Month:</label>
-                        <select name="for_the_month" class="form-select w-auto me-2" onchange="this.form.submit()">
-                           @foreach($dateConfig as $config)
-                           <option value="{{ $config->for_the_month }}" {{ $month == $config->for_the_month ? 'selected' : '' }}>
-                              {{ $config->for_the_month }}
-                           </option>
-                           @endforeach
-                        </select>
-                     </form>
-                  </div>
+                  <h5 class="mb-2">📅 Filter by Month</h5>
+                  <form method="GET" action="{{ route('admin.pension.report_without_ajax') }}" class="d-flex align-items-center">
+                     <label class="me-2 fw-bold">Select Month:</label>
+                     <select name="for_the_month" class="form-select w-auto me-2" onchange="this.form.submit()">
+                        @foreach($dateConfig as $config)
+                        <option value="{{ $config->for_the_month }}" {{ $month == $config->for_the_month ? 'selected' : '' }}>
+                           {{ $config->for_the_month }}
+                        </option>
+                        @endforeach
+                     </select>
+                  </form>
+               </div>
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                   <thead>
                      <tr>
@@ -264,7 +264,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                               <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                  Action
                               </button>
-                              <div class="dropdown-menu">
+                              <!-- <div class="dropdown-menu">
                                  @if(!empty($fundsRequirements->id) && isset($fundsRequirements->created_date) && $fundsRequirements->created_date >= $startDate && $fundsRequirements->created_date <= $endDate)
                                  @can('pension-edit')
                                  <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
@@ -273,23 +273,37 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                                  <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
                                  @endcan
                                  @endif
-                              </div>
-                           </div>
-                        </td>
-                     </tr>
-                     @empty
-                     <tr>
-                        <td colspan="45" class="text-center">No records found.</td>
-                     </tr>
-                     @endforelse
-                  </tbody>
-               </table>
+                              </div> -->
+                              @php
+                              $today = now()->toDateString();
+                              @endphp
+                              <div class="dropdown-menu">
+                                 @if($today >= $startDate && $today <= $endDate && !empty($fundsRequirements->id))
+                                    @can('pension-edit')
+                                    <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
+                                    @endcan
 
+                                    @can('pension-delete')
+                                    <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
+                                    @endcan
+                                    @endif
+                                 </div>
+                              </div>
+                           </td>
+                        </tr>
+                        @empty
+                        <tr>
+                           <td colspan="45" class="text-center">No records found.</td>
+                        </tr>
+                        @endforelse
+                     </tbody>
+                  </table>
+
+               </div>
             </div>
          </div>
       </div>
    </div>
-</div>
 <!-- row -->
 <!-- ============================================================== -->
 <!-- End Page Content -->
