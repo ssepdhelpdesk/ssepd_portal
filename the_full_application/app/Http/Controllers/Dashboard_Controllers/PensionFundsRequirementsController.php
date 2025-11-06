@@ -668,8 +668,29 @@ class PensionFundsRequirementsController extends Controller
      */
     public function edit(string $id)
     {
-        $pensionFundsRequirement = PensionFundsRequirement::whereId($id)->firstOrFail();
-        return view('dashboard.pension.edit', compact('pensionFundsRequirement'));
+        $pensionFundsRequirement = PensionFundsRequirement::findOrFail($id);
+
+        $pensionFundsRequirementDates = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $pensionFundsRequirement->for_the_month)
+        ->first();
+
+        if (!$pensionFundsRequirementDates) {
+            return redirect()->back()->with('error', 'Date configuration not found for this month.');
+        }
+
+        $today = now()->toDateString();
+
+        if ($today >= $pensionFundsRequirementDates->start_date && $today <= $pensionFundsRequirementDates->end_date) {
+            return view('dashboard.pension.edit', compact('pensionFundsRequirement'));
+        } else {
+            $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
+            $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');
+
+            return redirect()->back()->with(
+                'error',
+                "The date for Pension Funds Requirement submission or updation was between {$startFormatted} and {$endFormatted}."
+            );
+        }
     }
 
     /**
@@ -734,6 +755,7 @@ class PensionFundsRequirementsController extends Controller
             if (!$pensionFundsRequirement) {
                 return redirect()->back()->with('error', 'Record not found.');
             }
+
             $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
             $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
             $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];
