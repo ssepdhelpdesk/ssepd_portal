@@ -479,7 +479,7 @@ class PensionFundsRequirementsController extends Controller
         return view('dashboard.pension.pension_funds_requirements_report', compact('startDate','endDate','forTheMonth','dateConfig'));
     }
 
-    public function report_without_ajax()
+    /*public function report_without_ajax()
     {
         $user = auth()->user();
         $userRole = $user->role_id;
@@ -556,7 +556,104 @@ class PensionFundsRequirementsController extends Controller
         })->values();
 
         return view('dashboard.pension.pension_funds_requirements_report_BKP_26_09_2025', compact('pensionFundsRequirements', 'startDate', 'endDate', 'forTheMonth'));
+    }*/
+
+    public function report_without_ajax(Request $request)
+    {
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+        $month = $request->for_the_month ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
+        $activeConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $month)
+        ->first();
+
+        if (!$activeConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured for the selected month. Please contact admin.');
+        }
+
+        $startDate = $activeConfig->start_date;
+        $endDate   = $activeConfig->end_date;
+        $forTheMonth = $activeConfig->for_the_month;
+
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])
+        ->whereBetween('created_date', [$startDate, $endDate]);
+
+        $allBlocks = collect();
+        $allMunicipalities = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allBlocks = Block::where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [4, 6])) {
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+            $allBlocks = Block::where('block_id', $user->posted_block)->where('is_active', 'active')->get();
+        } elseif ($userRole == 5) {
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+            $allMunicipalities = Municipality::where('municipality_id', $user->posted_municipality)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+            $allBlocks = Block::whereIn('block_id', $blockIds)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::whereIn('municipality_id', $municipalityIds)->where('is_active', 'active')->get();
+        } elseif (in_array($userRole, [9, 11])) {
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+
+            $allBlocks = Block::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+            $allMunicipalities = Municipality::where('district_id', $user->posted_district)->where('is_active', 'active')->get();
+        }
+
+        $filledRequirements = $pensionFundsRequirementQuery->get();
+        $submittedBlockIds = $filledRequirements->pluck('block_id')->filter()->unique();
+        $submittedMunicipalityIds = $filledRequirements->pluck('municipality_id')->filter()->unique();
+
+        $pendingBlocks = $allBlocks->whereNotIn('block_id', $submittedBlockIds)->map(function ($block) {
+            return (object)[
+                'id' => 'block-'.$block->block_id,
+                'district' => $block->district,
+                'block' => $block,
+                'municipality' => null,
+                'address_type' => 1,
+            ];
+        });
+
+        $pendingUlbs = $allMunicipalities->whereNotIn('municipality_id', $submittedMunicipalityIds)->map(function ($ulb) {
+            return (object)[
+                'id' => 'ulb-'.$ulb->municipality_id,
+                'district' => $ulb->district,
+                'block' => null,
+                'municipality' => $ulb,
+                'address_type' => 2,
+            ];
+        });
+
+        $combined = $filledRequirements->concat($pendingBlocks)->concat($pendingUlbs);
+        $pensionFundsRequirements = $combined->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })->values();
+
+        return view('dashboard.pension.pension_funds_requirements_report_BKP_06_11_2025', compact(
+            'pensionFundsRequirements',
+            'startDate',
+            'endDate',
+            'forTheMonth',
+            'dateConfig',
+            'month'
+        ));
     }
+
 
     /**
      * Display the specified resource.
