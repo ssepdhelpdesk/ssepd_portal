@@ -1,3 +1,11 @@
+git status
+git add .
+git commit -m "Required Changes in Pension Fund Requirements"
+git push origin main
+git pull origin main
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.
 
 Here’s the exact command to do that:
@@ -138,7 +146,7 @@ Example flow when editing code:
 # Inside repo folder
 git status                       # See changes
 git add .                        # Add all changes
-git commit -m "Aadhar SHA256 in Oasys DB"
+git commit -m "Required Changes in Pension Fund Requirements"
 git push origin main            # Push to GitHub
 ```
 
