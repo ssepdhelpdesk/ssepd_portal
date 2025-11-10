@@ -57,7 +57,7 @@ Special School || No of Staffs in Schools
                         <tr>
                            <th>Sl No</th>
                            <th>District</th>
-                           <th>GType</th>
+                           <th>Type</th>
                            <th>Management Name</th>
                            <th>School Name</th>
                            <th>Staff Strength</th>
@@ -69,9 +69,9 @@ Special School || No of Staffs in Schools
                        <td class="text-center">{{ $loop->iteration }}</td>
                        <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
                        <td>
-                        @if($school->which_govt == 1)
+                        @if($schoolDetails->which_govt == 1)
                         Govt of Odisha
-                        @elseif($school->which_govt == 2)
+                        @elseif($schoolDetails->which_govt == 2)
                         Govt of India
                         @else
                         Not specified
