@@ -45,7 +45,7 @@ class SpecialSchoolConstructionController extends Controller
 /**
 * Display a listing of the resource.
 */
-public function index($id)
+/*public function index($id)
 {
     $id = $id;
     $specialSchool = SpecialSchool::where('special_school_id', $id)->firstOrFail();
@@ -61,7 +61,45 @@ public function index($id)
         'phaseNumbers',
         'id'
     ));
+}*/
+
+public function index($id)
+{
+    $specialSchool = SpecialSchool::where('special_school_id', $id)->first();
+
+    if (!$specialSchool) {
+        return redirect()
+            ->route('admin.specialschool.index')
+            ->with('danger', 'Something went wrong. Please reach out to your system administrator.');
+    }
+
+    $specialSchoolConstruction = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
+        ->where('status', 1)
+        ->first();
+
+    $phaseNumbers = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
+        ->where('status', 1)
+        ->pluck('phase_no')
+        ->unique()
+        ->values();
+
+    $approve_status = null;
+    if ($phaseNumbers->isNotEmpty()) {
+        $latestPhase = $phaseNumbers->last(); // use last or change to first() if you prefer
+        $approve_status = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
+            ->where('phase_no', $latestPhase)
+            ->value('approve_status');
+    }
+
+    return view('dashboard.special_school.construction_timeline_for_state', compact(
+        'specialSchool',
+        'specialSchoolConstruction',
+        'phaseNumbers',
+        'approve_status',
+        'id'
+    ));
 }
+
 
 public function construction_timeline()
 {
