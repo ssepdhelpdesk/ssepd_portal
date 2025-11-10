@@ -5,10 +5,10 @@ Special School || No of Staffs in Schools
 @section('style')
 <style>
    .wrap-text {
-    white-space: normal !important;
-    word-break: break-word;
-    max-width: 200px;
- }
+     white-space: normal !important;
+     word-break: break-word;
+     max-width: 200px;
+  }
 </style>
 @endsection 
 @section('content')
@@ -47,6 +47,7 @@ Special School || No of Staffs in Schools
                         <tr>
                            <th>Sl No</th>
                            <th>District</th>
+                           <th>Type</th>
                            <th>Management Name</th>
                            <th>School Name</th>
                            <th>Staff Strength</th>
@@ -56,32 +57,42 @@ Special School || No of Staffs in Schools
                         <tr>
                            <th>Sl No</th>
                            <th>District</th>
+                           <th>GType</th>
                            <th>Management Name</th>
                            <th>School Name</th>
                            <th>Staff Strength</th>
                         </tr>
                      </tfoot>
                      <tbody>
-                       @forelse ($specialSchoolMapping as $schoolDetails)
-                       <tr>
-                         <td class="text-center">{{ $loop->iteration }}</td>
-                         <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
-                         <td class="wrap-text">{{ $schoolDetails->management_name }}</td>
-                         <td class="wrap-text">{{ $schoolDetails->special_school_name }}</td>
-                         <td class="text-center"><a href="{{ route('admin.specialschool.view_staff_details_by_state_office', $schoolDetails->special_school_id) }}" target="_blank">{{ $schoolDetails->staff_count ?? '0' }}</a></td>                       
-                      </tr>
-                      @empty
+                      @forelse ($specialSchoolMapping as $schoolDetails)
                       <tr>
-                         <td colspan="8" class="text-center">No records found.</td>
-                      </tr>
-                      @endforelse
-                   </tbody>
-                </table>
-             </div>
-          </div>
-       </div>
-    </div>
- </div>
+                       <td class="text-center">{{ $loop->iteration }}</td>
+                       <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
+                       <td>
+                        @if($school->which_govt == 1)
+                        Govt of Odisha
+                        @elseif($school->which_govt == 2)
+                        Govt of India
+                        @else
+                        Not specified
+                        @endif
+                     </td>
+                     <td class="wrap-text">{{ $schoolDetails->management_name }}</td>
+                     <td class="wrap-text">{{ $schoolDetails->special_school_name }}</td>
+                     <td class="text-center"><a href="{{ route('admin.specialschool.view_staff_details_by_state_office', $schoolDetails->special_school_id) }}" target="_blank">{{ $schoolDetails->staff_count ?? '0' }}</a></td>                       
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="8" class="text-center">No records found.</td>
+                 </tr>
+                 @endforelse
+              </tbody>
+           </table>
+        </div>
+     </div>
+  </div>
+</div>
+</div>
 <!-- row -->
 <!-- ============================================================== -->
 <!-- End Page Content -->
@@ -91,18 +102,18 @@ Special School || No of Staffs in Schools
 @section('script')
 <script>
    $(function () {
-     $('#example23').DataTable({
-       processing: true,
-       responsive: false,
-       ordering: true,
-       scrollX: true,
-       lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-       dom: 'Blfrtip',
-       buttons: [
-         'copy', 'csv', 'excel', 'pdf', 'print'
-      ]
-   });
-     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
-  });   
+    $('#example23').DataTable({
+     processing: true,
+     responsive: false,
+     ordering: true,
+     scrollX: true,
+     lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+     dom: 'Blfrtip',
+     buttons: [
+      'copy', 'csv', 'excel', 'pdf', 'print'
+   ]
+});
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+ });   
 </script>
 @endsection
