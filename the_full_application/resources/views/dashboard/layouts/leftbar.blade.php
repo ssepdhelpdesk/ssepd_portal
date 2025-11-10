@@ -72,7 +72,7 @@
                </ul>
             </li>
             <li>
-               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-bell"></i><span class="hide-menu">Notification</span></a>
+               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-bell"></i><span class="hide-menu">Notification</span></a>
                <ul aria-expanded="false" class="collapse">
                   @can('location-list')
                   <li><a href="{{route('admin.ssepdnotification.create')}}">Create Notification</a></li>
