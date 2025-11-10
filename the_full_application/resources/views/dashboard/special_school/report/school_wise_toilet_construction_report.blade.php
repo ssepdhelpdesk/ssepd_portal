@@ -70,6 +70,7 @@ Special School || No of Staffs in Schools
                             <tr>
                                 <th>Sl.No</th>
                                 <th>District</th>
+                                <th>Type</th>
                                 <th>Management Name</th>
                                 <th>School Name</th>
                                 <th>New/Existing</th>
@@ -82,6 +83,7 @@ Special School || No of Staffs in Schools
                             <tr>
                                 <th>Sl.No</th>
                                 <th>District</th>
+                                <th>Type</th>
                                 <th>Management Name</th>
                                 <th>School Name</th>
                                 <th>New/Existing</th>
@@ -95,6 +97,15 @@ Special School || No of Staffs in Schools
                             <tr>
                                 <td>{{ $school->sl_no }}</td>
                                 <td>{{ $school->district->district_name ?? 'N/A' }}</td>
+                                <td>
+                                    @if($school->which_govt == 1)
+                                    Govt of Odisha
+                                    @elseif($school->which_govt == 2)
+                                    Govt of India
+                                    @else
+                                    Not specified
+                                    @endif
+                                </td>
                                 <td class="wrap-text">{{ substr($school->management_name, 0, 200) }}</td>
                                 <td class="wrap-text">{{ substr($school->special_school_name, 0, 200) }}</td>
                                 <td>{{ $school->new_or_existing_text }}</td>
