@@ -195,7 +195,7 @@ public function construction_timeline_store(Request $request)
     ];
 
     $validatedData = $request->validate($validationRules, $customMessages);
-    //abort(415, 'The uploaded image is not in proper format.');
+    abort(415, 'The uploaded image is not in proper format.');
     DB::beginTransaction();
     try {
 

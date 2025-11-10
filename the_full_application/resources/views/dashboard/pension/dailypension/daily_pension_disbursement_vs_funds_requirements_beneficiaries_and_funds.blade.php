@@ -246,7 +246,7 @@ Pension || Funds Requirements vs Daily Disbursement
 
                      <tr>
                       <td class="text-center">{{ $row['sl_no'] }}</td>
-                      <td class="border text-center">{{ $row['area_type'] }} - {{ $row['area_id'] }}</td>
+                      <td class="border text-center">{{ $row['area_type'] }}<!--  - {{ $row['area_id'] }} --></td>
                       <td class="border text-center">{{ $row['district_name'] }} : {{ $row['area_name'] }}</td>
 
                       {{-- Category-wise data --}}

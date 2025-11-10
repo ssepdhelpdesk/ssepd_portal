@@ -184,7 +184,7 @@ Pension || Funds Requirements vs Daily Pension Disbursement Funds
                     @endphp
                     <tr>
                       <td class="text-center">{{ $row['sl_no'] }}</td>
-                      <td class="border px-4 py-2 text-center">{{ $row['area_type'] }} - {{ $row['area_id'] }}</td>
+                      <td class="border px-4 py-2 text-center">{{ $row['area_type'] }}<!--  - {{ $row['area_id'] }} --></td>
                       <td class="border px-4 py-2 text-center">{{ $row['district_name'] }} : {{ $row['area_name'] }}</td>
 
                       {{-- Categories --}}
