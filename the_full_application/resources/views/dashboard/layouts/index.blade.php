@@ -38,7 +38,7 @@ SSEPD PORTAL
    <div class="col-md-4">
       <div class="card">
          <div class="card-body">
-            <h5 class="card-title">YOU HAVE {{ $ssepdNotification->count() }} NEW NOTIFICATION</h5>
+            <h5 class="card-title">You Have {{ $ssepdNotification->count() }} New {{ $ssepdNotification->count() == 1 ? 'Notification' : 'Notifications' }}</h5>
             <div class="message-box ps ps--theme_default ps--active-y" id="msg" style="height: 430px; position: relative;">
                <div class="message-widget message-scroll">
 

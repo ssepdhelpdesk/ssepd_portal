@@ -33,9 +33,6 @@
                   @can('user-create')
                   <li><a href="{{route('admin.users.create')}}">Create Users</a></li>
                   @endcan
-                  @can('user-list')
-                  <li><a href="{{route('admin.ssepdnotification.create')}}">Create Notification</a></li>
-                  @endcan
                </ul>
             </li>
             @endcan
@@ -71,6 +68,14 @@
                   <li><a href="app-contact.html">Contact / Employee</a></li>
                   <li><a href="app-contact2.html">Contact Grid</a></li>
                   <li><a href="app-contact-detail.html">Contact Detail</a></li>
+                  @endcan
+               </ul>
+            </li>
+            <li>
+               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-bell"></i><span class="hide-menu">Notification</span></a>
+               <ul aria-expanded="false" class="collapse">
+                  @can('location-list')
+                  <li><a href="{{route('admin.ssepdnotification.create')}}">Create Notification</a></li>
                   @endcan
                </ul>
             </li>
