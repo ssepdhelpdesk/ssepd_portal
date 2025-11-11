@@ -9,60 +9,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <meta name="ngo-id" content="{{ $id ?? '' }}">
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" />
-    <title>@yield('title')</title>
-    <!-- This page CSS -->
-    <!-- chartist CSS -->
-    <link href="{{ asset('dashboard_assets/assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet" />
-    <!--Toaster Popup message CSS -->
-    <link href="{{ asset('dashboard_assets/assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet" />
-    <!-- Custom CSS -->
-    <link href="{{ asset('dashboard_assets/dist/css/style.min.css') }}" rel="stylesheet" />
-    <!-- Dashboard 1 Page CSS -->
-    <link href="{{ asset('dashboard_assets/dist/css/pages/dashboard1.css') }}" rel="stylesheet" />
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-    integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-    />
-    <!-- Datatable -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard_assets/assets/node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('dashboard_assets/assets/node_modules/datatables.net-bs4/css/responsive.dataTables.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-    <!-- Dropify CSS -->
-    <link rel="stylesheet" href="{{ asset('dashboard_assets/assets/node_modules/dropify/dist/css/dropify.min.css') }}" />
-    <!-- Select Two -->
-    <link href="{{ asset('dashboard_assets/assets/node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/switchery/dist/switchery.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}" rel="stylesheet" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/multiselect/css/multi-select.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Date Picker -->
-    <link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet" />
-    <link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('dashboard_assets/dist/css/development_css.css') }}" rel="stylesheet" />
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!-- Favicon icon -->
+<link rel="icon" type="image/png" sizes="16x16" href="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" />
+<title>@yield('title')</title>
+<!-- This page CSS -->
+<!-- chartist CSS -->
+<link href="{{ asset('dashboard_assets/assets/node_modules/morrisjs/morris.css') }}" rel="stylesheet" />
+<!--Toaster Popup message CSS -->
+<link href="{{ asset('dashboard_assets/assets/node_modules/toast-master/css/jquery.toast.css') }}" rel="stylesheet" />
+<!-- Custom CSS -->
+<link href="{{ asset('dashboard_assets/dist/css/style.min.css') }}" rel="stylesheet" />
+<!-- Dashboard 1 Page CSS -->
+<link href="{{ asset('dashboard_assets/dist/css/pages/dashboard1.css') }}" rel="stylesheet" />
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+crossorigin="anonymous"
+referrerpolicy="no-referrer"
+/>
+<!-- Datatable -->
+<link rel="stylesheet" type="text/css" href="{{ asset('dashboard_assets/assets/node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('dashboard_assets/assets/node_modules/datatables.net-bs4/css/responsive.dataTables.min.css') }}" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<!-- Dropify CSS -->
+<link rel="stylesheet" href="{{ asset('dashboard_assets/assets/node_modules/dropify/dist/css/dropify.min.css') }}" />
+<!-- Select Two -->
+<link href="{{ asset('dashboard_assets/assets/node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/switchery/dist/switchery.min.css') }}" rel="stylesheet" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}" rel="stylesheet" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}" rel="stylesheet" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/multiselect/css/multi-select.css') }}" rel="stylesheet" type="text/css" />
+<!-- Date Picker -->
+<link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css') }}" rel="stylesheet" />
+<link href="{{ asset('dashboard_assets/assets/node_modules/bootstrap-datepicker/bootstrap-datepicker.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('dashboard_assets/dist/css/development_css.css') }}" rel="stylesheet" />
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js') }}"></script>
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js') }}"></script>
 <![endif]-->
     <style>
-    .itsrequired {
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+        .itsrequired {
+            color: red;
+            font-weight: bold;
+        }
+        .goog-te-gadget {
+            color: transparent !important;
+        }
+        .goog-te-gadget .goog-te-combo {
+            color: #000 !important;
+            background: #f8f9fa !important;
+            border: 1px solid #ccc !important;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+        .goog-logo-link,
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 8px;
+            justify-items: stretch;
+            align-items: center;
+        }
+
+        .lang-btn {
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            color: #212529;
+            width: 100%;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+        }
+
+        @media (max-width: 576px) {
+            .lang-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+                gap: 6px;
+            }
+            .lang-btn {
+                font-size: 13px;
+                padding: 5px 8px;
+            }
+        }
+    </style>
     @yield('style')
 </head>
 <body class="skin-blue fixed-layout">
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Preloader - style you can find in spinners.css -->
+<!-- ============================================================== -->
 <!-- <div class="preloader">
 <div class="loader">
 <div class="loader__figure"></div>
@@ -73,145 +129,168 @@
 <!-- Main wrapper - style you can find in pages.scss -->
 <!-- ============================================================== -->
 <div id="main-wrapper">
-    <!-- ============================================================== -->
-    <!-- Topbar header - style you can find in pages.scss -->
-    <!-- ============================================================== -->
-    <header class="topbar">
-        <nav class="navbar top-navbar navbar-expand-md navbar-dark">
-            <!-- ============================================================== -->
-            <!-- Logo -->
-            <!-- ============================================================== -->
-            <div class="navbar-header">
-                <a class="navbar-brand" href="{{url('/dashboard')}}">
-                    <!-- Logo icon -->
-                    <b>
-                        <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                        <!-- Dark Logo icon -->
-                        <img src="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" alt="homepage" class="dark-logo" />
-                        <!-- Light Logo icon -->
-                        <img src="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" alt="homepage" class="light-logo" />
-                    </b>
-                    <!--End Logo icon -->
-                    <!-- Logo text -->
-                    <!-- <span>
-                        <img src="{{ asset('dashboard_assets/assets/images/logo-text.png') }}" alt="homepage" class="dark-logo" />
-                        <img src="{{ asset('dashboard_assets/assets/images/logo-light-text.png') }}" class="light-logo" alt="homepage" />
-                    </span> -->
-                </a>
+<!-- ============================================================== -->
+<!-- Topbar header - style you can find in pages.scss -->
+<!-- ============================================================== -->
+<header class="topbar">
+    <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+<!-- ============================================================== -->
+<!-- Logo -->
+<!-- ============================================================== -->
+<div class="navbar-header">
+    <a class="navbar-brand" href="{{url('/dashboard')}}">
+<!-- Logo icon -->
+<b>
+<!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+<!-- Dark Logo icon -->
+<img src="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" alt="homepage" class="dark-logo" />
+<!-- Light Logo icon -->
+<img src="https://ssepd.odisha.gov.in/themes/swfssedp/images/logo-odisha.png" alt="homepage" class="light-logo" />
+</b>
+<!--End Logo icon -->
+<!-- Logo text -->
+<!-- <span>
+<img src="{{ asset('dashboard_assets/assets/images/logo-text.png') }}" alt="homepage" class="dark-logo" />
+<img src="{{ asset('dashboard_assets/assets/images/logo-light-text.png') }}" class="light-logo" alt="homepage" />
+</span> -->
+</a>
+</div>
+<!-- ============================================================== -->
+<!-- End Logo -->
+<!-- ============================================================== -->
+<div class="navbar-collapse">
+<!-- ============================================================== -->
+<!-- toggle and nav items -->
+<!-- ============================================================== -->
+<ul class="navbar-nav me-auto">
+<!-- This is  -->
+<li class="nav-item">
+    <a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a>
+</li>
+<li class="nav-item">
+    <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="icon-menu"></i></a>
+</li>
+<!-- ============================================================== -->
+<!-- Search -->
+<!-- ============================================================== -->
+<!-- @include('dashboard.layouts.search') -->
+</ul>
+<!-- ============================================================== -->
+<!-- User profile and search -->
+<!-- ============================================================== -->
+<ul class="navbar-nav my-lg-0">
+<!-- ============================================================== -->
+<!-- Comment -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- End Comment -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Messages -->
+<!-- ============================================================== -->
+<!-- @include('dashboard.layouts.navdropdown') -->
+<!-- ============================================================== -->
+<!-- End Messages -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- mega menu -->
+<!-- ============================================================== -->
+<!-- @include('dashboard.layouts.navbarmegamenu') -->
+<!-- ============================================================== -->
+<!-- End mega menu -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- User Profile -->
+<!-- ============================================================== -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="hidden-md-down"><i class="fas fa-language"></i>&nbsp;Change Language&nbsp;<i class="fa fa-angle-down"></i></span>
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="languageDropdown" style="min-width: 260px;">
+        <li>
+            <div id="custom-lang-switcher" class="lang-grid">
+                <button class="btn btn-light lang-btn" data-lang="or">🕉️ Odia</button>
+                <button class="btn btn-light lang-btn" data-lang="en">🇬🇧 English</button>
+                <button class="btn btn-light lang-btn" data-lang="hi">🇮🇳 Hindi</button>
+                <button class="btn btn-light lang-btn" data-lang="bn">🇧🇩 Bengali</button>
+                <button class="btn btn-light lang-btn" data-lang="ta">🇮🇳 Tamil</button>
+                <button class="btn btn-light lang-btn" data-lang="te">🇮🇳 Telugu</button>
+                <button class="btn btn-light lang-btn" data-lang="ml">🇮🇳 Malayalam</button>
+                <button class="btn btn-light lang-btn" data-lang="gu">🇮🇳 Gujarati</button>
             </div>
-            <!-- ============================================================== -->
-            <!-- End Logo -->
-            <!-- ============================================================== -->
-            <div class="navbar-collapse">
-                <!-- ============================================================== -->
-                <!-- toggle and nav items -->
-                <!-- ============================================================== -->
-                <ul class="navbar-nav me-auto">
-                    <!-- This is  -->
-                    <li class="nav-item">
-                        <a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="icon-menu"></i></a>
-                    </li>
-                    <!-- ============================================================== -->
-                    <!-- Search -->
-                    <!-- ============================================================== -->
-                    <!-- @include('dashboard.layouts.search') -->
-                </ul>
-                <!-- ============================================================== -->
-                <!-- User profile and search -->
-                <!-- ============================================================== -->
-                <ul class="navbar-nav my-lg-0">
-                    <!-- ============================================================== -->
-                    <!-- Comment -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- End Comment -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- Messages -->
-                    <!-- ============================================================== -->
-                    <!-- @include('dashboard.layouts.navdropdown') -->
-                    <!-- ============================================================== -->
-                    <!-- End Messages -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- mega menu -->
-                    <!-- ============================================================== -->
-                    <!-- @include('dashboard.layouts.navbarmegamenu') -->
-                    <!-- ============================================================== -->
-                    <!-- End mega menu -->
-                    <!-- ============================================================== -->
-                    <!-- ============================================================== -->
-                    <!-- User Profile -->
-                    <!-- ============================================================== -->
-                    <li class="nav-item dropdown u-pro">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img src="{{ (!empty(Auth::user()->profile_photo))? url(Auth::user()->profile_photo_path):url('profile-pic/no_image.jpg') }}" alt="user" class="" />
-                            <span class="hidden-md-down">{{Auth::user()->name}} &nbsp;<i class="fa fa-angle-down"></i></span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end animated flipInY">
-                            <!-- text-->
-                            @can('my-profile-access')
-                            <a href="{{route('admin.myprofile.index')}}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
-                            @endcan
-                            <!-- text-->
-                            <!-- text-->
-                            @can('my-profile-edit')
-                            <a href="{{route('admin.myprofile.changePassword')}}" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
-                            @endcan
-                            <!-- text-->
-                            <!-- text-->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
-                            </form>
-                            <!-- text-->
-                        </div>
-                    </li>
-                    <!-- ============================================================== -->
-                    <!-- End User Profile -->
-                    <!-- ============================================================== -->
-                    <li class="nav-item right-side-toggle">
-                        <a class="nav-link waves-effect waves-light" href="javascript:void(0)"><i class="ti-settings"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <!-- ============================================================== -->
-    <!-- End Topbar header -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Left Sidebar - style you can find in sidebar.scss  -->
-    <!-- ============================================================== -->
-    @include('dashboard.layouts.leftbar')
-    <!-- ============================================================== -->
-    <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Page wrapper  -->
-    <!-- ============================================================== -->
-    <div class="page-wrapper">
-        <!-- ============================================================== -->
-        <!-- Container fluid  -->
-        <!-- ============================================================== -->
-        @yield('content') @include('dashboard.layouts.servicepanel')
-        <!-- ============================================================== -->
-        <!-- End Container fluid  -->
-        <!-- ============================================================== -->
-    </div>
-    <!-- ============================================================== -->
-    <!-- End Page wrapper  -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- footer -->
-    <!-- ============================================================== -->
-    @include('dashboard.layouts.footer')
-    <!-- ============================================================== -->
-    <!-- End footer -->
-    <!-- ============================================================== -->
+            <div id="google_translate_element" style="display:none;"></div>
+        </li>
+    </ul>
+</li>
+
+
+<li class="nav-item dropdown u-pro">
+    <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <img src="{{ (!empty(Auth::user()->profile_photo))? url(Auth::user()->profile_photo_path):url('profile-pic/no_image.jpg') }}" alt="user" class="" />
+        <span class="hidden-md-down">{{Auth::user()->name}} &nbsp;<i class="fa fa-angle-down"></i></span>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end animated flipInY">
+<!-- text-->
+@can('my-profile-access')
+<a href="{{route('admin.myprofile.index')}}" class="dropdown-item"><i class="ti-user"></i> My Profile</a>
+@endcan
+<!-- text-->
+<!-- text-->
+@can('my-profile-edit')
+<a href="{{route('admin.myprofile.changePassword')}}" class="dropdown-item"><i class="ti-settings"></i> Account Setting</a>
+@endcan
+<!-- text-->
+<!-- text-->
+<form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="dropdown-item"><i class="fa fa-power-off"></i> Logout</a>
+</form>
+<!-- text-->
+</div>
+</li>
+<!-- ============================================================== -->
+<!-- End User Profile -->
+<!-- ============================================================== -->
+<li class="nav-item right-side-toggle">
+    <a class="nav-link waves-effect waves-light" href="javascript:void(0)"><i class="ti-settings"></i></a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<!-- ============================================================== -->
+<!-- End Topbar header -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+@include('dashboard.layouts.leftbar')
+<!-- ============================================================== -->
+<!-- End Left Sidebar - style you can find in sidebar.scss  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Page wrapper  -->
+<!-- ============================================================== -->
+<div class="page-wrapper">
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+@yield('content') @include('dashboard.layouts.servicepanel')
+<!-- ============================================================== -->
+<!-- End Container fluid  -->
+<!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Page wrapper  -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- footer -->
+<!-- ============================================================== -->
+@include('dashboard.layouts.footer')
+<!-- ============================================================== -->
+<!-- End footer -->
+<!-- ============================================================== -->
 </div>
 <!-- ============================================================== -->
 <!-- End Wrapper -->
@@ -384,7 +463,7 @@
         $(".dropify").dropify();
         $(".dropify-fr").dropify({
             messages: {
-            default: "Glissez-déposez un fichier ici ou cliquez",
+                default: "Glissez-déposez un fichier ici ou cliquez",
                 replace: "Glissez-déposez un fichier ou cliquez pour remplacer",
                 remove: "Supprimer",
                 error: "Désolé, le fichier trop volumineux",
@@ -485,10 +564,10 @@
         $("#myTable").DataTable();
         var table = $("#example").DataTable({
             columnDefs: [
-            {
-                visible: false,
-                targets: 2,
-            },
+                {
+                    visible: false,
+                    targets: 2,
+                },
             ],
             order: [[2, "asc"]],
             displayLength: 25,
@@ -526,6 +605,53 @@
             responsive: true,
         });
         $(".buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel").addClass("btn btn-primary me-1");
+    });
+</script>
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+    }
+
+    function changeLanguage(lang) {
+        var select = document.querySelector('.goog-te-combo');
+        if (select) {
+            select.value = lang;
+            select.dispatchEvent(new Event('change'));
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                changeLanguage(this.dataset.lang);
+            });
+        });
+    });
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+    function triggerHtmlEvent(element, eventName) {
+        var event;
+        if (document.createEvent) {
+            event = document.createEvent('HTMLEvents');
+            event.initEvent(eventName, true, true);
+            element.dispatchEvent(event);
+        } else {
+            event = document.createEventObject();
+            element.fireEvent('on' + eventName, event);
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var match = document.cookie.match('(^|;) ?googtrans=([^;]*)(;|$)');
+        if (match && match[2] !== '/auto/en') {
+            var lang = match[2].split('/').pop();
+            setTimeout(function () {
+                var select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    select.value = lang;
+                    triggerHtmlEvent(select, 'change');
+                }
+            }, 1000);
+        }
     });
 </script>
 </body>

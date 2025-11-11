@@ -22,6 +22,7 @@
             <li class="nav-small-cap">--- PERSONAL</li>
             <li>
                <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard </span></a>
+               <div id="google_translate_element"></div>
             </li>
             @can('user-access')
             <li>
