@@ -56,92 +56,85 @@ referrerpolicy="no-referrer"
             color: red;
             font-weight: bold;
         }
-        /* 🔹 Hide default Google Translate branding */
-.goog-te-gadget {
-  color: transparent !important;
-}
-.goog-te-gadget .goog-te-combo {
-  color: #000 !important;
-  background: #f8f9fa !important;
-  border: 1px solid #ccc !important;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 14px;
-  width: 100%;
-}
-.goog-logo-link,
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
+        .goog-te-gadget {
+          color: transparent !important;
+      }
+      .goog-te-gadget .goog-te-combo {
+          color: #000 !important;
+          background: #f8f9fa !important;
+          border: 1px solid #ccc !important;
+          padding: 6px 10px;
+          border-radius: 8px;
+          font-size: 14px;
+          width: 100%;
+      }
+      .goog-logo-link,
+      .goog-te-banner-frame.skiptranslate {
+          display: none !important;
+      }
 
-/* 🔹 Language grid layout */
-.lang-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 8px;
-  justify-items: stretch;
-  align-items: center;
-  max-height: 340px;
-  overflow-y: auto;
-  padding-right: 8px;
-}
+      .lang-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+          gap: 8px;
+          justify-items: stretch;
+          align-items: center;
+          max-height: 340px;
+          overflow-y: auto;
+          padding-right: 8px;
+      }
 
-/* 🔹 Individual language button */
-.lang-btn {
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 500;
-  border: 1px solid #dee2e6;
-  background-color: #f8f9fa;
-  color: #212529;
-  width: 100%;
-  text-align: left;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
+      .lang-btn {
+          border-radius: 8px;
+          padding: 6px 12px;
+          font-size: 14px;
+          font-weight: 500;
+          border: 1px solid #dee2e6;
+          background-color: #f8f9fa;
+          color: #212529;
+          width: 100%;
+          text-align: left;
+          transition: all 0.3s ease;
+          cursor: pointer;
+      }
 
-/* 🔹 Hover / Active / Focus states */
-.lang-btn:hover {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
-}
+      .lang-btn:hover {
+          background-color: #007bff;
+          color: #fff;
+          border-color: #007bff;
+          box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+      }
 
-.lang-btn.active {
-  background-color: #007bff !important;
-  color: #fff !important;
-  border-color: #007bff !important;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.25) !important;
-}
+      .lang-btn.active {
+          background-color: #007bff !important;
+          color: #fff !important;
+          border-color: #007bff !important;
+          box-shadow: 0 2px 6px rgba(0, 123, 255, 0.25) !important;
+      }
 
-/* 🔹 Scrollbar customization (nice touch for mega menu) */
-.lang-grid::-webkit-scrollbar {
-  width: 6px;
-}
-.lang-grid::-webkit-scrollbar-thumb {
-  background: #c5c5c5;
-  border-radius: 6px;
-}
-.lang-grid::-webkit-scrollbar-thumb:hover {
-  background: #888;
-}
+      .lang-grid::-webkit-scrollbar {
+          width: 6px;
+      }
+      .lang-grid::-webkit-scrollbar-thumb {
+          background: #c5c5c5;
+          border-radius: 6px;
+      }
+      .lang-grid::-webkit-scrollbar-thumb:hover {
+          background: #888;
+      }
 
-/* 🔹 Responsive adjustments */
-@media (max-width: 576px) {
-  .lang-grid {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 6px;
-  }
-  .lang-btn {
-    font-size: 13px;
-    padding: 5px 8px;
-  }
-}
-
-    </style>
-    @yield('style')
+      @media (max-width: 576px) {
+          .lang-grid {
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 6px;
+        }
+        .lang-btn {
+            font-size: 13px;
+            padding: 5px 8px;
+        }
+    }
+</style>
+@yield('style')
 </head>
 <body class="skin-blue fixed-layout">
 <!-- ============================================================== -->
@@ -281,9 +274,9 @@ referrerpolicy="no-referrer"
 <li class="nav-item dropdown mega-dropdown">
   <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-language"></i>&nbsp;🌍 Change Language&nbsp;<i class="fa fa-angle-down"></i>
-  </a>
+</a>
 
-  <div class="dropdown-menu animated bounceInDown p-4" style="min-width: 700px;">
+<div class="dropdown-menu animated bounceInDown p-4" style="min-width: 700px;">
     <ul class="mega-dropdown-menu row">
 
       <!-- Left Column: Language Info -->
@@ -292,52 +285,52 @@ referrerpolicy="no-referrer"
         <p class="text-muted small">
           Choose your preferred language from the list.  
           The page will automatically translate.
-        </p>
-        <div id="google_translate_element" style="display:none;"></div>
-      </li>
+      </p>
+      <div id="google_translate_element" style="display:none;"></div>
+  </li>
 
-      <!-- Right Column: Language Buttons -->
-      <li class="col-lg-9 col-md-12">
-        <div id="custom-lang-switcher" class="lang-grid">
-          <button class="btn btn-light lang-btn" data-lang="or">OD Odia</button>
-          <button class="btn btn-light lang-btn" data-lang="en">🇬🇧 English</button>
-          <button class="btn btn-light lang-btn" data-lang="hi">🇮🇳 Hindi</button>
-          <button class="btn btn-light lang-btn" data-lang="bn">🇧🇩 Bengali</button>
-          <button class="btn btn-light lang-btn" data-lang="ta">🇮🇳 Tamil</button>
-          <button class="btn btn-light lang-btn" data-lang="te">🇮🇳 Telugu</button>
-          <button class="btn btn-light lang-btn" data-lang="ml">🇮🇳 Malayalam</button>
-          <button class="btn btn-light lang-btn" data-lang="gu">🇮🇳 Gujarati</button>
-          <button class="btn btn-light lang-btn" data-lang="pa">🇮🇳 Punjabi</button>
-          <button class="btn btn-light lang-btn" data-lang="mr">🇮🇳 Marathi</button>
-          <button class="btn btn-light lang-btn" data-lang="kn">🇮🇳 Kannada</button>
-          <button class="btn btn-light lang-btn" data-lang="as">🇮🇳 Assamese</button>
-          <button class="btn btn-light lang-btn" data-lang="ks">🇮🇳 Kashmiri</button>
-          <button class="btn btn-light lang-btn" data-lang="kok">🇮🇳 Konkani</button>
-          <button class="btn btn-light lang-btn" data-lang="ne">🇮🇳 Nepali</button>
-          <button class="btn btn-light lang-btn" data-lang="sd">🇮🇳 Sindhi</button>
-          <button class="btn btn-light lang-btn" data-lang="doi">🇮🇳 Dogri</button>
-          <button class="btn btn-light lang-btn" data-lang="mai">🇮🇳 Maithili</button>
-          <button class="btn btn-light lang-btn" data-lang="bho">🇮🇳 Bhojpuri</button>
-          <button class="btn btn-light lang-btn" data-lang="mni">🇮🇳 Meitei (Manipuri)</button>
-          <button class="btn btn-light lang-btn" data-lang="sat">🇮🇳 Santali</button>
-          <button class="btn btn-light lang-btn" data-lang="brx">🇮🇳 Bodo</button>
-          <button class="btn btn-light lang-btn" data-lang="trp">🇮🇳 Tripuri (Kokborok)</button>
-          <button class="btn btn-light lang-btn" data-lang="lus">🇮🇳 Mizo (Lushai)</button>
-          <button class="btn btn-light lang-btn" data-lang="hne">🇮🇳 Chhattisgarhi</button>
-          <button class="btn btn-light lang-btn" data-lang="raj">🇮🇳 Rajasthani</button>
-          <button class="btn btn-light lang-btn" data-lang="mag">🇮🇳 Magahi</button>
-          <button class="btn btn-light lang-btn" data-lang="awa">🇮🇳 Awadhi</button>
-          <button class="btn btn-light lang-btn" data-lang="ang">🇮🇳 Angika</button>
-          <button class="btn btn-light lang-btn" data-lang="ho">🇮🇳 Ho</button>
-          <button class="btn btn-light lang-btn" data-lang="kur">🇮🇳 Kurukh</button>
-          <button class="btn btn-light lang-btn" data-lang="gon">🇮🇳 Gondi</button>
-          <button class="btn btn-light lang-btn" data-lang="tcy">🇮🇳 Tulu</button>
-          <button class="btn btn-light lang-btn" data-lang="bh">🇮🇳 Bhili/Bhilodi</button>
-          <button class="btn btn-light lang-btn" data-lang="sa">🇮🇳 Sanskrit</button>
-        </div>
-      </li>
-    </ul>
+  <!-- Right Column: Language Buttons -->
+  <li class="col-lg-9 col-md-12">
+    <div id="custom-lang-switcher" class="lang-grid">
+      <button class="btn btn-light lang-btn" data-lang="or">OD Odia</button>
+      <button class="btn btn-light lang-btn" data-lang="en">🇬🇧 English</button>
+      <button class="btn btn-light lang-btn" data-lang="hi">🇮🇳 Hindi</button>
+      <button class="btn btn-light lang-btn" data-lang="bn">🇧🇩 Bengali</button>
+      <button class="btn btn-light lang-btn" data-lang="ta">🇮🇳 Tamil</button>
+      <button class="btn btn-light lang-btn" data-lang="te">🇮🇳 Telugu</button>
+      <button class="btn btn-light lang-btn" data-lang="ml">🇮🇳 Malayalam</button>
+      <button class="btn btn-light lang-btn" data-lang="gu">🇮🇳 Gujarati</button>
+      <button class="btn btn-light lang-btn" data-lang="pa">🇮🇳 Punjabi</button>
+      <button class="btn btn-light lang-btn" data-lang="mr">🇮🇳 Marathi</button>
+      <button class="btn btn-light lang-btn" data-lang="kn">🇮🇳 Kannada</button>
+      <button class="btn btn-light lang-btn" data-lang="as">🇮🇳 Assamese</button>
+      <button class="btn btn-light lang-btn" data-lang="ks">🇮🇳 Kashmiri</button>
+      <button class="btn btn-light lang-btn" data-lang="kok">🇮🇳 Konkani</button>
+      <button class="btn btn-light lang-btn" data-lang="ne">🇮🇳 Nepali</button>
+      <button class="btn btn-light lang-btn" data-lang="sd">🇮🇳 Sindhi</button>
+      <button class="btn btn-light lang-btn" data-lang="doi">🇮🇳 Dogri</button>
+      <button class="btn btn-light lang-btn" data-lang="mai">🇮🇳 Maithili</button>
+      <button class="btn btn-light lang-btn" data-lang="bho">🇮🇳 Bhojpuri</button>
+      <button class="btn btn-light lang-btn" data-lang="mni">🇮🇳 Meitei (Manipuri)</button>
+      <button class="btn btn-light lang-btn" data-lang="sat">🇮🇳 Santali</button>
+      <button class="btn btn-light lang-btn" data-lang="brx">🇮🇳 Bodo</button>
+      <button class="btn btn-light lang-btn" data-lang="trp">🇮🇳 Tripuri (Kokborok)</button>
+      <button class="btn btn-light lang-btn" data-lang="lus">🇮🇳 Mizo (Lushai)</button>
+      <button class="btn btn-light lang-btn" data-lang="hne">🇮🇳 Chhattisgarhi</button>
+      <button class="btn btn-light lang-btn" data-lang="raj">🇮🇳 Rajasthani</button>
+      <button class="btn btn-light lang-btn" data-lang="mag">🇮🇳 Magahi</button>
+      <button class="btn btn-light lang-btn" data-lang="awa">🇮🇳 Awadhi</button>
+      <button class="btn btn-light lang-btn" data-lang="ang">🇮🇳 Angika</button>
+      <button class="btn btn-light lang-btn" data-lang="ho">🇮🇳 Ho</button>
+      <button class="btn btn-light lang-btn" data-lang="kur">🇮🇳 Kurukh</button>
+      <button class="btn btn-light lang-btn" data-lang="gon">🇮🇳 Gondi</button>
+      <button class="btn btn-light lang-btn" data-lang="tcy">🇮🇳 Tulu</button>
+      <button class="btn btn-light lang-btn" data-lang="bh">🇮🇳 Bhili/Bhilodi</button>
+      <button class="btn btn-light lang-btn" data-lang="sa">🇮🇳 Sanskrit</button>
   </div>
+</li>
+</ul>
+</div>
 </li>
 
 
@@ -771,37 +764,36 @@ referrerpolicy="no-referrer"
     });
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const langButtons = document.querySelectorAll(".lang-btn");
+    document.addEventListener("DOMContentLoaded", function() {
+      const langButtons = document.querySelectorAll(".lang-btn");
 
-  langButtons.forEach(button => {
-    button.addEventListener("click", function() {
-      langButtons.forEach(btn => btn.classList.remove("active"));
-      this.classList.add("active");
+      langButtons.forEach(button => {
+        button.addEventListener("click", function() {
+          langButtons.forEach(btn => btn.classList.remove("active"));
+          this.classList.add("active");
 
-      const select = document.querySelector(".goog-te-combo");
-      if (select) {
-        const langValue = this.getAttribute("data-lang");
-        select.value = langValue;
-        select.dispatchEvent(new Event("change"));
-      }
+          const select = document.querySelector(".goog-te-combo");
+          if (select) {
+            const langValue = this.getAttribute("data-lang");
+            select.value = langValue;
+            select.dispatchEvent(new Event("change"));
+        }
     });
-  });
-
-  // Preserve active state using Google Translate cookie
-  const selectedLang = getCookie("googtrans")?.split("/").pop();
-  if (selectedLang) {
-    langButtons.forEach(btn => {
-      if (btn.getAttribute("data-lang") === selectedLang) {
-        btn.classList.add("active");
-      }
     });
-  }
 
-  function getCookie(name) {
-    const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-    return match ? match[2] : null;
-  }
+      const selectedLang = getCookie("googtrans")?.split("/").pop();
+      if (selectedLang) {
+        langButtons.forEach(btn => {
+          if (btn.getAttribute("data-lang") === selectedLang) {
+            btn.classList.add("active");
+        }
+    });
+    }
+
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        return match ? match[2] : null;
+    }
 });
 </script>
 
