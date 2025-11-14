@@ -65,13 +65,13 @@ SSEPD || Stall Application
 						@foreach($disabilityDayStallRegistrationData as $key => $item)
 						<tr>
 							<td>{{ $key + 1 }}</td>							
-							<td>{{ $item->name_of_the_organization }}</td>
+							<td style="white-space: normal; word-break: break-word;">{{ $item->name_of_the_organization }}</td>
 							<td>{{ $item->contact_person_name }}</td>
 							<td>{{ $item->email }}</td>
 							<td>{{ $item->phone_number }}</td>
 							<td><strong style="color:red;">{{ $item->registration_number }}</strong></td>
-							<td>{{ $item->purpose_of_requirement_of_stall }}</td>
-							<td>{{ $item->organization_address }}</td>
+							<td style="white-space: normal; word-break: break-word;">{{ $item->purpose_of_requirement_of_stall }}</td>
+							<td style="white-space: normal; word-break: break-word;">{{ $item->organization_address }}</td>
 							<td>{{ \Carbon\Carbon::parse($item->created_date)->format('d M Y') }} {{ \Carbon\Carbon::parse($item->created_time)->format('h:i A') }}</td>
 							<td>{{ $item->allotted_stall_no }}</td>
 						</tr>
