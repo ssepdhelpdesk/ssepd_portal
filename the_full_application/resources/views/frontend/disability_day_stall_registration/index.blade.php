@@ -35,6 +35,10 @@ SSEPD || Stall Registration
 		</div>
 		
 		<div class="contact-form">
+			<div class="alert alert-info" style="font-size: 16px; line-height: 22px; text-align: center;">
+    <strong>📍 Venue:</strong> SOA | SIKSHA 'O' ANUSANDHAN University Main Campus,  
+    Sum Hospital Rd, Khandagiri Marg, 2, Bhubaneswar, Odisha – 751030
+</div>
 			<form class="from-prevent-multiple-submits" method="POST" 
 			action="{{ route('frontend.disabilitydaystallregistration.store') }}" 
 			onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
