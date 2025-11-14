@@ -112,9 +112,10 @@ class DisabilityDayStallController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function list()
     {
-        //
+        $disabilityDayStallRegistrationData = DisabilityDayStallRegistration::orderBy('id','desc')->get();
+        return view('frontend.disability_day_stall_registration.list', compact('disabilityDayStallRegistrationData'));
     }
 
     /**
