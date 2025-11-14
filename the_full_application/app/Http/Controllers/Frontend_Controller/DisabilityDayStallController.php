@@ -114,7 +114,7 @@ class DisabilityDayStallController extends Controller
      */
     public function list()
     {
-        $disabilityDayStallRegistrationData = DisabilityDayStallRegistration::orderBy('id','desc')->get();
+        $disabilityDayStallRegistrationData = DisabilityDayStallRegistration::where('status', 1)->orderBy('id','desc')->get();
         return view('frontend.disability_day_stall_registration.list', compact('disabilityDayStallRegistrationData'));
     }
 
