@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone_number');
             $table->longText('purpose_of_requirement_of_stall');
             $table->longText('organization_address');
+            $table->string('registration_number');
             $table->integer('allotted_stall_no')->nullable();
             $table->tinyInteger('staff_address_type')->nullable();
             $table->bigInteger('state_id')->nullable();

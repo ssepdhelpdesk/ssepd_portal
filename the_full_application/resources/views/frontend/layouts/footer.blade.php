@@ -24,7 +24,7 @@
                            </a>
                         </li>
                         <li>
-                           <a href="https://www.pinterest.com/" target="_blank">
+                           <a href="https://www.instagram.com/" target="_blank">
                            <i class="ri-instagram-line"></i>
                            </a>
                         </li>

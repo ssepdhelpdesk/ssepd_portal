@@ -76,6 +76,12 @@ class DisabilityDayStallController extends Controller
         }
 
         try {
+
+            $previousId = DisabilityDayStallRegistration::latest()->value('id') ?? 0;
+            $currentDate = now()->format('d/m/Y');
+            $randomNumber = mt_rand(1000, 9999);
+            $stallSystemGenRegNo = "SSEPD/DISABILITYDAY/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
+
             $data = $request->only([
                 'name_of_the_organization',
                 'contact_person_name',
@@ -85,6 +91,7 @@ class DisabilityDayStallController extends Controller
                 'organization_address',
             ]);
 
+            $data['registration_number'] = $stallSystemGenRegNo;
             $data['created_date'] = Carbon::now('Asia/Kolkata')->format('Y-m-d');
             $data['created_time'] = Carbon::now('Asia/Kolkata')->format('H:i:s');
             $data['created_by']   = Auth::check() ? Auth::user()->id : 0;
@@ -93,7 +100,8 @@ class DisabilityDayStallController extends Controller
 
             DisabilityDayStallRegistration::create($data);
 
-            return redirect()->back()->with('success', 'Your stall registration has been submitted successfully!');
+            return redirect()->back()->with('success', 'Your stall application for the International Day of Persons with Disabilities 2025 has been successfully submitted. Please save your Registration Number for future reference: <span style="color:red; font-weight:bold;">' . $stallSystemGenRegNo . '</span>');
+
         } catch (\Exception $e) {
             return redirect()->back()
             ->with('error', 'Something went wrong while saving data: ' . $e->getMessage())

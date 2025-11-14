@@ -216,7 +216,7 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500data');
     }
 
-    public function disability_index_district_block_ulb(Request $request)
+    /*public function disability_index_district_block_ulb(Request $request)
     {        
         if ($request->ajax()) {
             $user = auth()->user();
@@ -264,6 +264,111 @@ class Disability3500Controller extends Controller
                     $query->whereNull('gp_id');
                 }
                 
+            }
+
+            if ($userRole == 5) {
+                $postedMunicipality = $user->posted_municipality;
+
+                $activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
+                ->where('is_active', '1')
+                ->pluck('ward_code')
+                ->toArray();
+
+                $query->where('municipality_id', $postedMunicipality)
+                ->where('status', 'Active');
+                
+                if (!empty($activeWardIds)) {
+                    $query->whereNull('ward_id');
+                }
+            }
+
+            return DataTables::eloquent($query)
+            ->addIndexColumn()
+            ->addColumn('complete_address', function ($row) {
+                $parts = array_filter([
+                    $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
+                    $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
+                    $row->village !== 'Not Provided By District' ? $row->village : ''
+                ]);
+
+                return implode(', ', $parts);
+            })
+            ->addColumn('action', function ($row) {
+                $buttons = '';
+
+                if (auth()->user()->can('pension-3500-edit')) {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
+                    $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+                }
+
+                return $buttons;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+        }
+        return view('dashboard.benf_3500_files.disability3500dataDistBlockUlb');
+    }*/
+
+    public function disability_index_district_block_ulb(Request $request)
+    {        
+        if ($request->ajax()) {
+            $user = auth()->user();
+            $userRole = $user->role_id;
+
+            $query = Disability3500Pensioner::query();
+
+            if ($userRole == 9) {
+                $postedDistrict = $user->posted_district;
+
+                $activeDistrictIds = District3500::where('district_id', $postedDistrict)
+                ->where('is_iap', 'a')
+                ->pluck('district_id')
+                ->toArray();
+
+                $query->where('district_id', $postedDistrict)
+                ->where('status', 'Active');
+
+                if (!empty($activeDistrictIds)) {
+                    $query->where(function ($q) {
+                        $q->where(function ($sub) {
+                            $sub->where(function ($q2) {
+                                $q2->whereNotNull('block_id')
+                                ->where('block_id', '!=', '');
+                            })
+                            ->where(function ($q2) {
+                                $q2->whereNull('gp_id')
+                                ->orWhere('gp_id', '');
+                            });
+                        })
+                        ->orWhere(function ($sub) {
+                            $sub->where(function ($q2) {
+                                $q2->whereNotNull('municipality_id')
+                                ->where('municipality_id', '!=', '');
+                            })
+                            ->where(function ($q2) {
+                                $q2->whereNull('ward_id')
+                                ->orWhere('ward_id', '');
+                            });
+                        });
+                    });
+                }
+            }
+
+            if ($userRole == 4) {
+                $postedBlock = $user->posted_block;
+
+                $activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
+                ->where('is_active', 'active')
+                ->pluck('gp_id')
+                ->toArray();
+
+                $query->where('block_id', $postedBlock)
+                ->where('status', 'Active');
+
+                if (!empty($activeGPIds)) {
+                    $query->whereNull('gp_id');
+                }                
             }
 
             if ($userRole == 5) {

@@ -9,12 +9,12 @@ SSEPD || Stall Registration
 <div class="inner-banner inner-banner-bg13">
 	<div class="container">
 		<div class="inner-title text-center">
-			<h3>Stall Registration</h3>
+			<h3>Apply for Stall – International Day of Persons with Disabilities 2025</h3>
 			<ul>
 				<li>
 					<a href="{{route('frontend.disabilitydaystallregistration.index')}}">Home</a>
 				</li>
-				<li>Stall Registration</li>
+				<li>Apply for Stall</li>
 			</ul>
 		</div>
 	</div>
@@ -23,11 +23,11 @@ SSEPD || Stall Registration
 <!-- Contact Widget Area -->
 <div class="contact-widget-area pb-70">
 	<div class="container">
-		<div class="section-title text-center mb-45">
+		<div class="section-title text-center mb-45 pt-30">
 			<!-- <span>SEND MESSAGE</span>
 			<h2>Please fillout this registration from.</h2> -->
 			@if(session('success'))
-			<div class="alert alert-success">{{ session('success') }}</div>
+			<div class="alert alert-success">{!! session('success') !!}</div>
 			@endif
 			@if(session('error'))
 			<div class="alert alert-danger">{{ session('error') }}</div>
