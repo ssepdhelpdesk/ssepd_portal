@@ -3,7 +3,7 @@
       <div class="container">
          <div class="mobile-responsive-menu">
             <div class="logo">
-               <a href="index.html">
+               <a href="{{ route('frontend.disabilitydaystallregistration.index') }}">
                   <img src="https://ssepd.gov.in:8443/swp/resources/admin_pannel/images/logo.png" class="logo-one" alt="logo" style="height: 80px; width: 650px;">
                   <img src="https://ssepd.gov.in:8443/swp/resources/admin_pannel/images/logo.png" class="logo-two" alt="logo" style="height: 80px; width: 650px;">
                </a>
@@ -15,7 +15,7 @@
 <div class="desktop-nav nav-area">
    <div class="container-fluid">
       <nav class="navbar navbar-expand-md navbar-light ">
-         <a class="navbar-brand" href="index.html">
+         <a class="navbar-brand" href="{{ route('frontend.disabilitydaystallregistration.index') }}">
             <img src="https://ssepd.gov.in:8443/swp/resources/admin_pannel/images/logo.png" class="logo-one" alt="Logo" style="height: 80px; width: 650px;">
             <img src="https://ssepd.gov.in:8443/swp/resources/admin_pannel/images/logo.png" class="logo-two" alt="Logo" style="height: 80px; width: 650px;">
          </a>

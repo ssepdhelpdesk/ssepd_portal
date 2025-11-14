@@ -35,11 +35,11 @@ SSEPD || Stall Application
 
 		<div class="section-title text-center mb-45 pt-30">
 			@if(session('success'))
-				<div class="alert alert-success">{!! session('success') !!}</div>
+			<div class="alert alert-success">{!! session('success') !!}</div>
 			@endif
 
 			@if(session('error'))
-				<div class="alert alert-danger">{{ session('error') }}</div>
+			<div class="alert alert-danger">{{ session('error') }}</div>
 			@endif
 		</div>
 
@@ -105,24 +105,43 @@ SSEPD || Stall Application
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
 <script>
-$(document).ready(function () {
-    $('#stallTable').DataTable({
-        responsive: true,
-        pageLength: 30,
-        ordering: true,
-        searching: true,
-        lengthMenu: [30, 50, 500, 1000],
+	$(document).ready(function () {
+		$('#stallTable').DataTable({
+			responsive: true,
+			pageLength: 30,
+			ordering: true,
+			searching: true,
+			lengthMenu: [30, 50, 500, 1000],
 
-        dom: 'Bfrtip',  // Buttons + search + pagination
+			dom: 'Bfrtip',
 
-        buttons: [
-            { extend: 'copy', text: 'Copy' },
-            { extend: 'csv', text: 'CSV Export' },
-            { extend: 'excel', text: 'Excel Export' },
-            { extend: 'pdf', text: 'PDF Export' },
-            { extend: 'print', text: 'Print Table' }
-        ]
-    });
-});
+			buttons: [
+				{ extend: 'copy', text: 'Copy' },
+				{ extend: 'csv', text: 'CSV Export' },
+				{ extend: 'excel', text: 'Excel Export' },
+				{
+					extend: 'pdfHtml5',
+					text: 'PDF Export',
+					orientation: 'landscape',
+					pageSize: 'A4',
+					exportOptions: {
+						columns: ':visible'
+					},
+					customize: function (doc) {
+
+						doc.defaultStyle.fontSize = 8;
+						doc.styles.tableHeader.fontSize = 9;
+						doc.styles.tableBodyOdd.alignment = 'left';
+						doc.styles.tableBodyEven.alignment = 'left';
+						var table = doc.content[1].table;
+						var widths = [];
+						table.body[0].forEach(() => widths.push('*'));
+						table.widths = widths;
+					}
+				},
+				{ extend: 'print', text: 'Print Table' }
+			]
+		});
+	});
 </script>
 @endsection
