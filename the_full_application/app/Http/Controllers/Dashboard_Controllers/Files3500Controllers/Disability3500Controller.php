@@ -472,6 +472,7 @@ class Disability3500Controller extends Controller
         try {
             $user = auth()->user();
             if ($request->ngo_address_type === "1") {
+                $address_type = 1;
                 $district = District3500::where('district_id', $request->district)->value('district_name');
                 $district_id = $validatedData['district'];
                 $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
@@ -485,6 +486,7 @@ class Disability3500Controller extends Controller
                 $village = Village3500::where('village_id', $request->village)->value('village_name');
                 $village_id = $validatedData['village'];
             } elseif ($request->ngo_address_type === "2") {
+                $address_type = 2;
                 $district = District3500::where('district_id', $request->district)->value('district_name');
                 $district_id = $validatedData['district'];
                 $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
@@ -513,6 +515,7 @@ class Disability3500Controller extends Controller
             $disability_pensioner->disability_percentage = $validatedData['disability_percentage'];
             $disability_pensioner->district = $district;
             $disability_pensioner->district_id = $district_id;
+            $disability_pensioner->address_type = $address_type;
             $disability_pensioner->block_or_ulb = $block_or_ulb;
             $disability_pensioner->block_id = $block_id;
             $disability_pensioner->municipality_id = $municipality_id;
@@ -676,6 +679,7 @@ class Disability3500Controller extends Controller
         try {
 
             if ($request->ngo_address_type === "1") {
+                $address_type = 1;
                 $block_or_ulb = Blocks3500::where('block_id', $request->block)->value('block_name');
                 $block_id = $validatedData['block'];
                 $municipality_id = 'NULL';
@@ -687,6 +691,7 @@ class Disability3500Controller extends Controller
                 $village = Village3500::where('village_id', $request->village)->value('village_name');
                 $village_id = $validatedData['village'];
             } elseif ($request->ngo_address_type === "2") {
+                $address_type = 2;
                 $block_or_ulb = Municipality3500::where('municipality_id', $request->municipality)->value('municipality_name');
                 $block_id = 'NULL';
                 $municipality_id = $validatedData['municipality'];
@@ -724,6 +729,7 @@ class Disability3500Controller extends Controller
                 'aadhaar_no' => $validatedData['aadhaar_no'],
                 'nsap_sanction_order_no' => $validatedData['nsap_sanction_order_no'],
                 'sub_collector_sanction_order_no' => $validatedData['sub_collector_sanction_order_no'],
+                'address_type' => $address_type,
                 'block_or_ulb' => $block_or_ulb,
                 'block_id' => $block_id,
                 'municipality_id' => $municipality_id,
