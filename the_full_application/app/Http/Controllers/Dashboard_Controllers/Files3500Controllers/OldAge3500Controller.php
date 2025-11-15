@@ -582,7 +582,7 @@ public function oldage_index_district_block_ulb(Request $request)
 
 public function oldage_index_district_block_ulb_gp_update(Request $request)
 {
-    if ($request->ajax()) {        
+    if ($request->ajax()) {
 
         $user = auth()->user();
         $role = $user->role_id;
@@ -598,34 +598,44 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         }
 
         $activeGPNames = $activeGPQuery
-        ->pluck('gp_name')
-        ->map(fn($gp) => strtolower(trim($gp)))
-        ->toArray();
+            ->pluck('gp_name')
+            ->map(fn($gp) => strtolower(trim($gp)))
+            ->toArray();
 
         $query = OldAge3500Pensioner::query()
-        ->where('address_type', 1)
-        ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ('" . implode("','", $activeGPNames) . "')");
+            ->where('address_type', 1);
 
-        if (in_array($role, [9])) {
+        if (!empty($activeGPNames)) {
+            $query->whereNotIn(DB::raw("LOWER(TRIM(gp_or_ward))"), $activeGPNames);
+        }
+
+        if ($role == 9) {
             $query->where('district_id', $user->posted_district);
         }
 
-        if (in_array($role, [4])) {
+        if ($role == 4) {
             $query->where('block_id', $user->posted_block);
         }
 
         return DataTables::of($query)
-        ->addIndexColumn()
-        ->addColumn('action', function ($row) {
-            return '<a href="'.route("admin.oldage3500.show",$row->id).'" 
-            class="btn btn-xs btn-primary">View</a>';
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+            $buttons = '';
+
+            if (auth()->user()->can('pension-3500-edit')) {
+                $editUrl = route('admin.oldage3500data.edit', $row->id);
+                $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+            }
+
+            return $buttons;
         })
-        ->rawColumns(['action'])
-        ->make(true);
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
     return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_gp_update');
 }
+
 
 
 /**
