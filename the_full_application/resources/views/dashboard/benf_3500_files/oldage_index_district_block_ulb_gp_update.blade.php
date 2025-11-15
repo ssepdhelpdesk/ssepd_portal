@@ -39,6 +39,7 @@ EP Pension || Index
                            <th>Age</th>
                            <th>Gender</th>
                            <th>District</th>
+                           <th>Block</th>
                            <!-- <th>Complete Address</th> -->
                            <th>NSAP Sanction Or No</th>
                            <th>Sub-Col Sign Or No</th>
@@ -55,6 +56,7 @@ EP Pension || Index
                            <th>Age</th>
                            <th>Gender</th>
                            <th>District</th>
+                           <th>Block</th>
                            <!-- <th>Complete Address</th> -->
                            <th>NSAP Sanction Or No</th>
                            <th>Sub-Col Sign Or No</th>
@@ -85,6 +87,7 @@ EP Pension || Index
         { data: 'age', name: 'age'},
         { data: 'gender', name: 'gender' },
         { data: 'district', name: 'district' },
+        { data: 'block_or_ulb', name: 'block_or_ulb' },
         /*{ data: 'complete_address', name: 'complete_address' },*/
         { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
         { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
