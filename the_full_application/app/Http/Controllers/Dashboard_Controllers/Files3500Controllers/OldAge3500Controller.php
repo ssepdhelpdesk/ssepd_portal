@@ -624,7 +624,7 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         ->make(true);
     }
 
-    return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
+    return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_gp_update');
 }
 
 
