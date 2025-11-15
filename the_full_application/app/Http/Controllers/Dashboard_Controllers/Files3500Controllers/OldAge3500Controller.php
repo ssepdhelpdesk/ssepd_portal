@@ -582,41 +582,51 @@ public function oldage_index_district_block_ulb(Request $request)
 
 public function oldage_index_district_block_ulb_gp_update(Request $request)
 {
-    $user = auth()->user();
-    $userRole = $user->role_id;    
+    if ($request->ajax()) {        
 
-    if ($userRole == 9) {
-        $postedDistrict = $user->posted_district;
+        $user = auth()->user();
+        $role = $user->role_id;
 
-        $activeGPNames = Grampanchyat3500::where('is_active', 'active')
-        ->where('district_id', $postedDistrict)
+        $activeGPQuery = Grampanchyat3500::where('is_active', 'active');
+
+        if ($role == 9) {
+            $activeGPQuery->where('district_id', $user->posted_district);
+        }
+
+        if ($role == 4) {
+            $activeGPQuery->where('block_id', $user->posted_block);
+        }
+
+        $activeGPNames = $activeGPQuery
         ->pluck('gp_name')
         ->map(fn($gp) => strtolower(trim($gp)))
         ->toArray();
 
-        $activeGPString = "'" . implode("','", $activeGPNames) . "'";
+        $query = OldAge3500Pensioner::query()
+        ->where('address_type', 1)
+        ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ('" . implode("','", $activeGPNames) . "')");
 
-        return $oldAge3500Pensioner = OldAge3500Pensioner::where('district_id', $postedDistrict)->where('address_type', 1)
-        ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ($activeGPString)")
-        ->get();
+        if (in_array($role, [9])) {
+            $query->where('district_id', $user->posted_district);
+        }
+
+        if (in_array($role, [4])) {
+            $query->where('block_id', $user->posted_block);
+        }
+
+        return DataTables::of($query)
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+            return '<a href="'.route("admin.oldage3500.show",$row->id).'" 
+            class="btn btn-xs btn-primary">View</a>';
+        })
+        ->rawColumns(['action'])
+        ->make(true);
     }
 
-    if ($userRole == 4) {
-        $postedBlock = $user->posted_block;
-
-        $activeGPNames = Grampanchyat3500::where('is_active', 'active')
-        ->where('block_id', $postedBlock)
-        ->pluck('gp_name')
-        ->map(fn($gp) => strtolower(trim($gp)))
-        ->toArray();
-
-        $activeGPString = "'" . implode("','", $activeGPNames) . "'";
-
-        return $oldAge3500Pensioner = OldAge3500Pensioner::where('block_id', $postedBlock)->where('address_type', 1)
-        ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ($activeGPString)")
-        ->get();
-    }
+    return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
 }
+
 
 /**
 * Show the form for creating a new resource.
