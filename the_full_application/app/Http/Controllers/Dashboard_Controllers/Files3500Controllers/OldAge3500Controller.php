@@ -580,6 +580,20 @@ public function oldage_index_district_block_ulb(Request $request)
     return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
 }
 
+public function oldage_index_district_block_ulb_gp_update(Request $request)
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $activeGPNames = Grampanchyat3500::where('is_active', 'active')
+        ->pluck('gp_name')
+        ->map(fn($gp) => strtolower(trim($gp)))
+        ->toArray();
+
+    return OldAge3500Pensioner::where('address_type', 1)
+        ->whereIn(\DB::raw("LOWER(TRIM(gp_or_ward))"), $activeGPNames)
+        ->get();
+}
 
 /**
 * Show the form for creating a new resource.

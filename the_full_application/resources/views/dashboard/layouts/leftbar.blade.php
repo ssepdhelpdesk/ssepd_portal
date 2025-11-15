@@ -121,6 +121,7 @@
                         <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
                         <!-- <li><a href="{{route('admin.oldage3500data.index_district')}}">OldAge Pension</a></li>
                         <li><a href="{{route('admin.disability3500data.index_district')}}">Disability Pension</a></li> -->
+                        <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_gp_update')}}">OAP GP Correction</a></li>
                         @endcan
                      </ul>
                   </li>
