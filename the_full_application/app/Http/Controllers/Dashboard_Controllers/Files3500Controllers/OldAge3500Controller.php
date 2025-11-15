@@ -596,7 +596,7 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
 
         $activeGPString = "'" . implode("','", $activeGPNames) . "'";
 
-        $oldAge3500Pensioner = OldAge3500Pensioner::where('district_id', $postedDistrict)->where('address_type', 1)
+        return $oldAge3500Pensioner = OldAge3500Pensioner::where('district_id', $postedDistrict)->where('address_type', 1)
         ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ($activeGPString)")
         ->get();
     }
