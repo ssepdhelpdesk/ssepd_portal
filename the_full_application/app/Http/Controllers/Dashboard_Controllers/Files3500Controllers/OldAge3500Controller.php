@@ -503,18 +503,18 @@ public function oldage_index_district_block_ulb(Request $request)
             $activeGPNames = Grampanchyat3500::where('block_id', $postedBlock)
             ->where('is_active', 'active')
             ->pluck('gp_name')
+            ->map(fn($v) => strtolower(trim($v)))
             ->toArray();
-
-            $activeGPNames = array_values(array_filter(array_map('trim', $activeGPNames)));
 
             $pensionerGpOrWard = OldAge3500Pensioner::where('block_id', $postedBlock)
-            ->whereNotNull('gp_or_ward')
             ->pluck('gp_or_ward')
+            ->map(fn($v) => strtolower(trim($v)))
             ->toArray();
 
-            $pensionerGpOrWard = array_values(array_filter(array_map('trim', $pensionerGpOrWard)));
-
-            $notMatchingGpOrWard = array_values(array_diff($pensionerGpOrWard, $activeGPNames));
+            $notMatchingGpOrWard = array_values(array_filter(
+                $pensionerGpOrWard,
+                fn($v) => !in_array($v, $activeGPNames)
+            ));
 
             $query->where('block_id', $postedBlock)
             ->where('status', 'Active');
@@ -525,18 +525,30 @@ public function oldage_index_district_block_ulb(Request $request)
         }
 
         if ($userRole == 5) {
+
             $postedMunicipality = $user->posted_municipality;
 
-            $activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
+            $activeWardNames = WardMaster3500::where('municipal_area_code', $postedMunicipality)
             ->where('is_active', '1')
-            ->pluck('ward_code')
+            ->pluck('ward_name')
             ->toArray();
+
+            $activeWardNames = array_values(array_filter(array_map('trim', $activeWardNames)));
+
+            $pensionerGpOrWard = OldAge3500Pensioner::where('municipality_id', $postedMunicipality)
+            ->whereNotNull('gp_or_ward')
+            ->pluck('gp_or_ward')
+            ->toArray();
+
+            $pensionerGpOrWard = array_values(array_filter(array_map('trim', $pensionerGpOrWard)));
+
+            $notMatchingGpOrWard = array_values(array_diff($pensionerGpOrWard, $activeWardNames));
 
             $query->where('municipality_id', $postedMunicipality)
             ->where('status', 'Active');
 
-            if (!empty($activeWardIds)) {
-                $query->whereNull('ward_id');
+            if (!empty($notMatchingGpOrWard)) {
+                $query->whereIn('gp_or_ward', $notMatchingGpOrWard);
             }
         }
 
