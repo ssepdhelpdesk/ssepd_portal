@@ -117,9 +117,10 @@
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
                         <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Location Correction</a>
                            <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OAP GP/Ward Correction</a></li>
-                            <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">DP GP/Ward Correction</a></li>
+                            <!-- <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OAP GP/Ward Correction</a></li>
+                            <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">DP GP/Ward Correction</a></li> -->
                             <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_gp_update')}}">OAP GP Correction</a></li>
+                            <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_ward_update')}}">OAP Ward Correction</a></li>
                          </ul>
                       </li>                      
                       <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>

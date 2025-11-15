@@ -598,12 +598,12 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         }
 
         $activeGPNames = $activeGPQuery
-            ->pluck('gp_name')
-            ->map(fn($gp) => strtolower(trim($gp)))
-            ->toArray();
+        ->pluck('gp_name')
+        ->map(fn($gp) => strtolower(trim($gp)))
+        ->toArray();
 
         $query = OldAge3500Pensioner::query()
-            ->where('address_type', 1);
+        ->where('address_type', 1);
 
         if (!empty($activeGPNames)) {
             $query->whereNotIn(DB::raw("LOWER(TRIM(gp_or_ward))"), $activeGPNames);
@@ -618,8 +618,8 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         }
 
         return DataTables::of($query)
-            ->addIndexColumn()
-            ->addColumn('action', function ($row) {
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
             $buttons = '';
 
             if (auth()->user()->can('pension-3500-edit')) {
@@ -629,13 +629,84 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
 
             return $buttons;
         })
-            ->rawColumns(['action'])
-            ->make(true);
+        ->rawColumns(['action'])
+        ->make(true);
     }
 
     return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_gp_update');
 }
 
+public function oldage_index_district_block_ulb_ward_update(Request $request)
+{
+    if ($request->ajax()) {
+
+        $user = auth()->user();
+        $role = $user->role_id;
+
+        // -----------------------------------------
+        // 1. Get Active Wards for Logged-in User
+        // -----------------------------------------
+        $activeWardQuery = WardMaster3500::where('is_active', 1);
+
+        if ($role == 9) {   // District User
+            $activeWardQuery->where('district_code', $user->posted_district);
+        }
+
+        if ($role == 5) {   // Municipality User
+            $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
+        }
+
+        $activeWardNames = $activeWardQuery
+            ->pluck('ward_name')
+            ->map(fn($w) => strtolower(trim($w)))
+            ->toArray();
+
+        // -----------------------------------------
+        // 2. Main Query (Exact SQL Match)
+        // -----------------------------------------
+        $query = OldAge3500Pensioner::query()
+            ->where('address_type', 2)
+            ->where(function ($q) {
+                $q->whereNull('ward_id')
+                  ->orWhere('ward_id', '=', 0)          // FIX for numeric column
+                  ->orWhere('ward_id', 'NOT LIKE', '24%');
+            });
+
+        // Filter out matching wards
+        if (!empty($activeWardNames)) {
+            $query->whereNotIn(
+                DB::raw('LOWER(TRIM(gp_or_ward))'),
+                $activeWardNames
+            );
+        }
+
+        // Role based filters
+        if ($role == 9) {
+            $query->where('district_id', $user->posted_district);
+        }
+
+        if ($role == 5) {
+            $query->where('municipality_id', $user->posted_municipality);
+        }
+
+        // -----------------------------------------
+        // 3. Datatable Return
+        // -----------------------------------------
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                if (auth()->user()->can('pension-3500-edit')) {
+                    return '<a href="'.route('admin.oldage3500data.edit', $row->id).'"
+                               class="btn btn-sm btn-primary">Update Address</a>';
+                }
+                return '';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_ward_update');
+}
 
 
 /**
