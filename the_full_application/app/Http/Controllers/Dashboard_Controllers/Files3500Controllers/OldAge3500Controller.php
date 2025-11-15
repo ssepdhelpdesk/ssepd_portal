@@ -582,16 +582,24 @@ public function oldage_index_district_block_ulb(Request $request)
 
 public function oldage_index_district_block_ulb_gp_update(Request $request)
 {
-    $activeGPNames = Grampanchyat3500::where('is_active', 'active')
+    $user = auth()->user();
+    $userRole = $user->role_id;    
+
+    if ($userRole == 9) {
+        $postedDistrict = $user->posted_district;
+
+        $activeGPNames = Grampanchyat3500::where('is_active', 'active')
+        ->where('district_id', $postedDistrict)
         ->pluck('gp_name')
         ->map(fn($gp) => strtolower(trim($gp)))
         ->toArray();
 
-    $activeGPString = "'" . implode("','", $activeGPNames) . "'";
+        $activeGPString = "'" . implode("','", $activeGPNames) . "'";
 
-    return OldAge3500Pensioner::where('address_type', 1)
+        $oldAge3500Pensioner = OldAge3500Pensioner::where('district_id', $postedDistrict)->where('address_type', 1)
         ->whereRaw("LOWER(TRIM(gp_or_ward)) NOT IN ($activeGPString)")
         ->get();
+    }
 }
 
 /**
