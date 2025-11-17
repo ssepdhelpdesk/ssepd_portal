@@ -587,6 +587,10 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         $user = auth()->user();
         $role = $user->role_id;
 
+        if ($role == 5) {
+            return redirect()->back()->with('error', "You don't have specific permission to access the block.");
+        }
+
         $activeGPQuery = Grampanchyat3500::where('is_active', 'active');
 
         if ($role == 9) {
@@ -594,10 +598,6 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
         }
 
         if ($role == 4) {
-            $activeGPQuery->where('block_id', $user->posted_block);
-        }
-
-        if ($role == 5) {
             $activeGPQuery->where('block_id', $user->posted_block);
         }
 
@@ -647,15 +647,15 @@ public function oldage_index_district_block_ulb_ward_update(Request $request)
         $user = auth()->user();
         $role = $user->role_id;
 
+        if ($role == 4) {
+            return redirect()->back()->with('error', "You don't have specific permission to access the ULB.");
+        }
+
         $activeWardQuery = WardMaster3500::where('is_active', 1);
 
         if ($role == 9) {
             $activeWardQuery->where('district_code', $user->posted_district);
-        }
-
-        if ($role == 4) {
-            $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
-        }
+        }        
 
         if ($role == 5) {
             $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
