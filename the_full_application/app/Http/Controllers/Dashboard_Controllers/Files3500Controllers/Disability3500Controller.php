@@ -462,7 +462,7 @@ class Disability3500Controller extends Controller
                 $buttons = '';
 
                 if (auth()->user()->can('pension-3500-edit')) {
-                    $editUrl = route('admin.oldage3500data.edit', $row->id);
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
                     $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
                 }
 
@@ -472,7 +472,7 @@ class Disability3500Controller extends Controller
             ->make(true);
         }
 
-        return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_gp_update');
+        return view('dashboard.benf_3500_files.disability_index_district_block_ulb_gp_update');
     }
 
     public function disability_index_district_block_ulb_ward_update(Request $request)
@@ -528,7 +528,7 @@ class Disability3500Controller extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 if (auth()->user()->can('pension-3500-edit')) {
-                    return '<a href="'.route('admin.oldage3500data.edit', $row->id).'"
+                    return '<a href="'.route('admin.disability3500data.edit', $row->id).'"
                     class="btn btn-sm btn-primary">Update Address</a>';
                 }
                 return '';
@@ -537,7 +537,7 @@ class Disability3500Controller extends Controller
             ->make(true);
         }
 
-        return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_ward_update');
+        return view('dashboard.benf_3500_files.disability_index_district_block_ulb_ward_update');
     }
 
     /**
