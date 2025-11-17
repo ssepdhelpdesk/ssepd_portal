@@ -235,9 +235,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('index', 'index')->name('index');
         Route::post('update_status', 'update_status')->name('update_status');
         Route::get('index_district', 'index_district')->name('index_district');
-        Route::get('oldage_index_district_block_ulb', 'oldage_index_district_block_ulb')->name('oldage_index_district_block_ulb');
-        Route::get('oldage_index_district_block_ulb_gp_update', 'oldage_index_district_block_ulb_gp_update')->name('oldage_index_district_block_ulb_gp_update');
-        Route::get('oldage_index_district_block_ulb_ward_update', 'oldage_index_district_block_ulb_ward_update')->name('oldage_index_district_block_ulb_ward_update');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
@@ -246,6 +243,13 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('check-benf-aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
         Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
+
+        Route::get('oldage_index_district_block_ulb', 'oldage_index_district_block_ulb')->name('oldage_index_district_block_ulb');
+        Route::get('oldage_index_district_block_ulb_gp_update', 'oldage_index_district_block_ulb_gp_update')->name('oldage_index_district_block_ulb_gp_update');
+        Route::get('oldage_index_district_block_ulb_ward_update', 'oldage_index_district_block_ulb_ward_update')->name('oldage_index_district_block_ulb_ward_update');
+
+        Route::get('oldage_duplicate_sanction_order_no', 'oldage_duplicate_sanction_order_no')->name('oldage_duplicate_sanction_order_no');
+        Route::post('{id}/oldage_duplicate_sanction_order_no_update', 'oldage_duplicate_sanction_order_no_update')->name('oldage_duplicate_sanction_order_no_update');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
@@ -253,9 +257,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('update_status', 'update_status')->name('update_status');
         Route::get('index', 'index')->name('index');
         Route::get('index_district', 'index_district')->name('index_district');
-        Route::get('disability_index_district_block_ulb', 'disability_index_district_block_ulb')->name('disability_index_district_block_ulb');
-        Route::get('disability_index_district_block_ulb_gp_update', 'disability_index_district_block_ulb_gp_update')->name('disability_index_district_block_ulb_gp_update');
-        Route::get('disability_index_district_block_ulb_ward_update', 'disability_index_district_block_ulb_ward_update')->name('disability_index_district_block_ulb_ward_update');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
@@ -265,11 +266,19 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('check-benf-aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
         Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
         Route::get('check-benf-udidno', 'check_benf_udidno')->name('check_benf_udidno');
+
+        Route::get('disability_index_district_block_ulb', 'disability_index_district_block_ulb')->name('disability_index_district_block_ulb');
+        Route::get('disability_index_district_block_ulb_gp_update', 'disability_index_district_block_ulb_gp_update')->name('disability_index_district_block_ulb_gp_update');
+        Route::get('disability_index_district_block_ulb_ward_update', 'disability_index_district_block_ulb_ward_update')->name('disability_index_district_block_ulb_ward_update');
+
+        Route::get('disability_duplicate_sanction_order_no', 'disability_duplicate_sanction_order_no')->name('disability_duplicate_sanction_order_no');
+        Route::post('{id}/disability_duplicate_sanction_order_no_update', 'disability_duplicate_sanction_order_no_update')->name('disability_duplicate_sanction_order_no_update');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {
         Route::get('active_ineligible', 'active_ineligible')->name('active_ineligible');
         Route::get('sanction_report', 'sanction_report')->name('sanction_report');
+        Route::get('duplicate_sanction_order_no', 'duplicate_sanction_order_no')->name('duplicate_sanction_order_no');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {

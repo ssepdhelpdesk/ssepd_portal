@@ -1,5 +1,5 @@
 @section('title') 
-Special School || No of Staffs in Schools
+Special School || Toilet Construction Status
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')

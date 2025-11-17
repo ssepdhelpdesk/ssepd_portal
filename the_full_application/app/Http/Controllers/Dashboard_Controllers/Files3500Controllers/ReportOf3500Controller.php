@@ -469,4 +469,42 @@ class ReportOf3500Controller extends Controller
         return view('dashboard.benf_3500_files.report.sanction_report', compact('final_data', 'from_date', 'to_date'));
     }
 
+    public function duplicate_sanction_order_no()
+    {
+        $pattern = "OR-S-%";
+
+        $oldage = OldAge3500Pensioner::select(DB::raw("TRIM(nsap_sanction_order_no) AS so"))
+        ->whereNotNull('nsap_sanction_order_no')
+        ->whereRaw("TRIM(nsap_sanction_order_no) != ''")
+        ->whereRaw("TRIM(nsap_sanction_order_no) LIKE '{$pattern}'")
+        ->pluck('so')
+        ->toArray();
+
+        $disability = Disability3500Pensioner::select(DB::raw("TRIM(nsap_sanction_order_no) AS so"))
+        ->whereNotNull('nsap_sanction_order_no')
+        ->whereRaw("TRIM(nsap_sanction_order_no) != ''")
+        ->whereRaw("TRIM(nsap_sanction_order_no) LIKE '{$pattern}'")
+        ->pluck('so')
+        ->toArray();
+
+        $duplicateSanctionNos = array_intersect($oldage, $disability);
+
+        $result = [
+            'oldage' => OldAge3500Pensioner::whereIn(
+                DB::raw("TRIM(nsap_sanction_order_no)"), 
+                $duplicateSanctionNos
+            )->get(),
+
+            'disability' => Disability3500Pensioner::whereIn(
+                DB::raw("TRIM(nsap_sanction_order_no)"), 
+                $duplicateSanctionNos
+            )->get(),
+        ];
+
+        return response()->json([
+            'duplicate_sanction_order_nos' => array_values($duplicateSanctionNos),
+            'records' => $result
+        ]);
+    }
+
 }

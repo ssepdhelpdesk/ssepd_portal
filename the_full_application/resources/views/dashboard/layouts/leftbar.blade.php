@@ -114,8 +114,16 @@
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-3500-list')
                         <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
-                        <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
-                        <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Location Correction</a>
+                        <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>                        
+                      <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
+                      <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
+                      <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction OR No Correction</a>
+                           <ul aria-expanded="false" class="collapse">
+                            <li><a href="{{route('admin.oldage3500data.oldage_duplicate_sanction_order_no')}}">OAP Duplicate Sanction Order No</a></li>
+                            <li><a href="{{route('admin.disability3500data.disability_duplicate_sanction_order_no')}}">DP Duplicate Sanction Order No</a></li>
+                         </ul>
+                      </li>
+                      <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Location Correction</a>
                            <ul aria-expanded="false" class="collapse">
                             <!-- <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OAP GP/Ward Correction</a></li>
                             <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">DP GP/Ward Correction</a></li> -->
@@ -124,9 +132,8 @@
                             <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_gp_update')}}">DP GP Correction</a></li>
                             <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
                          </ul>
-                      </li>                      
-                      <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
-                      <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
+                      </li>
+                      <li><a href="{{route('admin.reportof3500data.duplicate_sanction_order_no')}}">Duplicate Sanction Order No</a></li>
                       @endcan
                    </ul>
                 </li>
