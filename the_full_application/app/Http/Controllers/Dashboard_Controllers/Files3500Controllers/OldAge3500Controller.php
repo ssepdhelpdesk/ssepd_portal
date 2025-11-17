@@ -597,6 +597,10 @@ public function oldage_index_district_block_ulb_gp_update(Request $request)
             $activeGPQuery->where('block_id', $user->posted_block);
         }
 
+        if ($role == 5) {
+            $activeGPQuery->where('block_id', $user->posted_block);
+        }
+
         $activeGPNames = $activeGPQuery
         ->pluck('gp_name')
         ->map(fn($gp) => strtolower(trim($gp)))
@@ -643,16 +647,17 @@ public function oldage_index_district_block_ulb_ward_update(Request $request)
         $user = auth()->user();
         $role = $user->role_id;
 
-        // -----------------------------------------
-        // 1. Get Active Wards for Logged-in User
-        // -----------------------------------------
         $activeWardQuery = WardMaster3500::where('is_active', 1);
 
-        if ($role == 9) {   // District User
+        if ($role == 9) {
             $activeWardQuery->where('district_code', $user->posted_district);
         }
 
-        if ($role == 5) {   // Municipality User
+        if ($role == 4) {
+            $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
+        }
+
+        if ($role == 5) {
             $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
         }
 
@@ -661,18 +666,14 @@ public function oldage_index_district_block_ulb_ward_update(Request $request)
             ->map(fn($w) => strtolower(trim($w)))
             ->toArray();
 
-        // -----------------------------------------
-        // 2. Main Query (Exact SQL Match)
-        // -----------------------------------------
         $query = OldAge3500Pensioner::query()
             ->where('address_type', 2)
             ->where(function ($q) {
                 $q->whereNull('ward_id')
-                  ->orWhere('ward_id', '=', 0)          // FIX for numeric column
+                  ->orWhere('ward_id', '=', 0)
                   ->orWhere('ward_id', 'NOT LIKE', '24%');
             });
 
-        // Filter out matching wards
         if (!empty($activeWardNames)) {
             $query->whereNotIn(
                 DB::raw('LOWER(TRIM(gp_or_ward))'),
@@ -680,7 +681,6 @@ public function oldage_index_district_block_ulb_ward_update(Request $request)
             );
         }
 
-        // Role based filters
         if ($role == 9) {
             $query->where('district_id', $user->posted_district);
         }
@@ -689,9 +689,6 @@ public function oldage_index_district_block_ulb_ward_update(Request $request)
             $query->where('municipality_id', $user->posted_municipality);
         }
 
-        // -----------------------------------------
-        // 3. Datatable Return
-        // -----------------------------------------
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
