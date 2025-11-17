@@ -415,6 +415,130 @@ class Disability3500Controller extends Controller
         return view('dashboard.benf_3500_files.disability3500dataDistBlockUlb');
     }
 
+    public function disability_index_district_block_ulb_gp_update(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $user = auth()->user();
+            $role = $user->role_id;
+
+            if ($role == 5) {
+                return redirect()->back()->with('error', "You don't have specific permission to access the block.");
+            }
+
+            $activeGPQuery = Grampanchyat3500::where('is_active', 'active');
+
+            if ($role == 9) {
+                $activeGPQuery->where('district_id', $user->posted_district);
+            }
+
+            if ($role == 4) {
+                $activeGPQuery->where('block_id', $user->posted_block);
+            }
+
+            $activeGPNames = $activeGPQuery
+            ->pluck('gp_name')
+            ->map(fn($gp) => strtolower(trim($gp)))
+            ->toArray();
+
+            $query = Disability3500Pensioner::query()
+            ->where('address_type', 1);
+
+            if (!empty($activeGPNames)) {
+                $query->whereNotIn(DB::raw("LOWER(TRIM(gp_or_ward))"), $activeGPNames);
+            }
+
+            if ($role == 9) {
+                $query->where('district_id', $user->posted_district);
+            }
+
+            if ($role == 4) {
+                $query->where('block_id', $user->posted_block);
+            }
+
+            return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $buttons = '';
+
+                if (auth()->user()->can('pension-3500-edit')) {
+                    $editUrl = route('admin.oldage3500data.edit', $row->id);
+                    $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+                }
+
+                return $buttons;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+        }
+
+        return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_gp_update');
+    }
+
+    public function disability_index_district_block_ulb_ward_update(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $user = auth()->user();
+            $role = $user->role_id;
+
+            if ($role == 4) {
+                return redirect()->back()->with('error', "You don't have specific permission to access the ULB.");
+            }
+
+            $activeWardQuery = WardMaster3500::where('is_active', 1);
+
+            if ($role == 9) {
+                $activeWardQuery->where('district_code', $user->posted_district);
+            }        
+
+            if ($role == 5) {
+                $activeWardQuery->where('municipal_area_code', $user->posted_municipality);
+            }
+
+            $activeWardNames = $activeWardQuery
+            ->pluck('ward_name')
+            ->map(fn($w) => strtolower(trim($w)))
+            ->toArray();
+
+            $query = Disability3500Pensioner::query()
+            ->where('address_type', 2)
+            ->where(function ($q) {
+                $q->whereNull('ward_id')
+                ->orWhere('ward_id', '=', 0)
+                ->orWhere('ward_id', 'NOT LIKE', '24%');
+            });
+
+            if (!empty($activeWardNames)) {
+                $query->whereNotIn(
+                    DB::raw('LOWER(TRIM(gp_or_ward))'),
+                    $activeWardNames
+                );
+            }
+
+            if ($role == 9) {
+                $query->where('district_id', $user->posted_district);
+            }
+
+            if ($role == 5) {
+                $query->where('municipality_id', $user->posted_municipality);
+            }
+
+            return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                if (auth()->user()->can('pension-3500-edit')) {
+                    return '<a href="'.route('admin.oldage3500data.edit', $row->id).'"
+                    class="btn btn-sm btn-primary">Update Address</a>';
+                }
+                return '';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+        }
+
+        return view('dashboard.benf_3500_files.oldage_index_district_block_ulb_ward_update');
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || OAP GP Update
+EP Pension || Disability GP Update
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -77,7 +77,7 @@ EP Pension || OAP GP Update
      $('#example23').DataTable({
        processing: true,
        serverSide: true,
-       ajax: "{{ route('admin.oldage3500data.oldage_index_district_block_ulb_gp_update') }}",
+       ajax: "{{ route('admin.disability3500data.disability_index_district_block_ulb_gp_update') }}",
        columns: [
         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
         { data: 'scheme_name', name: 'scheme_name' },

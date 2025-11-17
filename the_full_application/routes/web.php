@@ -254,6 +254,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('index', 'index')->name('index');
         Route::get('index_district', 'index_district')->name('index_district');
         Route::get('disability_index_district_block_ulb', 'disability_index_district_block_ulb')->name('disability_index_district_block_ulb');
+        Route::get('disability_index_district_block_ulb_gp_update', 'disability_index_district_block_ulb_gp_update')->name('disability_index_district_block_ulb_gp_update');
+        Route::get('disability_index_district_block_ulb_ward_update', 'disability_index_district_block_ulb_ward_update')->name('disability_index_district_block_ulb_ward_update');
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');

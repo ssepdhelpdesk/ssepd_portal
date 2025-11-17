@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || Index
+EP Pension || Oldage Ward Update
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
