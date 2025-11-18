@@ -161,7 +161,8 @@
                      <!-- <li><a href="{{route('admin.pension.report')}}">Pension Funds Requirement1</a></li> -->
                      <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
                      <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
-                     <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">Daily Pension Disbursement</a></li>
+                     <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB Daily pension Disbursement</a></li>
+                     <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward wise Daily Pension Disbursement</a></li>
                      <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward wise Combined Daily Pension Disbursement</a></li>
                      <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
                      <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries')}}">Beneficiary wise Funds Requirements vs Daily Disbursement</a></li>
@@ -169,6 +170,7 @@
                      <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')}}">Funds Requirements vs Daily Disbursement</a></li>
                      <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_district')}}">District wise Monthly Fund Comparison</a></li>
                      <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_block_ulb')}}">Block/ULB Monthly Fund Comparison</a></li>
+                     
                      <!-- <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements')}}">Disbursement vs Funds Requirements</a></li> -->
                         <!-- <li><a href="{{route('admin.monthlypensiondisbursement.monthly_pension_disbursement_report')}}">Daily Pension Disbursement</a></li>                        
                         <li><a href="{{route('admin.monthlypensiondisbursement.pension_disbursement_daily_submission')}}">Pension Disbursement – Daily Submissions</a></li>

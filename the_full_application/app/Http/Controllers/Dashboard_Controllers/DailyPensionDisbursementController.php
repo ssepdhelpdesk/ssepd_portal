@@ -1216,50 +1216,50 @@ public function daily_pension_disbursement_vs_funds_requirements()
         $address_type = 1;
         $district_id = (int) $block->district_id;
         $block_id = (int) $block->block_id;
-$municipality_id = 0; // for blocks
+        $municipality_id = 0;
 
-$key = "{$address_type}_{$district_id}_{$block_id}_{$municipality_id}";
+        $key = "{$address_type}_{$district_id}_{$block_id}_{$municipality_id}";
 
-$vals = $getValues($key, $funds, $disbursements);
+        $vals = $getValues($key, $funds, $disbursements);
 
-$district_name = District::where('district_id', $district_id)->value('district_name') ?? 'NA';
+        $district_name = District::where('district_id', $district_id)->value('district_name') ?? 'NA';
 
-$report->push(array_merge([
-    'area_type' => 'Block',
-    'area_id' => $block_id,
-    'district_name' => $district_name,
-    'area_name' => $block->block_name ?? 'NA',
-], $vals));
-}
+        $report->push(array_merge([
+            'area_type' => 'Block',
+            'area_id' => $block_id,
+            'district_name' => $district_name,
+            'area_name' => $block->block_name ?? 'NA',
+        ], $vals));
+    }
 
-foreach ($municipalities as $mun) {
-    $address_type = 2;
-    $district_id = (int) $mun->district_id;
-    $block_id = 0;
-    $municipality_id = (int) $mun->municipality_id;
+    foreach ($municipalities as $mun) {
+        $address_type = 2;
+        $district_id = (int) $mun->district_id;
+        $block_id = 0;
+        $municipality_id = (int) $mun->municipality_id;
 
-    $key = "{$address_type}_{$district_id}_{$block_id}_{$municipality_id}";
+        $key = "{$address_type}_{$district_id}_{$block_id}_{$municipality_id}";
 
-    $vals = $getValues($key, $funds, $disbursements);
+        $vals = $getValues($key, $funds, $disbursements);
 
-    $district_name = District::where('district_id', $district_id)->value('district_name') ?? 'NA';
+        $district_name = District::where('district_id', $district_id)->value('district_name') ?? 'NA';
 
-    $report->push(array_merge([
-        'area_type' => 'ULB',
-        'area_id' => $municipality_id,
-        'district_name' => $district_name,
-        'area_name' => $mun->municipality_name ?? 'NA',
-    ], $vals));
-}
+        $report->push(array_merge([
+            'area_type' => 'ULB',
+            'area_id' => $municipality_id,
+            'district_name' => $district_name,
+            'area_name' => $mun->municipality_name ?? 'NA',
+        ], $vals));
+    }
 
-$finalReport = $report->sortBy('district_name')
-->values()
-->map(function ($item, $index) {
-    $item['sl_no'] = $index + 1;
-    return $item;
-});
+    $finalReport = $report->sortBy('district_name')
+    ->values()
+    ->map(function ($item, $index) {
+        $item['sl_no'] = $index + 1;
+        return $item;
+    });
 
-return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries', compact('finalReport'));
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_vs_funds_requirements_beneficiaries', compact('finalReport'));
 }
 
 public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(Request $request)
@@ -1841,17 +1841,17 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
 public function month_wise_fund_requirement_comparison_for_district(Request $request)
 {
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('is_active', 'active')
-        ->orderBy('id', 'desc')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
     $from_the_month = $request->from_the_month 
-        ?? ($dateConfig->skip(1)->first()->for_the_month 
-            ?? $dateConfig->first()->for_the_month 
-            ?? now()->format('F-Y'));
+    ?? ($dateConfig->skip(1)->first()->for_the_month 
+        ?? $dateConfig->first()->for_the_month 
+        ?? now()->format('F-Y'));
 
     $to_the_month = $request->to_the_month 
-        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+    ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
 
     $user = Auth::user();
     $userRole = $user->role_id;
@@ -1899,10 +1899,10 @@ public function month_wise_fund_requirement_comparison_for_district(Request $req
     $selectRaw = implode(', ', array_map(fn($c) => "SUM($c) as $c", $sumCols));
 
     $query = DB::table('pension_funds_requirements')
-        ->selectRaw("district_id, for_the_month, $selectRaw")
-        ->where('status', 1)
-        ->whereIn('for_the_month', [$from_the_month, $to_the_month])
-        ->groupBy('district_id', 'for_the_month');
+    ->selectRaw("district_id, for_the_month, $selectRaw")
+    ->where('status', 1)
+    ->whereIn('for_the_month', [$from_the_month, $to_the_month])
+    ->groupBy('district_id', 'for_the_month');
 
     if ($districtFilter !== null) {
         $query->whereIn('district_id', $districtFilter);
@@ -1924,56 +1924,56 @@ public function month_wise_fund_requirement_comparison_for_district(Request $req
         $fTo   = (object) collect($sumCols)->mapWithKeys(fn($c) => [$c => $fundTo->$c ?? 0])->toArray();
 
         $normal_from = $fFrom->mbpy_oap_below_80_years + $fFrom->mbpy_wp + $fFrom->mbpy_dp +
-            $fFrom->mbpy_sdp_below_80_percent + $fFrom->mbpy_clp + $fFrom->mbpy_wp_aids +
-            $fFrom->mbpy_dp_aids + $fFrom->mbpy_unmarried_women + $fFrom->mbpy_orphan_due_to_covide +
-            $fFrom->mbpy_widow_due_to_covid + $fFrom->mbpy_divorce_or_destitute + $fFrom->mbpy_transgender;
+        $fFrom->mbpy_sdp_below_80_percent + $fFrom->mbpy_clp + $fFrom->mbpy_wp_aids +
+        $fFrom->mbpy_dp_aids + $fFrom->mbpy_unmarried_women + $fFrom->mbpy_orphan_due_to_covide +
+        $fFrom->mbpy_widow_due_to_covid + $fFrom->mbpy_divorce_or_destitute + $fFrom->mbpy_transgender;
 
         $ep_from = $fFrom->mbpy_oap_above_80_years + $fFrom->mbpy_sdp_above_80_percent + $fFrom->mbpy_sdoap;
 
         $normal_to = $fTo->mbpy_oap_below_80_years + $fTo->mbpy_wp + $fTo->mbpy_dp +
-            $fTo->mbpy_sdp_below_80_percent + $fTo->mbpy_clp + $fTo->mbpy_wp_aids +
-            $fTo->mbpy_dp_aids + $fTo->mbpy_unmarried_women + $fTo->mbpy_orphan_due_to_covide +
-            $fTo->mbpy_widow_due_to_covid + $fTo->mbpy_divorce_or_destitute + $fTo->mbpy_transgender;
+        $fTo->mbpy_sdp_below_80_percent + $fTo->mbpy_clp + $fTo->mbpy_wp_aids +
+        $fTo->mbpy_dp_aids + $fTo->mbpy_unmarried_women + $fTo->mbpy_orphan_due_to_covide +
+        $fTo->mbpy_widow_due_to_covid + $fTo->mbpy_divorce_or_destitute + $fTo->mbpy_transgender;
 
         $ep_to = $fTo->mbpy_oap_above_80_years + $fTo->mbpy_sdp_above_80_percent + $fTo->mbpy_sdoap;
 
         $normal_fund_from =
-            ($fFrom->mbpy_oap_below_80_years * $schemeRates['oap_below_80']) +
-            ($fFrom->mbpy_wp * $schemeRates['widow_pension']) +
-            ($fFrom->mbpy_dp * $schemeRates['disabled_pension']) +
-            ($fFrom->mbpy_sdp_below_80_percent * $schemeRates['sdp_below_80']) +
-            ($fFrom->mbpy_clp * $schemeRates['clp']) +
-            ($fFrom->mbpy_wp_aids * $schemeRates['wp_aids']) +
-            ($fFrom->mbpy_dp_aids * $schemeRates['dp_aids']) +
-            ($fFrom->mbpy_unmarried_women * $schemeRates['unmarried_women']) +
-            ($fFrom->mbpy_orphan_due_to_covide * $schemeRates['orphan_covid']) +
-            ($fFrom->mbpy_widow_due_to_covid * $schemeRates['widow_covid']) +
-            ($fFrom->mbpy_divorce_or_destitute * $schemeRates['divorce_destitute']) +
-            ($fFrom->mbpy_transgender * $schemeRates['transgender']);
+        ($fFrom->mbpy_oap_below_80_years * $schemeRates['oap_below_80']) +
+        ($fFrom->mbpy_wp * $schemeRates['widow_pension']) +
+        ($fFrom->mbpy_dp * $schemeRates['disabled_pension']) +
+        ($fFrom->mbpy_sdp_below_80_percent * $schemeRates['sdp_below_80']) +
+        ($fFrom->mbpy_clp * $schemeRates['clp']) +
+        ($fFrom->mbpy_wp_aids * $schemeRates['wp_aids']) +
+        ($fFrom->mbpy_dp_aids * $schemeRates['dp_aids']) +
+        ($fFrom->mbpy_unmarried_women * $schemeRates['unmarried_women']) +
+        ($fFrom->mbpy_orphan_due_to_covide * $schemeRates['orphan_covid']) +
+        ($fFrom->mbpy_widow_due_to_covid * $schemeRates['widow_covid']) +
+        ($fFrom->mbpy_divorce_or_destitute * $schemeRates['divorce_destitute']) +
+        ($fFrom->mbpy_transgender * $schemeRates['transgender']);
 
         $ep_fund_from =
-            ($fFrom->mbpy_oap_above_80_years * $schemeRates['oap_above_80']) +
-            ($fFrom->mbpy_sdp_above_80_percent * $schemeRates['sdp_above_80']) +
-            ($fFrom->mbpy_sdoap * $schemeRates['sdoap']);
+        ($fFrom->mbpy_oap_above_80_years * $schemeRates['oap_above_80']) +
+        ($fFrom->mbpy_sdp_above_80_percent * $schemeRates['sdp_above_80']) +
+        ($fFrom->mbpy_sdoap * $schemeRates['sdoap']);
 
         $normal_fund_to =
-            ($fTo->mbpy_oap_below_80_years * $schemeRates['oap_below_80']) +
-            ($fTo->mbpy_wp * $schemeRates['widow_pension']) +
-            ($fTo->mbpy_dp * $schemeRates['disabled_pension']) +
-            ($fTo->mbpy_sdp_below_80_percent * $schemeRates['sdp_below_80']) +
-            ($fTo->mbpy_clp * $schemeRates['clp']) +
-            ($fTo->mbpy_wp_aids * $schemeRates['wp_aids']) +
-            ($fTo->mbpy_dp_aids * $schemeRates['dp_aids']) +
-            ($fTo->mbpy_unmarried_women * $schemeRates['unmarried_women']) +
-            ($fTo->mbpy_orphan_due_to_covide * $schemeRates['orphan_covid']) +
-            ($fTo->mbpy_widow_due_to_covid * $schemeRates['widow_covid']) +
-            ($fTo->mbpy_divorce_or_destitute * $schemeRates['divorce_destitute']) +
-            ($fTo->mbpy_transgender * $schemeRates['transgender']);
+        ($fTo->mbpy_oap_below_80_years * $schemeRates['oap_below_80']) +
+        ($fTo->mbpy_wp * $schemeRates['widow_pension']) +
+        ($fTo->mbpy_dp * $schemeRates['disabled_pension']) +
+        ($fTo->mbpy_sdp_below_80_percent * $schemeRates['sdp_below_80']) +
+        ($fTo->mbpy_clp * $schemeRates['clp']) +
+        ($fTo->mbpy_wp_aids * $schemeRates['wp_aids']) +
+        ($fTo->mbpy_dp_aids * $schemeRates['dp_aids']) +
+        ($fTo->mbpy_unmarried_women * $schemeRates['unmarried_women']) +
+        ($fTo->mbpy_orphan_due_to_covide * $schemeRates['orphan_covid']) +
+        ($fTo->mbpy_widow_due_to_covid * $schemeRates['widow_covid']) +
+        ($fTo->mbpy_divorce_or_destitute * $schemeRates['divorce_destitute']) +
+        ($fTo->mbpy_transgender * $schemeRates['transgender']);
 
         $ep_fund_to =
-            ($fTo->mbpy_oap_above_80_years * $schemeRates['oap_above_80']) +
-            ($fTo->mbpy_sdp_above_80_percent * $schemeRates['sdp_above_80']) +
-            ($fTo->mbpy_sdoap * $schemeRates['sdoap']);
+        ($fTo->mbpy_oap_above_80_years * $schemeRates['oap_above_80']) +
+        ($fTo->mbpy_sdp_above_80_percent * $schemeRates['sdp_above_80']) +
+        ($fTo->mbpy_sdoap * $schemeRates['sdoap']);
 
         $comparisonData[] = (object)[
             'district_name' => $districtNames[$districtId] ?? 'Unknown',
@@ -2270,4 +2270,134 @@ public function month_wise_fund_requirement_comparison_for_block_ulb(Request $re
         'dateConfig', 'from_the_month', 'to_the_month', 'comparisonData'
     ));
 }
+
+public function block_ulb_wise_daily_pension_disbursement_report(Request $request)
+{
+    $user = Auth::user();
+    $userRole = $user->role_id;
+
+    $selectedDate = $request->date ?? '2025-11-17';
+
+    $query = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
+        ->where('is_active', 'active');
+
+    /* -----------------------------
+        ROLE-WISE FILTERING
+    ------------------------------*/
+    if (in_array($userRole, [4, 6])) {
+        $query->where('block_id', $user->posted_block);
+
+    } elseif ($userRole == 5) {
+        $query->where('municipality_id', $user->posted_municipality);
+
+    } elseif (in_array($userRole, [8, 10])) {
+
+        $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('block_id');
+
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('municipality_id');
+
+        $query->where(function ($q) use ($blockIds, $municipalityIds) {
+            $q->whereIn('block_id', $blockIds)
+              ->orWhereIn('municipality_id', $municipalityIds);
+        });
+
+    } elseif (in_array($userRole, [9, 11])) {
+        $query->where('district_id', $user->posted_district);
+    }
+
+    /* -----------------------------
+        GROUPING & BASIC FETCH
+    ------------------------------*/
+    $records = $query->selectRaw("
+            district_id, block_id, municipality_id, staff_address_type AS address_type,
+            SUM(no_of_normal_pensioners) AS normal_pensioners,
+            SUM(no_of_ep_pensioners) AS ep_pensioners,
+            SUM(mbpy_oap_below_80_years) AS oap_below_80,
+            SUM(mbpy_oap_above_80_years) AS oap_above_80,
+            SUM(mbpy_wp) AS widow_pension,
+            SUM(mbpy_dp) AS disabled_pension,
+            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+            SUM(mbpy_sdoap) AS sdoap,
+            SUM(mbpy_clp) AS clp,
+            SUM(mbpy_wp_aids) AS wp_aids,
+            SUM(mbpy_dp_aids) AS dp_aids,
+            SUM(mbpy_unmarried_women) AS unmarried_women,
+            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+            SUM(mbpy_widow_due_to_covid) AS widow_covid,
+            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+            SUM(mbpy_transgender) AS transgender
+        ")
+        ->groupBy('district_id','block_id','municipality_id','address_type')
+        ->get();
+
+    /* -----------------------------
+        FUND RATES
+    ------------------------------*/
+    $fundRates = [
+        'oap_below_80' => 1000,
+        'oap_above_80' => 3500,
+        'widow_pension' => 1000,
+        'disabled_pension' => 1000,
+        'sdp_below_80' => 1200,
+        'sdp_above_80' => 3500,
+        'sdoap' => 3500,
+        'clp' => 1000,
+        'wp_aids' => 1000,
+        'dp_aids' => 1000,
+        'unmarried_women' => 1000,
+        'orphan_covid' => 1000,
+        'widow_covid' => 1000,
+        'divorce_destitute' => 1000,
+        'transgender' => 1000,
+    ];
+
+    $epCategories = ['oap_above_80', 'sdp_above_80', 'sdoap']; // 3500 categories
+
+    /* -----------------------------
+        FINAL RESULT FORMAT
+    ------------------------------*/
+    $final = $records->map(function ($item) use ($fundRates, $epCategories) {
+
+        $fund_normal = 0;
+        $fund_ep = 0;
+
+        foreach ($fundRates as $column => $rate) {
+
+            $count = $item->$column ?? 0;
+
+            if (in_array($column, $epCategories)) {
+                // These are EP pensioners (₹3500)
+                $fund_ep += ($count * $rate);
+            } else {
+                // Rest are normal pensioners
+                $fund_normal += ($count * $rate);
+            }
+        }
+
+        return [
+            'district_name' => District::where('district_id', $item->district_id)->value('district_name'),
+            'address_type' => $item->address_type == 1 ? 'Block' : 'ULB',
+            'block_ulb_name' => $item->address_type == 1
+                                ? Block::where('block_id', $item->block_id)->value('block_name')
+                                : Municipality::where('municipality_id', $item->municipality_id)->value('municipality_name'),
+
+            'no_of_normal_pensioners' => $item->normal_pensioners,
+            'no_of_ep_pensioners' => $item->ep_pensioners,
+
+            'funds_no_of_normal_pensioners' => $fund_normal,
+            'funds_no_of_ep_pensioners' => $fund_ep,
+        ];
+    });
+
+    return view('dashboard.pension.dailypension.block_ulb_wise_daily_pension_disbursement_report', [
+        'data' => $final,
+        'selectedDate' => $selectedDate
+    ]);
+}
+
 }
