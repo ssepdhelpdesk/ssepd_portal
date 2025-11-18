@@ -1141,20 +1141,14 @@ public function oldage_duplicate_sanction_order_no(Request $request)
 
         $query = OldAge3500Pensioner::where('db_status', 1)->whereNotNull('nsap_sanction_order_no')
         ->whereRaw("TRIM(nsap_sanction_order_no) != ''")
-        ->whereRaw("TRIM(nsap_sanction_order_no) LIKE 'OR-S-%'");
+        ->whereRaw("TRIM(nsap_sanction_order_no) REGEXP 'OR-S-[0-9]+'");
 
         if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
-
         } elseif (in_array($userRole, [4, 6])) {
-
             $query->where('block_id', $user->posted_block);
-
         } elseif ($userRole == 5) {
-
             $query->where('municipality_id', $user->posted_municipality);
-
         } elseif (in_array($userRole, [8, 10])) {
-
             $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
             ->where('is_active', 'active')
             ->pluck('block_id');
@@ -1167,9 +1161,7 @@ public function oldage_duplicate_sanction_order_no(Request $request)
                 $q->whereIn('block_id', $blockIds)
                 ->orWhereIn('municipality_id', $municipalityIds);
             });
-
         } elseif (in_array($userRole, [9, 11])) {
-
             $query->where('district_id', $user->posted_district);
         }
 
