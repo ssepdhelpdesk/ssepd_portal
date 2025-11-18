@@ -1141,7 +1141,8 @@ public function oldage_duplicate_sanction_order_no(Request $request)
 
         $query = OldAge3500Pensioner::where('db_status', 1)->whereNotNull('nsap_sanction_order_no')
         ->whereRaw("TRIM(nsap_sanction_order_no) != ''")
-        ->whereRaw("TRIM(nsap_sanction_order_no) LIKE 'OR-S-%'");
+        ->whereRaw("TRIM(nsap_sanction_order_no) REGEXP 'OR-S-[0-9]+'");
+        /*->whereRaw("TRIM(nsap_sanction_order_no) LIKE 'OR-S-%'");*/
 
         if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
         } elseif (in_array($userRole, [4, 6])) {
