@@ -1408,4 +1408,76 @@ public function oldage_duplicate_sanction_order_no_update(Request $request, stri
     }
 }
 
+public function oldage_wrong_sanction_order_no(Request $request)
+{
+    if ($request->ajax()) {
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $query = OldAge3500Pensioner::where('db_status', 1)
+            ->whereRaw("TRIM(nsap_sanction_order_no) NOT REGEXP 'OR-S-[0-9]+'");
+
+        if (in_array($userRole, [4, 6])) {
+            $query->where('block_id', $user->posted_block);
+        } elseif ($userRole == 5) {
+            $query->where('municipality_id', $user->posted_municipality);
+        } elseif (in_array($userRole, [8, 10])) {
+
+            $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+                ->where('is_active', 'active')
+                ->pluck('block_id');
+
+            $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+                ->where('is_active', 'active')
+                ->pluck('municipality_id');
+
+            $query->where(function ($q) use ($blockIds, $municipalityIds) {
+                $q->whereIn('block_id', $blockIds)
+                  ->orWhereIn('municipality_id', $municipalityIds);
+            });
+
+        } elseif (in_array($userRole, [9, 11])) {
+            $query->where('district_id', $user->posted_district);
+        }
+
+        $finalQuery = $query->orderBy('nsap_sanction_order_no');
+
+        return DataTables::of($finalQuery)
+            ->addIndexColumn()
+
+            ->addColumn('district', function ($row) {
+                return $row->district ?? '';
+            })
+
+            ->addColumn('block_or_ulb', function ($row) {
+                if ($row->block_id) return $row->block_or_ulb ?? '';
+                if ($row->municipality_id) return $row->block_or_ulb ?? '';
+                return '';
+            })
+
+            ->addColumn('scheme_name', function ($row) {
+                return $row->updated_scheme_name;
+            })
+
+            ->addColumn('age', function ($row) {
+                return $row->age ?? '';
+            })
+
+            ->addColumn('action', function ($row) {
+                $buttons = '';
+                if (auth()->user()->can('pension-3500-edit')) {
+                    $editUrl = route('admin.oldage3500data.edit', $row->id) . '?from=duplicate';
+                    $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Application</a>';
+                }
+                return $buttons;
+            })
+
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    return view('dashboard.benf_3500_files.oldage_wrong_sanction_order_no');
+}
+
+
 }

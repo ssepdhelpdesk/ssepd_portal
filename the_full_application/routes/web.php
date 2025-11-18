@@ -249,7 +249,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('oldage_index_district_block_ulb_ward_update', 'oldage_index_district_block_ulb_ward_update')->name('oldage_index_district_block_ulb_ward_update');
 
         Route::get('oldage_duplicate_sanction_order_no', 'oldage_duplicate_sanction_order_no')->name('oldage_duplicate_sanction_order_no');
-        Route::post('{id}/oldage_duplicate_sanction_order_no_update', 'oldage_duplicate_sanction_order_no_update')->name('oldage_duplicate_sanction_order_no_update');
+        Route::get('oldage_wrong_sanction_order_no', 'oldage_wrong_sanction_order_no')->name('oldage_wrong_sanction_order_no');
+        Route::post('{id}/oldage_duplicate_sanction_order_no_update', 'oldage_duplicate_sanction_order_no_update')->name('oldage_duplicate_sanction_order_no_update');        
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
@@ -272,6 +273,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('disability_index_district_block_ulb_ward_update', 'disability_index_district_block_ulb_ward_update')->name('disability_index_district_block_ulb_ward_update');
 
         Route::get('disability_duplicate_sanction_order_no', 'disability_duplicate_sanction_order_no')->name('disability_duplicate_sanction_order_no');
+        Route::get('disability_wrong_sanction_order_no', 'disability_wrong_sanction_order_no')->name('disability_wrong_sanction_order_no');
         Route::post('{id}/disability_duplicate_sanction_order_no_update', 'disability_duplicate_sanction_order_no_update')->name('disability_duplicate_sanction_order_no_update');
     });
 
