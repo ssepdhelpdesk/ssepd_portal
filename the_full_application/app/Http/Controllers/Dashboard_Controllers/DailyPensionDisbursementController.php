@@ -2278,6 +2278,11 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
 
     $selectedDate = $request->date ?? date('Y-m-d');
 
+    dd(
+    DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)->count(),
+    $selectedDate
+);
+
     /* ----------------------------------------------------
         1. FETCH DAILY DATA FOR SELECTED DATE (FILTERED)
     -----------------------------------------------------*/
