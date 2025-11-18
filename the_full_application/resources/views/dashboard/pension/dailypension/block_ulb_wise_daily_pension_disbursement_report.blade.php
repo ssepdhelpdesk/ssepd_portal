@@ -55,6 +55,7 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$selectedDate}} || {{ \
                     <th>District Name</th>
                     <th>Address Type (Block/ULB)</th>
                     <th>Block / ULB Name</th>
+                    <th>Status</th>
                     <th>No. of Normal Pensioners</th>
                     <th>No. of EP Pensioners</th>
                     <th>Funds for Normal Pensioners</th>
@@ -67,6 +68,7 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$selectedDate}} || {{ \
                     <th>District Name</th>
                     <th>Address Type (Block/ULB)</th>
                     <th>Block / ULB Name</th>
+                    <th>Status</th>
                     <th>No. of Normal Pensioners</th>
                     <th>No. of EP Pensioners</th>
                     <th>Funds for Normal Pensioners</th>
@@ -78,8 +80,9 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$selectedDate}} || {{ \
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $row['district_name'] }}</td>
-                        <td>{{ $row['address_type'] }}</td>
+                        <td>{{ $row['staff_address_type'] }}</td>
                         <td>{{ $row['block_ulb_name'] }}</td>
+                        <td>{{ $row['status'] }}</td>
                         <td>{{ number_format($row['no_of_normal_pensioners']) }}</td>
                         <td>{{ number_format($row['no_of_ep_pensioners']) }}</td>
                         <td>{{ number_format($row['funds_no_of_normal_pensioners']) }}</td>
