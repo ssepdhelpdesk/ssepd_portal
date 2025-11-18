@@ -2278,35 +2278,31 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
 
     $selectedDate = $request->date ?? date('Y-m-d');
 
-    /*
-    |--------------------------------------------------------------------------
-    | 1. ROLE-BASED BLOCK & MUNICIPALITY FILTERING
-    |--------------------------------------------------------------------------
-    */
+    /*----------------------------------------------
+     | 1. ROLE-WISE ACCESS FILTERING
+     ----------------------------------------------*/
     $allowedBlockIds = collect();
     $allowedMunicipalityIds = collect();
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
-        // SUPER ADMIN – SEE ALL
+        // FULL ACCESS
         $allowedBlockIds = Block::where('is_active', 'active')->pluck('block_id');
         $allowedMunicipalityIds = Municipality::where('is_active', 'active')->pluck('municipality_id');
 
     } elseif (in_array($userRole, [4, 6])) {
 
-        // BDO / ABDO – ONLY THEIR BLOCK
+        // ONLY ONE BLOCK
         $allowedBlockIds = collect([$user->posted_block]);
-        $allowedMunicipalityIds = collect([]); // no municipality
 
     } elseif ($userRole == 5) {
 
-        // Municipality Admin – ONLY THEIR MUNICIPALITY
-        $allowedBlockIds = collect([]); // no block
+        // ONLY ONE MUNICIPALITY
         $allowedMunicipalityIds = collect([$user->posted_municipality]);
 
     } elseif (in_array($userRole, [8, 10])) {
 
-        // Sub-divisional Officer – all blocks & ULBs under subdivision
+        // SUBDIVISION ROLE
         $allowedBlockIds = Block::where('subdivision_id', $user->posted_subdiv)
             ->where('is_active', 'active')
             ->pluck('block_id');
@@ -2317,7 +2313,7 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
 
     } elseif (in_array($userRole, [9, 11])) {
 
-        // District Officer – all blocks and municipalities of their district
+        // DISTRICT ROLE
         $allowedBlockIds = Block::where('district_id', $user->posted_district)
             ->where('is_active', 'active')
             ->pluck('block_id');
@@ -2327,37 +2323,33 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
             ->pluck('municipality_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. LOAD ONLY ALLOWED BLOCKS & MUNICIPALITIES
-    |--------------------------------------------------------------------------
-    */
+    /*----------------------------------------------
+     | 2. BASIC MASTER DATA (ONLY ALLOWED)
+     ----------------------------------------------*/
     $blocks = Block::whereIn('block_id', $allowedBlockIds)->get();
     $municipalities = Municipality::whereIn('municipality_id', $allowedMunicipalityIds)->get();
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. DAILY PENSION DATA FILTERED BY ROLE
-    |--------------------------------------------------------------------------
-    */
-    $dailyQuery = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
-        ->where('is_active', 'active');
+    /*----------------------------------------------
+     | 3. GET DAILY DISBURSEMENTS WITH PROPER FILTER
+     ----------------------------------------------*/
+    $daily = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
+        ->where('status', 1)
+        ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
 
-    if ($allowedBlockIds->count() > 0) {
-        $dailyQuery->whereIn('block_id', $allowedBlockIds);
-    }
+            if ($allowedBlockIds->count() > 0) {
+                $q->whereIn('block_id', $allowedBlockIds);
+            }
 
-    if ($allowedMunicipalityIds->count() > 0) {
-        $dailyQuery->orWhereIn('municipality_id', $allowedMunicipalityIds);
-    }
+            if ($allowedMunicipalityIds->count() > 0) {
+                $q->orWhereIn('municipality_id', $allowedMunicipalityIds);
+            }
 
-    $daily = $dailyQuery->get();
+        })
+        ->get();
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. FUND RATES
-    |--------------------------------------------------------------------------
-    */
+    /*----------------------------------------------
+     | 4. FUND RATES (STATIC)
+     ----------------------------------------------*/
     $fundRates = [
         'oap_below_80' => 1000,
         'oap_above_80' => 3500,
@@ -2376,23 +2368,22 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
         'transgender' => 1000,
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. FUND RAW AGGREGATION FILTERED BY ROLE
-    |--------------------------------------------------------------------------
-    */
-    $fundsQuery = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
-        ->where('is_active', 'active');
+    /*----------------------------------------------
+     | 5. FUND CALCULATION QUERY (ALSO ROLE FILTERED)
+     ----------------------------------------------*/
+    $fundsRaw = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
+        ->where('status', 1)
+        ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
 
-    if ($allowedBlockIds->count() > 0) {
-        $fundsQuery->whereIn('block_id', $allowedBlockIds);
-    }
+            if ($allowedBlockIds->count() > 0) {
+                $q->whereIn('block_id', $allowedBlockIds);
+            }
 
-    if ($allowedMunicipalityIds->count() > 0) {
-        $fundsQuery->orWhereIn('municipality_id', $allowedMunicipalityIds);
-    }
+            if ($allowedMunicipalityIds->count() > 0) {
+                $q->orWhereIn('municipality_id', $allowedMunicipalityIds);
+            }
 
-    $fundsRaw = $fundsQuery
+        })
         ->selectRaw("
             staff_address_type, district_id, block_id, municipality_id,
             SUM(mbpy_oap_below_80_years) AS oap_below_80,
@@ -2417,14 +2408,12 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
             return $item->block_id ?: ('ULB_' . $item->municipality_id);
         });
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. FINAL OUTPUT ARRAY
-    |--------------------------------------------------------------------------
-    */
+    /*----------------------------------------------
+     | 6. FINAL DATA BUILDING
+     ----------------------------------------------*/
     $final = [];
 
-    // BLOCK LOOP
+    // BLOCKS
     foreach ($blocks as $b) {
 
         $entries = $daily->where('block_id', $b->block_id);
@@ -2436,10 +2425,8 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
         if ($fundSource) {
             foreach ($fundRates as $key => $rate) {
                 $count = $fundSource->$key ?? 0;
-                if ($rate == 3500)
-                    $fund_ep += $count * 3500;
-                else
-                    $fund_normal += $count * $rate;
+                if ($rate == 3500) $fund_ep += $count * 3500;
+                else $fund_normal += $count * $rate;
             }
         }
 
@@ -2455,24 +2442,20 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
         ];
     }
 
-    // ULB LOOP
+    // MUNICIPALITIES
     foreach ($municipalities as $m) {
 
         $entries = $daily->where('municipality_id', $m->municipality_id);
-        $key = 'ULB_' . $m->municipality_id;
-
-        $fundSource = $fundsRaw[$key] ?? null;
+        $fundSource = $fundsRaw['ULB_' . $m->municipality_id] ?? null;
 
         $fund_normal = 0;
         $fund_ep = 0;
 
         if ($fundSource) {
-            foreach ($fundRates as $code => $rate) {
-                $count = $fundSource->$code ?? 0;
-                if ($rate == 3500)
-                    $fund_ep += $count * 3500;
-                else
-                    $fund_normal += $count * $rate;
+            foreach ($fundRates as $k => $rate) {
+                $count = $fundSource->$k ?? 0;
+                if ($rate == 3500) $fund_ep += $count * 3500;
+                else $fund_normal += $count * $rate;
             }
         }
 
@@ -2488,12 +2471,14 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
         ];
     }
 
-    return view('dashboard.pension.dailypension.block_ulb_wise_daily_pension_disbursement_report', [
-        'data' => $final,
-        'selectedDate' => $selectedDate
-    ]);
+    /*----------------------------------------------
+     | RETURN VIEW
+     ----------------------------------------------*/
+    return view(
+        'dashboard.pension.dailypension.block_ulb_wise_daily_pension_disbursement_report',
+        ['data' => $final, 'selectedDate' => $selectedDate]
+    );
 }
-
 
 
 }
