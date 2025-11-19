@@ -1073,6 +1073,17 @@ class Disability3500Controller extends Controller
                 return $row->age ?? '';
             })
 
+            ->addColumn('status', function ($row) {
+
+            if ($row->status === 'Active') {
+                return 'Continue';
+            } elseif ($row->status === 'Inactive') {
+                return 'Discontinued';
+            }
+
+            return '';
+        })
+
             ->addColumn('action', function ($row) {
                 $buttons = '';
 
@@ -1340,6 +1351,17 @@ class Disability3500Controller extends Controller
             ->addColumn('age', function ($row) {
                 return $row->age ?? '';
             })
+
+            ->addColumn('status', function ($row) {
+
+            if ($row->status === 'Active') {
+                return 'Continue';
+            } elseif ($row->status === 'Inactive') {
+                return 'Discontinued';
+            }
+
+            return '';
+        })
 
             ->addColumn('action', function ($row) {
                 $buttons = '';

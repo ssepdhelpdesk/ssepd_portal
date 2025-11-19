@@ -42,6 +42,7 @@ EP Pension || OldAge Duplicate Sanction Order No
                            <th>Block/ULB</th>
                            <th>NSAP Sanction Or No</th>
                            <th>Sub-Col Sign Or No</th>
+                           <th>Status</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -58,6 +59,7 @@ EP Pension || OldAge Duplicate Sanction Order No
                            <th>Block/ULB</th>
                            <th>NSAP Sanction Or No</th>
                            <th>Sub-Col Sign Or No</th>
+                           <th>Status</th>
                            <th>Action</th>
                         </tr>
                      </tfoot>
@@ -88,6 +90,7 @@ EP Pension || OldAge Duplicate Sanction Order No
         { data: 'block_or_ulb', name: 'block_or_ulb' },
         { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
         { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
+        { data: 'status', name: 'status' },
         { data: 'action', name: 'action', orderable: false, searchable: false }
      ],
      dom: 'Blfrtip',
