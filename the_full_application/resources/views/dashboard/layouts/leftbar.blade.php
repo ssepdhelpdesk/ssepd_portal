@@ -135,7 +135,6 @@
                             <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
                          </ul>
                       </li>
-                      <li><a href="{{route('admin.reportof3500data.duplicate_sanction_order_no')}}">Duplicate Sanction Order No</a></li>
                       @endcan
                    </ul>
                 </li>

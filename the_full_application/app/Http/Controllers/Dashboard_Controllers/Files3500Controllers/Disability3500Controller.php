@@ -58,6 +58,7 @@ class Disability3500Controller extends Controller
         $userRole = $user->role_id;
 
         $oldAgeData = Disability3500Pensioner::query();
+        $oldAgeData->where('db_status', 1);
 
         if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
@@ -180,7 +181,7 @@ class Disability3500Controller extends Controller
 
             $excludeList = array_merge($activeBlocks, $activeMunicipalities);
 
-            $query = Disability3500Pensioner::select('*')->where('district_id', $postedDistrict)->where('status', 'Active')
+            $query = Disability3500Pensioner::select('*')->where('district_id', $postedDistrict)->where('db_status', 1)->where('status', 'Active')
             ->whereNotIn('block_or_ulb', $excludeList);
 
             return DataTables::eloquent($query)
@@ -317,6 +318,7 @@ class Disability3500Controller extends Controller
             $userRole = $user->role_id;
 
             $query = Disability3500Pensioner::query();
+            $query->where('db_status', 1);
 
             if ($userRole == 9) {
                 $postedDistrict = $user->posted_district;
@@ -442,7 +444,7 @@ class Disability3500Controller extends Controller
             ->toArray();
 
             $query = Disability3500Pensioner::query()
-            ->where('address_type', 1);
+            ->where('address_type', 1)->where('db_status', 1);
 
             if (!empty($activeGPNames)) {
                 $query->whereNotIn(DB::raw("LOWER(TRIM(gp_or_ward))"), $activeGPNames);
@@ -503,6 +505,7 @@ class Disability3500Controller extends Controller
 
             $query = Disability3500Pensioner::query()
             ->where('address_type', 2)
+            ->where('db_status', 1)
             ->where(function ($q) {
                 $q->whereNull('ward_id')
                 ->orWhere('ward_id', '=', 0)
