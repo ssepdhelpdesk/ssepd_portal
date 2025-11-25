@@ -145,9 +145,9 @@ return [
 
         'pension_verification_app' => [
             'driver' => 'mysql',
-            'host' => env('PENSION_VERIFICATION_APP_DB_HOST', '164.164.122.101'),
-            'port' => env('PENSION_VERIFICATION_APP_DB_PORT', '3306'),
-            'database' => env('PENSION_VERIFICATION_APP_DB_DATABASE', 'dev_db_ssepd'),
+            'host' => env('PENSION_VERIFICATION_APP_DB_HOST', '164.164.122.107'),
+            'port' => env('PENSION_VERIFICATION_APP_DB_PORT', '3310'),
+            'database' => env('PENSION_VERIFICATION_APP_DB_DATABASE', 'ssepd_db'),
             'username' => env('PENSION_VERIFICATION_APP_DB_USERNAME', 'devuser'),
             'password' => env('PENSION_VERIFICATION_APP_DB_PASSWORD', 'g57Uo4o8eLy@'),
             'charset' => 'utf8mb4',

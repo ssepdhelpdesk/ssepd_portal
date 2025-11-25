@@ -117,12 +117,12 @@
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>                        
                       <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
                       <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
-                      <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction Order No Correction</a>
+                      <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction Order Number Correction</a>
                            <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{route('admin.oldage3500data.oldage_duplicate_sanction_order_no')}}">OAP Duplicate Sanction Order No</a></li>
-                            <li><a href="{{route('admin.oldage3500data.oldage_wrong_sanction_order_no')}}">OAP Wrong Sanction Order No</a></li>
-                            <li><a href="{{route('admin.disability3500data.disability_duplicate_sanction_order_no')}}">DP Duplicate Sanction Order No</a></li>
-                            <li><a href="{{route('admin.disability3500data.disability_wrong_sanction_order_no')}}">DP Wrong Sanction Order No</a></li>
+                            <li><a href="{{route('admin.oldage3500data.oldage_duplicate_sanction_order_no')}}">OAP Duplicate Sanction Order Number</a></li>
+                            <li><a href="{{route('admin.oldage3500data.oldage_wrong_sanction_order_no')}}">OAP Wrong Sanction Order Number</a></li>
+                            <li><a href="{{route('admin.disability3500data.disability_duplicate_sanction_order_no')}}">DP Duplicate Sanction Order Number</a></li>
+                            <li><a href="{{route('admin.disability3500data.disability_wrong_sanction_order_no')}}">DP Wrong Sanction Order Number</a></li>
                          </ul>
                       </li>
                       <li> <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Location Correction</a>
