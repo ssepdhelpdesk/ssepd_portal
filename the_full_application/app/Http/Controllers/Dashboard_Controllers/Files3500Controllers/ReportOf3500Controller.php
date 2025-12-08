@@ -507,7 +507,7 @@ class ReportOf3500Controller extends Controller
         ]);
     }
 
-    public function active_ineligible_with_scheme()
+    public function active_ineligible_with_scheme(Request $request)
     {
         $user = Auth::user();
         $userRole = $user->role_id;
