@@ -183,7 +183,7 @@
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-3500-access')
                         <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
-                        <li><a href="{{route('admin.reportof3500data.active_ineligible_with_scheme')}}">EP Complete Report</a></li>
+                        <li><a href="{{route('admin.reportof3500data.active_ineligible_with_scheme')}}">EP Complete Scheme Wise Report</a></li>
                         <li><a href="{{route('admin.reportof3500data.sanction_report')}}">Sanction Report</a></li>
                         @endcan
                      </ul>

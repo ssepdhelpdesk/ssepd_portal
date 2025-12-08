@@ -1,5 +1,5 @@
 @section('title') 
-EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -91,10 +91,16 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP</th>
                    </tr>
                 </thead>
 
@@ -133,8 +139,14 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                    <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
                    <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
                    <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP</th>
                    <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP</th>
                    <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP</th>
                 </tr>
              </tfoot>
              <tbody>
@@ -157,6 +169,7 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                   <td>{{ $row['OldageActive'] }}</td>
                   <td>{{ $row['TotalOldageMbpoap'] - ($row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap']) }}</td>
                   <td>{{ $row['TotalOldageIgnoap'] - ($row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap']) }}</td>
+                  
                   <td>{{ $row['TotalDisability'] }}</td>
                   <td>{{ $row['TotalDisabilityMbpsdp'] }}</td>
                   <td>{{ $row['TotalDisabilityIgndp'] }}</td>
@@ -173,8 +186,14 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                   <td>{{ $row['TotalDisabilityMbpsdp'] - ($row['DisabilityDeathMbpsdp'] + $row['DisabilityIneligibleMbpsdp']) }}</td>
                   <td>{{ $row['TotalDisabilityIgndp'] - ($row['DisabilityDeathIgndp'] + $row['DisabilityIneligibleIgndp']) }}</td>
                   <td>{{ $row['TotalSanction'] }}</td>
+                  <td>{{ $row['TotalOldageMbpoap'] + $row['TotalDisabilityMbpsdp'] }}</td>
+                  <td>{{ $row['TotalOldageIgnoap'] + $row['TotalDisabilityIgndp'] }}</td>
                   <td>{{ $row['TotalDiscontinued'] }}</td>
+                  <td>{{ $row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap'] + $row['DisabilityDeathMbpsdp'] + $row['DisabilityIneligibleMbpsdp']}}</td>
+                  <td>{{ $row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap'] + $row['DisabilityDeathIgndp'] + $row['DisabilityIneligibleIgndp']}}</td>
                   <td>{{ $row['TotalActive'] }}</td>
+                  <td>{{ ($row['TotalOldageMbpoap'] + $row['TotalDisabilityMbpsdp']) - ($row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap'] + $row['DisabilityDeathMbpsdp'] + $row['DisabilityIneligibleMbpsdp'])}}</td>
+                  <td>{{ ($row['TotalOldageIgnoap'] + $row['TotalDisabilityIgndp']) - ($row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap'] + $row['DisabilityDeathIgndp'] + $row['DisabilityIneligibleIgndp'])}}</td>
                </tr>
                @endforeach
             </tbody>
