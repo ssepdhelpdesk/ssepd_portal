@@ -220,7 +220,7 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
          lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
          dom: 'Blfrtip',
          buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
+            'copy', 'csv', 'excel', 'pdf', 'print',
          ]
       });
       $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
