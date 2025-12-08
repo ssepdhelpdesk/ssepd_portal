@@ -515,181 +515,205 @@ class ReportOf3500Controller extends Controller
         $from_date = $request->get('from_date');
         $to_date   = $request->get('to_date');
 
-        $oldAgeQuery = OldAge3500Pensioner::query();
-        $oldAgeDeathQuery = OldAge3500Pensioner::query();
-        $oldAgeIneligibleQuery = OldAge3500Pensioner::query();
+        $oldBase  = OldAge3500Pensioner::query();
+        $oldDeath = OldAge3500Pensioner::query();
+        $oldInel  = OldAge3500Pensioner::query();
 
-        $disabilityQuery = Disability3500Pensioner::query();
-        $disabilityDeathQuery = Disability3500Pensioner::query();
-        $disabilityIneligibleQuery = Disability3500Pensioner::query();
+        $disBase  = Disability3500Pensioner::query();
+        $disDeath = Disability3500Pensioner::query();
+        $disInel  = Disability3500Pensioner::query();
 
-        if (!in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (!in_array($userRole, [1,2,12,13,14,15])) {
+
             if (in_array($userRole, [4, 6])) {
-                $oldAgeQuery->where('block_id', $user->posted_block);
-                $oldAgeDeathQuery->where('block_id', $user->posted_block);
-                $oldAgeIneligibleQuery->where('block_id', $user->posted_block);
-                $disabilityQuery->where('block_id', $user->posted_block);
-                $disabilityDeathQuery->where('block_id', $user->posted_block);
-                $disabilityIneligibleQuery->where('block_id', $user->posted_block);
+                $filters = ['block_id' => $user->posted_block];
 
             } elseif ($userRole == 5) {
-                $oldAgeQuery->where('municipality_id', $user->posted_municipality);
-                $oldAgeDeathQuery->where('municipality_id', $user->posted_municipality);
-                $oldAgeIneligibleQuery->where('municipality_id', $user->posted_municipality);
-                $disabilityQuery->where('municipality_id', $user->posted_municipality);
-                $disabilityDeathQuery->where('municipality_id', $user->posted_municipality);
-                $disabilityIneligibleQuery->where('municipality_id', $user->posted_municipality);
+                $filters = ['municipality_id' => $user->posted_municipality];
 
             } elseif (in_array($userRole, [8, 10])) {
-                $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
-                $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+                $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+                ->pluck('block_id');
+                $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+                ->pluck('municipality_id');
 
-                $oldAgeQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+                $oldBase->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
-                $oldAgeDeathQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+                $oldDeath->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
-                $oldAgeIneligibleQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+                $oldInel->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
-                $disabilityQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+
+                $disBase->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
-                $disabilityDeathQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+                $disDeath->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
-                $disabilityIneligibleQuery->where(function($q) use ($blockIds, $municipalityIds) {
-                    $q->whereIn('block_id', $blockIds)->orWhereIn('municipality_id', $municipalityIds);
+                $disInel->where(function($q) use($blockIds,$municipalityIds){
+                    $q->whereIn('block_id',$blockIds)->orWhereIn('municipality_id',$municipalityIds);
                 });
 
             } elseif (in_array($userRole, [9, 11])) {
-                $oldAgeQuery->where('district_id', $user->posted_district);
-                $oldAgeDeathQuery->where('district_id', $user->posted_district);
-                $oldAgeIneligibleQuery->where('district_id', $user->posted_district);
-                $disabilityQuery->where('district_id', $user->posted_district);
-                $disabilityDeathQuery->where('district_id', $user->posted_district);
-                $disabilityIneligibleQuery->where('district_id', $user->posted_district);
+                $filters = ['district_id' => $user->posted_district];
 
             } elseif ($userRole == 22) {
-                $oldAgeQuery->where('special_school_id', $user->special_school_id);
-                $oldAgeDeathQuery->where('special_school_id', $user->special_school_id);
-                $oldAgeIneligibleQuery->where('special_school_id', $user->special_school_id);
-                $disabilityQuery->where('special_school_id', $user->special_school_id);
-                $disabilityDeathQuery->where('special_school_id', $user->special_school_id);
-                $disabilityIneligibleQuery->where('special_school_id', $user->special_school_id);
+                $filters = ['special_school_id' => $user->special_school_id];
+            }
+
+            if (isset($filters)) {
+                $oldBase->where($filters);
+                $oldDeath->where($filters);
+                $oldInel->where($filters);
+                $disBase->where($filters);
+                $disDeath->where($filters);
+                $disInel->where($filters);
             }
         }
 
-        $oldAgeQuery = $oldAgeQuery->selectRaw('district, COUNT(*) as total_oldage')->groupBy('district');
-        $oldAgeMbpyQuery = $oldAgeQuery->selectRaw('district, COUNT(*) as total_oldage_mbpy')
-        ->where('updated_scheme_name', 'MBPOAP')
-        ->groupBy('district');
-        $oldAgeNsapQuery = $oldAgeQuery->selectRaw('district, COUNT(*) as total_oldage_nsap')
-        ->where('updated_scheme_name', 'IGNOAP')
-        ->groupBy('district');
-        $oldAgeDeathQuery = $oldAgeDeathQuery->selectRaw('district, COUNT(*) as oldage_death')
-        ->where('discontinued_reason', 'Death')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
-        $oldAgeDeathMbpyQuery = $oldAgeDeathQuery->selectRaw('district, COUNT(*) as oldage_death_MBPY')
-        ->where('discontinued_reason', 'Death')
-        ->where('updated_scheme_name', 'MBPOAP')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
-        $oldAgeDeathNsapQuery = $oldAgeDeathQuery->selectRaw('district, COUNT(*) as oldage_death_NSAP')
-        ->where('discontinued_reason', 'Death')
-        ->where('updated_scheme_name', 'IGNOAP')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
-        $oldAgeIneligibleQuery = $oldAgeIneligibleQuery->selectRaw('district, COUNT(*) as oldage_ineligible')
-        ->where('discontinued_reason', 'Ineligible')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
+        if ($from_date && $to_date) {
+            $oldDeath->whereBetween('discontinued_date', [$from_date,$to_date]);
+            $oldInel ->whereBetween('discontinued_date', [$from_date,$to_date]);
+            $disDeath->whereBetween('discontinued_date', [$from_date,$to_date]);
+            $disInel ->whereBetween('discontinued_date', [$from_date,$to_date]);
+        }
 
-        $disabilityQuery = $disabilityQuery->selectRaw('district, COUNT(*) as total_disability')->groupBy('district');
-        $disabilityDeathQuery = $disabilityDeathQuery->selectRaw('district, COUNT(*) as disability_death')
-        ->where('discontinued_reason', 'Death')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
-        $disabilityIneligibleQuery = $disabilityIneligibleQuery->selectRaw('district, COUNT(*) as disability_ineligible')
-        ->where('discontinued_reason', 'Ineligible')
-        ->when($from_date && $to_date, fn($q) => $q->whereBetween('discontinued_date', [$from_date, $to_date]))
-        ->groupBy('district');
+        $oldBaseData = $oldBase->selectRaw('district, COUNT(*) AS total_oldage')
+        ->groupBy('district')->pluck('total_oldage','district')->toArray();
 
-        $oldage_total = $oldAgeQuery->pluck('total_oldage', 'district')->toArray();
-        $oldage_total_mbpy = $oldAgeQuery->pluck('total_oldage_mbpy', 'district')->toArray();
-        $oldage_total_nsap = $oldAgeQuery->pluck('total_oldage_nsap', 'district')->toArray();
-        $oldage_death = $oldAgeDeathQuery->pluck('oldage_death', 'district')->toArray();
-        $oldage_death_MBPY = $oldAgeDeathQuery->pluck('oldage_death_MBPY', 'district')->toArray();
-        $oldage_death_NSAP = $oldAgeDeathQuery->pluck('oldage_death_NSAP', 'district')->toArray();
-        $oldage_ineligible = $oldAgeIneligibleQuery->pluck('oldage_ineligible', 'district')->toArray();
+        $oldDeathData = $oldDeath->where('discontinued_reason','Death')
+        ->selectRaw('district, COUNT(*) AS oldage_death')
+        ->groupBy('district')->pluck('oldage_death','district')->toArray();
 
-        $disability_total = $disabilityQuery->pluck('total_disability', 'district')->toArray();
-        $disability_death = $disabilityDeathQuery->pluck('disability_death', 'district')->toArray();
-        $disability_ineligible = $disabilityIneligibleQuery->pluck('disability_ineligible', 'district')->toArray();
+        $oldInelData = $oldInel->where('discontinued_reason','Ineligible')
+        ->selectRaw('district, COUNT(*) AS oldage_ineligible')
+        ->groupBy('district')->pluck('oldage_ineligible','district')->toArray();
 
-        $all_districts = collect(array_merge(
-            array_keys($oldage_total),
-            array_keys($oldage_total_mbpy),
-            array_keys($oldage_total_nsap),
-            array_keys($oldage_death),
-            array_keys($oldage_death_MBPY),
-            array_keys($oldage_death_NSAP),
-            array_keys($oldage_ineligible),
-            array_keys($disability_total),
-            array_keys($disability_death),
-            array_keys($disability_ineligible),
+        $oldMbpoap = (clone $oldBase)->where('updated_scheme_name','MBPOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_total_mbpoap')
+        ->groupBy('district')->pluck('oldage_total_mbpoap','district')->toArray();
+
+        $oldIgnoap = (clone $oldBase)->where('updated_scheme_name','IGNOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_total_ignoap')
+        ->groupBy('district')->pluck('oldage_total_ignoap','district')->toArray();
+
+        $oldDeathMbpoap = (clone $oldDeath)->where('updated_scheme_name','MBPOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_death_mbpoap')
+        ->groupBy('district')->pluck('oldage_death_mbpoap','district')->toArray();
+
+        $oldDeathIgnoap = (clone $oldDeath)->where('updated_scheme_name','IGNOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_death_ignoap')
+        ->groupBy('district')->pluck('oldage_death_ignoap','district')->toArray();
+
+        $oldInelMbpoap = (clone $oldInel)->where('updated_scheme_name','MBPOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_ineligible_mbpoap')
+        ->groupBy('district')->pluck('oldage_ineligible_mbpoap','district')->toArray();
+
+        $oldInelIgnoap = (clone $oldInel)->where('updated_scheme_name','IGNOAP')
+        ->selectRaw('district, COUNT(*) AS oldage_ineligible_ignoap')
+        ->groupBy('district')->pluck('oldage_ineligible_ignoap','district')->toArray();
+
+        $disBaseData = $disBase->selectRaw('district, COUNT(*) AS total_disability')
+        ->groupBy('district')->pluck('total_disability','district')->toArray();
+
+        $disDeathData = $disDeath->where('discontinued_reason','Death')
+        ->selectRaw('district, COUNT(*) AS disability_death')
+        ->groupBy('district')->pluck('disability_death','district')->toArray();
+
+        $disInelData = $disInel->where('discontinued_reason','Ineligible')
+        ->selectRaw('district, COUNT(*) AS disability_ineligible')
+        ->groupBy('district')->pluck('disability_ineligible','district')->toArray();
+
+        $disMbpsdp = (clone $disBase)->where('updated_scheme_name','MBPSDP')
+        ->selectRaw('district, COUNT(*) AS disability_total_mbpsdp')
+        ->groupBy('district')->pluck('disability_total_mbpsdp','district')->toArray();
+
+        $disIgndp = (clone $disBase)->where('updated_scheme_name','IGNDP')
+        ->selectRaw('district, COUNT(*) AS disability_total_igndp')
+        ->groupBy('district')->pluck('disability_total_igndp','district')->toArray();
+
+        $disDeathMbpsdp = (clone $disDeath)->where('updated_scheme_name','MBPSDP')
+        ->selectRaw('district, COUNT(*) AS disability_death_mbpsdp')
+        ->groupBy('district')->pluck('disability_death_mbpsdp','district')->toArray();
+
+        $disDeathIgndp = (clone $disDeath)->where('updated_scheme_name','IGNDP')
+        ->selectRaw('district, COUNT(*) AS disability_death_igndp')
+        ->groupBy('district')->pluck('disability_death_igndp','district')->toArray();
+
+        $disInelMbpsdp = (clone $disInel)->where('updated_scheme_name','MBPSDP')
+        ->selectRaw('district, COUNT(*) AS disability_ineligible_mbpsdp')
+        ->groupBy('district')->pluck('disability_ineligible_mbpsdp','district')->toArray();
+
+        $disInelIgndp = (clone $disInel)->where('updated_scheme_name','IGNDP')
+        ->selectRaw('district, COUNT(*) AS disability_ineligible_igndp')
+        ->groupBy('district')->pluck('disability_ineligible_igndp','district')->toArray();
+
+        $allDistricts = collect(array_merge(
+            array_keys($oldBaseData), array_keys($oldMbpoap), array_keys($oldIgnoap),
+            array_keys($oldDeathData), array_keys($oldDeathMbpoap), array_keys($oldDeathIgnoap),
+            array_keys($oldInelData), array_keys($oldInelMbpoap), array_keys($oldInelIgnoap),
+            array_keys($disBaseData), array_keys($disMbpsdp), array_keys($disIgndp),
+            array_keys($disDeathData), array_keys($disDeathMbpsdp), array_keys($disDeathIgndp),
+            array_keys($disInelData), array_keys($disInelMbpsdp), array_keys($disInelIgndp)
         ))->unique()->sort()->values();
 
         $final_data = [];
-        $slno = 1;
+        $sl = 1;
 
-        foreach ($all_districts as $district) {
-            $totalOld = $oldage_total[$district] ?? 0;
-            $totalOldMbpy = $oldage_total_mbpy[$district] ?? 0;
-            $totalOldNsap = $oldage_total_nsap[$district] ?? 0;
-            $oldDeath = $oldage_death[$district] ?? 0;
-            $oldDeathMbpy = $oldage_death_MBPY[$district] ?? 0;
-            $oldDeathNsap = $oldage_death_NSAP[$district] ?? 0;
-            $oldIneligible = $oldage_ineligible[$district] ?? 0;
-            $oldActive = $totalOld - ($oldDeath + $oldIneligible);
-            $oldDiscontinued = $oldDeath + $oldIneligible;
+        foreach ($allDistricts as $district) {
 
-            $totalDis = $disability_total[$district] ?? 0;
-            $disDeath = $disability_death[$district] ?? 0;
-            $disIneligible = $disability_ineligible[$district] ?? 0;
-            $disActive = $totalDis - ($disDeath + $disIneligible);
-            $disDiscontinued = $disDeath + $disIneligible;
+            $totalOld = $oldBaseData[$district] ?? 0;
+            $oldDeathCount = $oldDeathData[$district] ?? 0;
+            $oldInelCount  = $oldInelData[$district] ?? 0;
 
-            $totalDiscontinued = $oldDiscontinued + $disDiscontinued;
-            $totalSanction = $totalOld + $totalDis;
-            $totalActive = $totalSanction - $totalDiscontinued;
+            $totalDis = $disBaseData[$district] ?? 0;
+            $disDeathCount = $disDeathData[$district] ?? 0;
+            $disInelCount  = $disInelData[$district] ?? 0;
 
             $final_data[] = [
-                'SlNo' => $slno++,
+                'SlNo' => $sl++,
                 'District' => $district,
+
                 'TotalOldage' => $totalOld,
-                'TotalOldageMbpy' => $totalOldMbpy,
-                'TotalOldageNsap' => $totalOldNsap,
-                'OldageDeath' => $oldDeath,
-                'OldageDeathMbpy' => $oldDeathMbpy,
-                'OldageDeathNsap' => $oldDeathNsap,
-                'OldageIneligible' => $oldIneligible,
-                'TotalOldageDiscontinued' => $oldDiscontinued,
-                'OldageActive' => $oldActive,
+                'TotalOldageMbpoap' => $oldMbpoap[$district] ?? 0,
+                'TotalOldageIgnoap' => $oldIgnoap[$district] ?? 0,
+
+                'OldageDeath' => $oldDeathCount,
+                'OldageDeathMbpoap' => $oldDeathMbpoap[$district] ?? 0,
+                'OldageDeathIgnoap' => $oldDeathIgnoap[$district] ?? 0,
+
+                'OldageIneligible' => $oldInelCount,
+                'OldageIneligibleMbpoap' => $oldInelMbpoap[$district] ?? 0,
+                'OldageIneligibleIgnoap' => $oldInelIgnoap[$district] ?? 0,
+
+                'TotalOldageDiscontinued' => $oldDeathCount + $oldInelCount,
+                'OldageActive' => $totalOld - ($oldDeathCount + $oldInelCount),
+
                 'TotalDisability' => $totalDis,
-                'DisabilityDeath' => $disDeath,
-                'DisabilityIneligible' => $disIneligible,
-                'TotalDisabilityDiscontinued' => $disDiscontinued,
-                'DisabilityActive' => $disActive,
-                'TotalSanction' => $totalSanction,
-                'TotalDiscontinued' => $totalDiscontinued,
-                'TotalActive' => $totalActive,
+                'TotalDisabilityMbpsdp' => $disMbpsdp[$district] ?? 0,
+                'TotalDisabilityIgndp' => $disIgndp[$district] ?? 0,
+
+                'DisabilityDeath' => $disDeathCount,
+                'DisabilityDeathMbpsdp' => $disDeathMbpsdp[$district] ?? 0,
+                'DisabilityDeathIgndp' => $disDeathIgndp[$district] ?? 0,
+
+                'DisabilityIneligible' => $disInelCount,
+                'DisabilityIneligibleMbpsdp' => $disInelMbpsdp[$district] ?? 0,
+                'DisabilityIneligibleIgndp' => $disInelIgndp[$district] ?? 0,
+
+                'TotalDisabilityDiscontinued' => $disDeathCount + $disInelCount,
+                'DisabilityActive' => $totalDis - ($disDeathCount + $disInelCount),
+
+                'TotalSanction' => $totalOld + $totalDis,
+                'TotalDiscontinued' => ($oldDeathCount+$oldInelCount)+($disDeathCount+$disInelCount),
+                'TotalActive' => ($totalOld + $totalDis) - (($oldDeathCount+$oldInelCount)+($disDeathCount+$disInelCount)),
             ];
         }
 
-        return view('dashboard.benf_3500_files.report.active_ineligible_with_scheme', compact('final_data', 'from_date', 'to_date'));
+        return view('dashboard.benf_3500_files.report.active_ineligible_with_scheme',
+            compact('final_data','from_date','to_date'));
     }
-
 }
