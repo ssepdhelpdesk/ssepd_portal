@@ -278,9 +278,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {
-        Route::get('active_ineligible', 'active_ineligible')->name('active_ineligible');
+        Route::get('active_ineligible', 'active_ineligible')->name('active_ineligible');        
         Route::get('sanction_report', 'sanction_report')->name('sanction_report');
         Route::get('duplicate_sanction_order_no', 'duplicate_sanction_order_no')->name('duplicate_sanction_order_no');
+        Route::get('active_ineligible_with_scheme', 'active_ineligible_with_scheme')->name('active_ineligible_with_scheme');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {
