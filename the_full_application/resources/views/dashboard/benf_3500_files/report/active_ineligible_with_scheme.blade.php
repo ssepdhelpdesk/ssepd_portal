@@ -57,6 +57,7 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
                </form>
             </div>
             <div class="table-responsive m-t-40">
+               <div id="columnToggleContainer" class="mb-3 p-2 border rounded bg-light"></div>
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                   <thead>
                      <tr>
@@ -211,19 +212,37 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
 @endsection 
 @section('script')
 <script>
-   $(function () {
-      $('#example23').DataTable({
-         processing: true,
-         responsive: false,
-         ordering: true,
-         scrollX: true,
-         lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
-         dom: 'Blfrtip',
-         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print',
-         ]
-      });
-      $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
-   });   
+$(document).ready(function () {
+
+    var table = $('#example23').DataTable({
+        scrollX: true,
+        pageLength: 30,
+        ordering: true,
+        dom: 'Bfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    });
+
+    var toggleContainer = $("#columnToggleContainer");
+    toggleContainer.append("<strong>Show / Hide Columns:</strong><br><br>");
+
+    table.columns().every(function (index) {
+        var column = this;
+        var columnName = $(column.header()).text().trim();
+        var checkbox = $(`
+            <label class="me-3">
+                <input type="checkbox" class="col-toggle me-1" data-column="${index}" checked>
+                ${columnName}
+            </label>
+        `);
+        toggleContainer.append(checkbox);
+        checkbox.find("input").on("change", function () {
+            var colIndex = $(this).data("column");
+            var col = table.column(colIndex);
+
+            col.visible(!col.visible());
+            $(this).prop("checked", col.visible());
+        });
+    });
+});
 </script>
 @endsection
