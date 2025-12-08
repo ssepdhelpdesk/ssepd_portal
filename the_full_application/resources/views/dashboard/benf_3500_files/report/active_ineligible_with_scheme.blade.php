@@ -60,111 +60,129 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                   <thead>
                      <tr>
-                        <th>Sl No</th>
-                        <th>District</th>
-                        <th>Total Oldage</th>
-                        <th>Total Oldage MBPOAP</th>
-                        <th>Total Oldage IGNOAP</th>
-                        <th>Oldage Death</th>
-                        <th>Oldage Death MBPOAP</th>
-                        <th>Oldage Death IGNOAP</th>
-                        <th>Oldage Ineligible</th>
-                        <th>Oldage Ineligible MBPOAP</th>
-                        <th>Oldage Ineligible IGNOAP</th>
-                        <th>Total Oldage Discontinued</th>
-                        <th>Total Oldage Discontinued MBPOAP</th>
-                        <th>Total Oldage Discontinued IGNOAP</th>
-                        <th>Oldage Active</th>
-                        <th>Total Disability</th>
-                        <th>Total Disability MBPSDP</th>
-                        <th>Total Disability IGNDP</th>
-                        <th>Disability Death</th>
-                        <th>Disability Death MBPSDP</th>
-                        <th>Disability Death IGNDP</th>
-                        <th>Disability Ineligible</th>
-                        <th>Disability Ineligible MBPSDP</th>
-                        <th>Disability Ineligible IGNDP</th>
-                        <th>Total Disability Discontinued</th>
-                        <th>Disability Active</th>
-                        <th>Total Sanction</th>
-                        <th>Total Discontinued</th>
-                        <th>Total Active</th>
-                     </tr>
-                  </thead>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Sl No</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">District</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
+                   </tr>
+                </thead>
 
-                  <tfoot>
-                     <tr>
-                        <th>Sl No</th>
-                        <th>District</th>
-                        <th>Total Oldage</th>
-                        <th>Total Oldage MBPOAP</th>
-                        <th>Total Oldage IGNOAP</th>
-                        <th>Oldage Death</th>
-                        <th>Oldage Death MBPOAP</th>
-                        <th>Oldage Death IGNOAP</th>
-                        <th>Oldage Ineligible</th>
-                        <th>Oldage Ineligible MBPOAP</th>
-                        <th>Oldage Ineligible IGNOAP</th>
-                        <th>Total Oldage Discontinued</th>
-                        <th>Total Oldage Discontinued MBPOAP</th>
-                        <th>Total Oldage Discontinued IGNOAP</th>
-                        <th>Oldage Active</th>
-                        <th>Total Disability</th>
-                        <th>Total Disability MBPSDP</th>
-                        <th>Total Disability IGNDP</th>
-                        <th>Disability Death</th>
-                        <th>Disability Death MBPSDP</th>
-                        <th>Disability Death IGNDP</th>
-                        <th>Disability Ineligible</th>
-                        <th>Disability Ineligible MBPSDP</th>
-                        <th>Disability Ineligible IGNDP</th>
-                        <th>Total Disability Discontinued</th>
-                        <th>Disability Active</th>
-                        <th>Total Sanction</th>
-                        <th>Total Discontinued</th>
-                        <th>Total Active</th>
-                     </tr>
-                  </tfoot>
-                  <tbody>
-                     @foreach($final_data as $row)
-                     <tr>
-                        <td>{{ $row['SlNo'] }}</td>
-                        <td>{{ $row['District'] }}</td>
-                        <td>{{ $row['TotalOldage'] }}</td>
-                        <td>{{ $row['TotalOldageMbpoap'] }}</td>
-                        <td>{{ $row['TotalOldageIgnoap'] }}</td>
-                        <td>{{ $row['OldageDeath'] }}</td>
-                        <td>{{ $row['OldageDeathMbpoap'] }}</td>
-                        <td>{{ $row['OldageDeathIgnoap'] }}</td>
-                        <td>{{ $row['OldageIneligible'] }}</td>
-                        <td>{{ $row['OldageIneligibleMbpoap'] }}</td>
-                        <td>{{ $row['OldageIneligibleIgnoap'] }}</td>
-                        <td>{{ $row['TotalOldageDiscontinued'] }}</td>
-                       <td>{{ $row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap'] }}</td>
-                       <td>{{ $row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap'] }}</td>
-                        <td>{{ $row['OldageActive'] }}</td>
-                        <td>{{ $row['TotalDisability'] }}</td>
-                        <td>{{ $row['TotalDisabilityMbpsdp'] }}</td>
-                        <td>{{ $row['TotalDisabilityIgndp'] }}</td>
-                        <td>{{ $row['DisabilityDeath'] }}</td>
-                        <td>{{ $row['DisabilityDeathMbpsdp'] }}</td>
-                        <td>{{ $row['DisabilityDeathIgndp'] }}</td>
-                        <td>{{ $row['DisabilityIneligible'] }}</td>
-                        <td>{{ $row['DisabilityIneligibleMbpsdp'] }}</td>
-                        <td>{{ $row['DisabilityIneligibleIgndp'] }}</td>
-                        <td>{{ $row['TotalDisabilityDiscontinued'] }}</td>
-                        <td>{{ $row['DisabilityActive'] }}</td>
-                        <td>{{ $row['TotalSanction'] }}</td>
-                        <td>{{ $row['TotalDiscontinued'] }}</td>
-                        <td>{{ $row['TotalActive'] }}</td>
-                     </tr>
-                     @endforeach
-                  </tbody>
-               </table>
-            </div>
-         </div>
+                <tfoot>
+                  <tr>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Sl No</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">District</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
+                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
+                </tr>
+             </tfoot>
+             <tbody>
+               @foreach($final_data as $row)
+               <tr>
+                  <td>{{ $row['SlNo'] }}</td>
+                  <td>{{ $row['District'] }}</td>
+                  <td>{{ $row['TotalOldage'] }}</td>
+                  <td>{{ $row['TotalOldageMbpoap'] }}</td>
+                  <td>{{ $row['TotalOldageIgnoap'] }}</td>
+                  <td>{{ $row['OldageDeath'] }}</td>
+                  <td>{{ $row['OldageDeathMbpoap'] }}</td>
+                  <td>{{ $row['OldageDeathIgnoap'] }}</td>
+                  <td>{{ $row['OldageIneligible'] }}</td>
+                  <td>{{ $row['OldageIneligibleMbpoap'] }}</td>
+                  <td>{{ $row['OldageIneligibleIgnoap'] }}</td>
+                  <td>{{ $row['TotalOldageDiscontinued'] }}</td>
+                  <td>{{ $row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap'] }}</td>
+                  <td>{{ $row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap'] }}</td>
+                  <td>{{ $row['OldageActive'] }}</td>
+                  <td>{{ $row['TotalOldageMbpoap'] - ($row['OldageDeathMbpoap'] + $row['OldageIneligibleMbpoap']) }}</td>
+                  <td>{{ $row['TotalOldageIgnoap'] - ($row['OldageDeathIgnoap'] + $row['OldageIneligibleIgnoap']) }}</td>
+                  <td>{{ $row['TotalDisability'] }}</td>
+                  <td>{{ $row['TotalDisabilityMbpsdp'] }}</td>
+                  <td>{{ $row['TotalDisabilityIgndp'] }}</td>
+                  <td>{{ $row['DisabilityDeath'] }}</td>
+                  <td>{{ $row['DisabilityDeathMbpsdp'] }}</td>
+                  <td>{{ $row['DisabilityDeathIgndp'] }}</td>
+                  <td>{{ $row['DisabilityIneligible'] }}</td>
+                  <td>{{ $row['DisabilityIneligibleMbpsdp'] }}</td>
+                  <td>{{ $row['DisabilityIneligibleIgndp'] }}</td>
+                  <td>{{ $row['TotalDisabilityDiscontinued'] }}</td>
+                  <td>{{ $row['DisabilityDeathMbpsdp'] + $row['DisabilityIneligibleMbpsdp'] }}</td>
+                  <td>{{ $row['DisabilityDeathIgndp'] + $row['DisabilityIneligibleIgndp'] }}</td>
+                  <td>{{ $row['DisabilityActive'] }}</td>
+                  <td>{{ $row['TotalDisabilityMbpsdp'] - ($row['DisabilityDeathMbpsdp'] + $row['DisabilityIneligibleMbpsdp']) }}</td>
+                  <td>{{ $row['TotalDisabilityIgndp'] - ($row['DisabilityDeathIgndp'] + $row['DisabilityIneligibleIgndp']) }}</td>
+                  <td>{{ $row['TotalSanction'] }}</td>
+                  <td>{{ $row['TotalDiscontinued'] }}</td>
+                  <td>{{ $row['TotalActive'] }}</td>
+               </tr>
+               @endforeach
+            </tbody>
+         </table>
       </div>
    </div>
+</div>
+</div>
 </div>
 <!-- row -->
 <!-- ============================================================== -->
