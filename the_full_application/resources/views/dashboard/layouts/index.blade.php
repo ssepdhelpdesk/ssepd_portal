@@ -6,27 +6,27 @@ SSEPD PORTAL
 @endsection 
 @section('content')
 <div class="container-fluid">
-   <!-- ============================================================== -->
-   <!-- Bread crumb and right sidebar toggle -->
-   <!-- ============================================================== -->
-   <div class="row page-titles">
-      <div class="col-md-7 align-self-center">
-         <div class="d-flex align-items-center">
-            <ol class="breadcrumb">
-               <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-               <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-         </div>
-      </div>
-      <div class="col-md-5 align-self-center text-end">
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="row page-titles">
+   <div class="col-md-7 align-self-center">
+      <div class="d-flex align-items-center">
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+         </ol>
       </div>
    </div>
-   <!-- ============================================================== -->
-   <!-- End Bread crumb and right sidebar toggle -->
-   <!-- ============================================================== -->
-   <!-- ============================================================== -->
-   <!-- Info box -->
-   <!-- ============================================================== -->
+   <div class="col-md-5 align-self-center text-end">
+   </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Info box -->
+<!-- ============================================================== -->
 
 <!-- ============================================================== -->
 <!-- End Info box -->
@@ -89,35 +89,57 @@ SSEPD PORTAL
                            <i class="fa {{ $priorityConfig['icon'] }} me-1"></i> {{ $notification->title }}
                         </h5>
                         <p class="mb-1 fw-semibold" style="white-space: pre-wrap; line-height: 1.5;">
-                          {!! nl2br(e($notification->message)) !!}
-                       </p>
-                       <small class="text-muted">
-                        <i class="fa fa-calendar me-1"></i>
-                        {{ \Carbon\Carbon::parse($notification->start_date . ' ' . $notification->start_time)->format('d M Y, g:i A') }}
-                        →
-                        {{ \Carbon\Carbon::parse($notification->end_date . ' ' . $notification->end_time)->format('d M Y, g:i A') }}
-                     </small>
+                           {!! nl2br(e($notification->message)) !!}
+                        </p>
+                        <small class="text-muted">
+                           <i class="fa fa-calendar me-1"></i>
+                           {{ \Carbon\Carbon::parse($notification->start_date . ' ' . $notification->start_time)->format('d M Y, g:i A') }}
+                           →
+                           {{ \Carbon\Carbon::parse($notification->end_date . ' ' . $notification->end_time)->format('d M Y, g:i A') }}
+                        </small>
+                     </div>
+                  </a>
+                  @endforeach
+                  @else
+                  <div class="text-center text-muted mt-5">
+                     <i class="fa fa-bell-slash fa-2x mb-2"></i>
+                     <p>No new notifications</p>
                   </div>
-               </a>
-               @endforeach
-               @else
-               <div class="text-center text-muted mt-5">
-                  <i class="fa fa-bell-slash fa-2x mb-2"></i>
-                  <p>No new notifications</p>
-               </div>
-               @endif
+                  @endif
 
-            </div>
-            <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;">
-               <div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
-            </div>
-            <div class="ps__scrollbar-y-rail" style="top: 0px; height: 430px; right: 0px;">
-               <div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 348px;"></div>
+               </div>
+               <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                  <div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+               </div>
+               <div class="ps__scrollbar-y-rail" style="top: 0px; height: 430px; right: 0px;">
+                  <div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 348px;"></div>
+               </div>
             </div>
          </div>
       </div>
    </div>
-</div>
+   <div class="col-md-4">
+      <div class="card border">
+         <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="d-flex no-block align-items-center">
+                     <div>
+                        <h3><i class="fab fa-houzz"></i></h3>
+                        <p class="text-muted">Toilet Construction Plan Chart</p>
+                     </div>
+                     
+                  </div>
+               </div>
+               <div class="col-12">
+                  <div class="progress">
+                     <span class="sl-date"> <a href="{{url('storage/special_school_files/toilet_construction_plan_chart.pdf')}}" target="_blank"> <button class="btn btn-info text-white from-prevent-multiple-submits">Download Plan Chart</button> </a></span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 
 <!-- ============================================================== -->

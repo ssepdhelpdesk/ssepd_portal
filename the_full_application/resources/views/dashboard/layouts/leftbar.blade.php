@@ -24,6 +24,7 @@
                <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="icon-speedometer"></i><span class="hide-menu">Dashboard </span></a>
                <div id="google_translate_element"></div>
             </li>
+            @if(auth()->user()->is_full_access_to_portal == 1)
             @can('user-access')
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-user-circle"></i><span class="hide-menu">Users</span></a>
@@ -80,6 +81,7 @@
                   @endcan
                </ul>
             </li>
+            @endif
             @endif
             <li class="nav-small-cap">--- BENEFICIARY SERVICES</li>
             <li>
