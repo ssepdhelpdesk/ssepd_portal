@@ -63,92 +63,92 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
                      <tr>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Sl No</th>
                       <th style="white-space: normal; word-wrap: break-word; max-width:120px;">District</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY</th>
-                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage (A = B + C)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP (B)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP (C)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death (D = E + F)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP (E)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP (F)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible (G = H + I)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP (H)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP (I)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued (J = K + L)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP (K)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP (L)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active (M = N + O)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP (N)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP (O)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability (P = Q + R)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP (Q)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP (R)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death (S = T + U)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP (T)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP (U)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible (V = W + X)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP (W)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP (X)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued (Y = Z + AA)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP (Z)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP (AA)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active (AB = AC + AD)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP (AC)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP (AD)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction (AE = AF + AG)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY (AF)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP (AG)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued (AH = AI + AJ)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY (AI)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP (AJ)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active (AK = AL + AM)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY (AL)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP (AM)</th>
                    </tr>
                 </thead>
 
                 <tfoot>
                   <tr>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Sl No</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">District</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY</th>
-                   <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP</th>
-                </tr>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Sl No</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">District</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage (A = B + C)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage MBPOAP (B)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage IGNOAP (C)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death (D = E + F)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death MBPOAP (E)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Death IGNOAP (F)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible (G = H + I)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible MBPOAP (H)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Oldage Ineligible IGNOAP (I)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued (J = K + L)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued MBPOAP (K)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Discontinued IGNOAP (L)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active (M = N + O)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active MBPOAP (N)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Oldage Active IGNOAP (O)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability (P = Q + R)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability MBPSDP (Q)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability IGNDP (R)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death (S = T + U)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death MBPSDP (T)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Death IGNDP (U)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible (V = W + X)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible MBPSDP (W)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Ineligible IGNDP (X)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued (Y = Z + AA)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP (Z)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP (AA)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active (AB = AC + AD)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP (AC)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP (AD)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction (AE = AF + AG)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY (AF)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP (AG)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued (AH = AI + AJ)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued MBPY (AI)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Discontinued NSAP (AJ)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active (AK = AL + AM)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active MBPY (AL)</th>
+                      <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Active NSAP (AM)</th>
+                   </tr>
              </tfoot>
              <tbody>
                @foreach($final_data as $row)
