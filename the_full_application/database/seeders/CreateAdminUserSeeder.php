@@ -29,7 +29,8 @@ class CreateAdminUserSeeder extends Seeder
             'created_at' => Carbon::now('Asia/Kolkata'),
             'updated_at' => Carbon::now('Asia/Kolkata'),
             'role_id' => '1',
-            'role_name' => 'SuperAdmin'
+            'role_name' => 'SuperAdmin',
+            'is_full_access_to_portal' => '1'
         ]);
 
         $AdminUser = User::create([
@@ -45,7 +46,8 @@ class CreateAdminUserSeeder extends Seeder
             'created_at' => Carbon::now('Asia/Kolkata'),
             'updated_at' => Carbon::now('Asia/Kolkata'),
             'role_id' => '2',
-            'role_name' => 'Admin'
+            'role_name' => 'Admin',
+            'is_full_access_to_portal' => '1'
         ]);
 
         $role_super_admin = Role::firstOrCreate(['name' => 'SuperAdmin']);

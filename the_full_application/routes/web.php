@@ -24,7 +24,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
     OldAge3500Controller,
     Disability3500Controller,
-    ReportOf3500Controller
+    ReportOf3500Controller,
+    SchemeMigrationEpController
 };
 
 use App\Http\Controllers\Frontend_Controller\{
@@ -282,6 +283,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('sanction_report', 'sanction_report')->name('sanction_report');
         Route::get('duplicate_sanction_order_no', 'duplicate_sanction_order_no')->name('duplicate_sanction_order_no');
         Route::get('active_ineligible_with_scheme', 'active_ineligible_with_scheme')->name('active_ineligible_with_scheme');
+    });
+
+    Route::prefix('schememigrationep')->name('schememigrationep.')->controller(SchemeMigrationEpController::class)->group(function () {
+        Route::get('oap_to_dp', 'oap_to_dp')->name('oap_to_dp');
+        Route::get('dp_to_oap', 'dp_to_oap')->name('dp_to_oap');
+        Route::get('check-oldage-benf-nsap-sanction-or-no', 'check_oldage_benf_nsap_sanction_or_no')->name('check_oldage_benf_nsap_sanction_or_no');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {

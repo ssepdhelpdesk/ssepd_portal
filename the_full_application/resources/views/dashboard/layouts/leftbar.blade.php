@@ -119,6 +119,14 @@
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
                         <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
                         <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
+                        <li><a href="{{route('admin.disability3500data.create')}}">Scheme DataEnrty</a></li>
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Scheme Migration</a>
+                           <ul aria-expanded="false" class="collapse">
+                              <li><a href="{{route('admin.schememigrationep.oap_to_dp')}}">OAP to DP</a></li>
+                              <li><a href="{{route('admin.schememigrationep.dp_to_oap')}}">DP to OAP</a></li>
+                           </ul>
+                        </li>
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction Order Number Correction</a>
                            <ul aria-expanded="false" class="collapse">
@@ -161,14 +169,14 @@
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-access')
                         <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
-                        <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
-                        <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
+                        <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>                        
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Daily Progress Report</a>
                            <ul aria-expanded="false" class="collapse">
                               <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB Daily pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward wise Daily Pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward wise Combined Daily Pension Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
                            </ul>
                         </li>
                         <li>

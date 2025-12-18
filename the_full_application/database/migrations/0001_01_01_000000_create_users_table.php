@@ -61,6 +61,7 @@ return new class extends Migration
             $table->string('role_name')->nullable();
             $table->string('department_section_id')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('is_full_access_to_portal')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
