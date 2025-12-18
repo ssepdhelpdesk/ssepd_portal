@@ -65,7 +65,7 @@ EP Pension || Scheme Migration
 											<label class="form-label">NSAP Sanction Order No <span class="itsrequired">*</span></label>
 											<div class="input-group">
 												<input type="text" id="nsap_sanction_order_no" name="nsap_sanction_order_no" value="{{ old('nsap_sanction_order_no') }}" class="form-control" placeholder="NSAP Sanction Order No">
-												<button type="submit" class="btn btn-primary"> Submit </button>
+												<button type="submit" id="submitBtn" class="btn btn-primary d-none"> Submit </button>
 											</div>
 											<div id="nsap_sanction_order_no_error"></div>
 											<div id="check_nsap_sanction_order_no"></div>
@@ -96,6 +96,7 @@ $(document).ready(function () {
 
         const sanctionNo = $(this).val().trim();
         $('#check_nsap_sanction_order_no').html('');
+        $('#submitBtn').addClass('d-none');
 
         if (!sanctionNo) {
             $('#check_nsap_sanction_order_no').html(
@@ -140,6 +141,8 @@ $(document).ready(function () {
                     ${res.oldage.gp_or_ward}, ${res.oldage.village}.
                     </span>`
                 );
+
+                $('#submitBtn').removeClass('d-none');
             }
 
             else if (res.status === 4) {
@@ -150,7 +153,7 @@ $(document).ready(function () {
                     from ${res.disability.district}, ${res.disability.block_or_ulb}, 
                     ${res.disability.gp_or_ward}, ${res.disability.village}.
                     <br><br>
-                    So you are unable to Migrate this Beneficiary, Please contact with Administrator.
+                    So you are unable to Migrate this Beneficiary from Oldage to Disability, Please contact with Administrator.
                     </span>`
                 );
             }
