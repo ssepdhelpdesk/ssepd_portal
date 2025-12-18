@@ -50,25 +50,25 @@ use App\Models\PensionVerificationAppModels\{
 
 class SchemeMigrationEpController extends Controller
 {
-    public function oap_to_dp(Request $request)
+    public function oap_to_dp_check(Request $request)
     {
         return view('dashboard.benf_3500_files.scheme_migration.oap_to_dp_scheme_migration');
     }
 
     public function check_oldage_benf_nsap_sanction_or_no(Request $request)
 {
-    $nsap_sanction_order_no = trim($request->nsap_sanction_order_no);
+    $sanctionNo = strtoupper(trim($request->nsap_sanction_order_no));
 
-    if (!$nsap_sanction_order_no) {
+    if (!$sanctionNo) {
         return response()->json(['status' => 2]);
     }
 
     $oldAge = OldAge3500Pensioner::where('db_status', 1)
-        ->where('nsap_sanction_order_no', $nsap_sanction_order_no)
+        ->whereRaw('TRIM(UPPER(nsap_sanction_order_no)) = ?', [$sanctionNo])
         ->first();
 
     $disability = Disability3500Pensioner::where('db_status', 1)
-        ->where('nsap_sanction_order_no', $nsap_sanction_order_no)
+        ->whereRaw('TRIM(UPPER(nsap_sanction_order_no)) = ?', [$sanctionNo])
         ->first();
 
     if ($oldAge && $disability) {
@@ -93,7 +93,19 @@ class SchemeMigrationEpController extends Controller
         ]);
     }
 
-    return response()->json(['status' => 0]);
+    // ❗ Not found anywhere → treat as invalid
+    return response()->json(['status' => 2]);
 }
+
+
+
+    public function oap_to_dp(Request $request)
+    {
+        $validationRules = [
+            'nsap_sanction_order_no' => 'required',
+        ];
+        return $request->nsap_sanction_order_no;
+        return view('dashboard.benf_3500_files.scheme_migration.oap_to_dp_scheme_migration');
+    }
 
 }

@@ -123,8 +123,8 @@
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Scheme Migration</a>
                            <ul aria-expanded="false" class="collapse">
-                              <li><a href="{{route('admin.schememigrationep.oap_to_dp')}}">OAP to DP</a></li>
-                              <li><a href="{{route('admin.schememigrationep.dp_to_oap')}}">DP to OAP</a></li>
+                              <li><a href="{{route('admin.schememigrationep.oap_to_dp_check')}}">OAP to DP</a></li>
+                              <li><a href="{{route('admin.schememigrationep.dp_to_oap_check')}}">DP to OAP</a></li>
                            </ul>
                         </li>
                         <li>
