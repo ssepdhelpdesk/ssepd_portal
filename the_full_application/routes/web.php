@@ -286,11 +286,12 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     });
 
     Route::prefix('schememigrationep')->name('schememigrationep.')->controller(SchemeMigrationEpController::class)->group(function () {
-        Route::get('oap_to_dp_check', 'oap_to_dp_check')->name('oap_to_dp_check');
-        Route::post('oap_to_dp', 'oap_to_dp')->name('oap_to_dp');
-        Route::get('dp_to_oap_check', 'dp_to_oap_check')->name('dp_to_oap_check');
-        Route::get('dp_to_oap', 'dp_to_oap')->name('dp_to_oap');
-        Route::get('check-oldage-benf-nsap-sanction-or-no', 'check_oldage_benf_nsap_sanction_or_no')->name('check_oldage_benf_nsap_sanction_or_no');
+        Route::get('nsap_sanction_order_no_check', 'nsap_sanction_order_no_check')->name('nsap_sanction_order_no_check');
+        Route::post('nsap_sanction_order_no_check_list', 'nsap_sanction_order_no_check_list')->name('nsap_sanction_order_no_check_list');
+        Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
+        Route::get('{id}/oap_to_dp_migration', 'oap_to_dp_migration')->name('oap_to_dp_migration');
+        Route::get('{id}/dp_to_oap_migration', 'dp_to_oap_migration')->name('dp_to_oap_migration');
+        Route::post('{id}/oap_to_dp_migration_update', 'oap_to_dp_migration_update')->name('oap_to_dp_migration_update');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {

@@ -53,7 +53,7 @@ EP Pension || Scheme Migration
 					@endif
 					<div id="alert-container"></div>
 					<div class="col-sm-12 col-xs-12">
-						<form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.schememigrationep.oap_to_dp') }}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
+						<form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.schememigrationep.nsap_sanction_order_no_check_list') }}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
 							@csrf
 							@method('post')
 							<div class="form-body">
@@ -83,10 +83,10 @@ EP Pension || Scheme Migration
 						
 						@else
 						<div class="table-responsive">
-							<table class="table table-bordered table-striped">
+							<table id="example23" class="table table-bordered table-striped">
 								<thead class="table-dark">
 									<tr>
-										<th>#</th>
+										<th>Sl.No</th>
 										<th>Type</th>
 										<th>Scheme</th>
 										<th>Beneficiary Name</th>
@@ -99,6 +99,7 @@ EP Pension || Scheme Migration
 										<th>Aadhaar</th>
 										<th>NSAP Order No</th>
 										<th>Status</th>
+										<th>Migrate</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -121,22 +122,40 @@ EP Pension || Scheme Migration
 										<td>{{ $row['aadhaar'] }}</td>
 										<td>{{ $row['nsap_no'] }}</td>
 										<td>{{ $row['status'] }}</td>
-									</tr>
-									@endforeach
-								</tbody>
-							</table>
-						</div>
-						@endif
 
+										<td>
+											@if($beneficiaries->count() === 1)
+											<a href="{{ route($row['migration_link'], $row['id']) }}"
+											target="_blank"
+											class="btn btn-sm btn-warning">
+											Migrate
+										</a>
+										@else
+										<span class="text-danger fw-semibold">
+											<small>Multiple beneficiary records have been found for the Sanction Order Number 
+											<b>{{ $row['nsap_no'] }}</b>.  
+											Scheme migration cannot be performed until this <b>duplication is resolved</b>.
+											Please verify and correct the <b>duplicate Sanction Order Number records</b>, then retry the migration.</small>
+										</span>
+										@endif
+									</td>
+								</tr>
+								@endforeach
+
+							</tbody>
+						</table>
 					</div>
+					@endif
+
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- row -->
-	<!-- ============================================================== -->
-	<!-- End Page Content -->
-	<!-- ============================================================== -->
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
@@ -228,5 +247,21 @@ EP Pension || Scheme Migration
 		});
 
 	});
+</script>
+<script>
+   $(function () {
+     $('#example23').DataTable({
+       processing: true,
+       responsive: false,
+       ordering: true,
+       scrollX: true,
+       lengthMenu: [[30, 500, 1000, -1], [30, 500, 1000, "All"]],
+       dom: 'Blfrtip',
+       buttons: [
+         'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+   });
+     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+  });
 </script>
 @endsection

@@ -119,14 +119,7 @@
                         <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
                         <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
                         <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
-                        <li><a href="{{route('admin.disability3500data.create')}}">Scheme DataEnrty</a></li>
-                        <li>
-                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Scheme Migration</a>
-                           <ul aria-expanded="false" class="collapse">
-                              <li><a href="{{route('admin.schememigrationep.oap_to_dp_check')}}">OAP to DP</a></li>
-                              <li><a href="{{route('admin.schememigrationep.dp_to_oap_check')}}">DP to OAP</a></li>
-                           </ul>
-                        </li>
+                        <li><a href="{{route('admin.schememigrationep.nsap_sanction_order_no_check')}}">Scheme Migration</a></li>
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction Order Number Correction</a>
                            <ul aria-expanded="false" class="collapse">

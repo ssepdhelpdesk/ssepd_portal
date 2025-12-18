@@ -723,7 +723,7 @@ public function create()
 public function store(Request $request)
 {
     $validationRules = [
-        'scheme_name' => 'required',
+        'scheme_name' => 'required|in:MBPOAP,IGNOAP',
         'name_of_the_beneficiary' => 'required',
         'father_or_husband_name' => 'required',
         'date_of_birth' => 'required|date',
@@ -928,7 +928,7 @@ public function edit(string $id)
 public function update(Request $request, string $id)
 {
     $validationRules = [
-        'scheme_name' => 'required',
+        'scheme_name' => 'required|in:MBPOAP,IGNOAP',
         'name_of_the_beneficiary' => 'required',
         'father_or_husband_name' => 'required',
         'date_of_birth' => 'required|date',
