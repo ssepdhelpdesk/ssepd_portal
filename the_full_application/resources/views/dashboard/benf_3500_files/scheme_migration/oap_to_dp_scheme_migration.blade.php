@@ -134,7 +134,7 @@ $(document).ready(function () {
 
             else if (res.status === 3) {
                 $('#check_nsap_sanction_order_no').html(
-                    `<span style="color:#FF0000">
+                    `<span style="color:#01c0c8">
                     This NSAP Sanction Order No is registered with 
                     <b>OldAge Pensioner</b>: ${res.oldage.name_of_the_beneficiary}, 
                     from ${res.oldage.district}, ${res.oldage.block_or_ulb}, 
