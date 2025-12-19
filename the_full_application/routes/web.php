@@ -292,6 +292,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/oap_to_dp_migration', 'oap_to_dp_migration')->name('oap_to_dp_migration');
         Route::get('{id}/dp_to_oap_migration', 'dp_to_oap_migration')->name('dp_to_oap_migration');
         Route::post('{id}/oap_to_dp_migration_update', 'oap_to_dp_migration_update')->name('oap_to_dp_migration_update');
+        Route::post('{id}/dp_to_oap_migration_update', 'dp_to_oap_migration_update')->name('dp_to_oap_migration_update');
     });
 
     Route::prefix('ddrc')->name('ddrc.')->controller(DdrcController::class)->group(function () {

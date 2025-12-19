@@ -40,19 +40,20 @@ EP Pension || OAP to DP Migration
 			<div class="card">
 				<div class="card-body">
 					<h4 class="card-title"></h4>
-					@include('dashboard.component.message')
-					@if (count($errors) > 0)
-					<div class="alert alert-danger">
-						<strong>Whoops!</strong> There were some problems with your input.<br><br>
-						<ul>
-							@foreach ($errors->all() as $error)
-							<li>{{ $error }}</li>
-							@endforeach
-						</ul>
-					</div>
-					@endif
+					
 					<div id="alert-container"></div>
 					<div class="col-sm-12 col-xs-12">
+						@include('dashboard.component.message')
+						@if (count($errors) > 0)
+						<div class="alert alert-danger">
+							<strong>Whoops!</strong> There were some problems with your input.<br><br>
+							<ul>
+								@foreach ($errors->all() as $error)
+								<li>{{ $error }}</li>
+								@endforeach
+							</ul>
+						</div>
+						@endif
 						<form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.schememigrationep.oap_to_dp_migration_update', $oldAge3500Pensioner->id)}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
 							@csrf
 							@method('post')
@@ -236,7 +237,7 @@ EP Pension || OAP to DP Migration
 									<div class="col-md-3">
 										<div class="form-group" id="sub_collector_sanction_order_no_div">
 											<label class="form-label">Sub-Collector Sanction Order No<span class="itsrequired"> *</span></label>
-											<input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no', $oldAge3500Pensioner->sub_collector_sanction_order_no)}}" class="form-control" placeholder="Sub-Collector Sanction Order No" >
+											<input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no', $oldAge3500Pensioner->sub_collector_sanction_order_no)}}" class="form-control" placeholder="Sub-Collector Sanction Order No" readonly>
 											<div id="sub_collector_sanction_order_no_error"></div>
 											@error('sub_collector_sanction_order_no')
 											<label class="error">{{ $message }}</label>

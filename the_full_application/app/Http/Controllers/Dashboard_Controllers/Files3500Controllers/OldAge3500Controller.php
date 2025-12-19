@@ -95,14 +95,15 @@ public function index(Request $request)
             </button>
             <div class="dropdown-menu animated flipInX">';
 
-            if (
-                auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by)
-            ) {
+            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            {
                 $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
                 data-bs-toggle="modal" 
                 data-bs-target="#actionModal" 
                 data-id="'.$row->id.'"> Discontinue </a>';
-            } {
+            }
+            if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            {
                 $editUrl = route('admin.oldage3500data.edit', $row->id);
                 $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
             }
@@ -219,202 +220,202 @@ public function index_district(Request $request)
 
 /*public function oldage_index_district_block_ulb(Request $request)
 {        
-    if ($request->ajax()) {
-        $user = auth()->user();
-        $userRole = $user->role_id;
+if ($request->ajax()) {
+$user = auth()->user();
+$userRole = $user->role_id;
 
-        $query = OldAge3500Pensioner::query();
+$query = OldAge3500Pensioner::query();
 
-        if ($userRole == 9) {
-            $postedDistrict = $user->posted_district;
+if ($userRole == 9) {
+$postedDistrict = $user->posted_district;
 
-            $activeDistrictIds = District3500::where('district_id', $postedDistrict)
-            ->where('is_iap', 'a')
-            ->pluck('district_id')
-            ->toArray();
+$activeDistrictIds = District3500::where('district_id', $postedDistrict)
+->where('is_iap', 'a')
+->pluck('district_id')
+->toArray();
 
-            $query->where('district_id', $postedDistrict)
-            ->where('status', 'Active');
+$query->where('district_id', $postedDistrict)
+->where('status', 'Active');
 
-            if (!empty($activeDistrictIds)) {
-                $query->where(function($q) {
-                    $q->where(function($sub) {
-                        $sub->whereNotNull('block_id')
-                        ->whereNull('gp_id');
-                    })
-                    ->orWhere(function($sub) {
-                        $sub->whereNotNull('municipality_id')
-                        ->whereNull('ward_id');
-                    });
-                });
-            }
-        }
+if (!empty($activeDistrictIds)) {
+$query->where(function($q) {
+$q->where(function($sub) {
+$sub->whereNotNull('block_id')
+->whereNull('gp_id');
+})
+->orWhere(function($sub) {
+$sub->whereNotNull('municipality_id')
+->whereNull('ward_id');
+});
+});
+}
+}
 
-        if ($userRole == 4) {
-            $postedBlock = $user->posted_block;
+if ($userRole == 4) {
+$postedBlock = $user->posted_block;
 
-            $activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
-            ->where('is_active', 'active')
-            ->pluck('gp_id')
-            ->toArray();
+$activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
+->where('is_active', 'active')
+->pluck('gp_id')
+->toArray();
 
-            $query->where('block_id', $postedBlock)
-            ->where('status', 'Active');
+$query->where('block_id', $postedBlock)
+->where('status', 'Active');
 
-            if (!empty($activeGPIds)) {
-                $query->whereNull('gp_id');
-            }
+if (!empty($activeGPIds)) {
+$query->whereNull('gp_id');
+}
 
-        }
+}
 
-        if ($userRole == 5) {
-            $postedMunicipality = $user->posted_municipality;
+if ($userRole == 5) {
+$postedMunicipality = $user->posted_municipality;
 
-            $activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
-            ->where('is_active', '1')
-            ->pluck('ward_code')
-            ->toArray();
+$activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
+->where('is_active', '1')
+->pluck('ward_code')
+->toArray();
 
-            $query->where('municipality_id', $postedMunicipality)
-            ->where('status', 'Active');
+$query->where('municipality_id', $postedMunicipality)
+->where('status', 'Active');
 
-            if (!empty($activeWardIds)) {
-                $query->whereNull('ward_id');
-            }
-        }
+if (!empty($activeWardIds)) {
+$query->whereNull('ward_id');
+}
+}
 
-        return DataTables::eloquent($query)
-        ->addIndexColumn()
-        ->addColumn('complete_address', function ($row) {
-            $parts = array_filter([
-                $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
-                $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
-                $row->village !== 'Not Provided By District' ? $row->village : ''
-            ]);
+return DataTables::eloquent($query)
+->addIndexColumn()
+->addColumn('complete_address', function ($row) {
+$parts = array_filter([
+$row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
+$row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
+$row->village !== 'Not Provided By District' ? $row->village : ''
+]);
 
-            return implode(', ', $parts);
-        })
-        ->addColumn('action', function ($row) {
-            $buttons = '';
+return implode(', ', $parts);
+})
+->addColumn('action', function ($row) {
+$buttons = '';
 
-            if (auth()->user()->can('pension-3500-edit')) {
-                $editUrl = route('admin.oldage3500data.edit', $row->id);
-                $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
-            }
+if (auth()->user()->can('pension-3500-edit')) {
+$editUrl = route('admin.oldage3500data.edit', $row->id);
+$buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+}
 
-            return $buttons;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
+return $buttons;
+})
+->rawColumns(['action'])
+->make(true);
 
-    }
-    return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
+}
+return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
 }*/
 
 /*public function oldage_index_district_block_ulb(Request $request)
 {        
-    if ($request->ajax()) {
-        $user = auth()->user();
-        $userRole = $user->role_id;
+if ($request->ajax()) {
+$user = auth()->user();
+$userRole = $user->role_id;
 
-        $query = OldAge3500Pensioner::query();
+$query = OldAge3500Pensioner::query();
 
-        if ($userRole == 9) {
-            $postedDistrict = $user->posted_district;
+if ($userRole == 9) {
+$postedDistrict = $user->posted_district;
 
-            $activeDistrictIds = District3500::where('district_id', $postedDistrict)
-            ->where('is_iap', 'a')
-            ->pluck('district_id')
-            ->toArray();
+$activeDistrictIds = District3500::where('district_id', $postedDistrict)
+->where('is_iap', 'a')
+->pluck('district_id')
+->toArray();
 
-            $query->where('district_id', $postedDistrict)
-            ->where('status', 'Active');
+$query->where('district_id', $postedDistrict)
+->where('status', 'Active');
 
-            if (!empty($activeDistrictIds)) {
-                $query->where(function ($q) {
-                    $q->where(function ($sub) {
-                        $sub->where(function ($q2) {
-                            $q2->whereNotNull('block_id')
-                            ->where('block_id', '!=', '');
-                        })
-                        ->where(function ($q2) {
-                            $q2->whereNull('gp_id')
-                            ->orWhere('gp_id', '');
-                        });
-                    })
-                    ->orWhere(function ($sub) {
-                        $sub->where(function ($q2) {
-                            $q2->whereNotNull('municipality_id')
-                            ->where('municipality_id', '!=', '');
-                        })
-                        ->where(function ($q2) {
-                            $q2->whereNull('ward_id')
-                            ->orWhere('ward_id', '');
-                        });
-                    });
-                });
-            }
-        }
+if (!empty($activeDistrictIds)) {
+$query->where(function ($q) {
+$q->where(function ($sub) {
+$sub->where(function ($q2) {
+$q2->whereNotNull('block_id')
+->where('block_id', '!=', '');
+})
+->where(function ($q2) {
+$q2->whereNull('gp_id')
+->orWhere('gp_id', '');
+});
+})
+->orWhere(function ($sub) {
+$sub->where(function ($q2) {
+$q2->whereNotNull('municipality_id')
+->where('municipality_id', '!=', '');
+})
+->where(function ($q2) {
+$q2->whereNull('ward_id')
+->orWhere('ward_id', '');
+});
+});
+});
+}
+}
 
-        if ($userRole == 4) {
-            $postedBlock = $user->posted_block;
+if ($userRole == 4) {
+$postedBlock = $user->posted_block;
 
-            $activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
-            ->where('is_active', 'active')
-            ->pluck('gp_id')
-            ->toArray();
+$activeGPIds = Grampanchyat3500::where('block_id', $postedBlock)
+->where('is_active', 'active')
+->pluck('gp_id')
+->toArray();
 
-            $query->where('block_id', $postedBlock)
-            ->where('status', 'Active');
+$query->where('block_id', $postedBlock)
+->where('status', 'Active');
 
-            if (!empty($activeGPIds)) {
-                $query->whereNull('gp_id');
-            }
+if (!empty($activeGPIds)) {
+$query->whereNull('gp_id');
+}
 
-        }
+}
 
-        if ($userRole == 5) {
-            $postedMunicipality = $user->posted_municipality;
+if ($userRole == 5) {
+$postedMunicipality = $user->posted_municipality;
 
-            $activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
-            ->where('is_active', '1')
-            ->pluck('ward_code')
-            ->toArray();
+$activeWardIds = WardMaster3500::where('municipal_area_code', $postedMunicipality)
+->where('is_active', '1')
+->pluck('ward_code')
+->toArray();
 
-            $query->where('municipality_id', $postedMunicipality)
-            ->where('status', 'Active');
+$query->where('municipality_id', $postedMunicipality)
+->where('status', 'Active');
 
-            if (!empty($activeWardIds)) {
-                $query->whereNull('ward_id');
-            }
-        }
+if (!empty($activeWardIds)) {
+$query->whereNull('ward_id');
+}
+}
 
-        return DataTables::eloquent($query)
-        ->addIndexColumn()
-        ->addColumn('complete_address', function ($row) {
-            $parts = array_filter([
-                $row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
-                $row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
-                $row->village !== 'Not Provided By District' ? $row->village : ''
-            ]);
+return DataTables::eloquent($query)
+->addIndexColumn()
+->addColumn('complete_address', function ($row) {
+$parts = array_filter([
+$row->block_or_ulb !== 'Not Provided By District' ? $row->block_or_ulb : '',
+$row->gp_or_ward !== 'Not Provided By District' ? $row->gp_or_ward : '',
+$row->village !== 'Not Provided By District' ? $row->village : ''
+]);
 
-            return implode(', ', $parts);
-        })
-        ->addColumn('action', function ($row) {
-            $buttons = '';
+return implode(', ', $parts);
+})
+->addColumn('action', function ($row) {
+$buttons = '';
 
-            if (auth()->user()->can('pension-3500-edit')) {
-                $editUrl = route('admin.oldage3500data.edit', $row->id);
-                $buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
-            }
+if (auth()->user()->can('pension-3500-edit')) {
+$editUrl = route('admin.oldage3500data.edit', $row->id);
+$buttons .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Update Address</a> ';
+}
 
-            return $buttons;
-        })
-        ->rawColumns(['action'])
-        ->make(true);
+return $buttons;
+})
+->rawColumns(['action'])
+->make(true);
 
-    }
-    return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
+}
+return view('dashboard.benf_3500_files.oldage3500dataDistBlockUlb');
 }*/
 
 public function oldage_index_district_block_ulb(Request $request)
@@ -862,7 +863,7 @@ public function store(Request $request)
             $old_age_pensioner_verification_app->ward_id = $ward_id_of_verification_app;
             $old_age_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
         }        
-        
+
         if ($validatedData['scheme_name'] === 'MBPOAP') {
             $old_age_pensioner_verification_app->scheme = 'MBPOAP';
             $old_age_pensioner_verification_app->scheme_type = 'MBPY';
@@ -1341,82 +1342,82 @@ public function oldage_duplicate_sanction_order_no_update(Request $request, stri
             'db_status'                       => $validatedData['db_status'],
         ]);
 
-        /*$old_age_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $id)->first();
-        if ($old_age_pensioner_verification_app) {
-            if ($request->ngo_address_type === "1") {
-                $user_level_of_verification_app = 'block';
-                $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
-                $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
-                $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('id');
-                $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('name');            
-                $gp_id_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('id');
-                $gp_name_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('name');
-                $village_id_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('id');
-                $village_name_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('name'); 
-            } elseif ($request->ngo_address_type === "2") {
-                $user_level_of_verification_app = 'municipality';
-                $district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
-                $district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
-                $block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('id');
-                $block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('name'); 
-                $ward_id_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('id');
-                $ward_name_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('name');
-            }
-            $old_age_pensioner_verification_app->sanction_number = $validatedData['nsap_sanction_order_no'];
-            $old_age_pensioner_verification_app->name = $validatedData['name_of_the_beneficiary'];
-            $old_age_pensioner_verification_app->gender = $validatedData['gender'];
-            $old_age_pensioner_verification_app->dob = $validatedData['date_of_birth'];
-            $old_age_pensioner_verification_app->father_name = $validatedData['father_or_husband_name'];
-            $old_age_pensioner_verification_app->state_id = 21;
-            $old_age_pensioner_verification_app->district_id = $district_id_of_verification_app;
-            $old_age_pensioner_verification_app->district_name = $district_name_of_verification_app;
-            $old_age_pensioner_verification_app->block_id = $block_id_of_verification_app;
-            $old_age_pensioner_verification_app->block_name = $block_name_of_verification_app;
-            if ($request->ngo_address_type === "1") {
-                $old_age_pensioner_verification_app->gp_id = $gp_id_of_verification_app;
-                $old_age_pensioner_verification_app->gp_name = $gp_name_of_verification_app;
-                $old_age_pensioner_verification_app->village_id = $village_id_of_verification_app;
-                $old_age_pensioner_verification_app->village_name = $village_name_of_verification_app;
-            } elseif ($request->ngo_address_type === "2") {
-                $old_age_pensioner_verification_app->ward_id = $ward_id_of_verification_app;
-                $old_age_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
-            }        
+/*$old_age_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $id)->first();
+if ($old_age_pensioner_verification_app) {
+if ($request->ngo_address_type === "1") {
+$user_level_of_verification_app = 'block';
+$district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+$district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+$block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('id');
+$block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'block')->where('block_code', $request->block)->value('name');            
+$gp_id_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('id');
+$gp_name_of_verification_app = PensionVerificationAppGramaPanchayat::where('gp_code', $request->grampanchayat)->value('name');
+$village_id_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('id');
+$village_name_of_verification_app = PensionVerificationAppVillage::where('village_code', $request->village)->value('name'); 
+} elseif ($request->ngo_address_type === "2") {
+$user_level_of_verification_app = 'municipality';
+$district_id_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('id');
+$district_name_of_verification_app = PensionVerificationAppDistrict::where('id', $request->district)->value('name');            
+$block_id_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('id');
+$block_name_of_verification_app = PensionVerificationAppBlock::where('type', 'municipality')->where('municipality_code', $request->municipality)->value('name'); 
+$ward_id_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('id');
+$ward_name_of_verification_app = PensionVerificationAppWard::where('ward_code', $request->ward)->value('name');
+}
+$old_age_pensioner_verification_app->sanction_number = $validatedData['nsap_sanction_order_no'];
+$old_age_pensioner_verification_app->name = $validatedData['name_of_the_beneficiary'];
+$old_age_pensioner_verification_app->gender = $validatedData['gender'];
+$old_age_pensioner_verification_app->dob = $validatedData['date_of_birth'];
+$old_age_pensioner_verification_app->father_name = $validatedData['father_or_husband_name'];
+$old_age_pensioner_verification_app->state_id = 21;
+$old_age_pensioner_verification_app->district_id = $district_id_of_verification_app;
+$old_age_pensioner_verification_app->district_name = $district_name_of_verification_app;
+$old_age_pensioner_verification_app->block_id = $block_id_of_verification_app;
+$old_age_pensioner_verification_app->block_name = $block_name_of_verification_app;
+if ($request->ngo_address_type === "1") {
+$old_age_pensioner_verification_app->gp_id = $gp_id_of_verification_app;
+$old_age_pensioner_verification_app->gp_name = $gp_name_of_verification_app;
+$old_age_pensioner_verification_app->village_id = $village_id_of_verification_app;
+$old_age_pensioner_verification_app->village_name = $village_name_of_verification_app;
+} elseif ($request->ngo_address_type === "2") {
+$old_age_pensioner_verification_app->ward_id = $ward_id_of_verification_app;
+$old_age_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
+}        
 
-            if ($validatedData['scheme_name'] === 'MBPOAP') {
-                $old_age_pensioner_verification_app->scheme = 'MBPOAP';
-                $old_age_pensioner_verification_app->scheme_type = 'MBPY';
-            } else {
-                $old_age_pensioner_verification_app->scheme = 'IGNOAP';
-                $old_age_pensioner_verification_app->scheme_type = 'NSAP';
-            }
-            $old_age_pensioner_verification_app->age = $validatedData['age'];
-            $old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
-            $old_age_pensioner_verification_app->user_level = $user_level_of_verification_app;        
-            $old_age_pensioner_verification_app->disability_percentage = null;
-            $old_age_pensioner_verification_app->disability_category = null;
-            $old_age_pensioner_verification_app->udid_no = null;
-            $old_age_pensioner_verification_app->updated_scheme_name = $validatedData['scheme_name'];
-            $old_age_pensioner_verification_app->excel_data_type = 'OAPEP';
-            $old_age_pensioner_verification_app->ssepd_id = (string) $id;
-            $old_age_pensioner_verification_app->status = '1';
-            $old_age_pensioner_verification_app->is_new = '1';
-            $old_age_pensioner_verification_app->save();
-        }*/
+if ($validatedData['scheme_name'] === 'MBPOAP') {
+$old_age_pensioner_verification_app->scheme = 'MBPOAP';
+$old_age_pensioner_verification_app->scheme_type = 'MBPY';
+} else {
+$old_age_pensioner_verification_app->scheme = 'IGNOAP';
+$old_age_pensioner_verification_app->scheme_type = 'NSAP';
+}
+$old_age_pensioner_verification_app->age = $validatedData['age'];
+$old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
+$old_age_pensioner_verification_app->user_level = $user_level_of_verification_app;        
+$old_age_pensioner_verification_app->disability_percentage = null;
+$old_age_pensioner_verification_app->disability_category = null;
+$old_age_pensioner_verification_app->udid_no = null;
+$old_age_pensioner_verification_app->updated_scheme_name = $validatedData['scheme_name'];
+$old_age_pensioner_verification_app->excel_data_type = 'OAPEP';
+$old_age_pensioner_verification_app->ssepd_id = (string) $id;
+$old_age_pensioner_verification_app->status = '1';
+$old_age_pensioner_verification_app->is_new = '1';
+$old_age_pensioner_verification_app->save();
+}*/
 
-        DB::commit();
-        return redirect()->route('admin.oldage3500data.oldage_duplicate_sanction_order_no')->with('info', 'Sanction Order No/Address Updated successfully.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error("🏫 OldAge 3500 Benf Address Update form submission failed", [
-            'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
-            'trace'   => $e->getTraceAsString(),
-            'time'    => now()->toDateTimeString(),
-            'user_id' => auth()->id(),
-        ]);
-        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
-    }
+DB::commit();
+return redirect()->route('admin.oldage3500data.oldage_duplicate_sanction_order_no')->with('info', 'Sanction Order No/Address Updated successfully.');
+} catch (\Exception $e) {
+    DB::rollBack();
+    \Log::error("🏫 OldAge 3500 Benf Address Update form submission failed", [
+        'message' => $e->getMessage(),
+        'file'    => $e->getFile(),
+        'line'    => $e->getLine(),
+        'trace'   => $e->getTraceAsString(),
+        'time'    => now()->toDateTimeString(),
+        'user_id' => auth()->id(),
+    ]);
+    return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+}
 }
 
 public function oldage_wrong_sanction_order_no(Request $request)
