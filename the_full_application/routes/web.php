@@ -338,6 +338,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('month_wise_fund_requirement_comparison_for_block_ulb', 'month_wise_fund_requirement_comparison_for_block_ulb')->name('month_wise_fund_requirement_comparison_for_block_ulb');
 
         Route::get('block_ulb_wise_daily_pension_disbursement_report', 'block_ulb_wise_daily_pension_disbursement_report')->name('block_ulb_wise_daily_pension_disbursement_report');
+        Route::get('block_ulb_wise_monthly_report', 'block_ulb_wise_monthly_report')->name('block_ulb_wise_monthly_report');
+        Route::get('block_ulb_wise_monthly_report_ajax', 'block_ulb_wise_monthly_report_ajax')->name('block_ulb_wise_monthly_report_ajax');
+        Route::get('district_wise_monthly_report', 'district_wise_monthly_report')->name('district_wise_monthly_report');
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {

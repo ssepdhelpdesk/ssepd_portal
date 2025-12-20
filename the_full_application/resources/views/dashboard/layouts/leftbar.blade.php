@@ -166,7 +166,9 @@
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Daily Progress Report</a>
                            <ul aria-expanded="false" class="collapse">
-                              <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB Daily pension Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_report')}}">District wise Combined Daily pension Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB wise Daily pension Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB wise Combined Daily pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward wise Daily Pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward wise Combined Daily Pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
