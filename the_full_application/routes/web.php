@@ -230,6 +230,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/pension_authority_edit', 'pension_authority_edit')->name('pension_authority_edit');
         Route::post('{id}/pension_authority_update', 'pension_authority_update')->name('pension_authority_update');
         Route::get('{id}/pension_authority_delete', 'pension_authority_delete')->name('pension_authority_delete');
+
+        Route::get('district_wise_monthly_fund_requirement_report', 'district_wise_monthly_fund_requirement_report')->name('district_wise_monthly_fund_requirement_report');
     });
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {
@@ -340,7 +342,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('block_ulb_wise_daily_pension_disbursement_report', 'block_ulb_wise_daily_pension_disbursement_report')->name('block_ulb_wise_daily_pension_disbursement_report');
         Route::get('block_ulb_wise_monthly_report', 'block_ulb_wise_monthly_report')->name('block_ulb_wise_monthly_report');
         Route::get('block_ulb_wise_monthly_report_ajax', 'block_ulb_wise_monthly_report_ajax')->name('block_ulb_wise_monthly_report_ajax');
-        Route::get('district_wise_monthly_report', 'district_wise_monthly_report')->name('district_wise_monthly_report');
+        Route::get('district_wise_monthly_pension_disbursement_report', 'district_wise_monthly_pension_disbursement_report')->name('district_wise_monthly_pension_disbursement_report');
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {

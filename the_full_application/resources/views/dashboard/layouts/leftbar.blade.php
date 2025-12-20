@@ -162,11 +162,12 @@
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-access')
                         <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
-                        <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>                        
+                        <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
+                        <li><a href="{{route('admin.pension.district_wise_monthly_fund_requirement_report')}}">District wise Combined Fund Requirements</a></li>
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Daily Progress Report</a>
-                           <ul aria-expanded="false" class="collapse">
-                              <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_report')}}">District wise Combined Daily pension Disbursement</a></li>
+                           <ul aria-expanded="false" class="collapse">                              
+                              <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_pension_disbursement_report')}}">District wise Combined Daily pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB wise Daily pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB wise Combined Daily pension Disbursement</a></li>
                               <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward wise Daily Pension Disbursement</a></li>

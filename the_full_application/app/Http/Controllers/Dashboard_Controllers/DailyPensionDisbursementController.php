@@ -2680,7 +2680,7 @@ public function block_ulb_wise_monthly_report(Request $request)
     );
 }
 
-public function district_wise_monthly_report(Request $request)
+public function district_wise_monthly_pension_disbursement_report(Request $request)
 {
     $user = Auth::user();
     $userRole = $user->role_id;
@@ -2819,7 +2819,7 @@ public function district_wise_monthly_report(Request $request)
         ->toArray();
 
     return view(
-        'dashboard.pension.dailypension.district_wise_monthly_report',
+        'dashboard.pension.dailypension.district_wise_monthly_pension_disbursement_report',
         [
             'data' => $final,
             'forTheMonth' => $forTheMonth,
@@ -2827,7 +2827,6 @@ public function district_wise_monthly_report(Request $request)
         ]
     );
 }
-
 
 public function block_ulb_wise_monthly_report_ajax(Request $request)
 {

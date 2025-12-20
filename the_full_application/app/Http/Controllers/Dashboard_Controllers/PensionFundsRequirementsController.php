@@ -1136,4 +1136,152 @@ class PensionFundsRequirementsController extends Controller
 
         return redirect()->back()->with('info', 'Deleted Successfully');
     }
+
+    public function district_wise_monthly_fund_requirement_report(Request $request)
+    {
+        $user = Auth::user();
+        $userRole = $user->role_id;
+
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+        $forTheMonth = $request->for_the_month
+        ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
+
+        if (!$forTheMonth) {
+            abort(404, 'Disbursement month not configured');
+        }
+
+        $allowedDistrictIds = collect();
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+            $allowedDistrictIds = District::where('is_active', 'active')->pluck('district_id');
+        } elseif (in_array($userRole, [9, 11])) {
+            $allowedDistrictIds = collect([$user->posted_district]);
+        } elseif (in_array($userRole, [4, 6, 5, 8, 10])) {
+            if ($user->posted_block) {
+                $block = Block::find($user->posted_block);
+                if ($block) $allowedDistrictIds = collect([$block->district_id]);
+            } elseif ($user->posted_municipality) {
+                $ulb = Municipality::find($user->posted_municipality);
+                if ($ulb) $allowedDistrictIds = collect([$ulb->district_id]);
+            } elseif ($user->posted_subdiv) {
+                $districts = Block::where('subdivision_id', $user->posted_subdiv)->pluck('district_id');
+                $allowedDistrictIds = $districts;
+            }
+        }
+
+        $daily = PensionFundsRequirement::where('for_the_month', $forTheMonth)
+        ->where('status', 1)
+        ->whereIn('district_id', $allowedDistrictIds)
+        ->get();
+
+        $fundRates = [
+            'oap_below_80' => 1000,
+            'oap_above_80' => 3500,
+            'widow_pension' => 1000,
+            'disabled_pension' => 1000,
+            'sdp_below_80' => 1200,
+            'sdp_above_80' => 3500,
+            'sdoap' => 3500,
+            'clp' => 1000,
+            'wp_aids' => 1000,
+            'dp_aids' => 1000,
+            'unmarried_women' => 1000,
+            'orphan_covid' => 1000,
+            'widow_covid' => 1000,
+            'divorce_destitute' => 1000,
+            'transgender' => 1000,
+        ];
+
+        $fundsRaw = PensionFundsRequirement::where('for_the_month', $forTheMonth)
+        ->where('status', 1)
+        ->whereIn('district_id', $allowedDistrictIds)
+        ->selectRaw("
+            district_id,
+            SUM(mbpy_oap_below_80_years) AS oap_below_80,
+            SUM(mbpy_oap_above_80_years) AS oap_above_80,
+            SUM(mbpy_wp) AS widow_pension,
+            SUM(mbpy_dp) AS disabled_pension,
+            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+            SUM(mbpy_sdoap) AS sdoap,
+            SUM(mbpy_clp) AS clp,
+            SUM(mbpy_wp_aids) AS wp_aids,
+            SUM(mbpy_dp_aids) AS dp_aids,
+            SUM(mbpy_unmarried_women) AS unmarried_women,
+            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+            SUM(mbpy_widow_due_to_covid) AS widow_covid,
+            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+            SUM(mbpy_transgender) AS transgender,
+            SUM(no_of_normal_pensioners) AS no_of_normal_pensioners,
+            SUM(no_of_ep_pensioners) AS no_of_ep_pensioners
+            ")
+        ->groupBy('district_id')
+        ->get()
+        ->keyBy('district_id');
+
+        $final = [];
+
+        foreach ($allowedDistrictIds as $districtId) {
+
+            $fundSource = $fundsRaw[$districtId] ?? null;
+
+            $fund_normal = 0;
+            $fund_ep = 0;
+
+            if ($fundSource) {
+                foreach ($fundRates as $key => $rate) {
+                    $count = $fundSource->$key ?? 0;
+                    if ($rate == 3500) {
+                        $fund_ep += $count * 3500;
+                    } else {
+                        $fund_normal += $count * $rate;
+                    }
+                }
+            }
+
+            $final[] = [
+                'district_name' => District::where('district_id', $districtId)->value('district_name'),
+                'status' => $daily->where('district_id', $districtId)->count() > 0 ? 'Available' : 'Not Available',
+
+                'oap_below_80' => $fundSource->oap_below_80 ?? 0,
+                'oap_above_80' => $fundSource->oap_above_80 ?? 0,
+                'widow_pension' => $fundSource->widow_pension ?? 0,
+                'disabled_pension' => $fundSource->disabled_pension ?? 0,
+                'sdp_below_80' => $fundSource->sdp_below_80 ?? 0,
+                'sdp_above_80' => $fundSource->sdp_above_80 ?? 0,
+                'sdoap' => $fundSource->sdoap ?? 0,
+                'clp' => $fundSource->clp ?? 0,
+                'wp_aids' => $fundSource->wp_aids ?? 0,
+                'dp_aids' => $fundSource->dp_aids ?? 0,
+                'unmarried_women' => $fundSource->unmarried_women ?? 0,
+                'orphan_covid' => $fundSource->orphan_covid ?? 0,
+                'widow_covid' => $fundSource->widow_covid ?? 0,
+                'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
+                'transgender' => $fundSource->transgender ?? 0,
+
+                'no_of_normal_pensioners' => $fundSource->no_of_normal_pensioners ?? 0,
+                'no_of_ep_pensioners' => $fundSource->no_of_ep_pensioners ?? 0,
+                'funds_no_of_normal_pensioners' => $fund_normal,
+                'funds_no_of_ep_pensioners' => $fund_ep,
+            ];
+        }
+
+        $final = collect($final)
+        ->sortBy('district_name', SORT_NATURAL | SORT_FLAG_CASE)
+        ->values()
+        ->toArray();
+
+        return view(
+            'dashboard.pension.dailypension.district_wise_monthly_fund_requirement_report',
+            [
+                'data' => $final,
+                'forTheMonth' => $forTheMonth,
+                'dateConfig' => $dateConfig,
+            ]
+        );
+    }
 }
