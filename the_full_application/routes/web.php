@@ -18,7 +18,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     DdrcController,
     PensionMonthlyDisbursementController,
     DailyPensionDisbursementController,
-    SsepdNotificationController
+    SsepdNotificationController,
+    PensionController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -232,6 +233,18 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/pension_authority_delete', 'pension_authority_delete')->name('pension_authority_delete');
 
         Route::get('district_wise_monthly_fund_requirement_report', 'district_wise_monthly_fund_requirement_report')->name('district_wise_monthly_fund_requirement_report');
+    });
+
+    Route::prefix('pensionforbeneficiaries')->name('pensionforbeneficiaries.')->controller(PensionController::class)->group(function () {
+        Route::get('oldage_pensioner_consents_create', 'oldage_pensioner_consents_create')->name('oldage_pensioner_consents_create');
+        Route::post('oldage_pensioner_consents_store', 'oldage_pensioner_consents_store')->name('oldage_pensioner_consents_store');
+
+        Route::get('disability_pensioner_consents_create', 'disability_pensioner_consents_create')->name('disability_pensioner_consents_create');
+        Route::post('disability_pensioner_consents_store', 'disability_pensioner_consents_store')->name('disability_pensioner_consents_store');
+        
+        Route::get('check-benf-aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
+        Route::get('check-benf-nsap-sanction-or-no', 'check_benf_nsap_sanction_or_no')->name('check_benf_nsap_sanction_or_no');
+        Route::get('check-benf-udidno', 'check_benf_udidno')->name('check_benf_udidno');        
     });
 
     Route::prefix('oldage3500data')->name('oldage3500data.')->controller(OldAge3500Controller::class)->group(function () {

@@ -94,6 +94,8 @@
                         <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.index')}}">Daily Pension Disbursement</a></li>
+                        <li><a href="{{route('admin.pensionforbeneficiaries.oldage_pensioner_consents_create')}}">Consent for OldAge Pensioners</a></li>
+                        <li><a href="{{route('admin.pensionforbeneficiaries.disability_pensioner_consents_create')}}">Consent for Disabled Pensioners</a></li>
                         <!-- <li><a href="{{route('admin.monthlypensiondisbursement.index')}}">Daily Pension Disbursement</a></li> -->
                         @endcan                        
                      </ul>

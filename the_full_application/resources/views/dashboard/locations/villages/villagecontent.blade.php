@@ -63,7 +63,7 @@
 <div class="col-md-4">
    <div class="form-group">
       <label class="form-label">Pin<span class="itsrequired"> *</span></label>
-      <input type="text" id="pin" name="pin" maxlength="6" minlength="6" class="form-control" placeholder="Pin">
+      <input type="text" id="pin" name="pin" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="form-control" placeholder="Pin">
       @error('pin')
       <label class="error">{{ $message }}</label>
       @enderror
