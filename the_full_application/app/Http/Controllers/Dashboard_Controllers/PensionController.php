@@ -128,17 +128,17 @@ class PensionController extends Controller
             }
 
             $disability_pensioner_consent = new DisabilityPensionerConsent;
-            $disability_pensioner_consent->scheme_name = $validatedData['scheme_name'];
-            $disability_pensioner_consent->updated_scheme_name = $validatedData['scheme_name'];
-            $disability_pensioner_consent->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'];
-            $disability_pensioner_consent->father_or_husband_name = $validatedData['father_or_husband_name'];
-            $disability_pensioner_consent->date_of_birth = $validatedData['date_of_birth'];
-            $disability_pensioner_consent->age = $validatedData['age'];
-            $disability_pensioner_consent->gender = $validatedData['gender'];
-            $disability_pensioner_consent->udid_no = $validatedData['udid_no'];
-            $disability_pensioner_consent->disability_category = $validatedData['disability_category'];
-            $disability_pensioner_consent->disability_percentage = $validatedData['disability_percentage'];
-            $disability_pensioner_consent->state_id = $validatedData['state'];
+            $disability_pensioner_consent->scheme_name = trim($validatedData['scheme_name']);
+            $disability_pensioner_consent->updated_scheme_name = trim($validatedData['scheme_name']);
+            $disability_pensioner_consent->name_of_the_beneficiary = trim($validatedData['name_of_the_beneficiary']);
+            $disability_pensioner_consent->father_or_husband_name = trim($validatedData['father_or_husband_name']);
+            $disability_pensioner_consent->date_of_birth = trim($validatedData['date_of_birth']);
+            $disability_pensioner_consent->age = trim($validatedData['age']);
+            $disability_pensioner_consent->gender = trim($validatedData['gender']);
+            $disability_pensioner_consent->udid_no = trim($validatedData['udid_no']);
+            $disability_pensioner_consent->disability_category = trim($validatedData['disability_category']);
+            $disability_pensioner_consent->disability_percentage = trim($validatedData['disability_percentage']);
+            $disability_pensioner_consent->state_id = trim($validatedData['state']);
             $disability_pensioner_consent->district = $district;
             $disability_pensioner_consent->district_id = $district_id;
             $disability_pensioner_consent->address_type = $address_type;
@@ -152,11 +152,11 @@ class PensionController extends Controller
             $disability_pensioner_consent->gp_or_ward_id = $gp_or_ward_id;
             $disability_pensioner_consent->village = $village;
             $disability_pensioner_consent->village_id = $village_id;
-            $disability_pensioner_consent->pin = $validatedData['pin'];
-            $disability_pensioner_consent->aadhaar_no = $validatedData['aadhaar_no'];
-            $disability_pensioner_consent->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
-            $disability_pensioner_consent->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
-            $disability_pensioner_consent->pension_amount = $validatedData['pension_amount'];
+            $disability_pensioner_consent->pin = trim($validatedData['pin']);
+            $disability_pensioner_consent->aadhaar_no = trim($validatedData['aadhaar_no']);
+            $disability_pensioner_consent->nsap_sanction_order_no = trim($validatedData['nsap_sanction_order_no']);
+            $disability_pensioner_consent->sub_collector_sanction_order_no = trim($validatedData['sub_collector_sanction_order_no']);
+            $disability_pensioner_consent->pension_amount = trim($validatedData['pension_amount']);
             $disability_pensioner_consent->created_by = $user->user_id ?? null;
             $disability_pensioner_consent->created_by_user_table_id = $user->user_table_id ?? 0;
             $disability_pensioner_consent->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
@@ -282,7 +282,6 @@ class PensionController extends Controller
 
         $validatedData = $request->validate($validationRules);
 
-        //return $request->all();
         DB::beginTransaction();
         try {
             $user = auth()->user();
@@ -319,14 +318,14 @@ class PensionController extends Controller
             }
 
             $oldage_pensioner_consent = new OldAgePensionerConsent;
-            $oldage_pensioner_consent->scheme_name = $validatedData['scheme_name'];
-            $oldage_pensioner_consent->updated_scheme_name = $validatedData['scheme_name'];
-            $oldage_pensioner_consent->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'];
-            $oldage_pensioner_consent->father_or_husband_name = $validatedData['father_or_husband_name'];
-            $oldage_pensioner_consent->date_of_birth = $validatedData['date_of_birth'];
-            $oldage_pensioner_consent->age = $validatedData['age'];
-            $oldage_pensioner_consent->gender = $validatedData['gender'];
-            $oldage_pensioner_consent->state_id = $validatedData['state'];
+            $oldage_pensioner_consent->scheme_name = trim($validatedData['scheme_name']);
+            $oldage_pensioner_consent->updated_scheme_name = trim($validatedData['scheme_name']);
+            $oldage_pensioner_consent->name_of_the_beneficiary = trim($validatedData['name_of_the_beneficiary']);
+            $oldage_pensioner_consent->father_or_husband_name = trim($validatedData['father_or_husband_name']);
+            $oldage_pensioner_consent->date_of_birth = trim($validatedData['date_of_birth']);
+            $oldage_pensioner_consent->age = trim($validatedData['age']);
+            $oldage_pensioner_consent->gender = trim($validatedData['gender']);
+            $oldage_pensioner_consent->state_id = trim($validatedData['state']);
             $oldage_pensioner_consent->district = $district;
             $oldage_pensioner_consent->district_id = $district_id;
             $oldage_pensioner_consent->address_type = $address_type;
@@ -340,11 +339,11 @@ class PensionController extends Controller
             $oldage_pensioner_consent->gp_or_ward_id = $gp_or_ward_id;
             $oldage_pensioner_consent->village = $village;
             $oldage_pensioner_consent->village_id = $village_id;
-            $oldage_pensioner_consent->pin = $validatedData['pin'];
-            $oldage_pensioner_consent->aadhaar_no = $validatedData['aadhaar_no'];
-            $oldage_pensioner_consent->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
-            $oldage_pensioner_consent->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
-            $oldage_pensioner_consent->pension_amount = $validatedData['pension_amount'];
+            $oldage_pensioner_consent->pin = trim($validatedData['pin']);
+            $oldage_pensioner_consent->aadhaar_no = trim($validatedData['aadhaar_no']);
+            $oldage_pensioner_consent->nsap_sanction_order_no = trim($validatedData['nsap_sanction_order_no']);
+            $oldage_pensioner_consent->sub_collector_sanction_order_no = trim($validatedData['sub_collector_sanction_order_no']);
+            $oldage_pensioner_consent->pension_amount = trim($validatedData['pension_amount']);
             $oldage_pensioner_consent->created_by = $user->user_id ?? null;
             $oldage_pensioner_consent->created_by_user_table_id = $user->user_table_id ?? 0;
             $oldage_pensioner_consent->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
