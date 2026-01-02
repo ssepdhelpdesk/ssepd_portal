@@ -136,7 +136,7 @@ referrerpolicy="no-referrer"
 </style>
 @yield('style')
 </head>
-<body class="skin-blue-dark fixed-layout">
+<body class="skin-green-dark fixed-layout">
 <!-- ============================================================== -->
 <!-- Preloader - style you can find in spinners.css -->
 <!-- ============================================================== -->
