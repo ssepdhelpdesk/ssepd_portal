@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "District Block ULB wise DPR"
+git commit -m "Consent Form Entry"
 git push origin main
 
 update `disability_pensioner_consents` set address_type = 1 WHERE block_id != 'NULL';
