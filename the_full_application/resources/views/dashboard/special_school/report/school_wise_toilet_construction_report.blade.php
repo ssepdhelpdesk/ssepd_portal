@@ -32,6 +32,12 @@ Special School || Toilet Construction Status
     box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     z-index: 10;
 }
+.wrap-text {
+    white-space: normal !important;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 220px; /* adjust as needed */
+}
 </style>
 @endsection 
 @section('content')
@@ -71,12 +77,12 @@ Special School || Toilet Construction Status
                                 <th>Sl.No</th>
                                 <th>District</th>
                                 <th>Type</th>
-                                <th>Management Name</th>
-                                <th>School Name</th>
+                                <th class="wrap-text">Management Name</th>
+                                <th class="wrap-text">School Name</th>
                                 <th>New/Existing</th>
                                 <th>Images</th>
-                                <th>Construction Status</th>
-                                <th>Approve Status</th>
+                                <th class="wrap-text">Construction Status</th>
+                                <th class="wrap-text">Approve Status</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -84,12 +90,12 @@ Special School || Toilet Construction Status
                                 <th>Sl.No</th>
                                 <th>District</th>
                                 <th>Type</th>
-                                <th>Management Name</th>
-                                <th>School Name</th>
+                                <th class="wrap-text">Management Name</th>
+                                <th class="wrap-text">School Name</th>
                                 <th>New/Existing</th>
                                 <th>Images</th>                                
-                                <th>Construction Status</th>
-                                <th>Approve Status</th>
+                                <th class="wrap-text">Construction Status</th>
+                                <th class="wrap-text">Approve Status</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -135,8 +141,8 @@ Special School || Toilet Construction Status
                                     @endif
                                 </td>
 
-                                <td>{{ $school->construction_status }}</td>
-                                <td>
+                                <td class="wrap-text">{{ $school->construction_status }}</td>
+                                <td class="wrap-text">
                                     @if($school->latest_construction_school_id)
                                     <a href="{{ route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) }}" target="_blank">
                                         {{ $school->approve_status_text }}
