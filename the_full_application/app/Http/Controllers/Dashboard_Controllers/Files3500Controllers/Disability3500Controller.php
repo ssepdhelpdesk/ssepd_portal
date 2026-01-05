@@ -1401,25 +1401,26 @@ public function disability_aadhar_verification_process(Request $request)
         ]);
 
         try {
-            $response = Http::timeout(30)
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'Cookie' => 'YAHOOOOOO=D769971AED2AF7CAEC0AA5B4A3F0ECC9'
-                ])
-                ->asForm()   // IMPORTANT: matches curl --form
-                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                    'aadhaar_no' => trim($request->aadhaar_no),
-                    'name'       => trim($request->name_of_the_beneficiary),
-                ]);
+        $response = Http::timeout(60)        // ✅ longer timeout
+            ->retry(2, 3000)                 // ✅ retry
+            ->withoutVerifying()             // ✅ SSL fix
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'Cookie' => 'YAHOOOOOO=D769971AED2AF7CAEC0AA5B4A3F0ECC9'
+            ])
+            ->asForm()
+            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                'aadhaar_no' => trim($request->aadhaar_no),
+                'name'       => trim($request->name_of_the_beneficiary),
+            ]);
 
-            if ($response->successful()) {
-                // API returns plain text
-                return back()->with('response', trim($response->body()));
-            }
+        if ($response->successful()) {
+            return back()->with('response', trim($response->body()));
+        }
 
-            return back()->with('error', 'HTTP Error: ' . $response->status());
+        return back()->with('error', 'HTTP Error: ' . $response->status());
 
-        } catch (\Throwable $e) {
+    } catch (\Throwable $e) {
             return back()->with('error', 'Exception: ' . $e->getMessage());
         }
     }

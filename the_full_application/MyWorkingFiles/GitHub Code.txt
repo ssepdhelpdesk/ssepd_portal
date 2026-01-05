@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "Some Design Changes"
+git commit -m "Aadhaar Verification"
 git push origin main
 
 update `disability_pensioner_consents` set address_type = 1 WHERE block_id != 'NULL';
