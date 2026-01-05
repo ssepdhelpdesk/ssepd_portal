@@ -143,6 +143,13 @@
                               <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
                            </ul>
                         </li>
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Aadhar Verification</a>
+                           <ul aria-expanded="false" class="collapse">
+                              <li><a href="{{route('admin.disability3500data.disability_aadhar_verification')}}">DP Aadhar Verification</a></li>
+                              <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
+                           </ul>
+                        </li>
                         @endcan
                      </ul>
                   </li>

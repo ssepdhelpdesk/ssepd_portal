@@ -35,6 +35,7 @@ use App\Models\Village3500;
 use App\Models\WardMaster3500;
 use App\Models\User3500;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\PensionVerificationAppModels\{
     PensionVerificationAppBeneficiary,
@@ -44,6 +45,8 @@ use App\Models\PensionVerificationAppModels\{
     PensionVerificationAppVillage,
     PensionVerificationAppWard
 };
+
+use Illuminate\Support\Facades\Http;
 
 class Disability3500Controller extends Controller
 {
@@ -1076,14 +1079,14 @@ class Disability3500Controller extends Controller
 
             ->addColumn('status', function ($row) {
 
-            if ($row->status === 'Active') {
-                return 'Continue';
-            } elseif ($row->status === 'Inactive') {
-                return 'Discontinued';
-            }
+                if ($row->status === 'Active') {
+                    return 'Continue';
+                } elseif ($row->status === 'Inactive') {
+                    return 'Discontinued';
+                }
 
-            return '';
-        })
+                return '';
+            })
 
             ->addColumn('action', function ($row) {
                 $buttons = '';
@@ -1355,14 +1358,14 @@ class Disability3500Controller extends Controller
 
             ->addColumn('status', function ($row) {
 
-            if ($row->status === 'Active') {
-                return 'Continue';
-            } elseif ($row->status === 'Inactive') {
-                return 'Discontinued';
-            }
+                if ($row->status === 'Active') {
+                    return 'Continue';
+                } elseif ($row->status === 'Inactive') {
+                    return 'Discontinued';
+                }
 
-            return '';
-        })
+                return '';
+            })
 
             ->addColumn('action', function ($row) {
                 $buttons = '';
@@ -1379,4 +1382,47 @@ class Disability3500Controller extends Controller
 
         return view('dashboard.benf_3500_files.disability_wrong_sanction_order_no');
     }
+
+public function disability_aadhar_verification()
+{
+    $pendingCount = Disability3500Pensioner::whereNull('verified_aadhar')->count();
+
+    return view(
+        'dashboard.benf_3500_files.aadhar_verification.disability_aadhar_verification',
+        compact('pendingCount')
+    );
+}
+
+public function disability_aadhar_verification_process(Request $request)
+    {
+        $request->validate([
+            'name_of_the_beneficiary' => 'required|string',
+            'aadhaar_no' => 'required|digits:12',
+        ]);
+
+        try {
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                    'Cookie' => 'YAHOOOOOO=D769971AED2AF7CAEC0AA5B4A3F0ECC9'
+                ])
+                ->asForm()   // IMPORTANT: matches curl --form
+                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                    'aadhaar_no' => trim($request->aadhaar_no),
+                    'name'       => trim($request->name_of_the_beneficiary),
+                ]);
+
+            if ($response->successful()) {
+                // API returns plain text
+                return back()->with('response', trim($response->body()));
+            }
+
+            return back()->with('error', 'HTTP Error: ' . $response->status());
+
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Exception: ' . $e->getMessage());
+        }
+    }
+
+
 }

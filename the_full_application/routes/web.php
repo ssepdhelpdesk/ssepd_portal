@@ -291,6 +291,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('disability_duplicate_sanction_order_no', 'disability_duplicate_sanction_order_no')->name('disability_duplicate_sanction_order_no');
         Route::get('disability_wrong_sanction_order_no', 'disability_wrong_sanction_order_no')->name('disability_wrong_sanction_order_no');
         Route::post('{id}/disability_duplicate_sanction_order_no_update', 'disability_duplicate_sanction_order_no_update')->name('disability_duplicate_sanction_order_no_update');
+
+        Route::get('disability_aadhar_verification', 'disability_aadhar_verification')->name('disability_aadhar_verification');
+        Route::post('disability_aadhar_verification_process', 'disability_aadhar_verification_process')->name('disability_aadhar_verification_process');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {
