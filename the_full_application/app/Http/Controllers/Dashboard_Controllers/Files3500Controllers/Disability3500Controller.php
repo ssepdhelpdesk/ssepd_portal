@@ -1394,16 +1394,16 @@ public function disability_aadhar_verification()
 }
 
 public function disability_aadhar_verification_process(Request $request)
-    {
-        $request->validate([
-            'name_of_the_beneficiary' => 'required|string',
-            'aadhaar_no' => 'required|digits:12',
-        ]);
+{
+    $request->validate([
+        'name_of_the_beneficiary' => 'required|string',
+        'aadhaar_no' => 'required|digits:12',
+    ]);
 
-        try {
-        $response = Http::timeout(60)        // ✅ longer timeout
-            ->retry(2, 3000)                 // ✅ retry
-            ->withoutVerifying()             // ✅ SSL fix
+    try {
+        $response = Http::timeout(60)
+            ->retry(2, 3000)
+            ->withoutVerifying()
             ->withHeaders([
                 'Accept' => 'application/json',
                 'Cookie' => 'YAHOOOOOO=D769971AED2AF7CAEC0AA5B4A3F0ECC9'
@@ -1415,15 +1415,23 @@ public function disability_aadhar_verification_process(Request $request)
             ]);
 
         if ($response->successful()) {
-            return back()->with('response', trim($response->body()));
+            return response()->json([
+                'status' => true,
+                'data'   => trim($response->body())
+            ]);
         }
 
-        return back()->with('error', 'HTTP Error: ' . $response->status());
+        return response()->json([
+            'status' => false,
+            'error'  => 'HTTP Error: ' . $response->status()
+        ], 422);
 
     } catch (\Throwable $e) {
-            return back()->with('error', 'Exception: ' . $e->getMessage());
-        }
+        return response()->json([
+            'status' => false,
+            'error'  => 'Exception: ' . $e->getMessage()
+        ], 500);
     }
-
+}
 
 }
