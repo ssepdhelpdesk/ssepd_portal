@@ -1402,30 +1402,35 @@ public function disability_aadhar_verification_process(Request $request)
 
     try {
         $response = Http::withOptions([
-                /*'verify'  => false,                       // SSL bypass
-                'timeout' => 90,                          // total timeout
-                'connect_timeout' => 30,                  // connection timeout*/
+                'verify'  => false,
+                'timeout' => 90,
+                'connect_timeout' => 30,
                 'curl' => [
-                    CURLOPT_SSLVERSION     => CURL_SSLVERSION_TLSv1_2,
-                    CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 ],
             ])
             ->withHeaders([
                 'Accept' => 'application/json',
-                'Cookie' => 'YAHOOOOOO=D769971AED2AF7CAEC0AA5B4A3F0ECC9',
+                'User-Agent' => 'curl/7.29.0', // match server curl
+                'Expect' => '',               // 🔴 THIS IS THE FIX
             ])
-            ->asForm() // EXACT match for curl -F
+            ->asMultipart() // IMPORTANT
             ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                'aadhaar_no' => trim($request->aadhaar_no),
-                'name'       => trim($request->name_of_the_beneficiary),
+                [
+                    'name'     => 'aadhaar_no',
+                    'contents' => trim($request->aadhaar_no),
+                ],
+                [
+                    'name'     => 'name',
+                    'contents' => trim($request->name_of_the_beneficiary),
+                ],
             ]);
 
         if ($response->successful()) {
             return response()->json([
                 'status' => true,
-                'data'   => trim($response->body()), // API returns plain text
+                'data'   => trim($response->body()), // plain text
             ]);
         }
 
@@ -1442,5 +1447,4 @@ public function disability_aadhar_verification_process(Request $request)
         ], 500);
     }
 }
-
 }
