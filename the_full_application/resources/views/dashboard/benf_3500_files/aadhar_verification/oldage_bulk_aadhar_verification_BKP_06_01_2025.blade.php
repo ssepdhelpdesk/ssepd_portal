@@ -45,66 +45,69 @@ EP Pensiners || OldAge Bulk Aadhaar Verification || {{ \Carbon\Carbon::now('Asia
                   </ul>
                </div>
                @endif
-               <div id="alert-container"></div>
-               <div class="col-sm-12 col-xs-12">
-                  <form id="bulkAadharForm" class="from-prevent-multiple-submits">
-                @csrf
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Records to process</label>
-                        <input type="number" name="limit" class="form-control" value="10000" min="1" max="50000" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" id="startBtn">
-                    Start Bulk Aadhaar Verification
-                </button>
-            </form>
-
+               <div class="alert alert-info">
+                 <strong>Pending Aadhaar Verification:</strong> {{ $pendingCount }}
+              </div>
+              <div id="alert-container"></div>
+              <div class="col-sm-12 col-xs-12">
+               <form id="bulkAadharForm" class="from-prevent-multiple-submits">
+                 @csrf
+                 <div class="row mb-3">
+                   <div class="col-md-4">
+                     <label class="form-label">Records to process</label>
+                     <input type="number" name="limit" class="form-control" value="10000" min="1" max="50000" required>
+                  </div>
                </div>
-            </div>
-         </div>
-      </div>
-   </div>
-   <!-- row -->
-   <!-- ============================================================== -->
-   <!-- End Page Content -->
-   <!-- ============================================================== -->
+
+               <button type="submit" class="btn btn-primary" id="startBtn">
+                Start Bulk Aadhaar Verification
+             </button>
+          </form>
+
+       </div>
+    </div>
+ </div>
+</div>
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
 <script>
-$(function () {
-    $('#bulkAadharForm').on('submit', function(e) {
-        e.preventDefault();
+   $(function () {
+     $('#bulkAadharForm').on('submit', function(e) {
+       e.preventDefault();
 
-        $('#startBtn').prop('disabled', true).text('Processing...');
-        $('#resultBox').hide().html('');
+       $('#startBtn').prop('disabled', true).text('Processing...');
+       $('#resultBox').hide().html('');
 
-        $.ajax({
-            url: "{{ route('admin.oldage3500data.oldage_bulk_aadhar_verification_process') }}",
-            type: "POST",
-            data: $(this).serialize(),
-            success: function(res) {
-                $('#resultBox')
-                    .removeClass()
-                    .addClass('alert alert-success')
-                    .html('<strong>' + res.message + '</strong><br>Processed Records: ' + res.processed_records)
-                    .show();
-            },
-            error: function(xhr) {
-                let msg = 'Something went wrong';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    msg = xhr.responseJSON.message;
-                }
-                $('#resultBox').removeClass().addClass('alert alert-danger').html(msg).show();
-            },
-            complete: function() {
-                $('#startBtn').prop('disabled', false).text('Start Bulk Aadhaar Verification');
-            }
-        });
+       $.ajax({
+         url: "{{ route('admin.oldage3500data.oldage_bulk_aadhar_verification_process') }}",
+         type: "POST",
+         data: $(this).serialize(),
+         success: function(res) {
+           $('#resultBox')
+           .removeClass()
+           .addClass('alert alert-success')
+           .html('<strong>' + res.message + '</strong><br>Processed Records: ' + res.processed_records)
+           .show();
+        },
+        error: function(xhr) {
+           let msg = 'Something went wrong';
+           if (xhr.responseJSON && xhr.responseJSON.message) {
+             msg = xhr.responseJSON.message;
+          }
+          $('#resultBox').removeClass().addClass('alert alert-danger').html(msg).show();
+       },
+       complete: function() {
+        $('#startBtn').prop('disabled', false).text('Start Bulk Aadhaar Verification');
+     }
+  });
 
     });
-});
+  });
 </script>
 @endsection
