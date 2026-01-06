@@ -1453,79 +1453,74 @@ class Disability3500Controller extends Controller
     }
 
     public function disability_bulk_aadhar_verification_process(Request $request)
-    {
-        $request->validate([
-            'limit' => 'required|integer|min:1|max:500'
-        ]);
+{
+    $limit = $request->get('limit', 100);
 
-        $limit = $request->limit;
-
-        $records = Disability3500Pensioner::whereNull('verified_aadhar')
+    // Fetch first 100 null records
+    $records = Disability3500Pensioner::whereNull('verified_aadhar')
+        ->whereNull('verified_aadhar_remarks')
         ->whereNotNull('aadhaar_no')
         ->whereNotNull('name_of_the_beneficiary')
         ->limit($limit)
         ->get();
 
-        if ($records->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No pending Aadhaar records found'
-            ], 422);
-        }
+    if ($records->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'No pending Aadhaar records found'
+        ], 422);
+    }
 
-        foreach ($records as $pensioner) {
+    $processedCount = 0;
 
-            dispatch(function () use ($pensioner) {
+    foreach ($records as $pensioner) {
 
-                try {
-                    $response = Http::timeout(30)
-                    ->retry(2, 2000)
-                    ->withoutVerifying()
-                    ->asForm()
-                    ->withHeaders([
-                        'Accept'     => 'application/json',
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                        'Expect'     => '' // prevents HTTP 417
-                    ])
-                    ->post(
-                        'https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid',
-                        [
-                            'aadhaar_no' => trim($pensioner->aadhaar_no),
-                            'name'       => trim($pensioner->name_of_the_beneficiary),
-                        ]
-                    );
+        $verified = 0;
+        $remarks  = null;
 
-                    $body = trim($response->body());
-
-                    if ($response->successful() &&
-                        str_contains(strtolower($body), 'verify successfully')) {
-
-                        $pensioner->update([
-                            'verified_aadhar' => 1,
-                            'verified_aadhar_remarks' => $body,
-                        ]);
-                } else {
-                    $pensioner->update([
-                        'verified_aadhar' => 0,
-                        'verified_aadhar_remarks' => $body ?: 'Verification failed',
-                    ]);
-                }
-
-            } catch (\Throwable $e) {
-                $pensioner->update([
-                    'verified_aadhar' => 0,
-                    'verified_aadhar_remarks' => 'Exception: ' . $e->getMessage(),
+        try {
+            $response = Http::timeout(30)
+                ->retry(2, 2000)
+                ->withoutVerifying()
+                ->asForm()
+                ->withHeaders([
+                    'Accept'     => 'application/json',
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                    'Expect'     => '' // prevents HTTP 417
+                ])
+                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                    'aadhaar_no' => trim($pensioner->aadhaar_no),
+                    'name'       => trim($pensioner->name_of_the_beneficiary),
                 ]);
+
+            $remarks = trim($response->body());
+
+            if ($response->successful() &&
+                str_contains(strtolower($remarks), 'verify successfully')) {
+                $verified = 1;
+            } else {
+                $verified = 0;
             }
 
-        })->onQueue('aadhar-verification');
+        } catch (\Throwable $e) {
+            $verified = 0;
+            $remarks  = 'Exception: ' . $e->getMessage();
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Bulk Aadhaar verification queued successfully',
-            'queued_records' => $records->count()
+        // Update DB
+        $pensioner->update([
+            'verified_aadhar'         => $verified,
+            'verified_aadhar_remarks' => $remarks,
         ]);
+
+        $processedCount++;
     }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Bulk Aadhaar verification completed',
+        'processed_records' => $processedCount
+    ]);
+}
 
 }
