@@ -85,8 +85,9 @@
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-bell"></i><span class="hide-menu">Aadhar Verification</span></a>
                <ul aria-expanded="false" class="collapse">
                   @can('location-list')
-                  <li><a href="{{route('admin.disability3500data.disability_aadhar_verification')}}">DP Aadhar Verification</a></li>
+                  <li><a href="{{route('admin.oldage3500data.oldage_bulk_aadhar_verification')}}">OAP Bulk Aadhar Verification</a></li>
                   <li><a href="{{route('admin.disability3500data.disability_bulk_aadhar_verification')}}">DP Bulk Aadhar Verification</a></li>
+                  <li><a href="{{route('admin.disability3500data.disability_aadhar_verification')}}">Single Aadhar Verification</a></li>                  
                   @endcan
                </ul>
             </li>
