@@ -1482,7 +1482,7 @@ class Disability3500Controller extends Controller
             // Reuse your working single-Aadhaar logic
             $response = Http::withOptions([
                 'verify' => false,
-                'timeout' => 60,
+                'timeout' => 120,
                 'connect_timeout' => 20,
                 'curl' => [
                     CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
@@ -1512,7 +1512,6 @@ class Disability3500Controller extends Controller
             $remarks  = 'Exception: ' . $e->getMessage();
         }
 
-        // Update the record
         $pensioner->update([
             'verified_aadhar' => $verified,
             'verified_aadhar_remarks' => $remarks,

@@ -28,7 +28,7 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label">Records to process</label>
-                        <input type="number" name="limit" class="form-control" value="100" min="1" max="500" required>
+                        <input type="number" name="limit" class="form-control" value="10000" min="1" max="50000" required>
                     </div>
                 </div>
 
