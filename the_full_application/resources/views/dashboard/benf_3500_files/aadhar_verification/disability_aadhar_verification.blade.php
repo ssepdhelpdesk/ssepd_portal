@@ -23,13 +23,13 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
     @csrf
 
     <div class="mb-3">
-        <label class="form-label">Name of the Beneficiary</label>
+        <label>Name of the Beneficiary</label>
         <input type="text" name="name_of_the_beneficiary" class="form-control" required>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Aadhaar Number</label>
-        <input type="text" name="aadhaar_no" class="form-control" maxlength="12" required>
+        <label>Aadhaar Number</label>
+        <input type="text" name="aadhaar_no" maxlength="12" class="form-control" required>
     </div>
 
     <button type="submit" class="btn btn-primary" id="verifyBtn">
@@ -39,62 +39,40 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
 
 <div id="responseBox" class="mt-4" style="display:none;"></div>
 
-            @if(session('response'))
-                <div class="alert alert-info mt-4">
-                    <strong>API Response:</strong><br>
-                    {{ session('response') }}
-                </div>
-            @endif
 
-            @if(session('error'))
-                <div class="alert alert-danger mt-4">
-                    {{ session('error') }}
-                </div>
-            @endif
         </div>
     </div>
 </div>
 @endsection
 @section('script')
 <script>
-$(document).ready(function () {
+$('#aadharVerificationForm').on('submit', function (e) {
+    e.preventDefault();
 
-    $('#aadharVerificationForm').on('submit', function (e) {
-        e.preventDefault();
+    $('#verifyBtn').prop('disabled', true).text('Verifying...');
+    $('#responseBox').hide().removeClass().html('');
 
-        $('#verifyBtn').prop('disabled', true).text('Verifying...');
-        $('#responseBox').hide().html('');
-
-        $.ajax({
-            url: "{{ route('admin.disability3500data.disability_aadhar_verification_process') }}",
-            method: "POST",
-            data: $(this).serialize(),
-            success: function (response) {
-                $('#responseBox')
-                    .removeClass()
-                    .addClass('alert alert-info')
-                    .html('<strong>API Response:</strong><br>' + response.data)
-                    .show();
-            },
-            error: function (xhr) {
-                let msg = 'Something went wrong';
-
-                if (xhr.responseJSON && xhr.responseJSON.error) {
-                    msg = xhr.responseJSON.error;
-                }
-
-                $('#responseBox')
-                    .removeClass()
-                    .addClass('alert alert-danger')
-                    .html(msg)
-                    .show();
-            },
-            complete: function () {
-                $('#verifyBtn').prop('disabled', false).text('Verify Aadhaar');
-            }
-        });
+    $.ajax({
+        url: "{{ route('admin.disability3500data.disability_aadhar_verification_process') }}",
+        type: "POST",
+        data: $(this).serialize(),
+        success: function (res) {
+            $('#responseBox')
+                .addClass('alert alert-info')
+                .html('<strong>API Response:</strong><br>' + res.data)
+                .show();
+        },
+        error: function (xhr) {
+            let msg = xhr.responseJSON?.error ?? 'Request failed';
+            $('#responseBox')
+                .addClass('alert alert-danger')
+                .html(msg)
+                .show();
+        },
+        complete: function () {
+            $('#verifyBtn').prop('disabled', false).text('Verify Aadhaar');
+        }
     });
-
 });
 </script>
 @endsection
