@@ -42,6 +42,7 @@ EP Pensiners || Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon\Carbon::now
     </div>
 </div>
 @endsection
+
 @section('script')
 <script>
 $(function () {

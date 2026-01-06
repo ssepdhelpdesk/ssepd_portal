@@ -1456,7 +1456,7 @@ class Disability3500Controller extends Controller
 {
     $limit = $request->get('limit', 100);
 
-    // Fetch first 100 null records
+    // Fetch first $limit records with null verified status
     $records = Disability3500Pensioner::whereNull('verified_aadhar')
         ->whereNull('verified_aadhar_remarks')
         ->whereNotNull('aadhaar_no')
@@ -1479,24 +1479,29 @@ class Disability3500Controller extends Controller
         $remarks  = null;
 
         try {
-            $response = Http::timeout(30)
-                ->retry(2, 2000)
-                ->withoutVerifying()
-                ->asForm()
-                ->withHeaders([
-                    'Accept'     => 'application/json',
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                    'Expect'     => '' // prevents HTTP 417
-                ])
-                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                    'aadhaar_no' => trim($pensioner->aadhaar_no),
-                    'name'       => trim($pensioner->name_of_the_beneficiary),
-                ]);
+            // Reuse your working single-Aadhaar logic
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 60,
+                'connect_timeout' => 20,
+                'curl' => [
+                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                ],
+            ])
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'User-Agent' => 'PostmanRuntime/7.36.0',
+            ])
+            ->asForm()
+            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                'aadhaar_no' => trim($pensioner->aadhaar_no),
+                'name'       => trim($pensioner->name_of_the_beneficiary),
+            ]);
 
             $remarks = trim($response->body());
 
-            if ($response->successful() &&
-                str_contains(strtolower($remarks), 'verify successfully')) {
+            if ($response->successful() && str_contains(strtolower($remarks), 'verify successfully')) {
                 $verified = 1;
             } else {
                 $verified = 0;
@@ -1507,9 +1512,9 @@ class Disability3500Controller extends Controller
             $remarks  = 'Exception: ' . $e->getMessage();
         }
 
-        // Update DB
+        // Update the record
         $pensioner->update([
-            'verified_aadhar'         => $verified,
+            'verified_aadhar' => $verified,
             'verified_aadhar_remarks' => $remarks,
         ]);
 
