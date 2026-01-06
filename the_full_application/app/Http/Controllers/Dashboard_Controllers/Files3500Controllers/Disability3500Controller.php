@@ -1417,7 +1417,7 @@ public function disability_aadhar_verification_process(Request $request)
             ->asForm() // ✅ THIS IS THE KEY
             ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
                 'aadhaar_no' => trim($request->aadhaar_no),
-                'name'       => strtoupper(normalize_name($request->name_of_the_beneficiary)),
+                'name'       => trim($request->name_of_the_beneficiary),
             ]);
 
         if ($response->successful()) {
