@@ -1396,15 +1396,15 @@ public function disability_aadhar_verification()
 public function disability_aadhar_verification_process(Request $request)
 {
     $request->validate([
+        'aadhaar_no' => 'required|digits:12',
         'name_of_the_beneficiary' => 'required|string',
-        'aadhaar_no'              => 'required|digits:12',
     ]);
 
     try {
         $response = Http::withOptions([
-                'verify'  => false,
-                'timeout' => 90,
-                'connect_timeout' => 30,
+                'verify' => false,
+                'timeout' => 60,
+                'connect_timeout' => 20,
                 'curl' => [
                     CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
@@ -1412,38 +1412,31 @@ public function disability_aadhar_verification_process(Request $request)
             ])
             ->withHeaders([
                 'Accept' => 'application/json',
-                'User-Agent' => 'curl/7.29.0', // match server curl
-                'Expect' => '',               // 🔴 THIS IS THE FIX
+                'User-Agent' => 'PostmanRuntime/7.36.0', // mimic Postman
             ])
-            ->asMultipart() // IMPORTANT
+            ->asForm() // ✅ THIS IS THE KEY
             ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                [
-                    'name'     => 'aadhaar_no',
-                    'contents' => trim($request->aadhaar_no),
-                ],
-                [
-                    'name'     => 'name',
-                    'contents' => trim($request->name_of_the_beneficiary),
-                ],
+                'aadhaar_no' => trim($request->aadhaar_no),
+                'name'       => trim($request->name_of_the_beneficiary),
             ]);
 
         if ($response->successful()) {
             return response()->json([
                 'status' => true,
-                'data'   => trim($response->body()), // plain text
+                'data'   => trim($response->body()), // text/plain
             ]);
         }
 
         return response()->json([
             'status' => false,
-            'error'  => 'HTTP Error: ' . $response->status(),
-            'body'   => $response->body(),
+            'http_code' => $response->status(),
+            'response'  => $response->body(),
         ], 422);
 
     } catch (\Throwable $e) {
         return response()->json([
             'status' => false,
-            'error'  => 'Exception: ' . $e->getMessage(),
+            'exception' => $e->getMessage(),
         ], 500);
     }
 }
