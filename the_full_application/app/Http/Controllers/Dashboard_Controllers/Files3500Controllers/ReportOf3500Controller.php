@@ -719,31 +719,39 @@ class ReportOf3500Controller extends Controller
 
     public function bulk_aadhaar_verification_report()
     {
-        $oldAge = OldAge3500Pensioner::select(
-            DB::raw("'OldAge' as scheme"),
-            'verified_aadhar_remarks',
-            DB::raw('COUNT(*) as total')
-        )
+        $oldAge = OldAge3500Pensioner::query()
         ->whereNotNull('verified_aadhar_remarks')
+        ->select('verified_aadhar_remarks')
+        ->selectRaw('COUNT(*) as total')
         ->groupBy('verified_aadhar_remarks')
-        ->get();
-
-        $disability = Disability3500Pensioner::select(
-            DB::raw("'Disability' as scheme"),
-            'verified_aadhar_remarks',
-            DB::raw('COUNT(*) as total')
-        )
-        ->whereNotNull('verified_aadhar_remarks')
-        ->groupBy('verified_aadhar_remarks')
-        ->get();
-
-        $schemeWise = $oldAge->merge($disability);
-
-        $combined = $schemeWise
-        ->groupBy('verified_aadhar_remarks')
-        ->map(function ($items) {
-            return $items->sum('total');
+        ->get()
+        ->map(function ($row) {
+            return [
+                'scheme' => 'OldAge',
+                'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
+                'total' => $row->total,
+            ];
         });
+
+    $disability = Disability3500Pensioner::query()
+        ->whereNotNull('verified_aadhar_remarks')
+        ->select('verified_aadhar_remarks')
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('verified_aadhar_remarks')
+        ->get()
+        ->map(function ($row) {
+            return [
+                'scheme' => 'Disability',
+                'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
+                'total' => $row->total,
+            ];
+        });
+
+    $schemeWise = $oldAge->concat($disability);
+
+    $combined = $schemeWise
+        ->groupBy('verified_aadhar_remarks')
+        ->map(fn ($items) => $items->sum('total'));
 
         return view('dashboard.benf_3500_files.report.bulk_aadhaar_verification_report', compact('schemeWise', 'combined'));
     }
