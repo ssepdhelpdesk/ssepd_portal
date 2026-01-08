@@ -719,40 +719,81 @@ class ReportOf3500Controller extends Controller
 
     public function bulk_aadhaar_verification_report()
     {
-        $oldAge = OldAge3500Pensioner::query()
+        $oldAgeTotal = OldAge3500Pensioner::count();
+
+        $oldAgePending = OldAge3500Pensioner::whereNull('verified_aadhar')
+        ->whereNull('verified_aadhar_remarks')
+        ->count();
+
+        $oldAgeVerified = OldAge3500Pensioner::query()
         ->whereNotNull('verified_aadhar_remarks')
         ->select('verified_aadhar_remarks')
         ->selectRaw('COUNT(*) as total')
         ->groupBy('verified_aadhar_remarks')
         ->get()
-        ->map(function ($row) {
-            return [
+        ->map(fn ($row) => [
+            'scheme' => 'OldAge',
+            'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
+            'total' => $row->total,
+        ]);
+
+        $disabilityTotal = Disability3500Pensioner::count();
+
+        $disabilityPending = Disability3500Pensioner::whereNull('verified_aadhar')
+        ->whereNull('verified_aadhar_remarks')
+        ->count();
+
+        $disabilityVerified = Disability3500Pensioner::query()
+        ->whereNotNull('verified_aadhar_remarks')
+        ->select('verified_aadhar_remarks')
+        ->selectRaw('COUNT(*) as total')
+        ->groupBy('verified_aadhar_remarks')
+        ->get()
+        ->map(fn ($row) => [
+            'scheme' => 'Disability',
+            'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
+            'total' => $row->total,
+        ]);
+
+        $schemeWise = collect([
+            [
                 'scheme' => 'OldAge',
-                'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
-                'total' => $row->total,
-            ];
-        });
+                'verified_aadhar_remarks' => 'Total No of Application',
+                'total' => $oldAgeTotal,
+            ],
+            ...$oldAgeVerified,
+            [
+                'scheme' => 'OldAge',
+                'verified_aadhar_remarks' => 'Pending Application for Verification',
+                'total' => $oldAgePending,
+            ],
 
-    $disability = Disability3500Pensioner::query()
-        ->whereNotNull('verified_aadhar_remarks')
-        ->select('verified_aadhar_remarks')
-        ->selectRaw('COUNT(*) as total')
-        ->groupBy('verified_aadhar_remarks')
-        ->get()
-        ->map(function ($row) {
-            return [
+            [
                 'scheme' => 'Disability',
-                'verified_aadhar_remarks' => $row->verified_aadhar_remarks,
-                'total' => $row->total,
-            ];
-        });
+                'verified_aadhar_remarks' => 'Total No of Application',
+                'total' => $disabilityTotal,
+            ],
+            ...$disabilityVerified,
+            [
+                'scheme' => 'Disability',
+                'verified_aadhar_remarks' => 'Pending Application for Verification',
+                'total' => $disabilityPending,
+            ],
+        ]);
 
-    $schemeWise = $oldAge->concat($disability);
-
-    $combined = $schemeWise
+        $combined = $schemeWise
+        ->filter(fn ($row) =>
+            !in_array($row['verified_aadhar_remarks'], [
+                'Total No of Application',
+                'Pending Application for Verification'
+            ])
+        )
         ->groupBy('verified_aadhar_remarks')
         ->map(fn ($items) => $items->sum('total'));
 
-        return view('dashboard.benf_3500_files.report.bulk_aadhaar_verification_report', compact('schemeWise', 'combined'));
+        return view(
+            'dashboard.benf_3500_files.report.bulk_aadhaar_verification_report',
+            compact('schemeWise', 'combined')
+        );
     }
 }

@@ -10,12 +10,12 @@
     </thead>
     <tbody>
         @foreach($schemeWise as $row)
-<tr>
-    <td>{{ $row['scheme'] }}</td>
-    <td>{{ $row['verified_aadhar_remarks'] }}</td>
-    <td>{{ $row['total'] }}</td>
-</tr>
-@endforeach
+        <tr>
+            <td>{{ $row['scheme'] }}</td>
+            <td>{{ $row['verified_aadhar_remarks'] }}</td>
+            <td>{{ $row['total'] }}</td>
+        </tr>
+        @endforeach
     </tbody>
 </table>
 
@@ -30,10 +30,10 @@
     </thead>
     <tbody>
         @foreach($combined as $remark => $count)
-<tr>
-    <td>{{ $remark }}</td>
-    <td>{{ $count }}</td>
-</tr>
-@endforeach
+        <tr>
+            <td>{{ $remark }}</td>
+            <td>{{ $count }}</td>
+        </tr>
+        @endforeach
     </tbody>
 </table>
