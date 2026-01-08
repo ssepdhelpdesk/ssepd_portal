@@ -8,24 +8,15 @@ use App\Models\OldAge3500Pensioner;
 
 class OldAgeEpBulkAadharVerification extends Command
 {
-    /**
-     * Command name
-     */
     protected $signature = 'oldage:aadhar-verify {limit=100}';
 
-    /**
-     * Command description
-     */
-    protected $description = 'Bulk Aadhaar verification for Old Age Pensioners (100 records per run)';
+    protected $description = 'Bulk Aadhaar verification for Old Age Pensioners';
 
-    /**
-     * Execute the command
-     */
     public function handle()
     {
         $limit = (int) $this->argument('limit');
 
-        $this->info("Starting Aadhaar verification for {$limit} records...");
+        $this->info("Starting Aadhaar verification for {$limit} records");
 
         $records = OldAge3500Pensioner::whereNull('verified_aadhar')
             ->whereNull('verified_aadhar_remarks')
@@ -35,7 +26,7 @@ class OldAgeEpBulkAadharVerification extends Command
             ->get();
 
         if ($records->isEmpty()) {
-            $this->info('No pending Aadhaar records found.');
+            $this->info('No pending Aadhaar records found');
             return Command::SUCCESS;
         }
 
@@ -52,13 +43,12 @@ class OldAgeEpBulkAadharVerification extends Command
                     'timeout' => 120,
                     'connect_timeout' => 20,
                     'curl' => [
-                        CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_EXPECT       => '', // avoids HTTP 417
+                        \CURLOPT_SSLVERSION   => \CURL_SSLVERSION_TLSv1_2,
+                        \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
                     ],
                 ])
                 ->withHeaders([
-                    'Accept' => 'application/json',
+                    'Accept'     => 'application/json',
                     'User-Agent' => 'PostmanRuntime/7.36.0',
                 ])
                 ->asForm()
