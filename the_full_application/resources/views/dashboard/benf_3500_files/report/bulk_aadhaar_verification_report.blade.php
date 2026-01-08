@@ -126,7 +126,7 @@ Special School || List
 
    $(function () {
      $('#example231').DataTable({
-       processing: true,
+       processing: false,
        responsive: false,
        ordering: true,
        scrollX: true,
