@@ -716,4 +716,35 @@ class ReportOf3500Controller extends Controller
         return view('dashboard.benf_3500_files.report.active_ineligible_with_scheme',
             compact('final_data','from_date','to_date'));
     }
+
+    public function bulk_aadhaar_verification_report()
+    {
+        $oldAge = OldAge3500Pensioner::select(
+            DB::raw("'OldAge' as scheme"),
+            'verified_aadhar_remarks',
+            DB::raw('COUNT(*) as total')
+        )
+        ->whereNotNull('verified_aadhar_remarks')
+        ->groupBy('verified_aadhar_remarks')
+        ->get();
+
+        $disability = Disability3500Pensioner::select(
+            DB::raw("'Disability' as scheme"),
+            'verified_aadhar_remarks',
+            DB::raw('COUNT(*) as total')
+        )
+        ->whereNotNull('verified_aadhar_remarks')
+        ->groupBy('verified_aadhar_remarks')
+        ->get();
+
+        $schemeWise = $oldAge->merge($disability);
+
+        $combined = $schemeWise
+        ->groupBy('verified_aadhar_remarks')
+        ->map(function ($items) {
+            return $items->sum('total');
+        });
+
+        return view('dashboard.benf_3500_files.report.bulk_aadhaar_verification_report', compact('schemeWise', 'combined'));
+    }
 }

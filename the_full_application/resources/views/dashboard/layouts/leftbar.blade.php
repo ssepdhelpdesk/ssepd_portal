@@ -82,7 +82,7 @@
                </ul>
             </li>
             <li>
-               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-bell"></i><span class="hide-menu">Aadhar Verification</span></a>
+               <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-barcode-scan"></i><span class="hide-menu">Aadhar Verification</span></a>
                <ul aria-expanded="false" class="collapse">
                   @can('location-list')
                   <li><a href="{{route('admin.oldage3500data.oldage_bulk_aadhar_verification')}}">OAP Bulk Aadhar Verification</a></li>
@@ -230,6 +230,14 @@
                            @endcan
                         </ul>
                      </li>
+                     @if(auth()->user()->is_full_access_to_portal == 1)
+                     <li>
+                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">SuperAdmin Level Report</a>
+                        <ul aria-expanded="false" class="collapse">
+                           <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
+                        </ul>
+                     </li>
+                     @endif
                   </ul>
                </li>
             </ul>
