@@ -1505,86 +1505,86 @@ public function oldage_wrong_sanction_order_no(Request $request)
 }
 
 public function oldage_bulk_aadhar_verification()
-    {
-        $pendingCount = OldAge3500Pensioner::whereNull('verified_aadhar')->count();
+{
+    $pendingCount = OldAge3500Pensioner::whereNull('verified_aadhar')->count();
 
-        return view(
-            'dashboard.benf_3500_files.aadhar_verification.oldage_bulk_aadhar_verification',
-            compact('pendingCount')
-        );
+    return view(
+        'dashboard.benf_3500_files.aadhar_verification.oldage_bulk_aadhar_verification',
+        compact('pendingCount')
+    );
+}
+
+public function oldage_bulk_aadhar_verification_process(Request $request)
+{
+    $limit = $request->get('limit', 100);
+
+    $records = OldAge3500Pensioner::whereNull('verified_aadhar')
+    ->whereNull('verified_aadhar_remarks')
+    ->whereNotNull('aadhaar_no')
+    ->whereNotNull('name_of_the_beneficiary')
+    ->limit($limit)
+    ->get();
+
+    if ($records->isEmpty()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'No pending Aadhaar records found'
+        ], 422);
     }
 
-    public function oldage_bulk_aadhar_verification_process(Request $request)
-    {
-        $limit = $request->get('limit', 100);
+    $processedCount = 0;
 
-        $records = OldAge3500Pensioner::whereNull('verified_aadhar')
-        ->whereNull('verified_aadhar_remarks')
-        ->whereNotNull('aadhaar_no')
-        ->whereNotNull('name_of_the_beneficiary')
-        ->limit($limit)
-        ->get();
+    foreach ($records as $pensioner) {
 
-        if ($records->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No pending Aadhaar records found'
-            ], 422);
-        }
+        $verified = 0;
+        $remarks  = null;
 
-        $processedCount = 0;
-
-        foreach ($records as $pensioner) {
-
-            $verified = 0;
-            $remarks  = null;
-
-            try {
-                $response = Http::withOptions([
-                    'verify' => false,
-                    'timeout' => 120,
-                    'connect_timeout' => 20,
-                    'curl' => [
-                        CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    ],
-                ])
-                ->withHeaders([
-                    'Accept' => 'application/json',
-                    'User-Agent' => 'PostmanRuntime/7.36.0',
-                ])
-                ->asForm()
-                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                    'aadhaar_no' => trim($pensioner->aadhaar_no),
-                    'name'       => trim($pensioner->name_of_the_beneficiary),
-                ]);
-
-                $remarks = trim($response->body());
-
-                if ($response->successful() && str_contains(strtolower($remarks), 'verify successfully')) {
-                    $verified = 1;
-                } else {
-                    $verified = 0;
-                }
-
-            } catch (\Throwable $e) {
-                $verified = 0;
-                $remarks  = 'Exception: ' . $e->getMessage();
-            }
-
-            $pensioner->update([
-                'verified_aadhar' => $verified,
-                'verified_aadhar_remarks' => $remarks,
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 120,
+                'connect_timeout' => 20,
+                'curl' => [
+                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                ],
+            ])
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'User-Agent' => 'PostmanRuntime/7.36.0',
+            ])
+            ->asForm()
+            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                'aadhaar_no' => trim($pensioner->aadhaar_no),
+                'name'       => trim($pensioner->name_of_the_beneficiary),
             ]);
 
-            $processedCount++;
+            $remarks = trim($response->body());
+
+            if ($response->successful() && str_contains(strtolower($remarks), 'verify successfully')) {
+                $verified = 1;
+            } else {
+                $verified = 0;
+            }
+
+        } catch (\Throwable $e) {
+            $verified = 0;
+            $remarks  = 'Exception: ' . $e->getMessage();
         }
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Bulk Aadhaar verification completed',
-            'processed_records' => $processedCount
+        $pensioner->update([
+            'verified_aadhar' => $verified,
+            'verified_aadhar_remarks' => $remarks,
         ]);
+
+        $processedCount++;
     }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Bulk Aadhaar verification completed',
+        'processed_records' => $processedCount
+    ]);
+}
 
 }
