@@ -11,4 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('oldage:aadhar-verify 100')
     ->everyTenMinutes()
     ->withoutOverlapping()
-    ->runInBackground();
+    ->runInBackground()
+    ->onOneServer();
