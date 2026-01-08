@@ -791,9 +791,18 @@ class ReportOf3500Controller extends Controller
         ->groupBy('verified_aadhar_remarks')
         ->map(fn ($items) => $items->sum('total'));
 
-        return view(
-            'dashboard.benf_3500_files.report.bulk_aadhaar_verification_report',
-            compact('schemeWise', 'combined')
-        );
+        $totalApplications =
+    OldAge3500Pensioner::count()
+  + Disability3500Pensioner::count();
+
+$totalPending =
+    OldAge3500Pensioner::whereNull('verified_aadhar')
+        ->whereNull('verified_aadhar_remarks')
+        ->count()
+  + Disability3500Pensioner::whereNull('verified_aadhar')
+        ->whereNull('verified_aadhar_remarks')
+        ->count();
+
+        return view('dashboard.benf_3500_files.report.bulk_aadhaar_verification_report', compact('schemeWise', 'combined', 'totalApplications', 'totalPending'));
     }
 }

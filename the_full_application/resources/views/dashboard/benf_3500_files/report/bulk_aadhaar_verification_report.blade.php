@@ -1,5 +1,5 @@
 @section('title') 
-Special School || List
+EP Pension || Bulk Aadhaar Verification
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -71,40 +71,56 @@ Special School || List
                      </tbody>
                   </table>
                   <table id="example231" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
-                     <thead>
-                        <tr>
-                           <th>Sl No</th>
-                           <th>Verification Remarks</th>
-                           <th>Total</th>
-                        </tr>
-                     </thead>
-                     <tfoot>
-                        <tr>
-                           <th>Sl No</th>
-                           <th>Scheme</th>
-                           <th>Verification Remarks</th>
-                           <th>Total</th>
-                        </tr>
-                     </tfoot>
-                     <tbody>
-                        @foreach($combined as $remark => $count)
-                        <tr>
-                           <td class="text-center">{{ $loop->iteration }}</td>
-                           <td>{{ $remark }}</td>
-                           <td>{{ $count }}</td>
-                        </tr>
-                        @endforeach
-                     </tbody>
-                  </table>
-               </div>
-            </div>
-         </div>
+                    <thead>
+                      <tr>
+                        <th>Sl No</th>
+                        <th>Verification Remarks</th>
+                        <th>Total Count</th>
+                     </tr>
+                  </thead>
+
+                  <tbody>
+                   @php $sl = 1; @endphp
+
+                   <tr>
+                     <td><strong>{{ $sl++ }}</strong></td>
+                     <td><strong>Total Application</strong></td>
+                     <td><strong>{{ $totalApplications }}</strong></td>
+                  </tr>
+
+                  <tr>
+                     <td><strong>{{ $sl++ }}</strong></td>
+                     <td><strong>Pending Application for Verification</strong></td>
+                     <td><strong>{{ $totalPending }}</strong></td>
+                  </tr>
+
+                  @foreach($combined as $remark => $count)
+                  <tr>
+                     <td>{{ $sl++ }}</td>
+                     <td>{{ $remark }}</td>
+                     <td>{{ $count }}</td>
+                  </tr>
+                  @endforeach
+               </tbody>
+
+               <tfoot>
+                <tr>
+                  <th>Sl No</th>
+                  <th>Verification Remarks</th>
+                  <th>Total Count</th>
+               </tr>
+            </tfoot>
+         </table>
+
       </div>
    </div>
-   <!-- row -->
-   <!-- ============================================================== -->
-   <!-- End Page Content -->
-   <!-- ============================================================== -->
+</div>
+</div>
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
@@ -112,12 +128,12 @@ Special School || List
    $(function () {
      $('#example23').DataTable({
       processing: false,
-       responsive: false,
-       ordering: true,
-       scrollX: true,
-       lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-       dom: 'Blfrtip',
-       buttons: [
+      responsive: false,
+      ordering: true,
+      scrollX: true,
+      lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+      dom: 'Blfrtip',
+      buttons: [
          'copy', 'csv', 'excel', 'pdf', 'print'
       ]
    });
