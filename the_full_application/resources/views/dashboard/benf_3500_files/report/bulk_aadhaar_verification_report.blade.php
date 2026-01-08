@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || Bulk Aadhaar Verification
+EP Pension || Bulk Aadhaar Verification || {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
