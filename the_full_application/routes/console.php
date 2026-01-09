@@ -9,13 +9,13 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('oldage:aadhar-verify 200')
-    ->everyFiveMinutes()
+    ->everyFourMinutes()
     ->withoutOverlapping()
     ->runInBackground()
     ->onOneServer();
 
 Schedule::command('disability:aadhar-verify 200')
-    ->everyFiveMinutes()
+    ->everySixMinutes()
     ->withoutOverlapping()
     ->runInBackground()
     ->onOneServer();
