@@ -92,7 +92,7 @@ public function index(Request $request)
         ->addIndexColumn()
         ->addColumn('aadhaar_verification_status', function ($row) {
 
-            if ($row->verified_aadhar === 1) {
+            if ($row->verified_aadhar == 1) {
                 return '<span class="badge bg-success">Verified Aadhaar</span>';
             }
 
@@ -100,8 +100,8 @@ public function index(Request $request)
                 return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
             }
 
-            if ($row->verified_aadhar === 0) {
-                return '<span class="badge bg-danger">Demographic Error</span>';
+            if ($row->verified_aadhar == 0) {
+                return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
             }
 
             return '-';
