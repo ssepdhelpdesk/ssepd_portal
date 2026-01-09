@@ -8,7 +8,7 @@ use App\Models\Disability3500Pensioner;
 
 class DpEpBulkAadharVerification extends Command
 {
-    protected $signature = 'disability:aadhar-verify {limit=200}';
+    protected $signature = 'disability:aadhar-verify {limit=100}';
 
     protected $description = 'Bulk Aadhaar verification for Disability Pensioners';
 
