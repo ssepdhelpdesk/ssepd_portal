@@ -1526,6 +1526,64 @@ public function oldage_wrong_sanction_order_no(Request $request)
     return view('dashboard.benf_3500_files.oldage_wrong_sanction_order_no');
 }
 
+public function oldage_aadhar_verification()
+{
+    $pendingCount = OldAge3500Pensioner::whereNull('verified_aadhar')->count();
+
+    return view(
+        'dashboard.benf_3500_files.aadhar_verification.disability_aadhar_verification',
+        compact('pendingCount')
+    );
+}
+
+public function oldage_aadhar_verification_process(Request $request)
+{
+    $request->validate([
+        'aadhaar_no' => 'required|digits:12',
+        'name_of_the_beneficiary' => 'required|string',
+    ]);
+
+    try {
+        $response = Http::withOptions([
+            'verify' => false,
+            'timeout' => 60,
+            'connect_timeout' => 20,
+            'curl' => [
+                CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            ],
+        ])
+        ->withHeaders([
+            'Accept' => 'application/json',
+            'User-Agent' => 'PostmanRuntime/7.36.0',
+        ])
+        ->asForm()
+        ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+            'aadhaar_no' => trim($request->aadhaar_no),
+            'name'       => trim($request->name_of_the_beneficiary),
+        ]);
+
+        if ($response->successful()) {
+            return response()->json([
+                'status' => true,
+                'data'   => trim($response->body()),
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'http_code' => $response->status(),
+            'response'  => $response->body(),
+        ], 422);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => false,
+            'exception' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 public function oldage_bulk_aadhar_verification()
 {
     $pendingCount = OldAge3500Pensioner::whereNull('verified_aadhar')->count();

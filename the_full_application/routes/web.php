@@ -268,6 +268,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('oldage_wrong_sanction_order_no', 'oldage_wrong_sanction_order_no')->name('oldage_wrong_sanction_order_no');
         Route::post('{id}/oldage_duplicate_sanction_order_no_update', 'oldage_duplicate_sanction_order_no_update')->name('oldage_duplicate_sanction_order_no_update');
 
+        Route::get('oldage_aadhar_verification', 'oldage_aadhar_verification')->name('oldage_aadhar_verification');
+        Route::post('oldage_aadhar_verification_process', 'oldage_aadhar_verification_process')->name('oldage_aadhar_verification_process');
+
         Route::get('oldage_bulk_aadhar_verification', 'oldage_bulk_aadhar_verification')->name('oldage_bulk_aadhar_verification');
         Route::post('oldage_bulk_aadhar_verification_process', 'oldage_bulk_aadhar_verification_process')->name('oldage_bulk_aadhar_verification_process');
     });
