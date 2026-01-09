@@ -91,7 +91,7 @@ public function index(Request $request)
         return DataTables::eloquent($oldAgeData)
         ->addIndexColumn()
         ->addColumn('aadhaar_verification_status', function ($row) {
-            if ($row->verified_aadhar === 1) {
+            if ($row->verified_aadhar == 1) {
             return '<span class="badge bg-success">Verified Aadhaar</span>';
         }
 
@@ -99,7 +99,7 @@ public function index(Request $request)
             return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
         }
 
-        if ($row->verified_aadhar === 0) {
+        if ($row->verified_aadhar == 0) {
             if ($this->isJson($row->verified_aadhar_remarks)) {
                 $data = json_decode($row->verified_aadhar_remarks, true);
                 return '<span class="badge bg-danger">'
