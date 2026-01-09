@@ -32,46 +32,46 @@ EP Pension || Index - Disability
                         <table id="oldAgeTable" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Sl No</th>
-                                    <th>Scheme</th>
-                                    <th>Beneficiary Name</th>
-                                    <th>Care of</th>
-                                    <th>DOB</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>UDID No</th>
-                                    <th>Category</th>
-                                    <th>Disability %age</th>
-                                    <th>District</th>
-                                    <th>Block/ULB</th>
-                                    <th>GP/Ward</th>
-                                    <th>Village</th>
-                                    <th>NSAP Sanction Order No</th>
-                                    <th>Sub-Collector Sanction Order No</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Care of</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">DOB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">UDID No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Category</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Disability %age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">District</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Block/ULB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">GP/Ward</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Village</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">NSAP Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sub-Collector Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Sl No</th>
-                                    <th>Scheme</th>
-                                    <th>Beneficiary Name</th>
-                                    <th>Care of</th>
-                                    <th>DOB</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>UDID No</th>
-                                    <th>Category</th>
-                                    <th>Disability %age</th>
-                                    <th>District</th>
-                                    <th>Block/ULB</th>
-                                    <th>GP/Ward</th>
-                                    <th>Village</th>
-                                    <th>NSAP Sanction Order No</th>
-                                    <th>Sub-Collector Sanction Order No</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Care of</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">DOB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">UDID No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Category</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Disability %age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">District</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Block/ULB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">GP/Ward</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Village</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">NSAP Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sub-Collector Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Action</th>
                                 </tr>
                             </tfoot>
                         </table>

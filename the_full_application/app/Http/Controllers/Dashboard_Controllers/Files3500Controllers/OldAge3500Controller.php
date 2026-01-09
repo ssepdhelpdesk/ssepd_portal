@@ -90,6 +90,29 @@ public function index(Request $request)
     if ($request->ajax()) {
         return DataTables::eloquent($oldAgeData)
         ->addIndexColumn()
+        ->addColumn('aadhaar_verification_status', function ($row) {
+            if ($row->verified_aadhar === 1) {
+            return '<span class="badge bg-success">Verified Aadhaar</span>';
+        }
+
+        if (is_null($row->verified_aadhar)) {
+            return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
+        }
+
+        if ($row->verified_aadhar === 0) {
+            if ($this->isJson($row->verified_aadhar_remarks)) {
+                $data = json_decode($row->verified_aadhar_remarks, true);
+                return '<span class="badge bg-danger">'
+                    . ($data[0]['failureMessage'] ?? 'Verification Failed')
+                    . '</span>';
+            }
+            return '<span class="badge bg-danger">'
+                . e($row->verified_aadhar_remarks)
+                . '</span>';
+        }
+
+        return '-';
+    })
         ->addColumn('action', function ($row) {
             $buttons = '<div class="btn-group">
             <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -115,11 +138,17 @@ public function index(Request $request)
             return $buttons;
         })
 
-        ->rawColumns(['action'])
+        ->rawColumns(['action', 'aadhaar_verification_status'])
         ->make(true);
     }
 
     return view('dashboard.benf_3500_files.oldage3500dataView');
+}
+
+private function isJson($string)
+{
+    json_decode($string);
+    return json_last_error() === JSON_ERROR_NONE;
 }
 
 public function update_status(Request $request)

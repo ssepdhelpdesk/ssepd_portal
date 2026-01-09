@@ -32,85 +32,86 @@ EP Pension || Index - OldAge
                         <table id="oldAgeTable" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Sl No</th>
-                                    <th>Scheme</th>
-                                    <th>Beneficiary Name</th>
-                                    <th>Care of</th>
-                                    <th>DOB</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>District</th>
-                                    <th>Block/ULB</th>
-                                    <th>GP/Ward</th>
-                                    <th>Village</th>
-                                    <th>NSAP Sanction Order No</th>
-                                    <th>Sub-Collector Sanction Order No</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Care of</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">DOB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Aadhaar Verification Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">District</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Block/ULB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">GP/Ward</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Village</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">NSAP Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sub-Collector Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Sl No</th>
-                                    <th>Scheme</th>
-                                    <th>Beneficiary Name</th>
-                                    <th>Care of</th>
-                                    <th>DOB</th>
-                                    <th>Age</th>
-                                    <th>Gender</th>
-                                    <th>District</th>
-                                    <th>Block/ULB</th>
-                                    <th>GP/Ward</th>
-                                    <th>Village</th>
-                                    <th>NSAP Sanction Order No</th>
-                                    <th>Sub-Collector Sanction Order No</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Care of</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">DOB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Age</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Aadhaar Verification Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">District</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Block/ULB</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">GP/Ward</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Village</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">NSAP Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Sub-Collector Sanction Order No</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Status</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Action</th>
                                 </tr>
                             </tfoot>
                         </table>
-<!-- Action Modal -->
-<div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="actionModalLabel">Select Action</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="recordId" value="">
-                <div class="form-group mb-3">
-                    <label for="statusSelect" class="form-label">Choose Status:</label>
-                    <select class="form-control" id="statusSelect" name="status" required>
-                        <option value="Inactive">Discontinue</option>
-                    </select>
+                        <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="actionModalLabel">Select Action</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="recordId" value="">
+                                        <div class="form-group mb-3">
+                                            <label for="statusSelect" class="form-label">Choose Status:</label>
+                                            <select class="form-control" id="statusSelect" name="status" required>
+                                                <option value="Inactive">Discontinue</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="discontinue_date" class="form-label">Date of Discontinue:</label>
+                                            <input type="date" name="discontinue_date" id="discontinue_date" class="form-control" max="{{ date('Y-m-d') }}" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="discontinued_reason" class="form-label">Discontinue Reason:</label>
+                                            <select class="form-control" id="discontinued_reason" name="discontinued_reason" required>
+                                                <option value=""> -Select- </option>
+                                                <option value="Death">Death</option>
+                                                <option value="Ineligible">Ineligible</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-success" id="saveStatus">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="discontinue_date" class="form-label">Date of Discontinue:</label>
-                    <input type="date" name="discontinue_date" id="discontinue_date" class="form-control" max="{{ date('Y-m-d') }}" required>
-                </div>
-                <div class="form-group mb-3">
-                    <label for="discontinued_reason" class="form-label">Discontinue Reason:</label>
-                    <select class="form-control" id="discontinued_reason" name="discontinued_reason" required>
-                        <option value=""> -Select- </option>
-                        <option value="Death">Death</option>
-                        <option value="Ineligible">Ineligible</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" id="saveStatus">Save</button>
             </div>
         </div>
     </div>
-</div>
-
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 
 @endsection 
@@ -130,6 +131,7 @@ EP Pension || Index - OldAge
                 { data: 'date_of_birth', name: 'date_of_birth' },
                 { data: 'age', name: 'age' },
                 { data: 'gender', name: 'gender' },
+                { data: 'aadhaar_verification_status', orderable: true, searchable: true },
                 { data: 'district', name: 'district' },
                 { data: 'block_or_ulb', name: 'block_or_ulb' },
                 { data: 'gp_or_ward', name: 'gp_or_ward' },
@@ -150,59 +152,59 @@ EP Pension || Index - OldAge
 
 </script>
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
 
     // Handle modal show to get record ID (already added)
-    $('#actionModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var recordId = button.data('id');
-        var modal = $(this);
-        modal.find('#recordId').val(recordId);
-    });
+        $('#actionModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var recordId = button.data('id');
+            var modal = $(this);
+            modal.find('#recordId').val(recordId);
+        });
 
     // AJAX Save Status
-    $('#saveStatus').on('click', function() {
-        var recordId = $('#recordId').val();
-        var status = $('#statusSelect').val();
-        var discontinue_date = $('#discontinue_date').val();
-        var discontinued_reason = $('#discontinued_reason').val();
+        $('#saveStatus').on('click', function() {
+            var recordId = $('#recordId').val();
+            var status = $('#statusSelect').val();
+            var discontinue_date = $('#discontinue_date').val();
+            var discontinued_reason = $('#discontinued_reason').val();
 
-        if(!status || !discontinue_date || !discontinued_reason) {
-            alert('Please fill all required fields.');
-            return;
-        }
-
-        $.ajax({
-            url: "{{ route('admin.oldage3500data.update_status') }}",
-            method: 'POST',
-            data: {
-                _token: "{{ csrf_token() }}",
-                id: recordId,
-                status: status,
-                discontinue_date: discontinue_date,
-                discontinued_reason: discontinued_reason
-            },
-            beforeSend: function() {
-                $('#saveStatus').prop('disabled', true).text('Saving...');
-            },
-            success: function(response) {
-                if(response.success) {
-                    $('#actionModal').modal('hide');
-                    $('#oldAgeTable').DataTable().ajax.reload(null, false);
-                    alert(response.message);
-                } else {
-                    alert(response.message || 'Something went wrong.');
-                }
-            },
-            error: function(xhr) {
-                alert('Error: ' + xhr.responseText);
-            },
-            complete: function() {
-                $('#saveStatus').prop('disabled', false).text('Save');
+            if(!status || !discontinue_date || !discontinued_reason) {
+                alert('Please fill all required fields.');
+                return;
             }
-        });
-    });
 
-});
+            $.ajax({
+                url: "{{ route('admin.oldage3500data.update_status') }}",
+                method: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: recordId,
+                    status: status,
+                    discontinue_date: discontinue_date,
+                    discontinued_reason: discontinued_reason
+                },
+                beforeSend: function() {
+                    $('#saveStatus').prop('disabled', true).text('Saving...');
+                },
+                success: function(response) {
+                    if(response.success) {
+                        $('#actionModal').modal('hide');
+                        $('#oldAgeTable').DataTable().ajax.reload(null, false);
+                        alert(response.message);
+                    } else {
+                        alert(response.message || 'Something went wrong.');
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseText);
+                },
+                complete: function() {
+                    $('#saveStatus').prop('disabled', false).text('Save');
+                }
+            });
+        });
+
+    });
 </script>
 @endsection
