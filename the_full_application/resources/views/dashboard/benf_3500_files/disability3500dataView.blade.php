@@ -39,6 +39,7 @@ EP Pension || Index - Disability
                                     <th style="white-space: normal; word-wrap: break-word;">DOB</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Age</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Aadhaar Verification Status</th>
                                     <th style="white-space: normal; word-wrap: break-word;">UDID No</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Category</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Disability %age</th>
@@ -61,6 +62,7 @@ EP Pension || Index - Disability
                                     <th style="white-space: normal; word-wrap: break-word;">DOB</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Age</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Gender</th>
+                                    <th style="white-space: normal; word-wrap: break-word;">Aadhaar Verification Status</th>
                                     <th style="white-space: normal; word-wrap: break-word;">UDID No</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Category</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Disability %age</th>
@@ -134,6 +136,7 @@ EP Pension || Index - Disability
                 { data: 'date_of_birth', name: 'date_of_birth' },
                 { data: 'age', name: 'age' },
                 { data: 'gender', name: 'gender' },
+                { data: 'aadhaar_verification_status', orderable: true, searchable: true },
                 { data: 'udid_no', name: 'udid_no' },
                 { data: 'disability_category', name: 'disability_category' },
                 { data: 'disability_percentage', name: 'disability_percentage' },
