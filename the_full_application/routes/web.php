@@ -273,6 +273,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('oldage_bulk_aadhar_verification', 'oldage_bulk_aadhar_verification')->name('oldage_bulk_aadhar_verification');
         Route::post('oldage_bulk_aadhar_verification_process', 'oldage_bulk_aadhar_verification_process')->name('oldage_bulk_aadhar_verification_process');
+
+        Route::get('ineligible_to_eligible_reinstated', 'ineligible_to_eligible_reinstated')->name('ineligible_to_eligible_reinstated');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {

@@ -65,7 +65,7 @@ EP Pension || Scheme Migration
 											<label class="form-label">NSAP Sanction Order No <span class="itsrequired">*</span></label>
 											<div class="input-group">
 												<input type="text" id="nsap_sanction_order_no" name="nsap_sanction_order_no" value="{{ old('nsap_sanction_order_no') }}" class="form-control" placeholder="NSAP Sanction Order No">
-												<button type="submit" id="submitBtn" class="btn btn-primary d-none"> Submit </button>
+												<button type="submit" id="submitBtn" class="btn btn-primary d-none"> Go Forward to Initiate Migration </button>
 											</div>
 											<div id="nsap_sanction_order_no_error"></div>
 											<div id="check_nsap_sanction_order_no"></div>
@@ -170,7 +170,7 @@ EP Pension || Scheme Migration
 
 			if (!sanctionNo) {
 				$('#check_nsap_sanction_order_no').html(
-					'<span style="color:#FF0000">Please provide NSAP Sanction Order No.</span>'
+					'<span style="color:#c70808">Please provide NSAP Sanction Order No.</span>'
 					);
 				return;
 			}
@@ -181,37 +181,35 @@ EP Pension || Scheme Migration
 
 					if (res.status === 0) {
 						$('#check_nsap_sanction_order_no').html(
-							'<span style="color:#FF0000">This NSAP Sanction Order Not is available in OldAge Pension, Please provide correct Sanction Order No.</span>'
+							'<span style="color:#c70808">NSAP Sanction Order No not found in Old Age or Disability Pension records. Please verify the Sanction Order No.</span>'
 							);
 					}
 
 					else if (res.status === 1) {
 						$('#check_nsap_sanction_order_no').html(
-							`<span style="color:#FF0000">
-                    This NSAP Sanction Order No is already registered with 
+							`<span style="color:#c70808">
+                    NSAP Sanction Order No is already registered with 
                     <b>OldAge Pensioner</b>: ${res.oldage.name_of_the_beneficiary}, 
                     from ${res.oldage.district}, ${res.oldage.block_or_ulb}, 
-                    ${res.oldage.gp_or_ward}, ${res.oldage.village}
-                    <br><br>
-                    as well as <b>Disability Pensioner</b>: ${res.disability.name_of_the_beneficiary}, 
+                    ${res.oldage.gp_or_ward}, ${res.oldage.village}, as well as <b>Disability Pensioner</b>: ${res.disability.name_of_the_beneficiary}, 
                     from ${res.disability.district}, ${res.disability.block_or_ulb}, 
                     ${res.disability.gp_or_ward}, ${res.disability.village}.
                     <br><br>
-                    So you are unable to Migrate this Beneficiary, Please contact with Administrator.
+                    So, Migration is not permitted. Please contact the Administrator.
 						</span>`
 						);
-						$('#submitBtn').removeClass('d-none');
+						$('#submitBtn').addClass('d-none');
 					}
 
 					else if (res.status === 3) {
 						$('#check_nsap_sanction_order_no').html(
-							`<span style="color:#01c0c8">
-                    This NSAP Sanction Order No is registered with 
+							`<span style="color:#058742">
+                    NSAP Sanction Order No is registered with 
                     <b>OldAge Pensioner</b>: ${res.oldage.name_of_the_beneficiary}, 
                     from ${res.oldage.district}, ${res.oldage.block_or_ulb}, 
                     ${res.oldage.gp_or_ward}, ${res.oldage.village}.
                     <br><br>
-                    Click on the Submit button to complete the migration process.
+                    Click the Go Forward Button to proceed with migration from OldAge to Disability.
 						</span>`
 						);
 
@@ -220,13 +218,13 @@ EP Pension || Scheme Migration
 
 					else if (res.status === 4) {
 						$('#check_nsap_sanction_order_no').html(
-							`<span style="color:#FF0000">
-                    This NSAP Sanction Order No is registered with 
+							`<span style="color:#058742">
+                    NSAP Sanction Order No is registered with 
                     <b>Disability Pensioner</b>: ${res.disability.name_of_the_beneficiary}, 
                     from ${res.disability.district}, ${res.disability.block_or_ulb}, 
                     ${res.disability.gp_or_ward}, ${res.disability.village}.
                     <br><br>
-                    So you are unable to Migrate this Beneficiary from Oldage to Disability, Please contact with Administrator.
+                    Click the Go Forward Button to proceed with migration from Disability to OldAge.
 						</span>`
 						);
 						$('#submitBtn').removeClass('d-none');
@@ -234,13 +232,13 @@ EP Pension || Scheme Migration
 
 					else if (res.status === 2) {
 						$('#check_nsap_sanction_order_no').html(
-							'<span style="color:#FF0000">Please provide a valid NSAP Sanction Order No.</span>'
+							'<span style="color:#c70808">Please provide a valid NSAP Sanction Order No.</span>'
 							);
 					}
 				})
 			.fail(function () {
 				$('#check_nsap_sanction_order_no').html(
-					'<span style="color:#FF0000">An error occurred. Please try again.</span>'
+					'<span style="color:#c70808">An error occurred. Please try again.</span>'
 					);
 			});
 

@@ -112,27 +112,20 @@
                      </ul>
                   </li>
                   <li>
-                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
-                     <ul aria-expanded="false" class="collapse">
-                        @can('special-school-access')
-                        <li><a href="{{route('admin.specialschool.index')}}">View Special Schools</a></li>
-                        @endcan
-                        @can('special-school-create')
-                        <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
-                        <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
-                        <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
-                        @endcan
-                     </ul>
-                  </li>
-                  <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-3500-list')
-                        <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pension</a></li>
-                        <li><a href="{{route('admin.disability3500data.index')}}">Disability Pension</a></li>
-                        <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
-                        <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
-                        <li><a href="{{route('admin.schememigrationep.nsap_sanction_order_no_check')}}">Scheme Migration</a></li>
+                        <li><a href="{{route('admin.oldage3500data.index')}}">OldAge Pensioner List</a></li>
+                        <li><a href="{{route('admin.disability3500data.index')}}">Disability Pensioner List</a></li>                        
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension Data Entry</a>
+                           <ul aria-expanded="false" class="collapse">
+                              <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
+                              <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
+                              <li><a href="{{route('admin.schememigrationep.nsap_sanction_order_no_check')}}">Scheme Migration</a></li>
+                              <li><a href="{{route('admin.oldage3500data.ineligible_to_eligible_reinstated')}}">Reinstated Application</a></li>
+                           </ul>
+                        </li>
                         <li>
                            <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Sanction Order Number Correction</a>
                            <ul aria-expanded="false" class="collapse">
@@ -153,6 +146,19 @@
                                  <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
                               </ul>
                            </li>                        
+                           @endcan
+                        </ul>
+                     </li>
+                     <li>
+                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
+                        <ul aria-expanded="false" class="collapse">
+                           @can('special-school-access')
+                           <li><a href="{{route('admin.specialschool.index')}}">View Special Schools</a></li>
+                           @endcan
+                           @can('special-school-create')
+                           <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
+                           <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
+                           <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
                            @endcan
                         </ul>
                      </li>
