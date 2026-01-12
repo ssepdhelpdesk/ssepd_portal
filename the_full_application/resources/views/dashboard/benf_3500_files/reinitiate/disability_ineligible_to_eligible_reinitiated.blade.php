@@ -128,6 +128,16 @@ EP Pension || Index - Disability ReInitiate Application
                                         </div>
 
                                         <div class="mb-3">
+                                            <label class="form-label">Sub-Col Signature Date <span class="text-danger">*</span></label>
+                                            <input type="date" name="sub_col_signature_date" id="sub_col_signature_date" class="form-control" placeholder="Sub COl SIgnature Date">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">PDF Sanction Order No <span class="text-danger">*</span></label>
+                                            <input type="text" name="sub_collector_sanction_order_no" id="sub_collector_sanction_order_no" class="form-control" placeholder="Sanction Order No">
+                                        </div>
+
+                                        <div class="mb-3">
                                             <label class="form-label">Remarks / Order Reference <span class="text-danger">*</span></label>
                                             <input type="text" name="reinitiate_remark" id="reinitiate_remark" class="form-control" placeholder="Enter remarks">
                                         </div>
@@ -315,10 +325,22 @@ EP Pension || Index - Disability ReInitiate Application
 
     let ids = getSelectedIds();
     let pdf = $('#reinitiated_sub_col_files')[0].files[0];
+    let sub_col_signature_date = $('#sub_col_signature_date').val().trim();
+    let sub_collector_sanction_order_no = $('#sub_collector_sanction_order_no').val().trim();
     let remark = $('#reinitiate_remark').val().trim();
 
     if (!pdf) {
         alert('Please upload PDF document.');
+        return;
+    }
+
+    if (!sub_col_signature_date) {
+        alert('Please Provide Sub Collector Signature Date.');
+        return;
+    }
+
+    if (!sub_collector_sanction_order_no) {
+        alert('Please Provide Sub Collector Sanction Order No.');
         return;
     }
 
@@ -330,6 +352,8 @@ EP Pension || Index - Disability ReInitiate Application
     let formData = new FormData();
     formData.append('_token', "{{ csrf_token() }}");
     formData.append('pdf', pdf);
+    formData.append('sub_col_signature_date', sub_col_signature_date);
+    formData.append('sub_collector_sanction_order_no', sub_collector_sanction_order_no);
     formData.append('remark', remark);
 
     ids.forEach(id => {
@@ -355,6 +379,8 @@ EP Pension || Index - Disability ReInitiate Application
 
                 $('#reInitiateModal').modal('hide');
                 $('#reinitiated_sub_col_files').val('');
+                $('#sub_col_signature_date').val('');
+                $('#sub_collector_sanction_order_no').val('');
                 $('#reinitiate_remark').val('');
 
                 selectedIds.clear();

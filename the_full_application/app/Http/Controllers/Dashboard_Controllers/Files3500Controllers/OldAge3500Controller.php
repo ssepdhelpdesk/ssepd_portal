@@ -1771,6 +1771,8 @@ public function oldage_ineligible_to_eligible_reinitiated_process(Request $reque
     $request->validate([
         'ids' => 'required|array',
         'pdf' => 'required|mimes:pdf|max:2048',
+        'sub_col_signature_date' => 'required|date'
+        'sub_collector_sanction_order_no' => 'required|string|max:255',
         'remark' => 'required|string|max:255',
     ]);
 
@@ -1819,8 +1821,13 @@ public function oldage_ineligible_to_eligible_reinitiated_process(Request $reque
         $previousBy = $beneficiary->discontinued_by ?? 'Unknown';
         $previousDate = $beneficiary->discontinued_system_gen_date ?? 'N/A';
         $previousTime = $beneficiary->discontinued_system_gen_time ?? 'N/A';
+        $previousSubColSignDate = $beneficiary->sub_col_signature_date ?? 'N/A';
+        $previousSubColSancOrNumber = $beneficiary->sub_collector_sanction_order_no ?? 'N/A';
+        
+        $sub_col_signature_date = $request->sub_col_signature_date;
+        $sub_collector_sanction_order_no = $request->sub_collector_sanction_order_no;
 
-        $reinitiatedReasonMessage = "This application was discontinued by {$previousBy} on dated {$previousDate} at {$previousTime} and the reason was {$previousReason}. Current Remark: {$request->remark}";
+        $reinitiatedReasonMessage = "This application was discontinued by {$previousBy} on dated {$previousDate} at {$previousTime} having previous sub collector signature date {$sub_col_signature_date}, previous Sub Collector Sanction Order No {$previousSubColSancOrNumber} and the reason was {$previousReason}. Current Remark: {$request->remark}";
 
         $beneficiary->update([
             'status' => 'Active',
@@ -1829,6 +1836,8 @@ public function oldage_ineligible_to_eligible_reinitiated_process(Request $reque
             'discontinued_system_gen_time' => null,
             'discontinued_reason' => null,
             'discontinued_by' => null,
+            'sub_col_signature_date' => $sub_col_signature_date,
+            'sub_collector_sanction_order_no' => $sub_collector_sanction_order_no,
             'reinitiated_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
             'reinitiated_system_gen_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
             'reinitiated_system_gen_time' => now()->setTimezone('Asia/Kolkata')->toTimeString(),
