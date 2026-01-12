@@ -1683,7 +1683,7 @@ public function ineligible_to_eligible_reinitiated(Request $request)
     $userRole = $user->role_id;
 
     $oldAgeData = OldAge3500Pensioner::query();
-    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('db_status', 1);
+    $oldAgeData->where('status', 'Inactive')->where('db_status', 1);
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
