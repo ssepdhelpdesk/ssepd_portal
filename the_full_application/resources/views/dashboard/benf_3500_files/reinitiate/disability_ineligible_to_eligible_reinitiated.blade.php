@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || Index - OldAge
+EP Pension || Index - Disability ReInitiate Application
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -32,6 +32,7 @@ EP Pension || Index - OldAge
                         <table id="oldAgeTable" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
+                                    <th><input type="checkbox" id="selectAll"></th>
                                     <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
@@ -52,6 +53,7 @@ EP Pension || Index - OldAge
                             </thead>
                             <tfoot>
                                 <tr>
+                                    <th></th>
                                     <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Scheme</th>
                                     <th style="white-space: normal; word-wrap: break-word;">Beneficiary Name</th>
@@ -71,6 +73,9 @@ EP Pension || Index - OldAge
                                 </tr>
                             </tfoot>
                         </table>
+                        <div class="mb-3 text-end">
+                            <button type="button" id="btnReInitiate" class="btn btn-success"> ReInitiate the Marked Applications!</button>
+                        </div>
                         <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -106,6 +111,39 @@ EP Pension || Index - OldAge
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" id="reInitiateModal" tabindex="-1">
+                            <div class="modal-dialog modal-md">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Re-Initiate Beneficiaries</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Upload Approval PDF <span class="text-danger">*</span></label>
+                                            <input type="file" name="reinitiated_sub_col_files" id="reinitiated_sub_col_files" class="form-control" accept="application/pdf">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Remarks / Order Reference <span class="text-danger">*</span></label>
+                                            <input type="text" name="reinitiate_remark" id="reinitiate_remark" class="form-control" placeholder="Enter remarks">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="button" class="btn btn-success" id="confirmReInitiate">
+                                            Confirm ReInitiate
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -118,43 +156,96 @@ EP Pension || Index - OldAge
 
 @section('script')
 <script>
+    let selectedIds = new Set();
+</script>
+<script>
     $(function () {
-        $('#oldAgeTable').DataTable({
+
+        let table = $('#oldAgeTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('admin.oldage3500data.ineligible_to_eligible_reinitiated') }}",
+            ajax: "{{ route('admin.disability3500data.disability_ineligible_to_eligible_reinitiated') }}",
+
             columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'scheme_name', name: 'scheme_name' },
-                { data: 'name_of_the_beneficiary', name: 'name_of_the_beneficiary' },
-                { data: 'father_or_husband_name', name: 'father_or_husband_name' },
-                { data: 'date_of_birth', name: 'date_of_birth' },
-                { data: 'age', name: 'age' },
-                { data: 'gender', name: 'gender' },
-                { data: 'aadhaar_verification_status', orderable: true, searchable: true },
-                { data: 'district', name: 'district' },
-                { data: 'block_or_ulb', name: 'block_or_ulb' },
-                { data: 'gp_or_ward', name: 'gp_or_ward' },
-                { data: 'village', name: 'village' },
-                { data: 'nsap_sanction_order_no', name: 'nsap_sanction_order_no' },
-                { data: 'sub_collector_sanction_order_no', name: 'sub_collector_sanction_order_no' },
-                { data: 'discontinued_reason', name: 'discontinued_reason' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
+                { data: 'checkbox', orderable: false, searchable: false },
+                { data: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'scheme_name' },
+                { data: 'name_of_the_beneficiary' },
+                { data: 'father_or_husband_name' },
+                { data: 'date_of_birth' },
+                { data: 'age' },
+                { data: 'gender' },
+                { data: 'aadhaar_verification_status' },
+                { data: 'district' },
+                { data: 'block_or_ulb' },
+                { data: 'gp_or_ward' },
+                { data: 'village' },
+                { data: 'nsap_sanction_order_no' },
+                { data: 'sub_collector_sanction_order_no' },
+                { data: 'discontinued_reason' },
+                { data: 'action', orderable: false, searchable: false }
             ],
+
+            drawCallback: function () {
+
+                $('.row-checkbox').each(function () {
+                    let id = $(this).val();
+                    if (selectedIds.has(id)) {
+                        $(this).prop('checked', true);
+                    }
+                });
+
+                let total = $('.row-checkbox').length;
+                let checked = $('.row-checkbox:checked').length;
+                $('#selectAll').prop('checked', total > 0 && total === checked);
+            },
+
             dom: 'Blfrtip',
             buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-            lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+            lengthMenu: [[10, 50, 100, -1], [10, 50, 100, "All"]],
         });
 
-        $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        $('.buttons-copy, .buttons-csv, .buttons-excel, .buttons-pdf, .buttons-print')
         .addClass('btn btn-primary me-1');
     });
+</script>
+<script>
+    $(document).on('change', '.row-checkbox', function () {
 
+        let id = $(this).val();
+
+        if (this.checked) {
+            selectedIds.add(id);
+        } else {
+            selectedIds.delete(id);
+            $('#selectAll').prop('checked', false);
+        }
+    });
+</script>
+<script>
+    $(document).on('change', '#selectAll', function () {
+
+        let checked = this.checked;
+
+        $('.row-checkbox').each(function () {
+            let id = $(this).val();
+            $(this).prop('checked', checked);
+
+            if (checked) {
+                selectedIds.add(id);
+            } else {
+                selectedIds.delete(id);
+            }
+        });
+    });
+</script>
+<script>
+    function getSelectedIds() {
+        return Array.from(selectedIds);
+    }
 </script>
 <script>
     $(document).ready(function() {
-
-    // Handle modal show to get record ID (already added)
         $('#actionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var recordId = button.data('id');
@@ -162,7 +253,6 @@ EP Pension || Index - OldAge
             modal.find('#recordId').val(recordId);
         });
 
-    // AJAX Save Status
         $('#saveStatus').on('click', function() {
             var recordId = $('#recordId').val();
             var status = $('#statusSelect').val();
@@ -175,7 +265,7 @@ EP Pension || Index - OldAge
             }
 
             $.ajax({
-                url: "{{ route('admin.oldage3500data.update_status') }}",
+                url: "{{ route('admin.disability3500data.update_status') }}",
                 method: 'POST',
                 data: {
                     _token: "{{ csrf_token() }}",
@@ -206,5 +296,86 @@ EP Pension || Index - OldAge
         });
 
     });
+</script>
+<script>
+    $(document).on('click', '#btnReInitiate', function () {
+
+    let ids = getSelectedIds();
+
+    if (ids.length === 0) {
+        alert('Please select at least one beneficiary.');
+        return;
+    }
+
+    $('#reInitiateModal').modal('show');
+});
+</script>
+<script>
+    $(document).on('click', '#confirmReInitiate', function () {
+
+    let ids = getSelectedIds();
+    let pdf = $('#reinitiated_sub_col_files')[0].files[0];
+    let remark = $('#reinitiate_remark').val().trim();
+
+    if (!pdf) {
+        alert('Please upload PDF document.');
+        return;
+    }
+
+    if (!remark) {
+        alert('Please enter remarks.');
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('_token', "{{ csrf_token() }}");
+    formData.append('pdf', pdf);
+    formData.append('remark', remark);
+
+    ids.forEach(id => {
+        formData.append('ids[]', id);
+    });
+
+    $.ajax({
+        url: "{{ route('admin.disability3500data.disability_ineligible_to_eligible_reinitiated_process') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        beforeSend: function () {
+            $('#confirmReInitiate').prop('disabled', true).text('Processing...');
+        },
+
+        success: function (response) {
+
+            if (response.success) {
+
+                alert(response.message);
+
+                $('#reInitiateModal').modal('hide');
+                $('#reinitiated_sub_col_files').val('');
+                $('#reinitiate_remark').val('');
+
+                selectedIds.clear();
+                $('#selectAll').prop('checked', false);
+
+                $('#oldAgeTable').DataTable().ajax.reload(null, false);
+
+            } else {
+                alert(response.message || 'Re-initiation failed.');
+            }
+        },
+
+        error: function (xhr) {
+            alert('Server Error: ' + xhr.responseText);
+        },
+
+        complete: function () {
+            $('#confirmReInitiate').prop('disabled', false).text('Confirm ReInitiate');
+        }
+    });
+});
+
 </script>
 @endsection

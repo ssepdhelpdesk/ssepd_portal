@@ -274,7 +274,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('oldage_bulk_aadhar_verification', 'oldage_bulk_aadhar_verification')->name('oldage_bulk_aadhar_verification');
         Route::post('oldage_bulk_aadhar_verification_process', 'oldage_bulk_aadhar_verification_process')->name('oldage_bulk_aadhar_verification_process');
 
-        Route::get('ineligible_to_eligible_reinitiated', 'ineligible_to_eligible_reinitiated')->name('ineligible_to_eligible_reinitiated');
+        Route::get('oldage_ineligible_to_eligible_reinitiated', 'oldage_ineligible_to_eligible_reinitiated')->name('oldage_ineligible_to_eligible_reinitiated');
+        Route::post('oldage_ineligible_to_eligible_reinitiated_process', 'oldage_ineligible_to_eligible_reinitiated_process')->name('oldage_ineligible_to_eligible_reinitiated_process');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
@@ -305,6 +306,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('disability_bulk_aadhar_verification', 'disability_bulk_aadhar_verification')->name('disability_bulk_aadhar_verification');
         Route::post('disability_bulk_aadhar_verification_process', 'disability_bulk_aadhar_verification_process')->name('disability_bulk_aadhar_verification_process');
+
+        Route::get('disability_ineligible_to_eligible_reinitiated', 'disability_ineligible_to_eligible_reinitiated')->name('disability_ineligible_to_eligible_reinitiated');
+        Route::post('disability_ineligible_to_eligible_reinitiated_process', 'disability_ineligible_to_eligible_reinitiated_process')->name('disability_ineligible_to_eligible_reinitiated_process');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {

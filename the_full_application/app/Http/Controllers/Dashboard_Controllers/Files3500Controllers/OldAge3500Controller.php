@@ -1676,14 +1676,14 @@ public function oldage_bulk_aadhar_verification_process(Request $request)
     ]);
 }
 
-public function ineligible_to_eligible_reinitiated(Request $request)
+public function oldage_ineligible_to_eligible_reinitiated(Request $request)
 {
     ini_set('memory_limit', '512M');    
     $user = auth()->user();
     $userRole = $user->role_id;
 
     $oldAgeData = OldAge3500Pensioner::query();
-    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('db_status', 1);
+    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
@@ -1726,6 +1726,12 @@ public function ineligible_to_eligible_reinitiated(Request $request)
 
             return '-';
         })
+        ->addColumn('checkbox', function ($row) {
+            if ($row->status == 'Inactive' && $row->discontinued_reason == 'Ineligible') {
+                return '<input type="checkbox" class="row-checkbox" value="'.$row->id.'">';
+            }
+            return '';
+        })
         ->addColumn('action', function ($row) {
             $buttons = '<div class="btn-group">
             <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -1733,7 +1739,7 @@ public function ineligible_to_eligible_reinitiated(Request $request)
             </button>
             <div class="dropdown-menu animated flipInX">';
 
-            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            /*if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
             {
                 $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
                 data-bs-toggle="modal" 
@@ -1744,18 +1750,98 @@ public function ineligible_to_eligible_reinitiated(Request $request)
             {
                 $editUrl = route('admin.oldage3500data.edit', $row->id);
                 $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
-            }
+            }*/
 
             $buttons .= '</div></div>';
 
             return $buttons;
         })
 
-        ->rawColumns(['action', 'aadhaar_verification_status'])
+        ->rawColumns(['checkbox', 'action', 'aadhaar_verification_status'])
         ->make(true);
     }
 
-    return view('dashboard.benf_3500_files.reinitiate.ineligible_to_eligible_reinitiated');
+    return view('dashboard.benf_3500_files.reinitiate.oldage_ineligible_to_eligible_reinitiated');
+}
+
+public function oldage_ineligible_to_eligible_reinitiated_process(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'ids' => 'required|array',
+        'pdf' => 'required|mimes:pdf|max:2048',
+        'remark' => 'required|string|max:255',
+    ]);
+
+    $ids = $request->ids;
+
+    if (empty($ids)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No records selected'
+        ]);
+    }
+
+    $previousId = OldAge3500Pensioner::latest()->value('id') ?? 0;
+    $currentDate = now()->format('d/m/Y');
+    $randomNumber = mt_rand(1000, 9999);
+    $epSystemGeneratedRegNo = "SSEPD/OAPEP/REINITIATED/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
+    $epSystemGenRegNo = str_replace('/', '_', $epSystemGeneratedRegNo);
+
+    $folderPath = public_path("reinitiated_sub_col_files/{$epSystemGenRegNo}");
+    /*A folder i.e. storage/reinitiated_sub_col_files is created inside the root directory ssepd_ngo_working_portal/storage/reinitiated_sub_col_files*/
+    $externalBasePath = dirname(base_path());
+    $externalPath = $externalBasePath . "/storage/reinitiated_sub_col_files/{$epSystemGenRegNo}";
+
+    if (!file_exists($folderPath)) {
+        mkdir($folderPath, 0755, true);
+    }
+    if (!file_exists($externalPath)) {
+        mkdir($externalPath, 0755, true);
+    }
+
+    if ($request->hasFile('pdf')) {
+        $subColFile = $request->file('pdf');
+        $subColExtension = $subColFile->getClientOriginalExtension();
+        $subColRandomName = 'EP_REINITIATED_SUB_COL_' . Str::random(40) . '.' . $subColExtension;
+
+        $subColStoredPath = $subColFile->storeAs("reinitiated_sub_col_files/{$epSystemGenRegNo}", $subColRandomName, 'public');
+        copy(storage_path("app/public/{$subColStoredPath}"), "{$folderPath}/{$subColRandomName}");
+        copy(storage_path("app/public/{$subColStoredPath}"), "{$externalPath}/{$subColRandomName}");
+    }
+
+    foreach ($ids as $id) {
+        $beneficiary = OldAge3500Pensioner::find($id);
+        if (!$beneficiary) continue;
+
+        $previousReason = $beneficiary->discontinued_reason ?? 'N/A';
+        $previousBy = $beneficiary->discontinued_by ?? 'Unknown';
+        $previousDate = $beneficiary->discontinued_system_gen_date ?? 'N/A';
+        $previousTime = $beneficiary->discontinued_system_gen_time ?? 'N/A';
+
+        $reinitiatedReasonMessage = "This application was discontinued by {$previousBy} on dated {$previousDate} at {$previousTime} and the reason was {$previousReason}. Current Remark: {$request->remark}";
+
+        $beneficiary->update([
+            'status' => 'Active',
+            'discontinued_date' => null,
+            'discontinued_system_gen_date' => null,
+            'discontinued_system_gen_time' => null,
+            'discontinued_reason' => null,
+            'discontinued_by' => null,
+            'reinitiated_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
+            'reinitiated_system_gen_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
+            'reinitiated_system_gen_time' => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+            'reinitiated_reason' => $reinitiatedReasonMessage,
+            'reinitiated_by' => $user->user_id ?? null,
+            'reinitiated_sub_col_files' => $subColStoredPath ?? null,
+        ]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => count($ids).' beneficiaries re-initiated successfully.'
+    ]);
 }
 
 }

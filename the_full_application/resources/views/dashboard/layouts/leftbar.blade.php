@@ -123,7 +123,8 @@
                               <li><a href="{{route('admin.oldage3500data.create')}}">OAP Pension DataEnrty</a></li>
                               <li><a href="{{route('admin.disability3500data.create')}}">DP Pension DataEnrty</a></li>
                               <li><a href="{{route('admin.schememigrationep.nsap_sanction_order_no_check')}}">Scheme Migration</a></li>
-                              <li><a href="{{route('admin.oldage3500data.ineligible_to_eligible_reinitiated')}}">Reinitiated Application</a></li>
+                              <li><a href="{{route('admin.oldage3500data.oldage_ineligible_to_eligible_reinitiated')}}">OAP Reinitiated Application</a></li>
+                              <li><a href="{{route('admin.disability3500data.disability_ineligible_to_eligible_reinitiated')}}">DP Reinitiated Application</a></li>
                            </ul>
                         </li>
                         <li>

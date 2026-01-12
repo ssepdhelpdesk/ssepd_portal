@@ -141,12 +141,10 @@ EP Pension || Scheme Migration
 									</td>
 								</tr>
 								@endforeach
-
 							</tbody>
 						</table>
 					</div>
 					@endif
-
 				</div>
 			</div>
 		</div>
