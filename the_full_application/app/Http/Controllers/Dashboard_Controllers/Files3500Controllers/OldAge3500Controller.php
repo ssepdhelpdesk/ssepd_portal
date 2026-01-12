@@ -1676,4 +1676,86 @@ public function oldage_bulk_aadhar_verification_process(Request $request)
     ]);
 }
 
+public function ineligible_to_eligible_reinitiated(Request $request)
+{
+    ini_set('memory_limit', '512M');    
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $oldAgeData = OldAge3500Pensioner::query();
+    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('db_status', 1);
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+    } elseif (in_array($userRole, [4, 6])) {
+        $oldAgeData->where('block_id', $user->posted_block);
+    } elseif ($userRole == 5) {
+        $oldAgeData->where('municipality_id', $user->posted_municipality);
+    } elseif (in_array($userRole, [8, 10])) {
+        $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')
+        ->pluck('block_id');
+        $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+        ->where('is_active', 'active')
+        ->pluck('municipality_id');
+
+        $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+            ->orWhereIn('municipality_id', $municipalityIds);
+        });
+    } elseif (in_array($userRole, [9, 11])) {
+        $oldAgeData->where('district_id', $user->posted_district);
+    }
+
+    if ($request->ajax()) {
+        return DataTables::eloquent($oldAgeData)
+        ->addIndexColumn()
+        ->addColumn('aadhaar_verification_status', function ($row) {
+
+            if ($row->verified_aadhar == 1) {
+                return '<span class="badge bg-success">Verified Aadhaar</span>';
+            }
+
+            if (is_null($row->verified_aadhar)) {
+                return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
+            }
+
+            if ($row->verified_aadhar == 0) {
+                return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
+            }
+
+            return '-';
+        })
+        ->addColumn('action', function ($row) {
+            $buttons = '<div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+            </button>
+            <div class="dropdown-menu animated flipInX">';
+
+            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            {
+                $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
+                data-bs-toggle="modal" 
+                data-bs-target="#actionModal" 
+                data-id="'.$row->id.'"> Discontinue </a>';
+            }
+            if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            {
+                $editUrl = route('admin.oldage3500data.edit', $row->id);
+                $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
+            }
+
+            $buttons .= '</div></div>';
+
+            return $buttons;
+        })
+
+        ->rawColumns(['action', 'aadhaar_verification_status'])
+        ->make(true);
+    }
+
+    return view('dashboard.benf_3500_files.oldage3500dataView');
+}
+
 }
