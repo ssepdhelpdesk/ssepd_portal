@@ -1,11 +1,9 @@
 git status
 git add .
-git commit -m "Bulk Aadhaar Verification Cronjob"
+git commit -m "Implemented Aadhaar Verification in EP OAP & DP Store Function"
 git push origin main
 
-update `disability_pensioner_consents` set address_type = 1 WHERE block_id != 'NULL';
-
-update `disability_pensioner_consents` set address_type = 2 WHERE block_id = 'NULL';
+29923
 
 
 git pull origin main
