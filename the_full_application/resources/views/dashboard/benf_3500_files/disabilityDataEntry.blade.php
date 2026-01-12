@@ -184,10 +184,22 @@ EP Pension || Disability Data Entry
                            <div class="col-md-3">
                               <div class="form-group" id="aadhaar_no_div">
                                  <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
-                                 <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{old('aadhaar_no')}}" class="form-control" placeholder="Aadhaar Number" >
+                                 <div class="input-group">
+                                    <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{old('aadhaar_no')}}" class="form-control" placeholder="Aadhaar Number" >
+                                    <span class="input-group-btn"><button class="btn btn-info text-white" type="button" id="btnVerifyAadhaar">Verify!</button></span>
+                                    <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
+                                    <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
+                                 </div>
+                                 <div id="aadhaar_verify_result" class="mt-1"></div>
                                  <div id="aadhaar_no_error"></div>
                                  <div id="check_aadhaar_no"></div>
                                  @error('aadhaar_no')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                                 @error('verified_aadhar')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                                 @error('verified_aadhar_remarks')
                                  <label class="error">{{ $message }}</label>
                                  @enderror
                               </div>
@@ -223,7 +235,7 @@ EP Pension || Disability Data Entry
                                  @enderror
                               </div>
                            </div>
-                           <div class="col-md-3">
+                           <!-- <div class="col-md-3">
                               <div class="form-group" id="ngo_address_type_div">
                                  <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
                                  <div class="d-flex align-items-center">
@@ -241,7 +253,42 @@ EP Pension || Disability Data Entry
                                  <label class="error">{{ $message }}</label>
                                  @enderror
                               </div>
-                           </div>
+                           </div> -->
+                           <div class="col-md-3">
+                                 <div class="form-group" id="ngo_address_type_div">
+                                    <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
+                                    <div class="d-flex align-items-center">
+                                       @if(in_array(auth()->user()->role_id, [4, 6]))
+                                       <div class="custom-control custom-radio me-3">
+                                          <input type="radio" id="block" name="ngo_address_type" value="1"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="block">Block</label>
+                                       </div>
+                                       @elseif(auth()->user()->role_id == 5)
+                                       <div class="custom-control custom-radio">
+                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="ulb">ULB</label>
+                                       </div>
+                                       @else
+                                       <div class="custom-control custom-radio me-3">
+                                          <input type="radio" id="block" name="ngo_address_type" value="1"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="block">Block</label>
+                                       </div>
+                                       <div class="custom-control custom-radio">
+                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="ulb">ULB</label>
+                                       </div>
+                                       @endif
+                                    </div>
+                                    <div id="ngo_address_type_error"></div>
+                                    @error('ngo_address_type')
+                                    <label class="error">{{ $message }}</label>
+                                    @enderror
+                                 </div>
+                              </div>
                         </div>
                         <!--/row-->
                         <div class="row" id="dynamic-content"></div>
@@ -353,6 +400,126 @@ EP Pension || Disability Data Entry
       });
    });
 </script>
+<script>
+      $(document).ready(function () {
+
+        $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+          $('#verified_aadhar').val('');
+          $('#verified_aadhar_remarks').val('');
+          $('#aadhaar_verify_result').html('');
+
+          $('#btnVerifyAadhaar')
+          .prop('disabled', false)
+          .removeClass('btn-success')
+          .addClass('btn-info')
+          .text('Verify!');
+
+          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+       });
+
+        $(document).on('click', '#btnVerifyAadhaar', function () {
+
+          let aadhaar = $('#aadhaar_no').val().trim();
+          let name    = $('#name_of_the_beneficiary').val().trim();
+
+          $('#aadhaar_verify_result').html('');
+          $('#verified_aadhar').val('');
+          $('#verified_aadhar_remarks').val('');
+
+          if (!/^\d{12}$/.test(aadhaar)) {
+            $('#aadhaar_verify_result').html(
+              '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
+              );
+            return;
+         }
+
+         if (name === '') {
+            $('#aadhaar_verify_result').html(
+              '<span class="text-danger">Enter beneficiary name first</span>'
+              );
+            return;
+         }
+
+         $('#btnVerifyAadhaar')
+         .prop('disabled', true)
+         .text('Verifying...');
+
+         $.ajax({
+            url: "{{ route('admin.disability3500data.disability_aadhar_verification_process') }}",
+            type: "POST",
+            dataType: "json",
+            data: {
+              _token: "{{ csrf_token() }}",
+              aadhaar_no: aadhaar,
+              name_of_the_beneficiary: name
+           },
+
+           success: function (res) {
+              let message = res.data ?? '';
+
+              $('#verified_aadhar_remarks').val(message);
+
+              if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+
+                $('#verified_aadhar').val(1);
+
+                $('#aadhaar_verify_result').html(
+                  '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+                  );
+
+                $('#btnVerifyAadhaar')
+                .prop('disabled', true)
+                .removeClass('btn-info')
+                .addClass('btn-success')
+                .text('Verified');
+
+                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
+
+             } else {
+                $('#verified_aadhar').val(0);
+
+                $('#aadhaar_verify_result').html(
+                  '<span class="badge bg-danger">' + message + '</span>'
+                  );
+
+                $('#btnVerifyAadhaar')
+                .prop('disabled', false)
+                .removeClass('btn-success')
+                .addClass('btn-info')
+                .text('Verify!');
+
+                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+             }
+          },
+
+          error: function (xhr) {
+           let msg = 'Verification failed';
+           if (xhr.responseJSON) {
+             msg = xhr.responseJSON.exception ??
+             xhr.responseJSON.response ??
+             msg;
+          }
+
+          $('#verified_aadhar').val(0);
+          $('#verified_aadhar_remarks').val(msg);
+
+          $('#aadhaar_verify_result').html(
+             '<span class="badge bg-danger">' + msg + '</span>'
+             );
+
+          $('#btnVerifyAadhaar')
+          .prop('disabled', false)
+          .removeClass('btn-success')
+          .addClass('btn-info')
+          .text('Verify!');
+
+          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+       }
+    });
+
+      });
+     });
+  </script>
 <script type="text/javascript">
    $(document).ready(function () {
       $("#nsap_sanction_order_no").blur(function () {

@@ -759,6 +759,13 @@ public function store(Request $request)
         'sub_collector_sanction_order_no' => 'required',
         'pension_month' => 'required',
         'ngo_address_type' => 'required|in:1,2',
+        'verified_aadhar' => 'required|in:1',
+        'verified_aadhar_remarks' => 'required',
+    ];
+
+    $messages = [
+        'verified_aadhar.required' => 'Please verify Aadhaar before submitting.',
+        'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details (name, DOB, etc.) are entered correctly.',
     ];
 
     $addressMessage = '';
@@ -781,7 +788,7 @@ public function store(Request $request)
             'pin' => 'required',
         ]);
     }
-    $validatedData = $request->validate($validationRules);
+    $validatedData = $request->validate($validationRules, $messages);
 
     DB::beginTransaction();
     try {
@@ -839,6 +846,8 @@ public function store(Request $request)
         $old_age_pensioner->village = $village;
         $old_age_pensioner->village_id = $village_id;
         $old_age_pensioner->aadhaar_no = $validatedData['aadhaar_no'];
+        $old_age_pensioner->verified_aadhar = $validatedData['verified_aadhar'];
+        $old_age_pensioner->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'];
         $old_age_pensioner->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
         $old_age_pensioner->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
         $old_age_pensioner->pension_month = $validatedData['pension_month'];

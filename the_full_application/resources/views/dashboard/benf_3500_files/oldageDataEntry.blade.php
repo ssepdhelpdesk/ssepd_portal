@@ -13,248 +13,286 @@ EP Pension || OldAge Data Entry
 @endsection 
 @section('content')
 <div class="container-fluid">
-<!-- ============================================================== -->
-<!-- Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<div class="row page-titles">
-   <div class="col-md-7 align-self-center">
-      <div class="d-flex align-items-center">
-         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-            <li class="breadcrumb-item active">@yield('title')</li>
-         </ol>
+   <!-- ============================================================== -->
+   <!-- Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <div class="row page-titles">
+      <div class="col-md-7 align-self-center">
+         <div class="d-flex align-items-center">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+               <li class="breadcrumb-item active">@yield('title')</li>
+            </ol>
+         </div>
+      </div>
+      <div class="col-md-5 align-self-center text-end">
+         <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
       </div>
    </div>
-   <div class="col-md-5 align-self-center text-end">
-      <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
-   </div>
-</div>
-<!-- ============================================================== -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<!-- Start Page Content -->
-<!-- ============================================================== -->
-<!-- row -->
-<div class="row">
-   <div class="col-12">
-      <div class="card">
-         <div class="card-body">
-            <h4 class="card-title"></h4>
-            @include('dashboard.component.message')
-            @if (count($errors) > 0)
-            <div class="alert alert-danger">
-               <strong>Whoops!</strong> There were some problems with your input.<br><br>
-               <ul>
-                  @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                  @endforeach
-               </ul>
-            </div>
-            @endif
-            <div id="alert-container"></div>
-            <div class="col-sm-12 col-xs-12">
-               <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.oldage3500data.store')}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
-                  @csrf
-                  @method('post')
-                  <div class="form-body">
-                     <h5 class="card-title">Basic Details</h5>
-                     <hr>
-                     <div class="row">
-                        <div class="col-md-3">
-                           <div class="form-group" id="scheme_name_div">
-                              <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
-                              <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
-                                 <!-- <option >Please Select</option> -->
-                                 <option value="MBPOAP">MBPOAP</option>
-                                 <option value="IGNOAP">IGNOAP</option>
-                              </select>
-                              <div id="scheme_name_error"></div>
-                              @error('scheme_name')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+   <!-- ============================================================== -->
+   <!-- End Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <!-- Start Page Content -->
+   <!-- ============================================================== -->
+   <!-- row -->
+   <div class="row">
+      <div class="col-12">
+         <div class="card">
+            <div class="card-body">
+               <h4 class="card-title"></h4>
+               @include('dashboard.component.message')
+               @if (count($errors) > 0)
+               <div class="alert alert-danger">
+                  <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                  <ul>
+                     @foreach ($errors->all() as $error)
+                     <li>{{ $error }}</li>
+                     @endforeach
+                  </ul>
+               </div>
+               @endif
+               <div id="alert-container"></div>
+               <div class="col-sm-12 col-xs-12">
+                  <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.oldage3500data.store')}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
+                     @csrf
+                     @method('post')
+                     <div class="form-body">
+                        <h5 class="card-title">Basic Details</h5>
+                        <hr>
+                        <div class="row">
+                           <div class="col-md-3">
+                              <div class="form-group" id="scheme_name_div">
+                                 <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
+                                 <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
+                                    <!-- <option >Please Select</option> -->
+                                    <option value="MBPOAP">MBPOAP</option>
+                                    <option value="IGNOAP">IGNOAP</option>
+                                 </select>
+                                 <div id="scheme_name_error"></div>
+                                 @error('scheme_name')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="name_of_the_beneficiary_div">
-                              <label class="form-label">Beneficiary Name<span class="itsrequired"> *</span></label>
-                              <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary')}}" class="form-control" placeholder="Name of the Beneficiary" >
-                              <div id="name_of_the_beneficiary_error"></div>
-                              @error('name_of_the_beneficiary')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="name_of_the_beneficiary_div">
+                                 <label class="form-label">Beneficiary Name<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary')}}" class="form-control" placeholder="Name of the Beneficiary" >
+                                 <div id="name_of_the_beneficiary_error"></div>
+                                 @error('name_of_the_beneficiary')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="father_or_husband_name_div">
-                              <label class="form-label">Father/Husband Name<span class="itsrequired"> *</span></label>
-                              <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name')}}" class="form-control" placeholder="Name of the Father/Husband" >
-                              <div id="father_or_husband_name_error"></div>
-                              @error('father_or_husband_name')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="father_or_husband_name_div">
+                                 <label class="form-label">Father/Husband Name<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name')}}" class="form-control" placeholder="Name of the Father/Husband" >
+                                 <div id="father_or_husband_name_error"></div>
+                                 @error('father_or_husband_name')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="date_of_birth_div">
-                              <label class="form-label">DOB (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
-                              <input type="date" id="date_of_birth" name="date_of_birth" value="" class="form-control" placeholder="DOB">
-                              <div id="date_of_birth_error"></div>
-                              @error('date_of_birth')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="date_of_birth_div">
+                                 <label class="form-label">DOB (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
+                                 <input type="date" id="date_of_birth" name="date_of_birth" value="" class="form-control" placeholder="DOB">
+                                 <div id="date_of_birth_error"></div>
+                                 @error('date_of_birth')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="age_div">
-                              <label class="form-label">Age<span class="itsrequired"> *</span></label>
-                              <input type="text" id="age" name="age" value="{{old('age')}}" class="form-control" placeholder="Age" >
-                              <div id="age_error"></div>
-                              @error('age')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="age_div">
+                                 <label class="form-label">Age<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="age" name="age" value="{{old('age')}}" class="form-control" placeholder="Age" >
+                                 <div id="age_error"></div>
+                                 @error('age')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>                        
-                        <div class="col-md-3">
-                           <div class="form-group" id="gender_div">
-                              <label class="form-label">Gender<span class="itsrequired"> *</span></label>
-                              <select class="form-control show-tick ms select2" id="gender" name="gender">
-                                 <option >Please Select</option>
-                                 <option value="Male">Male</option>
-                                 <option value="Female">Female</option>
-                              </select>
-                              <div id="gender_error"></div>
-                              @error('gender')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="gender_div">
+                                 <label class="form-label">Gender<span class="itsrequired"> *</span></label>
+                                 <select class="form-control show-tick ms select2" id="gender" name="gender">
+                                    <option >Please Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                 </select>
+                                 <div id="gender_error"></div>
+                                 @error('gender')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="aadhaar_no_div">
-                              <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
-                              <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{old('aadhaar_no')}}" class="form-control" placeholder="Aadhaar Number" >
-                              <div id="aadhaar_no_error"></div>
-                              <div id="check_aadhaar_no"></div>
-                              @error('aadhaar_no')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
-                           </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="nsap_sanction_order_no_div">
-                              <label class="form-label">NSAP Sanction Order No<span class="itsrequired"> *</span></label>
-                              <input type="text" id="nsap_sanction_order_no" name="nsap_sanction_order_no" value="{{old('nsap_sanction_order_no')}}" class="form-control" placeholder="NSAP Sanction Order No" >
-                              <div id="nsap_sanction_order_no_error"></div>
-                              <div id="check_nsap_sanction_order_no"></div>
-                              @error('nsap_sanction_order_no')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
-                           </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="sub_collector_sanction_order_no_div">
-                              <label class="form-label">Sub-Collector Sanction Order No<span class="itsrequired"> *</span></label>
-                              <input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no')}}" class="form-control" placeholder="Sub-Collector Sanction Order No" >
-                              <div id="sub_collector_sanction_order_no_error"></div>
-                              @error('sub_collector_sanction_order_no')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
-                           </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="pension_month_div">
-                              <label class="form-label">Pension Month(Effective From)<span class="itsrequired"> *</span></label>
-                              <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month')}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" >
-                              <div id="pension_month_error"></div>
-                              @error('pension_month')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
-                           </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="ngo_address_type_div">
-                              <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
-                              <div class="d-flex align-items-center">
-                                 <div class="custom-control custom-radio me-3">
-                                    <input type="radio" id="block" name="ngo_address_type" value="1" class="form-check-input">
-                                    <label class="form-check-label" for="block">Block</label>
+                           <div class="col-md-3">
+                              <div class="form-group" id="aadhaar_no_div">
+                                 <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
+                                 <div class="input-group">
+                                    <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{old('aadhaar_no')}}" class="form-control" placeholder="Aadhaar Number" >
+                                    <span class="input-group-btn"><button class="btn btn-info text-white" type="button" id="btnVerifyAadhaar">Verify!</button></span>
+                                    <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
+                                    <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
                                  </div>
-                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="ulb" name="ngo_address_type" value="2" class="form-check-input">
-                                    <label class="form-check-label" for="ulb">ULB</label>
+                                 <div id="aadhaar_verify_result" class="mt-1"></div>
+                                 <div id="aadhaar_no_error"></div>
+                                 <div id="check_aadhaar_no"></div>
+                                 @error('aadhaar_no')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                                 @error('verified_aadhar')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                                 @error('verified_aadhar_remarks')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="nsap_sanction_order_no_div">
+                                 <label class="form-label">NSAP Sanction Order No<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="nsap_sanction_order_no" name="nsap_sanction_order_no" value="{{old('nsap_sanction_order_no')}}" class="form-control" placeholder="NSAP Sanction Order No" >
+                                 <div id="nsap_sanction_order_no_error"></div>
+                                 <div id="check_nsap_sanction_order_no"></div>
+                                 @error('nsap_sanction_order_no')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="sub_collector_sanction_order_no_div">
+                                 <label class="form-label">Sub-Collector Sanction Order No<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no')}}" class="form-control" placeholder="Sub-Collector Sanction Order No" >
+                                 <div id="sub_collector_sanction_order_no_error"></div>
+                                 @error('sub_collector_sanction_order_no')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="pension_month_div">
+                                 <label class="form-label">Pension Month(Effective From)<span class="itsrequired"> *</span></label>
+                                 <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month')}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" >
+                                 <div id="pension_month_error"></div>
+                                 @error('pension_month')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <!-- <div class="col-md-3">
+                              <div class="form-group" id="ngo_address_type_div">
+                                 <label class="form-label">Address Type<span class="itsrequired"> *</span></label> 
+                                 <div class="d-flex align-items-center">
+                                    <div class="custom-control custom-radio me-3"> <input type="radio" id="block" name="ngo_address_type" value="1" class="form-check-input"> <label class="form-check-label" for="block">Block</label> </div>
+                                    <div class="custom-control custom-radio"> <input type="radio" id="ulb" name="ngo_address_type" value="2" class="form-check-input"> <label class="form-check-label" for="ulb">ULB</label> </div>
+                                 </div>
+                                 <div id="ngo_address_type_error"></div>
+                                 @error('ngo_address_type') <label class="error">{{ $message }}</label> @enderror 
+                              </div>
+                              </div> -->
+                              <div class="col-md-3">
+                                 <div class="form-group" id="ngo_address_type_div">
+                                    <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
+                                    <div class="d-flex align-items-center">
+                                       @if(in_array(auth()->user()->role_id, [4, 6]))
+                                       <div class="custom-control custom-radio me-3">
+                                          <input type="radio" id="block" name="ngo_address_type" value="1"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="block">Block</label>
+                                       </div>
+                                       @elseif(auth()->user()->role_id == 5)
+                                       <div class="custom-control custom-radio">
+                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="ulb">ULB</label>
+                                       </div>
+                                       @else
+                                       <div class="custom-control custom-radio me-3">
+                                          <input type="radio" id="block" name="ngo_address_type" value="1"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="block">Block</label>
+                                       </div>
+                                       <div class="custom-control custom-radio">
+                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                          class="form-check-input">
+                                          <label class="form-check-label" for="ulb">ULB</label>
+                                       </div>
+                                       @endif
+                                    </div>
+                                    <div id="ngo_address_type_error"></div>
+                                    @error('ngo_address_type')
+                                    <label class="error">{{ $message }}</label>
+                                    @enderror
                                  </div>
                               </div>
-                              <div id="ngo_address_type_error"></div>
-                              @error('ngo_address_type')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
                            </div>
+                           <div class="row" id="dynamic-content"></div>
                         </div>
-                     </div>
-<!--/row-->
-<div class="row" id="dynamic-content"></div>
-</div>
-<div class="form-actions">
-</div>
-</form>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- row -->
-<!-- ============================================================== -->
-<!-- End Page Content -->
-<!-- ============================================================== -->
-</div>
-@endsection 
-@section('script')
-<script type="text/javascript">
-   $(document).ready(function () {
-      $("#aadhaar_no").blur(function () {
-         const staffAadhar = $(this).val().trim();
-         const is12DigitNumber = /^\d{12}$/.test(staffAadhar);
-   
-         $('#check_aadhaar_no').html('');
-   
-         if (!staffAadhar) {
-            $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide an Aadhar number.</span>');
-            return;
-         }
-   
-         if (!is12DigitNumber) {
-            $('#check_aadhaar_no').html('<span style="color:#FF0000">Aadhar must be exactly 12 digits.</span>');
-            return;
-         }
-   
-         $.get("{{ route('admin.oldage3500data.check_benf_aadhar') }}", 
-            { aadhaar_no: staffAadhar }, 
-            function (data) {
-               if (data == 0) {
-                  $('#check_aadhaar_no').html('<span style="color:#03713E">This Aadhar is available.</span>');
-               } else if (data == 1) {
-                  $('#check_aadhaar_no').html('<span style="color:#FF0000">This Aadhar is already registered.</span>');
-                  $("#aadhaar_no").val('');
-               } else if (data == 2) {
-                  $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide a valid Aadhar.</span>');
-               }
+                        <div class="form-actions">
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- row -->
+      <!-- ============================================================== -->
+      <!-- End Page Content -->
+      <!-- ============================================================== -->
+   </div>
+   @endsection 
+   @section('script')
+   <script type="text/javascript">
+      $(document).ready(function () {
+         $("#aadhaar_no").blur(function () {
+            const staffAadhar = $(this).val().trim();
+            const is12DigitNumber = /^\d{12}$/.test(staffAadhar);
+
+            $('#check_aadhaar_no').html('');
+
+            if (!staffAadhar) {
+               $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide an Aadhar number.</span>');
+               return;
             }
-         ).fail(function () {
-            $('#check_aadhaar_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
-         });
+
+            if (!is12DigitNumber) {
+               $('#check_aadhaar_no').html('<span style="color:#FF0000">Aadhar must be exactly 12 digits.</span>');
+               return;
+            }
+
+            $.get("{{ route('admin.oldage3500data.check_benf_aadhar') }}", 
+               { aadhaar_no: staffAadhar }, 
+               function (data) {
+                  if (data == 0) {
+                     $('#check_aadhaar_no').html('<span style="color:#03713E">This Aadhar is available.</span>');
+                  } else if (data == 1) {
+                     $('#check_aadhaar_no').html('<span style="color:#FF0000">This Aadhar is already registered.</span>');
+                     $("#aadhaar_no").val('');
+                  } else if (data == 2) {
+                     $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide a valid Aadhar.</span>');
+                  }
+               }
+               ).fail(function () {
+                  $('#check_aadhaar_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+               });
+            });
       });
-   });
-</script>
-<script>
-   const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
-   aadhaarInputs.forEach(function(input) {
-      input.addEventListener('blur', function(event) {
-         const uid = event.target.value.trim();
-         const fieldName = event.target.name;
-         const errorDiv = document.querySelector(`#${fieldName}_error`);
-         if (errorDiv) errorDiv.innerHTML = '';
-         
-         const Verhoeff = {
-            d: [
+   </script>
+   <script>
+      const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
+      aadhaarInputs.forEach(function(input) {
+         input.addEventListener('blur', function(event) {
+            const uid = event.target.value.trim();
+            const fieldName = event.target.name;
+            const errorDiv = document.querySelector(`#${fieldName}_error`);
+            if (errorDiv) errorDiv.innerHTML = '';
+
+            const Verhoeff = {
+               d: [
                   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                   [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
                   [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
@@ -266,7 +304,7 @@ EP Pension || OldAge Data Entry
                   [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
                   [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
                ],
-            p: [
+               p: [
                   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
                   [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
                   [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
@@ -276,32 +314,152 @@ EP Pension || OldAge Data Entry
                   [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
                   [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
                ],
-            j: [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
-            check: function(str) {
-               var c = 0;
-               str.replace(/\D+/g, "").split("").reverse().join("").replace(/[\d]/g, function(u, i) {
-                  c = Verhoeff.d[c][Verhoeff.p[i % 8][parseInt(u, 10)]];
-               });
-               return c;
-            }
-         };
+               j: [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
+               check: function(str) {
+                  var c = 0;
+                  str.replace(/\D+/g, "").split("").reverse().join("").replace(/[\d]/g, function(u, i) {
+                     c = Verhoeff.d[c][Verhoeff.p[i % 8][parseInt(u, 10)]];
+                  });
+                  return c;
+               }
+            };
 
-         if (uid === "") return;
+            if (uid === "") return;
 
-         if (Verhoeff.check(uid) === 0) {
-            event.target.style.borderColor = '';
-         } else {
-            if (errorDiv) {
-               errorDiv.innerHTML = '<label class="error">Aadhaar number is not valid!</label>';
-               errorDiv.style.color = 'red';
+            if (Verhoeff.check(uid) === 0) {
+               event.target.style.borderColor = '';
+            } else {
+               if (errorDiv) {
+                  errorDiv.innerHTML = '<label class="error">Aadhaar number is not valid!</label>';
+                  errorDiv.style.color = 'red';
+               }
+               event.target.style.borderColor = 'red';
+               event.target.value = '';
             }
-            event.target.style.borderColor = 'red';
-            event.target.value = '';
-         }
+         });
       });
-   });
-</script>
-<script type="text/javascript">
+   </script>
+   <script>
+      $(document).ready(function () {
+
+        $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+          $('#verified_aadhar').val('');
+          $('#verified_aadhar_remarks').val('');
+          $('#aadhaar_verify_result').html('');
+
+          $('#btnVerifyAadhaar')
+          .prop('disabled', false)
+          .removeClass('btn-success')
+          .addClass('btn-info')
+          .text('Verify!');
+
+          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+       });
+
+        $(document).on('click', '#btnVerifyAadhaar', function () {
+
+          let aadhaar = $('#aadhaar_no').val().trim();
+          let name    = $('#name_of_the_beneficiary').val().trim();
+
+          $('#aadhaar_verify_result').html('');
+          $('#verified_aadhar').val('');
+          $('#verified_aadhar_remarks').val('');
+
+          if (!/^\d{12}$/.test(aadhaar)) {
+            $('#aadhaar_verify_result').html(
+              '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
+              );
+            return;
+         }
+
+         if (name === '') {
+            $('#aadhaar_verify_result').html(
+              '<span class="text-danger">Enter beneficiary name first</span>'
+              );
+            return;
+         }
+
+         $('#btnVerifyAadhaar')
+         .prop('disabled', true)
+         .text('Verifying...');
+
+         $.ajax({
+            url: "{{ route('admin.oldage3500data.oldage_aadhar_verification_process') }}",
+            type: "POST",
+            dataType: "json",
+            data: {
+              _token: "{{ csrf_token() }}",
+              aadhaar_no: aadhaar,
+              name_of_the_beneficiary: name
+           },
+
+           success: function (res) {
+              let message = res.data ?? '';
+
+              $('#verified_aadhar_remarks').val(message);
+
+              if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+
+                $('#verified_aadhar').val(1);
+
+                $('#aadhaar_verify_result').html(
+                  '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+                  );
+
+                $('#btnVerifyAadhaar')
+                .prop('disabled', true)
+                .removeClass('btn-info')
+                .addClass('btn-success')
+                .text('Verified');
+
+                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
+
+             } else {
+                $('#verified_aadhar').val(0);
+
+                $('#aadhaar_verify_result').html(
+                  '<span class="badge bg-danger">' + message + '</span>'
+                  );
+
+                $('#btnVerifyAadhaar')
+                .prop('disabled', false)
+                .removeClass('btn-success')
+                .addClass('btn-info')
+                .text('Verify!');
+
+                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+             }
+          },
+
+          error: function (xhr) {
+           let msg = 'Verification failed';
+           if (xhr.responseJSON) {
+             msg = xhr.responseJSON.exception ??
+             xhr.responseJSON.response ??
+             msg;
+          }
+
+          $('#verified_aadhar').val(0);
+          $('#verified_aadhar_remarks').val(msg);
+
+          $('#aadhaar_verify_result').html(
+             '<span class="badge bg-danger">' + msg + '</span>'
+             );
+
+          $('#btnVerifyAadhaar')
+          .prop('disabled', false)
+          .removeClass('btn-success')
+          .addClass('btn-info')
+          .text('Verify!');
+
+          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+       }
+    });
+
+      });
+     });
+  </script>
+  <script type="text/javascript">
    $(document).ready(function () {
       $("#nsap_sanction_order_no").blur(function () {
          const sanctionNo = $(this).val().trim();
@@ -325,10 +483,10 @@ EP Pension || OldAge Data Entry
                   $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">Please provide a valid NSAP Sanction Order No.</span>');
                }
             }
-         ).fail(function () {
-            $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            ).fail(function () {
+               $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            });
          });
-      });
    });
 </script>
 <script>
@@ -553,7 +711,7 @@ EP Pension || OldAge Data Entry
          radio.addEventListener('change', function () {
             const value = this.value;
 
-/*fetch(`/ssepd_ngo_working_portal/dashboard/get-address-type-content/${value}`)*/
+   /*fetch(`/ssepd_ngo_working_portal/dashboard/get-address-type-content/${value}`)*/
             fetch(`{{ url('dashboard/get-address-type-content') }}/${value}`)
             .then(response => {
                if (!response.ok) {
@@ -591,116 +749,116 @@ EP Pension || OldAge Data Entry
             el.readOnly = true;
          }
       });
-         const pinField = document.getElementById('ngo_postal_address_pin');
-         const submitButton = document.getElementById('submitButton');
+        const pinField = document.getElementById('ngo_postal_address_pin');
+        const submitButton = document.getElementById('submitButton');
 
-         if (pinField && submitButton) {
-            pinField.addEventListener('input', function () {
-               const pinValue = pinField.value;
-               if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {
-                  submitButton.style.display = 'inline-block';
-               } else {
-                  submitButton.style.display = 'none';
-               }
-            });
-
-            const initialPinValue = pinField.value;
-            if (initialPinValue.length === 6 && /^\d+$/.test(initialPinValue)) {
+        if (pinField && submitButton) {
+         pinField.addEventListener('input', function () {
+            const pinValue = pinField.value;
+            if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {
                submitButton.style.display = 'inline-block';
             } else {
-               submitButton.style.display = 'inline-block';
-            }
-         }
-
-         document.getElementById('submitButton').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            if (type === '1') {
-               if (validateVillageFields()) {
-                  form.submit();
-               }
-            } else if (type === '2') {
-               if (validateMunicipalityFields()) {
-                  form.submit();
-               }
+               submitButton.style.display = 'none';
             }
          });
+
+         const initialPinValue = pinField.value;
+         if (initialPinValue.length === 6 && /^\d+$/.test(initialPinValue)) {
+            submitButton.style.display = 'inline-block';
+         } else {
+            submitButton.style.display = 'inline-block';
+         }
       }
 
-      function showAlert(message, focusElement = null) {
-         const alertContainer = document.getElementById('alert-container') || createAlertContainer();
-         const alertDiv = document.createElement('div');
+      document.getElementById('submitButton').addEventListener('click', function (e) {
+         e.preventDefault();
 
-         alertDiv.classList.add('alert', 'alert-warning', 'alert-rounded', 'alert-dismissible');
-         alertDiv.innerHTML = `
-<img src="{{ url('storage/sad-icon.png') }}" width="30" class="img-circle" alt="img">
-            ${message}
-<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-         `;
-
-         alertContainer.appendChild(alertDiv);
-
-         if (focusElement) focusElement.focus();
-
-         setTimeout(() => alertDiv.remove(), 3000);
-      }
-
-      function createAlertContainer() {
-         const newContainer = document.createElement('div');
-         newContainer.id = 'alert-container';
-         document.body.appendChild(newContainer);
-         return newContainer;
-      }
-
-      function validateFields(fields) {
-         for (let field of fields) {
-            const element = document.getElementById(field.id);
-            if (!element || element.value.trim() === '') {
-               showAlert(field.message, element);
-               return false;
+         if (type === '1') {
+            if (validateVillageFields()) {
+               form.submit();
+            }
+         } else if (type === '2') {
+            if (validateMunicipalityFields()) {
+               form.submit();
             }
          }
-         return true;
+      });
+   }
+   
+   function showAlert(message, focusElement = null) {
+      const alertContainer = document.getElementById('alert-container') || createAlertContainer();
+      const alertDiv = document.createElement('div');
+
+      alertDiv.classList.add('alert', 'alert-warning', 'alert-rounded', 'alert-dismissible');
+      alertDiv.innerHTML = `
+   <img src="{{ url('storage/sad-icon.png') }}" width="30" class="img-circle" alt="img">
+            ${message}
+   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
+
+      alertContainer.appendChild(alertDiv);
+
+      if (focusElement) focusElement.focus();
+
+      setTimeout(() => alertDiv.remove(), 3000);
+   }
+   
+   function createAlertContainer() {
+      const newContainer = document.createElement('div');
+      newContainer.id = 'alert-container';
+      document.body.appendChild(newContainer);
+      return newContainer;
+   }
+   
+   function validateFields(fields) {
+      for (let field of fields) {
+         const element = document.getElementById(field.id);
+         if (!element || element.value.trim() === '') {
+            showAlert(field.message, element);
+            return false;
+         }
       }
+      return true;
+   }
+   
+   function validateVillageFields() {
+      const fields = [
+         { id: 'state-dropdown', message: 'Please select State.' },
+         { id: 'district-dropdown', message: 'Please select District.' },
+         { id: 'block-dropdown', message: 'Please select Block.' },
+         { id: 'grampanchayat-dropdown', message: 'Please select Grampanchayat.' },
+         { id: 'village-dropdown', message: 'Please select Village.' },
+         { id: 'pin', message: 'Please provide PIN.' },
+         { id: 'ngo_postal_address_at', message: 'Please provide At.' },
+         { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
+         { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
+         { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
+         { id: 'ngo_postal_address_district', message: 'Please provide District.' },
+         { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
+      ];
 
-      function validateVillageFields() {
-         const fields = [
-            { id: 'state-dropdown', message: 'Please select State.' },
-            { id: 'district-dropdown', message: 'Please select District.' },
-            { id: 'block-dropdown', message: 'Please select Block.' },
-            { id: 'grampanchayat-dropdown', message: 'Please select Grampanchayat.' },
-            { id: 'village-dropdown', message: 'Please select Village.' },
-            { id: 'pin', message: 'Please provide PIN.' },
-            { id: 'ngo_postal_address_at', message: 'Please provide At.' },
-            { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
-            { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
-            { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
-            { id: 'ngo_postal_address_district', message: 'Please provide District.' },
-            { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
-         ];
+      return validateFields(fields) && Validate();
+   }
+   
+   function validateMunicipalityFields() {
+      const fields = [
+         { id: 'state-dropdown', message: 'Please select State.' },
+         { id: 'district-dropdown', message: 'Please select District.' },
+         { id: 'municipality-dropdown', message: 'Please select Municipality.' },
+         { id: 'ward-dropdown', message: 'Please select Ward.' },
+         { id: 'pin', message: 'Please provide PIN.' },
+         { id: 'ngo_postal_address_at', message: 'Please provide At.' },
+         { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
+         { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
+         { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
+         { id: 'ngo_postal_address_district', message: 'Please provide District.' },
+         { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
+      ];
 
-         return validateFields(fields) && Validate();
-      }
-
-      function validateMunicipalityFields() {
-         const fields = [
-            { id: 'state-dropdown', message: 'Please select State.' },
-            { id: 'district-dropdown', message: 'Please select District.' },
-            { id: 'municipality-dropdown', message: 'Please select Municipality.' },
-            { id: 'ward-dropdown', message: 'Please select Ward.' },
-            { id: 'pin', message: 'Please provide PIN.' },
-            { id: 'ngo_postal_address_at', message: 'Please provide At.' },
-            { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
-            { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
-            { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
-            { id: 'ngo_postal_address_district', message: 'Please provide District.' },
-            { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
-         ];
-
-         return validateFields(fields) && Validate();
-      }   
-      console.log("DOM is fully loaded");
-   });
+      return validateFields(fields) && Validate();
+   }   
+   console.log("DOM is fully loaded");
+});
 </script>
 <script>
    document.addEventListener("DOMContentLoaded", function () {
@@ -712,17 +870,17 @@ EP Pension || OldAge Data Entry
 
       const formattedCurrentMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
 
-/*Calculate previous month*/
+   /*Calculate previous month*/
       const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
       const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
       const formattedPrevMonth = `${prevYear}-${prevMonth.toString().padStart(2, '0')}`;
 
-/*Calculate next month*/
+   /*Calculate next month*/
       const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
       const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
       const formattedNextMonth = `${nextYear}-${nextMonth.toString().padStart(2, '0')}`;
 
-/*Set min, max, and default value*/
+   /*Set min, max, and default value*/
       pension_monthInput.setAttribute("min", formattedPrevMonth);
       pension_monthInput.setAttribute("max", formattedNextMonth);
       pension_monthInput.value = formattedCurrentMonth;

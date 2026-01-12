@@ -91,20 +91,20 @@ class Disability3500Controller extends Controller
             ->addIndexColumn()
             ->addColumn('aadhaar_verification_status', function ($row) {
 
-            if ($row->verified_aadhar == 1) {
-                return '<span class="badge bg-success">Verified Aadhaar</span>';
-            }
+                if ($row->verified_aadhar == 1) {
+                    return '<span class="badge bg-success">Verified Aadhaar</span>';
+                }
 
-            if (is_null($row->verified_aadhar)) {
-                return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
-            }
+                if (is_null($row->verified_aadhar)) {
+                    return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
+                }
 
-            if ($row->verified_aadhar == 0) {
-                return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
-            }
+                if ($row->verified_aadhar == 0) {
+                    return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
+                }
 
-            return '-';
-        })
+                return '-';
+            })
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="btn-group">
                 <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -592,6 +592,13 @@ class Disability3500Controller extends Controller
             'sub_collector_sanction_order_no' => 'required',
             'pension_month' => 'required',
             'ngo_address_type' => 'required|in:1,2',
+            'verified_aadhar' => 'required|in:1',
+            'verified_aadhar_remarks' => 'required',
+        ];
+
+        $messages = [
+            'verified_aadhar.required' => 'Please verify Aadhaar before submitting.',
+            'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details (name, DOB, etc.) are entered correctly.',
         ];
 
         $addressMessage = '';
@@ -614,7 +621,7 @@ class Disability3500Controller extends Controller
                 'pin' => 'required',
             ]);
         }
-        $validatedData = $request->validate($validationRules);
+        $validatedData = $request->validate($validationRules, $messages);
 
         DB::beginTransaction();
         try {
@@ -675,6 +682,8 @@ class Disability3500Controller extends Controller
             $disability_pensioner->village = $village;
             $disability_pensioner->village_id = $village_id;
             $disability_pensioner->aadhaar_no = $validatedData['aadhaar_no'];
+            $disability_pensioner->verified_aadhar = $validatedData['verified_aadhar'];
+            $disability_pensioner->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'];
             $disability_pensioner->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
             $disability_pensioner->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
             $disability_pensioner->pension_month = $validatedData['pension_month'];
