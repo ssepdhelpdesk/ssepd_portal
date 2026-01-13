@@ -14,8 +14,8 @@ Schedule::command('oldage:aadhar-verify 100')
     ->runInBackground()
     ->onOneServer();
 
-/*Schedule::command('disability:aadhar-verify 100')
+Schedule::command('disability:aadhar-verify 100')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->runInBackground()
-    ->onOneServer();*/
+    ->onOneServer();
