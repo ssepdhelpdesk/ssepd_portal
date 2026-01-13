@@ -1676,7 +1676,7 @@ public function oldage_bulk_aadhar_verification_process(Request $request)
     ]);
 }
 
-public function oldage_ineligible_to_eligible_reinitiated(Request $request)
+public function oldage_ineligible_to_eligible_reinstead(Request $request)
 {
     ini_set('memory_limit', '512M');    
     $user = auth()->user();
@@ -1761,10 +1761,10 @@ public function oldage_ineligible_to_eligible_reinitiated(Request $request)
         ->make(true);
     }
 
-    return view('dashboard.benf_3500_files.reinitiate.oldage_ineligible_to_eligible_reinitiated');
+    return view('dashboard.benf_3500_files.reinitiate.oldage_ineligible_to_eligible_reinstead');
 }
 
-public function oldage_ineligible_to_eligible_reinitiated_process(Request $request)
+public function oldage_ineligible_to_eligible_reinstead_process(Request $request)
 {
     $user = auth()->user();
 

@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || Index - OldAge ReInitiate Application
+EP Pension || Index - Disability ReInitiate Application
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -143,6 +143,7 @@ EP Pension || Index - OldAge ReInitiate Application
                                         </div>
 
                                     </div>
+
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                         <button type="button" class="btn btn-success" id="confirmReInitiate">
@@ -173,7 +174,7 @@ EP Pension || Index - OldAge ReInitiate Application
         let table = $('#oldAgeTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('admin.oldage3500data.oldage_ineligible_to_eligible_reinitiated') }}",
+            ajax: "{{ route('admin.disability3500data.disability_ineligible_to_eligible_reinstead') }}",
 
             columns: [
                 { data: 'checkbox', orderable: false, searchable: false },
@@ -274,7 +275,7 @@ EP Pension || Index - OldAge ReInitiate Application
             }
 
             $.ajax({
-                url: "{{ route('admin.oldage3500data.update_status') }}",
+                url: "{{ route('admin.disability3500data.update_status') }}",
                 method: 'POST',
                 data: {
                     _token: "{{ csrf_token() }}",
@@ -360,7 +361,7 @@ EP Pension || Index - OldAge ReInitiate Application
     });
 
     $.ajax({
-        url: "{{ route('admin.oldage3500data.oldage_ineligible_to_eligible_reinitiated_process') }}",
+        url: "{{ route('admin.disability3500data.disability_ineligible_to_eligible_reinstead_process') }}",
         type: "POST",
         data: formData,
         processData: false,
