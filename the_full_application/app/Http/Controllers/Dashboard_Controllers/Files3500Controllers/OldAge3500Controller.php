@@ -1771,7 +1771,7 @@ public function oldage_ineligible_to_eligible_reinstead_process(Request $request
     $request->validate([
         'ids' => 'required|array',
         'pdf' => 'required|mimes:pdf|max:2048',
-        'sub_col_signature_date' => 'required|date'
+        'sub_col_signature_date' => 'required|date',
         'sub_collector_sanction_order_no' => 'required|string|max:255',
         'remark' => 'required|string|max:255',
     ]);
@@ -1821,7 +1821,6 @@ public function oldage_ineligible_to_eligible_reinstead_process(Request $request
         $previousBy = $beneficiary->discontinued_by ?? 'Unknown';
         $previousDate = $beneficiary->discontinued_system_gen_date ?? 'N/A';
         $previousTime = $beneficiary->discontinued_system_gen_time ?? 'N/A';
-        $previousSubColSignDate = $beneficiary->sub_col_signature_date ?? 'N/A';
         $previousSubColSancOrNumber = $beneficiary->sub_collector_sanction_order_no ?? 'N/A';
         
         $sub_col_signature_date = $request->sub_col_signature_date;

@@ -74,7 +74,7 @@ EP Pension || Index - OldAge ReInitiate Application
                             </tfoot>
                         </table>
                         <div class="mb-3 text-end">
-                            <button type="button" id="btnReInitiate" class="btn btn-success"> ReInitiate the Marked Applications!</button>
+                            <button type="button" id="btnReInitiate" class="btn btn-success"> ReInstead the Marked Applications!</button>
                         </div>
                         <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
@@ -116,7 +116,7 @@ EP Pension || Index - OldAge ReInitiate Application
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Re-Initiate Beneficiaries</h5>
+                                        <h5 class="modal-title">Re-Instead Beneficiaries</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
 
@@ -129,7 +129,7 @@ EP Pension || Index - OldAge ReInitiate Application
 
                                         <div class="mb-3">
                                             <label class="form-label">Sub-Col Signature Date <span class="text-danger">*</span></label>
-                                            <input type="date" name="sub_col_signature_date" id="sub_col_signature_date" class="form-control" placeholder="Sub COl SIgnature Date">
+                                            <input type="date" name="sub_col_signature_date" id="sub_col_signature_date" class="form-control" max="{{ date('Y-m-d') }}" placeholder="Sub COl Signature Date">
                                         </div>
 
                                         <div class="mb-3">
@@ -146,7 +146,7 @@ EP Pension || Index - OldAge ReInitiate Application
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                         <button type="button" class="btn btn-success" id="confirmReInitiate">
-                                            Confirm ReInitiate
+                                            Confirm ReInstead
                                         </button>
                                     </div>
 
@@ -401,6 +401,17 @@ EP Pension || Index - OldAge ReInitiate Application
         }
     });
 });
+</script>
+<script>
+document.getElementById('sub_col_signature_date').addEventListener('change', function () {
+    const selectedDate = new Date(this.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
+    if (selectedDate > today) {
+        alert('Sub Collector Signature Date cannot be greater than today.');
+        this.value = '';
+    }
+});
 </script>
 @endsection
