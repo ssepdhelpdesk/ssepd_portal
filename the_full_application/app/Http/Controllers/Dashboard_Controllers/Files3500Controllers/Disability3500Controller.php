@@ -1607,13 +1607,13 @@ public function disability_ineligible_to_eligible_reinstead(Request $request)
             return '';
         })
         ->addColumn('action', function ($row) {
-            $buttons = '<div class="btn-group">
+            /*$buttons = '<div class="btn-group">
             <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Action
             </button>
             <div class="dropdown-menu animated flipInX">';
 
-            /*if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
             {
                 $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
                 data-bs-toggle="modal" 
@@ -1624,11 +1624,11 @@ public function disability_ineligible_to_eligible_reinstead(Request $request)
             {
                 $editUrl = route('admin.oldage3500data.edit', $row->id);
                 $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
-            }*/
+            }
 
             $buttons .= '</div></div>';
 
-            return $buttons;
+            return $buttons;*/
         })
 
         ->rawColumns(['checkbox', 'action', 'aadhaar_verification_status'])
@@ -1719,10 +1719,12 @@ public function disability_ineligible_to_eligible_reinstead_process(Request $req
             'reinitiated_sub_col_files' => $subColStoredPath ?? null,
         ]);
     }
+
+    PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->whereIn('ssepd_id', $ids)->update(['is_active' => '1']);
     
     return response()->json([
         'success' => true,
-        'message' => count($ids).' beneficiaries re-initiated successfully.'
+        'message' => count($ids).' beneficiaries re-instead successfully.'
     ]);
 }
 
