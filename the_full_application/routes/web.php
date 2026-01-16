@@ -317,6 +317,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('duplicate_sanction_order_no', 'duplicate_sanction_order_no')->name('duplicate_sanction_order_no');
         Route::get('active_ineligible_with_scheme', 'active_ineligible_with_scheme')->name('active_ineligible_with_scheme');
         Route::get('bulk_aadhaar_verification_report', 'bulk_aadhaar_verification_report')->name('bulk_aadhaar_verification_report');
+
+        Route::get('scheme_wise_list', 'scheme_wise_list')->name('scheme_wise_list');
     });
 
     Route::prefix('schememigrationep')->name('schememigrationep.')->controller(SchemeMigrationEpController::class)->group(function () {

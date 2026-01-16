@@ -791,18 +791,290 @@ class ReportOf3500Controller extends Controller
         ->groupBy('verified_aadhar_remarks')
         ->map(fn ($items) => $items->sum('total'));
 
-        $totalApplications =
-    OldAge3500Pensioner::count()
-  + Disability3500Pensioner::count();
+        $totalApplications = OldAge3500Pensioner::count() + Disability3500Pensioner::count();
 
-$totalPending =
-    OldAge3500Pensioner::whereNull('verified_aadhar')
-        ->whereNull('verified_aadhar_remarks')
-        ->count()
-  + Disability3500Pensioner::whereNull('verified_aadhar')
-        ->whereNull('verified_aadhar_remarks')
-        ->count();
+        $totalPending = OldAge3500Pensioner::whereNull('verified_aadhar')->whereNull('verified_aadhar_remarks')->count() + Disability3500Pensioner::whereNull('verified_aadhar')->whereNull('verified_aadhar_remarks')->count();
 
         return view('dashboard.benf_3500_files.report.bulk_aadhaar_verification_report', compact('schemeWise', 'combined', 'totalApplications', 'totalPending'));
     }
+
+    /*public function scheme_wise_list(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+
+        $district   = $request->district;
+        $category   = $request->category;
+        $scheme     = $request->scheme;
+        $status     = $request->status;
+        $fromDate   = $request->from_date;
+        $toDate     = $request->to_date;
+
+        $data = collect();
+
+        if (in_array($category, ['oldage', 'all'])) {
+
+            $oldAge = OldAge3500Pensioner::query()
+            ->where('district', $district)
+            ->where('db_status', 1);
+
+            if ($scheme === 'MBPOAP') {
+                $oldAge->where('updated_scheme_name', 'MBPOAP');
+            } elseif ($scheme === 'IGNOAP') {
+                $oldAge->where('updated_scheme_name', 'IGNOAP');
+            } elseif ($scheme === 'MBPY') {
+                $oldAge->whereIn('updated_scheme_name', ['MBPOAP']);
+            } elseif ($scheme === 'NSAP') {
+                $oldAge->whereIn('updated_scheme_name', ['IGNOAP']);
+            }
+
+            switch ($status) {
+
+                case 'death':
+                $oldAge->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Death');
+                break;
+
+                case 'ineligible':
+                $oldAge->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Ineligible');
+                break;
+
+                case 'discontinued':
+                $oldAge->where('status', 'Inactive');
+                break;
+
+                case 'active':
+                $oldAge->where('status', 'Active');
+                break;
+
+                case 'total':
+                default:
+                
+                break;
+            }
+
+            if (in_array($status, ['death','ineligible','discontinued']) && $fromDate && $toDate) {
+                $oldAge->whereBetween('discontinued_date', [$fromDate, $toDate]);
+            }
+
+            $data = $data->merge($oldAge->get());
+        }
+
+        if (in_array($category, ['disability', 'all'])) {
+
+            $disability = Disability3500Pensioner::query()
+            ->where('district', $district)
+            ->where('db_status', 1);
+
+            if ($scheme === 'MBPSDP') {
+                $disability->where('updated_scheme_name', 'MBPSDP');
+            } elseif ($scheme === 'IGNDP') {
+                $disability->where('updated_scheme_name', 'IGNDP');
+            } elseif ($scheme === 'MBPY') {
+                $disability->whereIn('updated_scheme_name', ['MBPSDP']);
+            } elseif ($scheme === 'NSAP') {
+                $disability->whereIn('updated_scheme_name', ['IGNDP']);
+            }
+
+            switch ($status) {
+
+                case 'death':
+                $disability->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Death');
+                break;
+
+                case 'ineligible':
+                $disability->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Ineligible');
+                break;
+
+                case 'discontinued':
+                $disability->where('status', 'Inactive');
+                break;
+
+                case 'active':
+                $disability->where('status', 'Active');
+                break;
+
+                case 'total':
+                default:
+                
+                break;
+            }
+
+            if (in_array($status, ['death','ineligible','discontinued']) && $fromDate && $toDate) {
+                $disability->whereBetween('discontinued_date', [$fromDate, $toDate]);
+            }
+
+            $data = $data->merge($disability->get());
+        }
+
+        return view('dashboard.benf_3500_files.report.scheme_wise_list', [
+            'records'   => $data,
+            'district'  => $district,
+            'category'  => $category,
+            'scheme'    => $scheme,
+            'status'    => $status,
+            'from_date' => $fromDate,
+            'to_date'   => $toDate,
+        ]);
+    }*/
+
+    public function scheme_wise_list(Request $request)
+    {
+        ini_set('memory_limit', '1024M');
+
+        $user       = Auth::user();
+        $userRole   = $user->role_id;
+
+        $district   = $request->district;
+        $category   = $request->category;
+        $scheme     = $request->scheme;
+        $status     = $request->status;
+        $fromDate   = $request->from_date;
+        $toDate     = $request->to_date;
+
+        $applyRoleFilter = function ($query) use ($user, $userRole) {
+
+            if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+            } elseif (in_array($userRole, [4, 6])) {
+                $query->where('block_id', $user->posted_block);
+
+            } elseif ($userRole == 5) {
+                $query->where('municipality_id', $user->posted_municipality);
+
+            } elseif (in_array($userRole, [8, 10])) {
+
+                $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+                ->where('is_active', 'active')
+                ->pluck('block_id');
+
+                $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+                ->where('is_active', 'active')
+                ->pluck('municipality_id');
+
+                $query->where(function ($q) use ($blockIds, $municipalityIds) {
+                    $q->whereIn('block_id', $blockIds)
+                    ->orWhereIn('municipality_id', $municipalityIds);
+                });
+
+            } elseif (in_array($userRole, [9, 11])) {
+                $query->where('district_id', $user->posted_district);
+            }
+        };
+
+        $data = collect();
+
+        if (in_array($category, ['oldage', 'all'])) {
+
+            $oldAge = OldAge3500Pensioner::query()
+            ->where('district', $district)
+            ->where('db_status', 1);
+
+            $applyRoleFilter($oldAge);
+
+            if ($scheme === 'MBPOAP') {
+                $oldAge->where('updated_scheme_name', 'MBPOAP');
+            } elseif ($scheme === 'IGNOAP') {
+                $oldAge->where('updated_scheme_name', 'IGNOAP');
+            } elseif ($scheme === 'MBPY') {
+                $oldAge->whereIn('updated_scheme_name', ['MBPOAP']);
+            } elseif ($scheme === 'NSAP') {
+                $oldAge->whereIn('updated_scheme_name', ['IGNOAP']);
+            }
+
+            switch ($status) {
+
+                case 'death':
+                $oldAge->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Death');
+                break;
+
+                case 'ineligible':
+                $oldAge->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Ineligible');
+                break;
+
+                case 'discontinued':
+                $oldAge->where('status', 'Inactive');
+                break;
+
+                case 'active':
+                $oldAge->where('status', 'Active');
+                break;
+
+                case 'total':
+                default:
+                break;
+            }
+
+            if (in_array($status, ['death', 'ineligible', 'discontinued']) && $fromDate && $toDate) {
+                $oldAge->whereBetween('discontinued_date', [$fromDate, $toDate]);
+            }
+
+            $data = $data->merge($oldAge->get());
+        }
+
+        if (in_array($category, ['disability', 'all'])) {
+
+            $disability = Disability3500Pensioner::query()
+            ->where('district', $district)
+            ->where('db_status', 1);
+
+            $applyRoleFilter($disability);
+
+            if ($scheme === 'MBPSDP') {
+                $disability->where('updated_scheme_name', 'MBPSDP');
+            } elseif ($scheme === 'IGNDP') {
+                $disability->where('updated_scheme_name', 'IGNDP');
+            } elseif ($scheme === 'MBPY') {
+                $disability->whereIn('updated_scheme_name', ['MBPSDP']);
+            } elseif ($scheme === 'NSAP') {
+                $disability->whereIn('updated_scheme_name', ['IGNDP']);
+            }
+
+            switch ($status) {
+
+                case 'death':
+                $disability->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Death');
+                break;
+
+                case 'ineligible':
+                $disability->where('status', 'Inactive')
+                ->where('discontinued_reason', 'Ineligible');
+                break;
+
+                case 'discontinued':
+                $disability->where('status', 'Inactive');
+                break;
+
+                case 'active':
+                $disability->where('status', 'Active');
+                break;
+
+                case 'total':
+                default:
+                break;
+            }
+
+            if (in_array($status, ['death', 'ineligible', 'discontinued']) && $fromDate && $toDate) {
+                $disability->whereBetween('discontinued_date', [$fromDate, $toDate]);
+            }
+
+            $data = $data->merge($disability->get());
+        }
+
+        return view('dashboard.benf_3500_files.report.scheme_wise_list', [
+            'records'   => $data,
+            'district'  => $district,
+            'category'  => $category,
+            'scheme'    => $scheme,
+            'status'    => $status,
+            'from_date' => $fromDate,
+            'to_date'   => $toDate,
+        ]);
+    }
+
 }
