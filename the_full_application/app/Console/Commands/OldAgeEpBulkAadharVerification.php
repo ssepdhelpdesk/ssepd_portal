@@ -47,8 +47,8 @@ class OldAgeEpBulkAadharVerification extends Command
             try {
                 $response = Http::withOptions([
                     'verify' => false,
-                    'timeout' => 20,
-                    'connect_timeout' => 5,
+                    'timeout' => 120,
+                    'connect_timeout' => 20,
                     'curl' => [
                         \CURLOPT_SSLVERSION   => \CURL_SSLVERSION_TLSv1_2,
                         \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
@@ -79,8 +79,8 @@ class OldAgeEpBulkAadharVerification extends Command
             }
 
             $pensioner->update([
-                'verified_aadhar'                  => $verified,
-                'verified_aadhar_remarks'          => $remarks,
+                'verified_aadhar'         => $verified,
+                'verified_aadhar_remarks' => $remarks,
                 'aadhar_verification_completed_at' => now(),
             ]);
 
