@@ -22,7 +22,6 @@ class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
             ->whereNull('verified_aadhar_remarks')
             ->whereNotNull('aadhaar_no')
             ->whereNotNull('name_of_the_beneficiary')
-            ->whereNull('aadhar_verification_started_at')
             ->limit($limit)
             ->get();
 
@@ -30,8 +29,6 @@ class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
             $this->info('No pending Aadhaar records found');
             return Command::SUCCESS;
         }
-
-        
 
         $processed = 0;
 
@@ -77,7 +74,6 @@ class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
             $pensioner->update([
                 'verified_aadhar'         => $verified,
                 'verified_aadhar_remarks' => $remarks,
-                'aadhar_verification_completed_at' => now(),
             ]);
 
             $processed++;
