@@ -31,10 +31,7 @@ class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
             return Command::SUCCESS;
         }
 
-        OldAge3500Pensioner::whereIn('id', $records->pluck('id'))
-            ->update([
-                'aadhar_verification_started_at' => now(),
-            ]);
+        
 
         $processed = 0;
 
