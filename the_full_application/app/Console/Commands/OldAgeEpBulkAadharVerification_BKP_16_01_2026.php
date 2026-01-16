@@ -20,10 +20,8 @@ class OldAgeEpBulkAadharVerification extends Command
 
         $records = OldAge3500Pensioner::whereNull('verified_aadhar')
             ->whereNull('verified_aadhar_remarks')
-            ->whereNull('aadhar_verification_started_at')
             ->whereNotNull('aadhaar_no')
             ->whereNotNull('name_of_the_beneficiary')
-            ->orderBy('id')
             ->limit($limit)
             ->get();
 
@@ -31,11 +29,6 @@ class OldAgeEpBulkAadharVerification extends Command
             $this->info('No pending Aadhaar records found');
             return Command::SUCCESS;
         }
-
-        OldAge3500Pensioner::whereIn('id', $records->pluck('id'))
-            ->update([
-                'aadhar_verification_started_at' => now(),
-            ]);
 
         $processed = 0;
 
@@ -47,8 +40,8 @@ class OldAgeEpBulkAadharVerification extends Command
             try {
                 $response = Http::withOptions([
                     'verify' => false,
-                    'timeout' => 20,
-                    'connect_timeout' => 5,
+                    'timeout' => 120,
+                    'connect_timeout' => 20,
                     'curl' => [
                         \CURLOPT_SSLVERSION   => \CURL_SSLVERSION_TLSv1_2,
                         \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
@@ -79,9 +72,8 @@ class OldAgeEpBulkAadharVerification extends Command
             }
 
             $pensioner->update([
-                'verified_aadhar'                  => $verified,
-                'verified_aadhar_remarks'          => $remarks,
-                'aadhar_verification_completed_at' => now(),
+                'verified_aadhar'         => $verified,
+                'verified_aadhar_remarks' => $remarks,
             ]);
 
             $processed++;
