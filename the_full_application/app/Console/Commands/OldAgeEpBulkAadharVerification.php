@@ -74,6 +74,7 @@ class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
             $pensioner->update([
                 'verified_aadhar'         => $verified,
                 'verified_aadhar_remarks' => $remarks,
+                'aadhar_verification_completed_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
             ]);
 
             $processed++;
