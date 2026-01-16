@@ -8,7 +8,7 @@ use App\Models\OldAge3500Pensioner;
 
 class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
 {
-    protected $signature = 'oldage:aadhar-verify {limit=100}';
+    protected $signature = 'oldage:aadhar-verify {limit=200}';
 
     protected $description = 'Bulk Aadhaar verification for Old Age Pensioners';
 
