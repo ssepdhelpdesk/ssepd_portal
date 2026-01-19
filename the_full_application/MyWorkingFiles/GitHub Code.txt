@@ -3,7 +3,8 @@ git add .
 git commit -m "EP Penwsion Report Drildown"
 git push origin main
 
-
+ALTER TABLE `oldage_pensioner_beneficiaries_withage_80andabove_04_03_2025` ADD `aadhar_verification_started_at` DATETIME NULL AFTER `verified_aadhar_remarks`;
+ALTER TABLE `oldage_pensioner_beneficiaries_withage_80andabove_04_03_2025` ADD `aadhar_verification_completed_at` DATETIME NULL AFTER `aadhar_verification_started_at`;
 
 git pull origin main
 

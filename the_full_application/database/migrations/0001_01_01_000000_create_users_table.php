@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('mobile_no')->nullable();
             $table->string('profile_photo')->nullable();
             $table->string('profile_photo_path')->nullable();
-            $table->timestamp('email_verified_at')->nullable()->useCurrent();;
+            $table->timestamp('email_verified_at')->nullable()->useCurrent();
             $table->string('two_factor_secret')->nullable();
             $table->string('two_factor_recovery_codes')->nullable();
             $table->string('password');
@@ -45,7 +45,7 @@ return new class extends Migration
             $table->string('additnl_para', 50)->nullable();
             $table->tinyInteger('allow_multiple_sessions')->default(0)->nullable();
             $table->tinyInteger('is_logged_in')->default(0)->nullable();
-            $table->timestamp('last_req_time')->nullable()->useCurrent();;
+            $table->timestamp('last_req_time')->nullable()->useCurrent();
             $table->tinyInteger('enabled')->default(1)->nullable();
             $table->tinyInteger('is_doctor')->default(0)->nullable();
             $table->string('otp_for_issuing_disability_id_card', 20)->nullable();
@@ -54,8 +54,8 @@ return new class extends Migration
             $table->string('mci_crr_regd_no', 100)->nullable();
             $table->string('doctor_qualification', 100)->nullable();
             $table->string('medical_institute_id')->nullable();
-            $table->timestamp('otp_for_forgot_password_duration')->nullable()->useCurrent();;
-            $table->timestamp('otp_for_issuing_disability_id_card_duration')->nullable()->useCurrent();;
+            $table->timestamp('otp_for_forgot_password_duration')->nullable()->useCurrent();
+            $table->timestamp('otp_for_issuing_disability_id_card_duration')->nullable()->useCurrent();
             $table->string('posted_zone')->nullable();
             $table->string('role_id')->nullable();
             $table->string('role_name')->nullable();
