@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use App\Models\OldAge3500Pensioner;
 
-class OldAgeEpBulkAadharVerification_BKP_16_01_2026 extends Command
+class OldAgeEpBulkAadharVerification extends Command
 {
     protected $signature = 'oldage:aadhar-verify {limit=200}';
 
