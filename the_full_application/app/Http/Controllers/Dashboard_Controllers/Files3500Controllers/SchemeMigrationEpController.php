@@ -399,7 +399,7 @@ class SchemeMigrationEpController extends Controller
                     $disability_pensioner_verification_app->disability_category = strtoupper(trim($validatedData['disability_category']));
                     $disability_pensioner_verification_app->udid_no = $validatedData['udid_no'];
                     $disability_pensioner_verification_app->excel_data_type = 'DPEP';
-                    $disability_pensioner_verification_app->ssepd_id = (string) $id;
+                    $disability_pensioner_verification_app->ssepd_id = (string) $disability_pensioner->id;
                     $disability_pensioner_verification_app->status = '1';
                     $disability_pensioner_verification_app->is_new = '1';
                     $disability_pensioner_verification_app->save();
@@ -623,7 +623,7 @@ class SchemeMigrationEpController extends Controller
                     $old_age_pensioner_verification_app->udid_no = null;
                     $old_age_pensioner_verification_app->updated_scheme_name = $validatedData['scheme_name'];
                     $old_age_pensioner_verification_app->excel_data_type = 'OAPEP';
-                    $old_age_pensioner_verification_app->ssepd_id = (string) $id;
+                    $old_age_pensioner_verification_app->ssepd_id = (string) $oldage_pensioner->id;
                     $old_age_pensioner_verification_app->status = '1';
                     $old_age_pensioner_verification_app->is_new = '1';
                     $old_age_pensioner_verification_app->save();
