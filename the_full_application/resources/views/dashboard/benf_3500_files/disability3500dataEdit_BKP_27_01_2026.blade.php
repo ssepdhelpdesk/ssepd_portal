@@ -1,5 +1,5 @@
 @section('title') 
-EP Pension || OldAge Beneficiary Data Update
+EP Pension || Disability Beneficiary Data Update
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -13,232 +13,211 @@ EP Pension || OldAge Beneficiary Data Update
 @endsection 
 @section('content')
 <div class="container-fluid">
-<!-- ============================================================== -->
-<!-- Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<div class="row page-titles">
-   <div class="col-md-7 align-self-center">
-      <div class="d-flex align-items-center">
-         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-            <li class="breadcrumb-item active">@yield('title')</li>
-         </ol>
+   <!-- ============================================================== -->
+   <!-- Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <div class="row page-titles">
+      <div class="col-md-7 align-self-center">
+         <div class="d-flex align-items-center">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+               <li class="breadcrumb-item active">@yield('title')</li>
+            </ol>
+         </div>
+      </div>
+      <div class="col-md-5 align-self-center text-end">
+         <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
       </div>
    </div>
-   <div class="col-md-5 align-self-center text-end">
-      <button onclick="history.back()" class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-info"><i class="fas fa-arrow-alt-circle-left"></i> Go Back</button>
-   </div>
-</div>
-<!-- ============================================================== -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<!-- Start Page Content -->
-<!-- ============================================================== -->
-<!-- row -->
-<div class="row">
-   <div class="col-12">
-      <div class="card">
-         <div class="card-body">
-            <h4 class="card-title"></h4>
-            @include('dashboard.component.message')
-            @if (count($errors) > 0)
-            <div class="alert alert-danger">
-               <strong>Whoops!</strong> There were some problems with your input.<br><br>
-               <ul>
-                  @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-                  @endforeach
-               </ul>
-            </div>
-            @endif
-            <div id="alert-container"></div>
-            <div class="col-sm-12 col-xs-12">
-               <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.oldage3500data.update', $oldAge3500Pensioner->id)}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
-                  @csrf
-                  @method('post')
-                  <div class="form-body">
-                     <h5 class="card-title">Basic Details</h5>
-                     <hr>
-                     <div class="row">
-                        <div class="col-md-3">
-                           <div class="form-group" id="scheme_name_div">
-                              <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
-                              <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
-                                 <option>Please Select</option>
-                                 <option value="MBPOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPOAP' ? 'selected' : '' }}>MBPOAP</option>
-                                 <option value="IGNOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNOAP' ? 'selected' : '' }}>IGNOAP</option>
-                              </select>
-                              <div id="scheme_name_error"></div>
-                              @error('scheme_name')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+   <!-- ============================================================== -->
+   <!-- End Bread crumb and right sidebar toggle -->
+   <!-- ============================================================== -->
+   <!-- Start Page Content -->
+   <!-- ============================================================== -->
+   <!-- row -->
+   <div class="row">
+      <div class="col-12">
+         <div class="card">
+            <div class="card-body">
+               <h4 class="card-title"></h4>
+               @include('dashboard.component.message')
+               @if (count($errors) > 0)
+               <div class="alert alert-danger">
+                  <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                  <ul>
+                     @foreach ($errors->all() as $error)
+                     <li>{{ $error }}</li>
+                     @endforeach
+                  </ul>
+               </div>
+               @endif
+               <div id="alert-container"></div>
+               <div class="col-sm-12 col-xs-12">
+                  <form class="from-prevent-multiple-submits" method="POST" action="{{ route('admin.disability3500data.update', $disability3500Pensioner->id)}}" onsubmit="return Validate()" name="vform" enctype="multipart/form-data">
+                     @csrf
+                     @method('post')
+                     <div class="form-body">
+                        <h5 class="card-title">Basic Details</h5>
+                        <hr>
+                        <div class="row">
+                           <div class="col-md-3">
+                              <div class="form-group" id="scheme_name_div">
+                                 <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
+                                 <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
+                                    <option>Please Select</option>
+                                    <option value="MBPDP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'MBPDP' ? 'selected' : '' }}>MBPDP</option>
+                                    <option value="IGNDP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'IGNDP' ? 'selected' : '' }}>IGNDP</option>
+                                 </select>
+                                 <div id="scheme_name_error"></div>
+                                 @error('scheme_name')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="name_of_the_beneficiary_div">
-                              <label class="form-label">Beneficiary Name<span class="itsrequired"> *</span></label>
-                              <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary', $oldAge3500Pensioner->name_of_the_beneficiary)}}" class="form-control" placeholder="Name of the Staff">
-                              <div id="name_of_the_beneficiary_error"></div>
-                              @error('name_of_the_beneficiary')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="name_of_the_beneficiary_div">
+                                 <label class="form-label">Beneficiary Name<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary', $disability3500Pensioner->name_of_the_beneficiary)}}" class="form-control" placeholder="Name of the Staff" readonly>
+                                 <div id="name_of_the_beneficiary_error"></div>
+                                 @error('name_of_the_beneficiary')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="father_or_husband_name_div">
-                              <label class="form-label">Father/Husband Name<span class="itsrequired"> *</span></label>
-                              <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name', $oldAge3500Pensioner->father_or_husband_name)}}" class="form-control" placeholder="Name of the Staff">
-                              <div id="father_or_husband_name_error"></div>
-                              @error('father_or_husband_name')
-                              <label class="error">{{ $message }}</label>
-                              @enderror
+                           <div class="col-md-3">
+                              <div class="form-group" id="father_or_husband_name_div">
+                                 <label class="form-label">Father/Husband Name<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="father_or_husband_name" name="father_or_husband_name" value="{{old('father_or_husband_name', $disability3500Pensioner->father_or_husband_name)}}" class="form-control" placeholder="Name of the Staff">
+                                 <div id="father_or_husband_name_error"></div>
+                                 @error('father_or_husband_name')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
                            </div>
-                        </div>
-                        <div class="col-md-3">
-                           <div class="form-group" id="date_of_birth_div">
-                              <label class="form-label">DOB (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
-                              @php
-                              $dob = $oldAge3500Pensioner->date_of_birth;
-                              $age = $oldAge3500Pensioner->age;
-                              $isReadonly = false;
-                              $parsedDate = null;
+                           <div class="col-md-3">
+                              <div class="form-group" id="date_of_birth_div">
+                                 <label class="form-label">DOB (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
+                                 @php
+                                 $dob = $disability3500Pensioner->date_of_birth;
+                                 $age = $disability3500Pensioner->age;
+                                 $isReadonly = false;
+                                 $parsedDate = null;
 
-                              try {
-                                if ($dob && strtolower($dob) !== 'not provided by district') {
-                                 $parsedDate = \Carbon\Carbon::parse($dob);
-                                 $year = (int) $parsedDate->format('Y');
+                                 try {
+                                   if ($dob && strtolower($dob) !== 'not provided by district') {
+                                    $parsedDate = \Carbon\Carbon::parse($dob);
+                                    $year = (int) $parsedDate->format('Y');
 
-                                 if ($year >= 1900 && $year <= now()->year && !empty($age) && $age >= 80 && $age <= 140) {
-                                  $isReadonly = true;
+                                    if ($year >= 1700 && $year <= now()->year && !empty($age) && $age > 0 && $age <= 140) {
+                                     $isReadonly = true;
+                                  }
                                }
-                            }
-                         } catch (\Exception $e) {
-                          $parsedDate = null;
-                          $isReadonly = false;
-                       }
-                       @endphp
-                       <input type="date"
-                       id="date_of_birth"
-                       name="date_of_birth"
-                       value="{{ $parsedDate ? $parsedDate->format('Y-m-d') : '' }}"
-                       class="form-control"
-                       placeholder="Enter Date of Birth"
-
-                       max="{{ now()->format('Y-m-d') }}">
-                       @if($dob == '' || $dob == null || $dob == 'Not Provided By District' || $age < 80 || $age > 140 || $age == '' || $age == null || $age == 'Not Provided By District')
-                       <small class="text-danger">
-                        Invalid DOB detected ({{ $dob }})/ or AGE ({{ $age }}). Please correct it.
-                     </small>
-                     @endif
-                     <div id="date_of_birth_error"></div>
-                     @error('date_of_birth')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
+                            } catch (\Exception $e) {
+                             $parsedDate = null;
+                             $isReadonly = false;
+                          }
+                          @endphp
+                          <input type="date"
+                          id="date_of_birth"
+                          name="date_of_birth"
+                          value="{{ $parsedDate ? $parsedDate->format('Y-m-d') : '' }}"
+                          class="form-control"
+                          placeholder="Enter Date of Birth"
+                          {{ $isReadonly ? 'readonly' : '' }}
+                          max="{{ now()->format('Y-m-d') }}">
+                          @if($dob == '' || $dob == null || $dob == 'Not Provided By District' || $age < 0 || $age > 140 || $age == '' || $age == null || $age == 'Not Provided By District')
+                          <small class="text-danger">
+                           Invalid DOB detected ({{ $dob }})/ or AGE ({{ $age }}). Please correct it.
+                        </small>
+                        @endif
+                        <div id="date_of_birth_error"></div>
+                        @error('date_of_birth')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
                   </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group" id="age_div">
-                     <label class="form-label">Age<span class="itsrequired"> *</span></label>
-                     <input type="text" id="age" name="age" value="{{old('age', $oldAge3500Pensioner->age)}}" class="form-control" placeholder="Age" readonly>
-                     <div id="age_error"></div>
-                     @error('age')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
+                  <div class="col-md-3">
+                     <div class="form-group" id="age_div">
+                        <label class="form-label">Age<span class="itsrequired"> *</span></label>
+                        <input type="text" id="age" name="age" value="{{old('age', $disability3500Pensioner->age)}}" class="form-control" placeholder="Age" readonly>
+                        <div id="age_error"></div>
+                        @error('age')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>                        
+                  <div class="col-md-3">
+                     <div class="form-group" id="gender_div">
+                        <label class="form-label">Gender<span class="itsrequired"> *</span></label>
+                        <select class="form-control show-tick ms select2" id="gender" name="gender">
+                           <option >Please Select</option>
+                           <option value="Male" {{ $disability3500Pensioner->gender == 'Male' ? 'selected' : '' }}>Male</option>
+                           <option value="Female" {{ $disability3500Pensioner->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                        </select>
+                        <div id="gender_error"></div>
+                        @error('gender')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
                   </div>
-               </div>                        
-               <div class="col-md-3">
-                  <div class="form-group" id="gender_div">
-                     <label class="form-label">Gender<span class="itsrequired"> *</span></label>
-                     <select class="form-control show-tick ms select2" id="gender" name="gender">
-                        <option >Please Select</option>
-                        <option value="Male" {{ $oldAge3500Pensioner->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                        <option value="Female" {{ $oldAge3500Pensioner->gender == 'Female' ? 'selected' : '' }}>Female</option>
-                     </select>
-                     <div id="gender_error"></div>
-                     @error('gender')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
+                  <div class="col-md-3">
+                     <div class="form-group" id="udid_no_div">
+                        <label class="form-label">UDID No<span class="itsrequired"> *</span></label>
+                        <input type="text" id="udid_no" name="udid_no" value="{{old('udid_no', $disability3500Pensioner->udid_no)}}" class="form-control" placeholder="UDID no of Beneficiary" >
+                        <div id="udid_no_error"></div>
+                        @error('udid_no')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
                   </div>
-               </div>
-                        <!-- <div class="col-md-3">
+                  <div class="col-md-3">
+                     <div class="form-group" id="disability_category_div">
+                        <label class="form-label">Disability category<span class="itsrequired"> *</span></label>
+                        <input type="text" id="disability_category" name="disability_category" value="{{old('disability_category', $disability3500Pensioner->disability_category)}}" class="form-control" placeholder="Disability category of Beneficiary" >
+                        <div id="disability_category_error"></div>
+                        @error('disability_category')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <div class="form-group" id="disability_percentage_div">
+                        <label class="form-label">Disability Percentage<span class="itsrequired"> *</span></label>
+                        <select class="form-control show-tick ms select2" id="disability_percentage" name="disability_percentage">
+                           <option >Please Select</option>
+                           @for($i = 80; $i <= 100; $i++)
+                           <option value="{{ $i }}" {{ old('disability_percentage', $disability3500Pensioner->disability_percentage ?? '') == $i ? 'selected' : '' }}>
+                              {{ $i }}
+                           </option>
+                           @endfor
+                        </select>
+                        <div id="disability_percentage_error"></div>
+                        @error('disability_percentage')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>
+                  <div class="col-md-3">
                          <div class="form-group" id="aadhaar_no_div">
                           <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
                           @php
-                          $aadhaar = trim(old('aadhaar_no', $oldAge3500Pensioner->aadhaar_no ?? ''));
+                          $aadhaar = trim(old('aadhaar_no', $disability3500Pensioner->aadhaar_no ?? ''));
                           $isValidAadhaar = preg_match('/^\d{12}$/', $aadhaar);
                           $aadhaarValue = $isValidAadhaar ? $aadhaar : '';
                           @endphp
-                          <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number">
+                          <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number" {{ $isValidAadhaar ? 'readonly' : '' }}>
                           <div id="aadhaar_no_error"></div>
                           <div id="check_aadhaar_no"></div>
                           @error('aadhaar_no')
                           <label class="error">{{ $message }}</label>
                           @enderror
                        </div>
-                    </div> -->
-                    @if($oldAge3500Pensioner->verified_aadhar == 1)
-                    <div class="col-md-3">
-                     <div class="form-group" id="aadhaar_no_div">
-                        <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
-                        <div class="input-group">
-                           @php
-                           $aadhaar = trim(old('aadhaar_no', $oldAge3500Pensioner->aadhaar_no ?? ''));
-                           $isValidAadhaar = preg_match('/^\d{12}$/', $aadhaar);
-                           $aadhaarValue = $isValidAadhaar ? $aadhaar : '';
-                           @endphp
-                           <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number">
-                           <input type="hidden" id="verified_aadhar" value="{{ $oldAge3500Pensioner->verified_aadhar }}" class="form-control" name="verified_aadhar">
-                           <input type="hidden" id="verified_aadhar_remarks" value="{{ $oldAge3500Pensioner->verified_aadhar_remarks }}" class="form-control" name="verified_aadhar_remarks">
-                        </div>
-                        <div id="aadhaar_verify_result" class="mt-1"></div>
-                        <div id="aadhaar_no_error"></div>
-                        <div id="check_aadhaar_no"></div>
-                        @error('aadhaar_no')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                        @error('verified_aadhar')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                        @error('verified_aadhar_remarks')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                     </div>
-                  </div>
-                  @else
-                  <div class="col-md-3">
-                     <div class="form-group" id="aadhaar_no_div">
-                        <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
-                        <div class="input-group">
-                           @php
-                           $aadhaar = trim(old('aadhaar_no', $oldAge3500Pensioner->aadhaar_no ?? ''));
-                           $isValidAadhaar = preg_match('/^\d{12}$/', $aadhaar);
-                           $aadhaarValue = $isValidAadhaar ? $aadhaar : '';
-                           @endphp
-                           <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number" >
-                           <span class="input-group-btn"><button class="btn btn-info text-white" type="button" id="btnVerifyAadhaar">Verify!</button></span>
-                           <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
-                           <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">                           
-                        </div>
-                        <div id="aadhaar_verify_result" class="mt-1"></div>
-                        <div id="aadhaar_no_error"></div>
-                        <div id="check_aadhaar_no"></div>
-                        @error('aadhaar_no')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                        @error('verified_aadhar')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                        @error('verified_aadhar_remarks')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                     </div>
-                  </div>
-                  @endif
+                    </div>
                   <div class="col-md-3">
                      <div class="form-group" id="nsap_sanction_order_no_div">
                         <label class="form-label">NSAP Sanction Order No<span class="itsrequired"> *</span></label>
                         @php
-                        $nsap = trim(old('nsap_sanction_order_no', $oldAge3500Pensioner->nsap_sanction_order_no ?? ''));
+                        $nsap = trim(old('nsap_sanction_order_no', $disability3500Pensioner->nsap_sanction_order_no ?? ''));
                         $isReadonlyNsap = preg_match('/^OR-S-\d{6,}$/', $nsap) === 1;
                         @endphp
                         <input type="text"
@@ -258,7 +237,7 @@ EP Pension || OldAge Beneficiary Data Update
                   <div class="col-md-3">
                      <div class="form-group" id="sub_collector_sanction_order_no_div">
                         <label class="form-label">Sub-Collector Sanction Order No<span class="itsrequired"> *</span></label>
-                        <input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no', $oldAge3500Pensioner->sub_collector_sanction_order_no)}}" class="form-control" placeholder="Sub-Collector Sanction Order No" >
+                        <input type="text" id="sub_collector_sanction_order_no" name="sub_collector_sanction_order_no" value="{{old('sub_collector_sanction_order_no', $disability3500Pensioner->sub_collector_sanction_order_no)}}" class="form-control" placeholder="Sub-Collector Sanction Order No" >
                         <div id="sub_collector_sanction_order_no_error"></div>
                         @error('sub_collector_sanction_order_no')
                         <label class="error">{{ $message }}</label>
@@ -268,21 +247,7 @@ EP Pension || OldAge Beneficiary Data Update
                   <div class="col-md-3">
                      <div class="form-group" id="pension_month_div">
                         <label class="form-label">Pension Month(Effective From)<span class="itsrequired"> *</span></label>
-                        <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month', $oldAge3500Pensioner->pension_month)}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" readonly>
-                        <div id="pension_month_error"></div>
-                        @error('pension_month')
-                        <label class="error">{{ $message }}</label>
-                        @enderror
-                     </div>
-                  </div>
-                  <div class="col-md-3">
-                     <div class="form-group" id="pension_month_div">
-                        <label class="form-label">Current Address<span class="itsrequired"> *</span></label>
-                        @if($oldAge3500Pensioner->address_type == 1)
-                        <textarea class="form-control" readonly>Village: {{$oldAge3500Pensioner->village}}, GP: {{$oldAge3500Pensioner->gp_or_ward}}, Block: {{$oldAge3500Pensioner->block_or_ulb}}, Dist: {{$oldAge3500Pensioner->district}} </textarea>
-                        @elseif($oldAge3500Pensioner->address_type == 2)
-                        <textarea class="form-control" readonly>Ward: {{$oldAge3500Pensioner->gp_or_ward}}, ULB: {{$oldAge3500Pensioner->block_or_ulb}}, Dist: {{$oldAge3500Pensioner->district}} </textarea>
-                        @endif
+                        <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month')}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" >
                         <div id="pension_month_error"></div>
                         @error('pension_month')
                         <label class="error">{{ $message }}</label>
@@ -309,14 +274,13 @@ EP Pension || OldAge Beneficiary Data Update
                      </div>
                   </div>
                </div>
-<!--/row-->
-<div class="row" id="dynamic-content"></div>
-</div>
-<div class="form-actions">
-</div>
-</form>
-</div>
-</div>
+               <!--/row-->
+               <div class="row" id="dynamic-content"></div>
+            </div>
+            <div class="form-actions"></div>
+         </form>
+      </div>
+   </div>
 </div>
 </div>
 </div>
@@ -345,7 +309,7 @@ EP Pension || OldAge Beneficiary Data Update
             return;
          }
 
-         $.get("{{ route('admin.oldage3500data.check_benf_aadhar') }}", 
+         $.get("{{ route('admin.disability3500data.check_benf_aadhar') }}", 
             { aadhaar_no: staffAadhar }, 
             function (data) {
                if (data == 0) {
@@ -420,126 +384,6 @@ EP Pension || OldAge Beneficiary Data Update
       });
    });
 </script>
-<script>
-   $(document).ready(function () {
-
-    $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
-     $('#verified_aadhar').val('');
-     $('#verified_aadhar_remarks').val('');
-     $('#aadhaar_verify_result').html('');
-
-     $('#btnVerifyAadhaar')
-     .prop('disabled', false)
-     .removeClass('btn-success')
-     .addClass('btn-info')
-     .text('Verify!');
-
-     $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-  });
-
-    $(document).on('click', '#btnVerifyAadhaar', function () {
-
-     let aadhaar = $('#aadhaar_no').val().trim();
-     let name    = $('#name_of_the_beneficiary').val().trim();
-
-     $('#aadhaar_verify_result').html('');
-     $('#verified_aadhar').val('');
-     $('#verified_aadhar_remarks').val('');
-
-     if (!/^\d{12}$/.test(aadhaar)) {
-      $('#aadhaar_verify_result').html(
-       '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
-       );
-      return;
-   }
-
-   if (name === '') {
-      $('#aadhaar_verify_result').html(
-       '<span class="text-danger">Enter beneficiary name first</span>'
-       );
-      return;
-   }
-
-   $('#btnVerifyAadhaar')
-   .prop('disabled', true)
-   .text('Verifying...');
-
-   $.ajax({
-      url: "{{ route('admin.oldage3500data.oldage_aadhar_verification_process') }}",
-      type: "POST",
-      dataType: "json",
-      data: {
-       _token: "{{ csrf_token() }}",
-       aadhaar_no: aadhaar,
-       name_of_the_beneficiary: name
-    },
-
-    success: function (res) {
-       let message = res.data ?? '';
-
-       $('#verified_aadhar_remarks').val(message);
-
-       if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
-
-        $('#verified_aadhar').val(1);
-
-        $('#aadhaar_verify_result').html(
-         '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
-         );
-
-        $('#btnVerifyAadhaar')
-        .prop('disabled', true)
-        .removeClass('btn-info')
-        .addClass('btn-success')
-        .text('Verified');
-
-        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
-
-     } else {
-        $('#verified_aadhar').val(0);
-
-        $('#aadhaar_verify_result').html(
-         '<span class="badge bg-danger">' + message + '</span>'
-         );
-
-        $('#btnVerifyAadhaar')
-        .prop('disabled', false)
-        .removeClass('btn-success')
-        .addClass('btn-info')
-        .text('Verify!');
-
-        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-     }
-  },
-
-  error: function (xhr) {
-    let msg = 'Verification failed';
-    if (xhr.responseJSON) {
-     msg = xhr.responseJSON.exception ??
-     xhr.responseJSON.response ??
-     msg;
-  }
-
-  $('#verified_aadhar').val(0);
-  $('#verified_aadhar_remarks').val(msg);
-
-  $('#aadhaar_verify_result').html(
-     '<span class="badge bg-danger">' + msg + '</span>'
-     );
-
-  $('#btnVerifyAadhaar')
-  .prop('disabled', false)
-  .removeClass('btn-success')
-  .addClass('btn-info')
-  .text('Verify!');
-
-  $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-}
-});
-
-});
- });
-</script>
 <script type="text/javascript">
    $(document).ready(function () {
       $("#nsap_sanction_order_no").blur(function () {
@@ -552,7 +396,7 @@ EP Pension || OldAge Beneficiary Data Update
             return;
          }
 
-         $.get("{{ route('admin.oldage3500data.check_benf_nsap_sanction_or_no') }}", 
+         $.get("{{ route('admin.disability3500data.check_benf_nsap_sanction_or_no') }}", 
             { nsap_sanction_order_no: sanctionNo }, 
             function (data) {
                if (data == 0) {
@@ -568,6 +412,47 @@ EP Pension || OldAge Beneficiary Data Update
                $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
             });
          });
+   });
+</script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+      const udidInput = document.getElementById('udid_no');
+      const errorDiv = document.getElementById('udid_no_error');
+
+      udidInput.addEventListener('blur', function () {
+         const udid = udidInput.value.trim();
+         errorDiv.innerHTML = '';
+
+         if (!udid) {
+            return;
+         }
+
+         if (udid.length < 18) {
+            errorDiv.innerHTML = '<label class="error">UDID must be at least 18 characters.</label>';
+            return;
+         }
+
+         fetch(`{{ route('admin.disability3500data.check_benf_udidno') }}?udid_no=${encodeURIComponent(udid)}`)
+         .then(response => response.json())
+         .then(data => {
+            if (data === 1) {
+               errorDiv.innerHTML = '<label class="error">This UDID is already registered.</label>';
+               udidInput.style.borderColor = 'red';
+               udidInput.value = '';
+            } else if (data === 0) {
+               errorDiv.innerHTML = '<span style="color:#03713E">This UDID is available.</span>';
+               udidInput.style.borderColor = '';
+            } else if (data === 2) {
+               errorDiv.innerHTML = '<label class="error">Invalid UDID number format.</label>';
+               udidInput.style.borderColor = 'red';
+               udidInput.value = '';
+            }
+         })
+         .catch(error => {
+            console.error('Error checking UDID:', error);
+            errorDiv.innerHTML = '<label class="error">An error occurred. Try again.</label>';
+         });
+      });
    });
 </script>
 <script>
@@ -598,6 +483,8 @@ EP Pension || OldAge Beneficiary Data Update
          { id: 'name_of_the_beneficiary', message: 'Please enter Beneficiary Name.' },
          { id: 'father_or_husband_name', message: 'Please enter Father Husband Name.' },
          { id: 'date_of_birth', message: 'Please select DOB.' },
+         { id: 'udid_no', message: 'Please enter UDID No.' },
+         { id: 'disability_category', message: 'Please enter Disability Category.' },
          { id: 'aadhaar_no', message: 'Please enter Aadhar No.' },
          { id: 'nsap_sanction_order_no', message: 'Please enter NSAP Sanction Order No.' },
          { id: 'sub_collector_sanction_order_no', message: 'Please enter SubCollector Signature Order No.' },
@@ -615,7 +502,8 @@ EP Pension || OldAge Beneficiary Data Update
 
       const selectFields = [
          { name: 'scheme_name', message: 'Please select Scheme.' },
-         { name: 'gender', message: 'Please select Gender.' }
+         { name: 'gender', message: 'Please select Gender.' },
+         { name: 'disability_percentage', message: 'Please select Disability Percentage.' }
       ];
 
       selectFields.forEach(field => {
@@ -792,7 +680,7 @@ EP Pension || OldAge Beneficiary Data Update
          radio.addEventListener('change', function () {
             const value = this.value;
 
-/*fetch(`/ssepd_ngo_working_portal/dashboard/get-address-type-content/${value}`)*/
+   /*fetch(`/ssepd_ngo_working_portal/dashboard/get-address-type-content/${value}`)*/
             fetch(`{{ url('dashboard/get-address-type-content') }}/${value}`)
             .then(response => {
                if (!response.ok) {
@@ -815,25 +703,25 @@ EP Pension || OldAge Beneficiary Data Update
 
       function bindValidation(type) {
          const naFields = [
-          'ngo_postal_address_at',
-          'ngo_postal_address_post',
-          'ngo_postal_address_via',
-          'ngo_postal_address_ps',
-          'ngo_postal_address_district',
-          'ngo_postal_address_pin'
-       ];
+           'ngo_postal_address_at',
+           'ngo_postal_address_post',
+           'ngo_postal_address_via',
+           'ngo_postal_address_ps',
+           'ngo_postal_address_district',
+           'ngo_postal_address_pin'
+        ];
 
-       naFields.forEach(function (id) {
-          const el = document.getElementById(id);
-          if (el) {
+        naFields.forEach(function (id) {
+           const el = document.getElementById(id);
+           if (el) {
             el.value = 'Not Required to Provide';
             el.readOnly = true;
          }
       });
-       const pinField = document.getElementById('ngo_postal_address_pin');
-       const submitButton = document.getElementById('submitButton');
+        const pinField = document.getElementById('ngo_postal_address_pin');
+        const submitButton = document.getElementById('submitButton');
 
-       if (pinField && submitButton) {
+        if (pinField && submitButton) {
          pinField.addEventListener('input', function () {
             const pinValue = pinField.value;
             if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {
@@ -872,9 +760,9 @@ EP Pension || OldAge Beneficiary Data Update
 
       alertDiv.classList.add('alert', 'alert-warning', 'alert-rounded', 'alert-dismissible');
       alertDiv.innerHTML = `
-<img src="{{ url('storage/sad-icon.png') }}" width="30" class="img-circle" alt="img">
+   <img src="{{ url('storage/sad-icon.png') }}" width="30" class="img-circle" alt="img">
             ${message}
-<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       `;
 
       alertContainer.appendChild(alertDiv);
@@ -941,7 +829,7 @@ EP Pension || OldAge Beneficiary Data Update
    console.log("DOM is fully loaded");
 });
 </script>
-<!-- <script>
+<script>
    document.addEventListener("DOMContentLoaded", function () {
       const pension_monthInput = document.getElementById("pension_month");
       const today = new Date();
@@ -951,19 +839,22 @@ EP Pension || OldAge Beneficiary Data Update
 
       const formattedCurrentMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
 
+   /*Calculate previous month*/
       const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
       const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
       const formattedPrevMonth = `${prevYear}-${prevMonth.toString().padStart(2, '0')}`;
 
+   /*Calculate next month*/
       const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
       const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
       const formattedNextMonth = `${nextYear}-${nextMonth.toString().padStart(2, '0')}`;
 
+   /*Set min, max, and default value*/
       pension_monthInput.setAttribute("min", formattedPrevMonth);
       pension_monthInput.setAttribute("max", formattedNextMonth);
       pension_monthInput.value = formattedCurrentMonth;
    });
-</script> -->
+</script>
 <script>
    $(document).ready(function() {
       $('#date_of_birth').change(function(){
@@ -979,8 +870,8 @@ EP Pension || OldAge Beneficiary Data Update
          }
          $('#age').val(age);
 
-         if(age < 80){
-            alert('Age should not be less than 80 years.');
+         if(age < 0){
+            alert('Age should not be less than 0 years.');
             $('#date_of_birth').val('');
             $('#age').val('');
             $('#submitButton').prop('disabled', true);

@@ -24,6 +24,7 @@ use App\Helpers\AadhaarVerifier;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\Rule;
 use DB;
 
 /*Controller Requirements*/
@@ -963,6 +964,11 @@ public function edit(string $id)
 */
 public function update(Request $request, string $id)
 {
+    $beneficiaryId = $id;
+    $model = new OldAge3500Pensioner();
+    $table = $model->getTable();
+    $connection = $model->getConnectionName();
+
     $validationRules = [
         'scheme_name' => 'required|in:MBPOAP,IGNOAP',
         'name_of_the_beneficiary' => 'required',
@@ -970,11 +976,28 @@ public function update(Request $request, string $id)
         'date_of_birth' => 'required|date',
         'age' => 'required|integer|between:80,140',
         'gender' => 'required',
-        'aadhaar_no' => 'required',
-        'nsap_sanction_order_no' => 'required',
+        'aadhaar_no' => [
+            'required',
+            Rule::unique("$connection.$table", 'aadhaar_no')
+            ->ignore($beneficiaryId, 'id'),
+        ],
+
+        'nsap_sanction_order_no' => [
+            'required',
+            Rule::unique("$connection.$table", 'nsap_sanction_order_no')
+            ->ignore($beneficiaryId, 'id'),
+        ],
         'sub_collector_sanction_order_no' => 'required',
         'pension_month' => 'required',
         'ngo_address_type' => 'required|in:1,2',
+        'verified_aadhar' => 'required|in:1',
+        'verified_aadhar_remarks' => 'required',
+    ];
+
+    $messages = [
+        'verified_aadhar_remarks.required' => 'Click the verify button to verify Aadhaar.',
+        'verified_aadhar.required' => 'Please verify Aadhaar before submitting.',
+        'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details (name, DOB, etc.) are entered correctly.',
     ];
 
     if ($request->ngo_address_type === "1") {
@@ -996,7 +1019,7 @@ public function update(Request $request, string $id)
         ]);
     }
 
-    $validatedData = $request->validate($validationRules);
+    $validatedData = $request->validate($validationRules, $messages);
 
     DB::beginTransaction();
     try {
@@ -1046,6 +1069,10 @@ public function update(Request $request, string $id)
             'age' => $validatedData['age'],
             'gender' => $validatedData['gender'],
             'aadhaar_no' => $validatedData['aadhaar_no'],
+            'verified_aadhar' => $validatedData['verified_aadhar'],
+            'verified_aadhar_remarks' => $validatedData['verified_aadhar_remarks'],
+            'aadhar_verification_started_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+            'aadhar_verification_completed_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
             'nsap_sanction_order_no' => $validatedData['nsap_sanction_order_no'],
             'sub_collector_sanction_order_no' => $validatedData['sub_collector_sanction_order_no'],
             'address_type' => $address_type,

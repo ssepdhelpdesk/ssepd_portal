@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Helpers\AadhaarVerifier;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use DB;
 
 /*Controller Requirements*/
@@ -801,6 +802,11 @@ class Disability3500Controller extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $beneficiaryId = $id;
+        $model = new Disability3500Pensioner();
+        $table = $model->getTable();
+        $connection = $model->getConnectionName();
+
         $validationRules = [
             'scheme_name' => 'required|in:MBPDP,IGNDP',
             'name_of_the_beneficiary' => 'required',
@@ -811,11 +817,28 @@ class Disability3500Controller extends Controller
             'udid_no' => 'required',
             'disability_category' => 'required',
             'disability_percentage' => 'required|integer|between:80,100',
-            'aadhaar_no' => 'required',
-            'nsap_sanction_order_no' => 'required',
+            'aadhaar_no' => [
+                'required',
+                Rule::unique("$connection.$table", 'aadhaar_no')
+                ->ignore($beneficiaryId, 'id'),
+            ],
+
+            'nsap_sanction_order_no' => [
+                'required',
+                Rule::unique("$connection.$table", 'nsap_sanction_order_no')
+                ->ignore($beneficiaryId, 'id'),
+            ],
             'sub_collector_sanction_order_no' => 'required',
             'pension_month' => 'required',
             'ngo_address_type' => 'required|in:1,2',
+            'verified_aadhar' => 'required|in:1',
+            'verified_aadhar_remarks' => 'required',
+        ];
+
+        $messages = [
+            'verified_aadhar_remarks.required' => 'Click the verify button to verify Aadhaar.',
+            'verified_aadhar.required' => 'Please verify Aadhaar before submitting.',
+            'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details (name, DOB, etc.) are entered correctly.',            
         ];
 
         if ($request->ngo_address_type === "1") {
@@ -837,7 +860,7 @@ class Disability3500Controller extends Controller
             ]);
         }
 
-        $validatedData = $request->validate($validationRules);
+        $validatedData = $request->validate($validationRules, $messages);
 
         DB::beginTransaction();
         try {
@@ -890,6 +913,10 @@ class Disability3500Controller extends Controller
                 'disability_category' => $validatedData['disability_category'],
                 'disability_percentage' => $validatedData['disability_percentage'],
                 'aadhaar_no' => $validatedData['aadhaar_no'],
+                'verified_aadhar' => $validatedData['verified_aadhar'],
+                'verified_aadhar_remarks' => $validatedData['verified_aadhar_remarks'],
+                'aadhar_verification_started_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                'aadhar_verification_completed_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 'nsap_sanction_order_no' => $validatedData['nsap_sanction_order_no'],
                 'sub_collector_sanction_order_no' => $validatedData['sub_collector_sanction_order_no'],
                 'address_type' => $address_type,
@@ -1552,63 +1579,63 @@ class Disability3500Controller extends Controller
         ]);
     }
 
-public function disability_ineligible_to_eligible_reinstead(Request $request)
-{
-    ini_set('memory_limit', '512M');    
-    $user = auth()->user();
-    $userRole = $user->role_id;
+    public function disability_ineligible_to_eligible_reinstead(Request $request)
+    {
+        ini_set('memory_limit', '512M');    
+        $user = auth()->user();
+        $userRole = $user->role_id;
 
-    $oldAgeData = Disability3500Pensioner::query();
-    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
+        $oldAgeData = Disability3500Pensioner::query();
+        $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
-    } elseif (in_array($userRole, [4, 6])) {
-        $oldAgeData->where('block_id', $user->posted_block);
-    } elseif ($userRole == 5) {
-        $oldAgeData->where('municipality_id', $user->posted_municipality);
-    } elseif (in_array($userRole, [8, 10])) {
-        $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
-        ->where('is_active', 'active')
-        ->pluck('block_id');
-        $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
-        ->where('is_active', 'active')
-        ->pluck('municipality_id');
+        } elseif (in_array($userRole, [4, 6])) {
+            $oldAgeData->where('block_id', $user->posted_block);
+        } elseif ($userRole == 5) {
+            $oldAgeData->where('municipality_id', $user->posted_municipality);
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('block_id');
+            $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('municipality_id');
 
-        $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
-            $query->whereIn('block_id', $blockIds)
-            ->orWhereIn('municipality_id', $municipalityIds);
-        });
-    } elseif (in_array($userRole, [9, 11])) {
-        $oldAgeData->where('district_id', $user->posted_district);
-    }
+            $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+        } elseif (in_array($userRole, [9, 11])) {
+            $oldAgeData->where('district_id', $user->posted_district);
+        }
 
-    if ($request->ajax()) {
-        return DataTables::eloquent($oldAgeData)
-        ->addIndexColumn()
-        ->addColumn('aadhaar_verification_status', function ($row) {
+        if ($request->ajax()) {
+            return DataTables::eloquent($oldAgeData)
+            ->addIndexColumn()
+            ->addColumn('aadhaar_verification_status', function ($row) {
 
-            if ($row->verified_aadhar == 1) {
-                return '<span class="badge bg-success">Verified Aadhaar</span>';
-            }
+                if ($row->verified_aadhar == 1) {
+                    return '<span class="badge bg-success">Verified Aadhaar</span>';
+                }
 
-            if (is_null($row->verified_aadhar)) {
-                return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
-            }
+                if (is_null($row->verified_aadhar)) {
+                    return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
+                }
 
-            if ($row->verified_aadhar == 0) {
-                return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
-            }
+                if ($row->verified_aadhar == 0) {
+                    return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
+                }
 
-            return '-';
-        })
-        ->addColumn('checkbox', function ($row) {
-            if ($row->status == 'Inactive' && $row->discontinued_reason == 'Ineligible') {
-                return '<input type="checkbox" class="row-checkbox" value="'.$row->id.'">';
-            }
-            return '';
-        })
-        ->addColumn('action', function ($row) {
+                return '-';
+            })
+            ->addColumn('checkbox', function ($row) {
+                if ($row->status == 'Inactive' && $row->discontinued_reason == 'Ineligible') {
+                    return '<input type="checkbox" class="row-checkbox" value="'.$row->id.'">';
+                }
+                return '';
+            })
+            ->addColumn('action', function ($row) {
             /*$buttons = '<div class="btn-group">
             <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Action
@@ -1633,101 +1660,101 @@ public function disability_ineligible_to_eligible_reinstead(Request $request)
             return $buttons;*/
         })
 
-        ->rawColumns(['checkbox', 'action', 'aadhaar_verification_status'])
-        ->make(true);
+            ->rawColumns(['checkbox', 'action', 'aadhaar_verification_status'])
+            ->make(true);
+        }
+
+        return view('dashboard.benf_3500_files.reinitiate.disability_ineligible_to_eligible_reinstead');
     }
 
-    return view('dashboard.benf_3500_files.reinitiate.disability_ineligible_to_eligible_reinstead');
-}
+    public function disability_ineligible_to_eligible_reinstead_process(Request $request)
+    {
+        $user = auth()->user();
 
-public function disability_ineligible_to_eligible_reinstead_process(Request $request)
-{
-    $user = auth()->user();
+        $request->validate([
+            'ids' => 'required|array',
+            'pdf' => 'required|mimes:pdf|max:2048',
+            'sub_col_signature_date' => 'required|date',
+            'sub_collector_sanction_order_no' => 'required|string|max:255',
+            'remark' => 'required|string|max:255',
+        ]);
 
-    $request->validate([
-        'ids' => 'required|array',
-        'pdf' => 'required|mimes:pdf|max:2048',
-        'sub_col_signature_date' => 'required|date',
-        'sub_collector_sanction_order_no' => 'required|string|max:255',
-        'remark' => 'required|string|max:255',
-    ]);
+        $ids = $request->ids;
 
-    $ids = $request->ids;
+        if (empty($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records selected'
+            ]);
+        }
 
-    if (empty($ids)) {
+        $previousId = Disability3500Pensioner::latest()->value('id') ?? 0;
+        $currentDate = now()->format('d/m/Y');
+        $randomNumber = mt_rand(1000, 9999);
+        $epSystemGeneratedRegNo = "SSEPD/DPEP/REINITIATED/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
+        $epSystemGenRegNo = str_replace('/', '_', $epSystemGeneratedRegNo);
+
+        $folderPath = public_path("reinitiated_sub_col_files/{$epSystemGenRegNo}");
+        /*A folder i.e. storage/reinitiated_sub_col_files is created inside the root directory ssepd_ngo_working_portal/storage/reinitiated_sub_col_files*/
+        $externalBasePath = dirname(base_path());
+        $externalPath = $externalBasePath . "/storage/reinitiated_sub_col_files/{$epSystemGenRegNo}";
+
+        if (!file_exists($folderPath)) {
+            mkdir($folderPath, 0755, true);
+        }
+        if (!file_exists($externalPath)) {
+            mkdir($externalPath, 0755, true);
+        }
+
+        if ($request->hasFile('pdf')) {
+            $subColFile = $request->file('pdf');
+            $subColExtension = $subColFile->getClientOriginalExtension();
+            $subColRandomName = 'EP_REINITIATED_SUB_COL_' . Str::random(40) . '.' . $subColExtension;
+
+            $subColStoredPath = $subColFile->storeAs("reinitiated_sub_col_files/{$epSystemGenRegNo}", $subColRandomName, 'public');
+            copy(storage_path("app/public/{$subColStoredPath}"), "{$folderPath}/{$subColRandomName}");
+            copy(storage_path("app/public/{$subColStoredPath}"), "{$externalPath}/{$subColRandomName}");
+        }
+
+        foreach ($ids as $id) {
+            $beneficiary = Disability3500Pensioner::find($id);
+            if (!$beneficiary) continue;
+
+            $previousReason = $beneficiary->discontinued_reason ?? 'N/A';
+            $previousBy = $beneficiary->discontinued_by ?? 'Unknown';
+            $previousDate = $beneficiary->discontinued_system_gen_date ?? 'N/A';
+            $previousTime = $beneficiary->discontinued_system_gen_time ?? 'N/A';
+            $previousSubColSancOrNumber = $beneficiary->sub_collector_sanction_order_no ?? 'N/A';
+
+            $sub_col_signature_date = $request->sub_col_signature_date;
+            $sub_collector_sanction_order_no = $request->sub_collector_sanction_order_no;
+
+            $reinitiatedReasonMessage = "This application was discontinued by {$previousBy} on dated {$previousDate} at {$previousTime} having previous sub collector signature date {$sub_col_signature_date}, previous Sub Collector Sanction Order No {$previousSubColSancOrNumber} and the reason was {$previousReason}. Current Remark: {$request->remark}";
+
+            $beneficiary->update([
+                'status' => 'Active',
+                'discontinued_date' => null,
+                'discontinued_system_gen_date' => null,
+                'discontinued_system_gen_time' => null,
+                'discontinued_reason' => null,
+                'discontinued_by' => null,
+                'sub_col_signature_date' => $sub_col_signature_date,
+                'sub_collector_sanction_order_no' => $sub_collector_sanction_order_no,
+                'reinitiated_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
+                'reinitiated_system_gen_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
+                'reinitiated_system_gen_time' => now()->setTimezone('Asia/Kolkata')->toTimeString(),
+                'reinitiated_reason' => $reinitiatedReasonMessage,
+                'reinitiated_by' => $user->user_id ?? null,
+                'reinitiated_sub_col_files' => $subColStoredPath ?? null,
+            ]);
+        }
+
+        PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->whereIn('ssepd_id', $ids)->update(['is_active' => '1']);
+
         return response()->json([
-            'success' => false,
-            'message' => 'No records selected'
+            'success' => true,
+            'message' => count($ids).' beneficiaries re-instead successfully.'
         ]);
     }
-
-    $previousId = Disability3500Pensioner::latest()->value('id') ?? 0;
-    $currentDate = now()->format('d/m/Y');
-    $randomNumber = mt_rand(1000, 9999);
-    $epSystemGeneratedRegNo = "SSEPD/DPEP/REINITIATED/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
-    $epSystemGenRegNo = str_replace('/', '_', $epSystemGeneratedRegNo);
-
-    $folderPath = public_path("reinitiated_sub_col_files/{$epSystemGenRegNo}");
-    /*A folder i.e. storage/reinitiated_sub_col_files is created inside the root directory ssepd_ngo_working_portal/storage/reinitiated_sub_col_files*/
-    $externalBasePath = dirname(base_path());
-    $externalPath = $externalBasePath . "/storage/reinitiated_sub_col_files/{$epSystemGenRegNo}";
-
-    if (!file_exists($folderPath)) {
-        mkdir($folderPath, 0755, true);
-    }
-    if (!file_exists($externalPath)) {
-        mkdir($externalPath, 0755, true);
-    }
-
-    if ($request->hasFile('pdf')) {
-        $subColFile = $request->file('pdf');
-        $subColExtension = $subColFile->getClientOriginalExtension();
-        $subColRandomName = 'EP_REINITIATED_SUB_COL_' . Str::random(40) . '.' . $subColExtension;
-
-        $subColStoredPath = $subColFile->storeAs("reinitiated_sub_col_files/{$epSystemGenRegNo}", $subColRandomName, 'public');
-        copy(storage_path("app/public/{$subColStoredPath}"), "{$folderPath}/{$subColRandomName}");
-        copy(storage_path("app/public/{$subColStoredPath}"), "{$externalPath}/{$subColRandomName}");
-    }
-
-    foreach ($ids as $id) {
-        $beneficiary = Disability3500Pensioner::find($id);
-        if (!$beneficiary) continue;
-
-        $previousReason = $beneficiary->discontinued_reason ?? 'N/A';
-        $previousBy = $beneficiary->discontinued_by ?? 'Unknown';
-        $previousDate = $beneficiary->discontinued_system_gen_date ?? 'N/A';
-        $previousTime = $beneficiary->discontinued_system_gen_time ?? 'N/A';
-        $previousSubColSancOrNumber = $beneficiary->sub_collector_sanction_order_no ?? 'N/A';
-        
-        $sub_col_signature_date = $request->sub_col_signature_date;
-        $sub_collector_sanction_order_no = $request->sub_collector_sanction_order_no;
-
-        $reinitiatedReasonMessage = "This application was discontinued by {$previousBy} on dated {$previousDate} at {$previousTime} having previous sub collector signature date {$sub_col_signature_date}, previous Sub Collector Sanction Order No {$previousSubColSancOrNumber} and the reason was {$previousReason}. Current Remark: {$request->remark}";
-
-        $beneficiary->update([
-            'status' => 'Active',
-            'discontinued_date' => null,
-            'discontinued_system_gen_date' => null,
-            'discontinued_system_gen_time' => null,
-            'discontinued_reason' => null,
-            'discontinued_by' => null,
-            'sub_col_signature_date' => $sub_col_signature_date,
-            'sub_collector_sanction_order_no' => $sub_collector_sanction_order_no,
-            'reinitiated_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
-            'reinitiated_system_gen_date' => now()->setTimezone('Asia/Kolkata')->toDateString(),
-            'reinitiated_system_gen_time' => now()->setTimezone('Asia/Kolkata')->toTimeString(),
-            'reinitiated_reason' => $reinitiatedReasonMessage,
-            'reinitiated_by' => $user->user_id ?? null,
-            'reinitiated_sub_col_files' => $subColStoredPath ?? null,
-        ]);
-    }
-
-    PensionVerificationAppBeneficiary::where('excel_data_type', 'DPEP')->whereIn('ssepd_id', $ids)->update(['is_active' => '1']);
-    
-    return response()->json([
-        'success' => true,
-        'message' => count($ids).' beneficiaries re-instead successfully.'
-    ]);
-}
 
 }

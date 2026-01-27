@@ -77,7 +77,7 @@ EP Pension || Disability Beneficiary Data Update
                            <div class="col-md-3">
                               <div class="form-group" id="name_of_the_beneficiary_div">
                                  <label class="form-label">Beneficiary Name<span class="itsrequired"> *</span></label>
-                                 <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary', $disability3500Pensioner->name_of_the_beneficiary)}}" class="form-control" placeholder="Name of the Staff" readonly>
+                                 <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary', $disability3500Pensioner->name_of_the_beneficiary)}}" class="form-control" placeholder="Name of the Staff">
                                  <div id="name_of_the_beneficiary_error"></div>
                                  @error('name_of_the_beneficiary')
                                  <label class="error">{{ $message }}</label>
@@ -123,7 +123,7 @@ EP Pension || Disability Beneficiary Data Update
                           value="{{ $parsedDate ? $parsedDate->format('Y-m-d') : '' }}"
                           class="form-control"
                           placeholder="Enter Date of Birth"
-                          {{ $isReadonly ? 'readonly' : '' }}
+                          
                           max="{{ now()->format('Y-m-d') }}">
                           @if($dob == '' || $dob == null || $dob == 'Not Provided By District' || $age < 0 || $age > 140 || $age == '' || $age == null || $age == 'Not Provided By District')
                           <small class="text-danger">
@@ -197,7 +197,7 @@ EP Pension || Disability Beneficiary Data Update
                         @enderror
                      </div>
                   </div>
-                  <div class="col-md-3">
+                  <!-- <div class="col-md-3">
                          <div class="form-group" id="aadhaar_no_div">
                           <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
                           @php
@@ -212,7 +212,65 @@ EP Pension || Disability Beneficiary Data Update
                           <label class="error">{{ $message }}</label>
                           @enderror
                        </div>
-                    </div>
+                    </div> -->
+                    @if($disability3500Pensioner->verified_aadhar == 1)
+                    <div class="col-md-3">
+                     <div class="form-group" id="aadhaar_no_div">
+                        <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
+                        <div class="input-group">
+                           @php
+                           $aadhaar = trim(old('aadhaar_no', $disability3500Pensioner->aadhaar_no ?? ''));
+                           $isValidAadhaar = preg_match('/^\d{12}$/', $aadhaar);
+                           $aadhaarValue = $isValidAadhaar ? $aadhaar : '';
+                           @endphp
+                           <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number">
+                           <input type="hidden" id="verified_aadhar" value="{{ $disability3500Pensioner->verified_aadhar }}" class="form-control" name="verified_aadhar">
+                           <input type="hidden" id="verified_aadhar_remarks" value="{{ $disability3500Pensioner->verified_aadhar_remarks }}" class="form-control" name="verified_aadhar_remarks">
+                        </div>
+                        <div id="aadhaar_verify_result" class="mt-1"></div>
+                        <div id="aadhaar_no_error"></div>
+                        <div id="check_aadhaar_no"></div>
+                        @error('aadhaar_no')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                        @error('verified_aadhar')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                        @error('verified_aadhar_remarks')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>
+                  @else
+                  <div class="col-md-3">
+                     <div class="form-group" id="aadhaar_no_div">
+                        <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
+                        <div class="input-group">
+                           @php
+                           $aadhaar = trim(old('aadhaar_no', $disability3500Pensioner->aadhaar_no ?? ''));
+                           $isValidAadhaar = preg_match('/^\d{12}$/', $aadhaar);
+                           $aadhaarValue = $isValidAadhaar ? $aadhaar : '';
+                           @endphp
+                           <input type="text" id="aadhaar_no" name="aadhaar_no" value="{{ $aadhaarValue }}" class="form-control" placeholder="Aadhaar Number" >
+                           <span class="input-group-btn"><button class="btn btn-info text-white" type="button" id="btnVerifyAadhaar">Verify!</button></span>
+                           <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
+                           <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">                           
+                        </div>
+                        <div id="aadhaar_verify_result" class="mt-1"></div>
+                        <div id="aadhaar_no_error"></div>
+                        <div id="check_aadhaar_no"></div>
+                        @error('aadhaar_no')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                        @error('verified_aadhar')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                        @error('verified_aadhar_remarks')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>
+                  @endif
                   <div class="col-md-3">
                      <div class="form-group" id="nsap_sanction_order_no_div">
                         <label class="form-label">NSAP Sanction Order No<span class="itsrequired"> *</span></label>
@@ -247,7 +305,21 @@ EP Pension || Disability Beneficiary Data Update
                   <div class="col-md-3">
                      <div class="form-group" id="pension_month_div">
                         <label class="form-label">Pension Month(Effective From)<span class="itsrequired"> *</span></label>
-                        <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month')}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" >
+                        <input type="month" id="pension_month" name="pension_month" value="{{old('pension_month', $disability3500Pensioner->pension_month)}}" class="form-control" placeholder="Pension Month(Effective From)" onkeydown="return false" onpaste="return false" required="" >
+                        <div id="pension_month_error"></div>
+                        @error('pension_month')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <div class="form-group" id="pension_month_div">
+                        <label class="form-label">Current Address<span class="itsrequired"> *</span></label>
+                        @if($disability3500Pensioner->address_type == 1)
+                        <textarea class="form-control" readonly>Village: {{$disability3500Pensioner->village}}, GP: {{$disability3500Pensioner->gp_or_ward}}, Block: {{$disability3500Pensioner->block_or_ulb}}, Dist: {{$disability3500Pensioner->district}} </textarea>
+                        @elseif($disability3500Pensioner->address_type == 2)
+                        <textarea class="form-control" readonly>Ward: {{$disability3500Pensioner->gp_or_ward}}, ULB: {{$disability3500Pensioner->block_or_ulb}}, Dist: {{$disability3500Pensioner->district}} </textarea>
+                        @endif
                         <div id="pension_month_error"></div>
                         @error('pension_month')
                         <label class="error">{{ $message }}</label>
@@ -383,6 +455,126 @@ EP Pension || Disability Beneficiary Data Update
          }
       });
    });
+</script>
+<script>
+   $(document).ready(function () {
+
+    $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+     $('#verified_aadhar').val('');
+     $('#verified_aadhar_remarks').val('');
+     $('#aadhaar_verify_result').html('');
+
+     $('#btnVerifyAadhaar')
+     .prop('disabled', false)
+     .removeClass('btn-success')
+     .addClass('btn-info')
+     .text('Verify!');
+
+     $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+  });
+
+    $(document).on('click', '#btnVerifyAadhaar', function () {
+
+     let aadhaar = $('#aadhaar_no').val().trim();
+     let name    = $('#name_of_the_beneficiary').val().trim();
+
+     $('#aadhaar_verify_result').html('');
+     $('#verified_aadhar').val('');
+     $('#verified_aadhar_remarks').val('');
+
+     if (!/^\d{12}$/.test(aadhaar)) {
+      $('#aadhaar_verify_result').html(
+       '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
+       );
+      return;
+   }
+
+   if (name === '') {
+      $('#aadhaar_verify_result').html(
+       '<span class="text-danger">Enter beneficiary name first</span>'
+       );
+      return;
+   }
+
+   $('#btnVerifyAadhaar')
+   .prop('disabled', true)
+   .text('Verifying...');
+
+   $.ajax({
+      url: "{{ route('admin.oldage3500data.oldage_aadhar_verification_process') }}",
+      type: "POST",
+      dataType: "json",
+      data: {
+       _token: "{{ csrf_token() }}",
+       aadhaar_no: aadhaar,
+       name_of_the_beneficiary: name
+    },
+
+    success: function (res) {
+       let message = res.data ?? '';
+
+       $('#verified_aadhar_remarks').val(message);
+
+       if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+
+        $('#verified_aadhar').val(1);
+
+        $('#aadhaar_verify_result').html(
+         '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+         );
+
+        $('#btnVerifyAadhaar')
+        .prop('disabled', true)
+        .removeClass('btn-info')
+        .addClass('btn-success')
+        .text('Verified');
+
+        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
+
+     } else {
+        $('#verified_aadhar').val(0);
+
+        $('#aadhaar_verify_result').html(
+         '<span class="badge bg-danger">' + message + '</span>'
+         );
+
+        $('#btnVerifyAadhaar')
+        .prop('disabled', false)
+        .removeClass('btn-success')
+        .addClass('btn-info')
+        .text('Verify!');
+
+        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+     }
+  },
+
+  error: function (xhr) {
+    let msg = 'Verification failed';
+    if (xhr.responseJSON) {
+     msg = xhr.responseJSON.exception ??
+     xhr.responseJSON.response ??
+     msg;
+  }
+
+  $('#verified_aadhar').val(0);
+  $('#verified_aadhar_remarks').val(msg);
+
+  $('#aadhaar_verify_result').html(
+     '<span class="badge bg-danger">' + msg + '</span>'
+     );
+
+  $('#btnVerifyAadhaar')
+  .prop('disabled', false)
+  .removeClass('btn-success')
+  .addClass('btn-info')
+  .text('Verify!');
+
+  $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+}
+});
+
+});
+ });
 </script>
 <script type="text/javascript">
    $(document).ready(function () {
@@ -829,7 +1021,7 @@ EP Pension || Disability Beneficiary Data Update
    console.log("DOM is fully loaded");
 });
 </script>
-<script>
+<!-- <script>
    document.addEventListener("DOMContentLoaded", function () {
       const pension_monthInput = document.getElementById("pension_month");
       const today = new Date();
@@ -839,22 +1031,19 @@ EP Pension || Disability Beneficiary Data Update
 
       const formattedCurrentMonth = `${currentYear}-${currentMonth.toString().padStart(2, '0')}`;
 
-   /*Calculate previous month*/
       const prevYear = currentMonth === 1 ? currentYear - 1 : currentYear;
       const prevMonth = currentMonth === 1 ? 12 : currentMonth - 1;
       const formattedPrevMonth = `${prevYear}-${prevMonth.toString().padStart(2, '0')}`;
 
-   /*Calculate next month*/
       const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear;
       const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1;
       const formattedNextMonth = `${nextYear}-${nextMonth.toString().padStart(2, '0')}`;
 
-   /*Set min, max, and default value*/
       pension_monthInput.setAttribute("min", formattedPrevMonth);
       pension_monthInput.setAttribute("max", formattedNextMonth);
       pension_monthInput.value = formattedCurrentMonth;
    });
-</script>
+</script> -->
 <script>
    $(document).ready(function() {
       $('#date_of_birth').change(function(){
