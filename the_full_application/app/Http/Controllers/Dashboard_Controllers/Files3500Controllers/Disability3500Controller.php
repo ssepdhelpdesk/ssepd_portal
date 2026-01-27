@@ -142,7 +142,7 @@ if ($isActiveAndNotDiscontinued) {
 
     if ((int)$row->verified_aadhar === 0) {
         $buttons .= '
-            <a class="dropdown-item text-warning" href="javascript:void(0)">
+            <a class="dropdown-item text-warning" href="'.$editUrl.'">
                 Aadhaar Verification Required
             </a>';
     }
