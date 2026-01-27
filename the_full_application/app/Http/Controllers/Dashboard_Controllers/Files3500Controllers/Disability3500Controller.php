@@ -133,39 +133,39 @@ class Disability3500Controller extends Controller
                 }*/
 
                 $isActiveAndNotDiscontinued =
-    is_null($row->discontinued_date) &&
-    is_null($row->discontinued_system_gen_date) &&
-    is_null($row->discontinued_system_gen_time) &&
-    $row->status === 'Active';
+                is_null($row->discontinued_date) &&
+                is_null($row->discontinued_system_gen_date) &&
+                is_null($row->discontinued_system_gen_time) &&
+                $row->status === 'Active';
 
-if ($isActiveAndNotDiscontinued) {
+                if ($isActiveAndNotDiscontinued) {
+                    if ((int)$row->verified_aadhar === 0) {
+                        $editUrl = route('admin.oldage3500data.edit', $row->id);
+                        $buttons .= '
+                        <a class="dropdown-item text-warning" href="'.$editUrl.'">
+                        Aadhaar Verification Required
+                        </a>';
+                    }
 
-    if ((int)$row->verified_aadhar === 0) {
-        $buttons .= '
-            <a class="dropdown-item text-warning" href="'.$editUrl.'">
-                Aadhaar Verification Required
-            </a>';
-    }
+                    if ((int)$row->verified_aadhar === 1) {
 
-    if ((int)$row->verified_aadhar === 1) {
+                        if (auth()->user()->can('pension-3500-edit')) {
+                            $buttons .= '
+                            <a class="dropdown-item" href="javascript:void(0)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#actionModal"
+                            data-id="'.$row->id.'">
+                            Discontinue
+                            </a>';
+                        }
 
-        if (auth()->user()->can('pension-3500-edit')) {
-            $buttons .= '
-                <a class="dropdown-item" href="javascript:void(0)"
-                   data-bs-toggle="modal"
-                   data-bs-target="#actionModal"
-                   data-id="'.$row->id.'">
-                   Discontinue
-                </a>';
-        }
-
-        $editUrl = route('admin.disability3500data.edit', $row->id);
-        $buttons .= '
-            <a href="'.$editUrl.'" class="dropdown-item">
-                Migration / Update Address
-            </a>';
-    }
-}
+                        $editUrl = route('admin.disability3500data.edit', $row->id);
+                        $buttons .= '
+                        <a href="'.$editUrl.'" class="dropdown-item">
+                        Migration / Update Address
+                        </a>';
+                    }
+                }
 
 
                 $buttons .= '</div></div>';
