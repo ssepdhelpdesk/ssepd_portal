@@ -122,6 +122,8 @@ EP Pension || Index - OldAge
         $('#oldAgeTable').DataTable({
             processing: true,
             serverSide: true,
+            responsive: true,
+            scrollX: true,
             ajax: "{{ route('admin.oldage3500data.index') }}",
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
