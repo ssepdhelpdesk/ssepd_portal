@@ -113,7 +113,7 @@ class Disability3500Controller extends Controller
                 </button>
                 <div class="dropdown-menu animated flipInX">';
 
-                if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active')) 
+                /*if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active') && ($row->verified_aadhar == '1')) 
                 {
                     $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
                     data-bs-toggle="modal" 
@@ -121,10 +121,52 @@ class Disability3500Controller extends Controller
                     data-id="'.$row->id.'"> Discontinue </a>';
                 }
 
-                if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active')) {
+                if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active') && ($row->verified_aadhar == '0')) 
+                {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
+                    $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Please Verify Aadhaar to Proceed</a> ';                
+                }
+
+                if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active') && ($row->verified_aadhar == '1')) {
                     $editUrl = route('admin.disability3500data.edit', $row->id);
                     $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
-                }
+                }*/
+
+                $isActiveAndNotDiscontinued =
+    is_null($row->discontinued_date) &&
+    is_null($row->discontinued_system_gen_date) &&
+    is_null($row->discontinued_system_gen_time) &&
+    $row->status === 'Active';
+
+if ($isActiveAndNotDiscontinued) {
+
+    if ((int)$row->verified_aadhar === 0) {
+        $buttons .= '
+            <a class="dropdown-item text-warning" href="javascript:void(0)">
+                Aadhaar Verification Required
+            </a>';
+    }
+
+    if ((int)$row->verified_aadhar === 1) {
+
+        if (auth()->user()->can('pension-3500-edit')) {
+            $buttons .= '
+                <a class="dropdown-item" href="javascript:void(0)"
+                   data-bs-toggle="modal"
+                   data-bs-target="#actionModal"
+                   data-id="'.$row->id.'">
+                   Discontinue
+                </a>';
+        }
+
+        $editUrl = route('admin.disability3500data.edit', $row->id);
+        $buttons .= '
+            <a href="'.$editUrl.'" class="dropdown-item">
+                Migration / Update Address
+            </a>';
+    }
+}
+
 
                 $buttons .= '</div></div>';
 
