@@ -140,7 +140,7 @@ class Disability3500Controller extends Controller
 
                 if ($isActiveAndNotDiscontinued) {
                     if ((int)$row->verified_aadhar === 0) {
-                        $editUrl = route('admin.oldage3500data.edit', $row->id);
+                        $editUrl = route('admin.disability3500data.edit', $row->id);
                         $buttons .= '
                         <a class="dropdown-item text-warning" href="'.$editUrl.'">
                         Aadhaar Verification Required
