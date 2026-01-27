@@ -114,14 +114,14 @@ public function index(Request $request)
             </button>
             <div class="dropdown-menu animated flipInX">';
 
-            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active')) 
             {
                 $buttons .= '<a class="dropdown-item" href="javascript:void(0)" 
                 data-bs-toggle="modal" 
                 data-bs-target="#actionModal" 
                 data-id="'.$row->id.'"> Discontinue </a>';
             }
-            if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && is_null($row->discontinued_reason) && is_null($row->discontinued_by) && ($row->status == 'Active')) 
+            if (is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active')) 
             {
                 $editUrl = route('admin.oldage3500data.edit', $row->id);
                 $buttons .= '<a href="'.$editUrl.'"  class="dropdown-item">Migration/Update Address</a> ';                
