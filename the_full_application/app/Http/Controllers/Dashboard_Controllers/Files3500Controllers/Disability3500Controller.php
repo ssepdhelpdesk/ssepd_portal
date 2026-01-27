@@ -684,6 +684,8 @@ class Disability3500Controller extends Controller
             $disability_pensioner->aadhaar_no = $validatedData['aadhaar_no'];
             $disability_pensioner->verified_aadhar = $validatedData['verified_aadhar'];
             $disability_pensioner->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'];
+            $disability_pensioner->aadhar_verification_started_at = now()->setTimezone('Asia/Kolkata')->toDateTimeString();
+            $disability_pensioner->aadhar_verification_completed_at = now()->setTimezone('Asia/Kolkata')->toDateTimeString();
             $disability_pensioner->nsap_sanction_order_no = $validatedData['nsap_sanction_order_no'];
             $disability_pensioner->sub_collector_sanction_order_no = $validatedData['sub_collector_sanction_order_no'];
             $disability_pensioner->pension_month = $validatedData['pension_month'];

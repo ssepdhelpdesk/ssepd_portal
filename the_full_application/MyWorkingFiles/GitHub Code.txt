@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "EP Penwsion Report Drildown"
+git commit -m "EP Aadhaar Verification Scheduler"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git

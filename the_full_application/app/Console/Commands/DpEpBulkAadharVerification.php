@@ -72,8 +72,10 @@ class DpEpBulkAadharVerification extends Command
             }
 
             $pensioner->update([
+                'aadhar_verification_started_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 'verified_aadhar'         => $verified,
                 'verified_aadhar_remarks' => $remarks,
+                'aadhar_verification_completed_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
             ]);
 
             $processed++;
