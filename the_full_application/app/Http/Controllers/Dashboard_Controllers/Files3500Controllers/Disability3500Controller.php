@@ -108,10 +108,10 @@ class Disability3500Controller extends Controller
             })
             ->addColumn('action', function ($row) {
                 $buttons = '<div class="btn-group">
-                <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-success dropdown-toggle text-white btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Action
                 </button>
-                <div class="dropdown-menu animated flipInX">';
+                <div class="dropdown-menu animated slideInUp">';
 
                 /*if (auth()->user()->can('pension-3500-edit') && is_null($row->discontinued_date) && is_null($row->discontinued_system_gen_date) && is_null($row->discontinued_system_gen_time) && ($row->status == 'Active') && ($row->verified_aadhar == '1')) 
                 {
@@ -142,8 +142,8 @@ class Disability3500Controller extends Controller
                     if ((int)$row->verified_aadhar === 0) {
                         $editUrl = route('admin.disability3500data.edit', $row->id);
                         $buttons .= '
-                        <a class="dropdown-item text-warning" href="'.$editUrl.'">
-                        Aadhaar Verification Required
+                        <a class="dropdown-item text-danger" href="'.$editUrl.'">
+                        Verify Aadhaar to Proceed
                         </a>';
                     }
 
