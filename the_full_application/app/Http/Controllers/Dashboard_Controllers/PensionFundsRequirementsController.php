@@ -583,7 +583,7 @@ class PensionFundsRequirementsController extends Controller
         $userRole = $user->role_id;
 
         $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])
-        ->whereBetween('created_date', [$startDate, $endDate]);
+        ->where('status', 1)->whereBetween('created_date', [$startDate, $endDate]);
 
         $allBlocks = collect();
         $allMunicipalities = collect();
