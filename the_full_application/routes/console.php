@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Schedule::command('oldage:aadhar-verify 200')
+/*Schedule::command('oldage:aadhar-verify 200')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->runInBackground()
@@ -18,4 +18,4 @@ Schedule::command('disability:aadhar-verify 100')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->runInBackground()
-    ->onOneServer();
+    ->onOneServer();*/
