@@ -1711,7 +1711,7 @@ class Disability3500Controller extends Controller
 
     public function disability_ineligible_to_eligible_reinstead_process(Request $request)
     {
-        $user = auth()->user();
+        return $user = auth()->user();
 
         $request->validate([
             'ids' => 'required|array',
