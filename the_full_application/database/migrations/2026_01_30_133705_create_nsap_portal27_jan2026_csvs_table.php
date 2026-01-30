@@ -44,7 +44,6 @@ return new class extends Migration
 
             $table->string('father_husband_name')->nullable();
             $table->string('caste')->nullable();
-
             $table->string('bpl_id')->nullable();
             $table->string('bpl_member_id')->nullable();
 
