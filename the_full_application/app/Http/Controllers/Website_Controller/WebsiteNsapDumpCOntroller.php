@@ -16,7 +16,11 @@ class WebsiteNsapDumpCOntroller extends Controller
      */
     public function index()
     {
-        $nsapDump = NsapPortal27Jan2026Csv::all()->random(20);
+        $maxId = NsapPortal27Jan2026Csv::max('id');
+
+        $nsapDump = NsapPortal27Jan2026Csv::where('id', '>=', rand(1, $maxId))
+        ->limit(100)
+        ->get();
         return view('website.index', compact('nsapDump'));
     }
 
