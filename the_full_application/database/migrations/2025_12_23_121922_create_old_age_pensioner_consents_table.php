@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('old_age_pensioner_consents', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique()->index();
             $table->string('scheme_name')->index();
             $table->string('updated_scheme_name')->index();
             $table->string('name_of_the_beneficiary')->index();
@@ -47,6 +48,9 @@ return new class extends Migration
             $table->string('postal_address_pin', 6)->nullable()->index();
             $table->string('is_active')->default('active')->index();
             $table->bigInteger('aadhaar_no')->nullable()->unique();
+            $table->bigInteger('aadhaar_no_by_user')->nullable()->unique();
+            $table->string('aadhaar_hash', 64)->nullable()->unique()->index();
+            $table->text('aadhaar_encrypted')->nullable();
             $table->string('nsap_sanction_order_no')->nullable()->index();
             $table->string('sub_collector_sanction_order_no')->nullable();
             $table->string('pension_month')->nullable()->index();

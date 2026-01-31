@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('nsap_portal27_jan2026_csvs', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique()->index();
             $table->string('state')->nullable();
             $table->bigInteger('state_id')->nullable()->index();
             $table->string('district')->nullable();
@@ -62,6 +63,9 @@ return new class extends Migration
             $table->string('beneficiary_no')->nullable();
             $table->string('aadhar_verified')->nullable();
             $table->string('aadhar_no')->nullable();
+            $table->bigInteger('aadhaar_no_by_user')->nullable()->unique();
+            $table->string('aadhaar_hash', 64)->nullable()->unique()->index();
+            $table->text('aadhaar_encrypted')->nullable();
 
             $table->string('is_active')->default('active')->index();
             $table->integer('db_status')->default(1)->index();
