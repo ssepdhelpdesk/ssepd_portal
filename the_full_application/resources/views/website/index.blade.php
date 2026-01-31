@@ -157,23 +157,91 @@ SSEPD WEBSITE
 						<table class="table">
 							<thead class="thead-light">
 								<tr>
-									<th>Ticket ID</th>
-									<th>Date</th>
-									<th>Subject</th>
-									<th>Priority</th>
-									<th>Category</th>
+									<th>Sl.No</th>
+									<th>Beneficiary Name</th>
+									<th>Care Of</th>
+									<th>Scheme</th>
+									<th>Sanction From</th>
+									<th>Sanction Order No</th>
+									<th>Disbursed Mode</th>
+									<th>Disbursed Upto</th>
+									<th>District</th>
+									<th>Address Type</th>
+									<th>Block/ULB Name</th>
+									<th>GP/Ward Name</th>
 									<th>Status</th>
 									<th></th>
 								</tr>
 							</thead>
 							<tbody>
+								@foreach ($nsapDump as $index => $row)
 								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#ticket_details">#TIC010</a></td>
-									<td>22 Aug 2025</td>
-									<td>Issue with Course Notification Emails</td>
-									<td><span class="badge badge-sm bg-soft-danger d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>High</span></td>
-									<td>Mailing Issues</td>
-									<td><span class="badge badge-sm bg-purple d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Opened</span></td>
+									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#ticket_details">{{ $index + 1 }}</a></td>
+									<td>{{ $row->applicant_name ?? '-' }}</td>
+									<td>{{ $row->father_husband_name ?? '-' }}</td>
+									<td>{{ $row->scheme ?? '-' }}</td>
+									<td>
+										<td>
+											@php
+											$value = $row->sanction_date;
+											if (is_numeric($value)) {
+												echo \Carbon\Carbon::create(1899, 12, 30)
+												->addDays((int)$value)
+												->diffForHumans();
+											} elseif (!empty($value)) {
+												echo \Carbon\Carbon::parse($value)->diffForHumans();
+											} else {
+												echo '-';
+											}
+											@endphp
+										</td>
+									</td>
+									<td>{{ $row->sanction_order_no ?? '-' }}</td>
+									<td>{{ $row->disbursement_mode ?? '-' }}</td>
+									<td>
+										@php
+										$value = $row->disbursement_upto;
+										if (is_numeric($value)) {
+											$date = \Carbon\Carbon::create(1899, 12, 30)->addDays((int)$value);
+											echo $date->format('d M Y');
+										} elseif (!empty($value)) {
+											echo \Carbon\Carbon::parse($value)->format('d M Y');
+										} else {
+											echo '-';
+										}
+										@endphp
+									</td>
+									<td>{{ $row->district ?? '-' }}</td>
+									<td>
+										@if ($row->area === 'R')
+										<span class="badge badge-sm bg-success">
+											Rural
+										</span>
+										@elseif ($row->area === 'U')
+										<span class="badge badge-sm bg-success">
+											Urban
+										</span>
+										@else
+										<span class="badge badge-sm bg-danger">
+											-
+										</span>
+										@endif
+									</td>
+									<td><span class="badge badge-sm bg-soft-danger d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>{{ $row->sub_district_municipality ?? '-' }}</span></td>
+									<td>{{ $row->gram_panchayat_ward ?? '-' }}</td>
+									<td>
+										<span class="badge badge-sm bg-purple d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>
+											@if ($row->status === 'Active')
+											<span class="badge badge-sm bg-success">
+												Active
+											</span>
+											@else
+											<span class="badge badge-sm bg-danger">
+												Inactive
+											</span>
+											@endif
+										</span>
+									</td>
 									<td>
 										<div class="d-flex align-items-center">
 											<a href="#" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#ticket_details"><i class="isax isax-eye"></i></a>
@@ -181,22 +249,8 @@ SSEPD WEBSITE
 											<a href="#" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
 										</div>
 									</td>
-								</tr>								
-								<tr>
-									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#ticket_details">#TIC001</a></td>
-									<td>15 May 2025</td>
-									<td>Account Recovery Assistance Need</td>
-									<td><span class="badge badge-sm bg-soft-danger d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>High</span></td>
-									<td>Recovery Issues</td>
-									<td><span class="badge badge-sm bg-success d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>Closed</span></td>
-									<td>
-										<div class="d-flex align-items-center">
-											<a href="#" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#ticket_details"><i class="isax isax-eye"></i></a>
-											<a href="#" class="d-inline-flex fs-14 me-2 action-icon" data-bs-toggle="modal" data-bs-target="#edit_ticket"><i class="isax isax-edit-2"></i></a>
-											<a href="#" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
-										</div>
-									</td>
-								</tr>
+								</tr>							
+								@endforeach
 							</tbody>
 						</table>
 					</div>

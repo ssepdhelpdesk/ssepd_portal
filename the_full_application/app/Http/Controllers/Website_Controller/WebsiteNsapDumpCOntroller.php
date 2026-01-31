@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Website_Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\{
+    NsapPortal27Jan2026Csv
+};
+
 class WebsiteNsapDumpCOntroller extends Controller
 {
     /**
@@ -12,7 +16,8 @@ class WebsiteNsapDumpCOntroller extends Controller
      */
     public function index()
     {
-        return view('website.index');
+        $nsapDump = NsapPortal27Jan2026Csv::all()->random(20);
+        return view('website.index', compact('nsapDump'));
     }
 
     /**
