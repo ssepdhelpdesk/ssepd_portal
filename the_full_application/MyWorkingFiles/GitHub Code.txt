@@ -9,6 +9,21 @@ git clone https://admin_ssepd@bitbucket.org/admin_ssepd/siepv3.git
 
 git pull origin main
 
+/////////////////////////////////////////////////////
+
+ALTER TABLE nsap_portal27_jan2026_csvs DROP COLUMN uuid;
+ALTER TABLE nsap_portal27_jan2026_csvs ADD COLUMN uuid CHAR(36) NULL AFTER id;
+CREATE UNIQUE INDEX uq_nsap_portal27_jan2026_csvs_uuid ON nsap_portal27_jan2026_csvs (uuid);
+ALTER TABLE nsap_portal27_jan2026_csvs ADD COLUMN aadhaar_no_by_user BIGINT NULL AFTER aadhar_no;
+CREATE UNIQUE INDEX uq_nsap_portal27_jan2026_csvs_aadhaar_no_by_user ON nsap_portal27_jan2026_csvs (aadhaar_no_by_user);
+ALTER TABLE nsap_portal27_jan2026_csvs ADD COLUMN aadhaar_hash CHAR(64) NULL AFTER aadhaar_no_by_user;
+CREATE UNIQUE INDEX uq_nsap_portal27_jan2026_csvs_aadhaar_hash ON nsap_portal27_jan2026_csvs (aadhaar_hash);
+ALTER TABLE nsap_portal27_jan2026_csvs ADD COLUMN aadhaar_encrypted TEXT NULL AFTER aadhaar_hash;
+ALTER TABLE nsap_portal27_jan2026_csvs MODIFY uuid CHAR(36) NOT NULL;
+
+UPDATE nsap_portal27_jan2026_csvs SET uuid = UUID() WHERE uuid IS NULL;
+ALTER TABLE nsap_portal27_jan2026_csvs MODIFY uuid CHAR(36) NOT NULL;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.

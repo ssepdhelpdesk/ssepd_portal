@@ -39,6 +39,9 @@ use App\Http\Controllers\Api\{
     EpPensionersController
 };
 
+use App\Http\Controllers\Website_Controller\{
+    WebsiteFrontController
+};
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -96,6 +99,12 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('list', 'list')->name('list');
     });
 
+});
+
+Route::prefix('website')->name('website.')->group(function () {
+    Route::prefix('home')->name('home.')->controller(WebsiteFrontController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+    });
 });
 
 Auth::routes(['verify' => true]);
