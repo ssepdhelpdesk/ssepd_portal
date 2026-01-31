@@ -40,7 +40,8 @@ use App\Http\Controllers\Api\{
 };
 
 use App\Http\Controllers\Website_Controller\{
-    WebsiteFrontController
+    WebsiteFrontController,
+    WebsiteNsapDumpCOntroller
 };
 
 Route::get('/', function () {
@@ -103,6 +104,9 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
 
 Route::prefix('website')->name('website.')->group(function () {
     Route::prefix('home')->name('home.')->controller(WebsiteFrontController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+    });
+    Route::prefix('pensioners')->name('pensioners.')->controller(WebsiteNsapDumpCOntroller::class)->group(function () {
         Route::get('index', 'index')->name('index');
     });
 });
