@@ -13,7 +13,7 @@ SSEPD WEBSITE
 <link rel="stylesheet" href="{{ asset('website_assets/assets/plugins/daterangepicker/daterangepicker.css') }}">
 
 <!-- Select2 CSS -->
-<link href="{{ asset('dashboard_assets/assets/node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
+
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
@@ -185,52 +185,51 @@ SSEPD WEBSITE
                             </div>
                         </div>
                     </div> 
-                    <div class="row align-items-center mb-2">
-<!-- The Button Group -->
-<div class="col-md-4">
-    <div class="input-icon mb-3">
-        <span class="input-icon-addon">
-            <i class="isax isax-search-normal-14"></i>
-        </span>
-        <input type="email" class="form-control form-control-md" placeholder="Search">
-    </div>
-</div>
-</div>
-<div class="table-responsive custom-table">
-    <table class="table w-100" id="ticketTable">
-        <thead class="thead-light">
-            <tr>
-                <th>Sl.No</th>
-                <th>Beneficiary Name</th>
-                <th>Care Of</th>
-                <th>Scheme</th>
-                <th>Sanction From</th>
-                <th>Sanction Order No</th>
-                <th>Disbursed Mode</th>
-                <th>Disbursed Upto</th>
-                <th>District</th>
-                <th>Address Type</th>
-                <th>Block / ULB Name</th>
-                <th>GP / Ward Name</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-    </table>
+                    <div class="row align-items-center mb-2" id="searchContainer" style="display: none;">
+                        <div class="col-md-12">
+                            <div class="input-icon mb-3">
+                                <span class="input-icon-addon">
+                                    <i class="isax isax-search-normal-14"></i>
+                                </span>
+                                <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive custom-table">
+                        <table class="table w-100" id="ticketTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Sl.No</th>
+                                    <th>Beneficiary Name</th>
+                                    <th>Care Of</th>
+                                    <th>Scheme</th>
+                                    <th>Sanction From</th>
+                                    <th>Sanction Order No</th>
+                                    <th>Disbursed Mode</th>
+                                    <th>Disbursed Upto</th>
+                                    <th>District</th>
+                                    <th>Address Type</th>
+                                    <th>Block / ULB Name</th>
+                                    <th>GP / Ward Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                        </table>
 
-</div>
-<div class="row align-items-center mt-4">
-    <div class="col-md-2">
-        <p class="pagination-text" id="pageInfo"></p>
+                    </div>
+                    <div class="row align-items-center mt-4">
+                        <div class="col-md-2">
+                            <p class="pagination-text" id="pageInfo"></p>
+                        </div>
+                        <div class="col-md-10">
+                            <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+                            id="customPagination"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-10">
-        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
-        id="customPagination"></ul>
-    </div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 @endsection 
 @section('script')
@@ -378,7 +377,7 @@ SSEPD WEBSITE
         scrollX: true,
         scrollCollapse: true,
         paging: true,
-        dom: 'lfrt',
+        dom: 'lrt',
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
 
         ajax: {
@@ -417,6 +416,10 @@ SSEPD WEBSITE
         }
     });
 
+    $('#customSearch').on('keyup', function() {
+        ticketTable.search(this.value).draw();
+    });
+
 /* ================= APPLY FILTER ================= */
 
     $('#applyFilter').on('click', function() {
@@ -424,6 +427,8 @@ SSEPD WEBSITE
             alert('Please select District, Address Type, Block/ULB & GP/Ward');
             return;
         }
+        $('#searchContainer').fadeIn();
+
         ticketTable.ajax.reload();
     });
 
@@ -441,8 +446,8 @@ SSEPD WEBSITE
 
         $('#pageInfo').text(`Page ${info.page + 1} of ${info.pages}`);
 
-        const maxPagesToShow = 10;
-        let start = Math.max(0, info.page - 5);
+        const maxPagesToShow = 7;
+        let start = Math.max(0, info.page - 3);
         let end = Math.min(info.pages, start + maxPagesToShow);
 
         pagination.append(`

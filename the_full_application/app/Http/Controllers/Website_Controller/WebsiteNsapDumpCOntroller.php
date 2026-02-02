@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website_Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 use App\Models\{
     NsapPortal27Jan2026Csv
@@ -65,7 +66,31 @@ public function datatable(Request $request)
 
     return DataTables::of($query)
     ->addIndexColumn()
-    ->editColumn('area', fn ($r) => $r->area === 'R' ? 'Rural' : 'Urban')
+    ->editColumn('area', function($r) {
+        $value = trim(strtoupper($r->area));
+        return $value === 'R' ? 'Rural' : 'Urban';
+    })
+    ->editColumn('sanction_date', function ($row) {
+        $value = $row->sanction_date;
+        if (is_numeric($value)) {
+            return Carbon::create(1899, 12, 30)->addDays((int)$value)->diffForHumans();
+        } elseif (!empty($value)) {
+            return Carbon::parse($value)->diffForHumans();
+        } else {
+            return '-';
+        }
+    })
+    ->editColumn('disbursement_upto', function ($row) {
+        $value = $row->disbursement_upto;
+        if (is_numeric($value)) {
+            $date = Carbon::create(1899, 12, 30)->addDays((int)$value);
+            return $date->format('d M Y');
+        } elseif (!empty($value)) {
+            return Carbon::parse($value)->format('d M Y');
+        } else {
+            return '-';
+        }
+    })
     ->make(true);
 }
 
