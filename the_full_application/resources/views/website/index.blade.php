@@ -37,6 +37,30 @@ SSEPD WEBSITE
     #customPagination li {
         flex: 0 0 auto;
     }
+    .dataTables_length select {
+    appearance: none;       /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 30px 6px 10px; /* space for arrow */
+    background-color: #fff;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='12' viewBox='0 0 24 24' width='12' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    font-size: 14px;
+    cursor: pointer;
+}
+.dataTables_length label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dataTables_length {
+    display: none !important;
+}
 </style>
 @endsection 
 @section('content')
@@ -195,6 +219,17 @@ SSEPD WEBSITE
                             </div>
                         </div>
                     </div>
+                    <div class="dropdown d-inline-block">
+    <a href="javascript:void(0);" class="dropdown-toggle btn rounded border text-gray-6" data-bs-toggle="dropdown">
+        Show 10
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" data-length="10">10</a></li>
+        <li><a class="dropdown-item" data-length="25">25</a></li>
+        <li><a class="dropdown-item" data-length="50">50</a></li>
+        <li><a class="dropdown-item" data-length="100">100</a></li>
+    </ul>
+</div>
                     <div class="table-responsive custom-table">
                         <table class="table w-100" id="ticketTable">
                             <thead class="thead-light">
@@ -482,6 +517,12 @@ SSEPD WEBSITE
             ticketTable.page(page).draw('page');
         }
     });
+
+    $('.dropdown-menu a').on('click', function() {
+    const length = $(this).data('length');
+    ticketTable.page.len(length).draw();
+    $(this).closest('.dropdown').find('.dropdown-toggle').text('Show ' + length);
+});
 
 </script>
 @endsection
