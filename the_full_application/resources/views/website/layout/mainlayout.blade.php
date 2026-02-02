@@ -53,7 +53,8 @@
 
 		<!-- Main CSS -->
 		<link rel="stylesheet" href="{{ asset('website_assets/assets/css/style.css') }}">
-	
+
+		@yield('style')	
 	</head>
 	<body class="home-five">
 
@@ -112,6 +113,7 @@
 		
 		<!-- Custom JS -->
 		<script src="{{ asset('website_assets/assets/js/script.js') }}"></script>
-		
+
+		@yield('script')		
 	</body>
 </html>

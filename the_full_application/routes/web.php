@@ -108,6 +108,10 @@ Route::prefix('website')->name('website.')->group(function () {
     });
     Route::prefix('pensioners')->name('pensioners.')->controller(WebsiteNsapDumpCOntroller::class)->group(function () {
         Route::get('index', 'index')->name('index');
+        Route::get('blocks-by-district-area', 'getBlocksByDistrictArea')->name('blocks.by.district.area');
+        Route::get('gps-by-district-area-block', 'getGpsByDistrictAreaBlock')->name('gps.by.district.area.block');
+
+        Route::get('filter', 'filter')->name('filter');
     });
 });
 

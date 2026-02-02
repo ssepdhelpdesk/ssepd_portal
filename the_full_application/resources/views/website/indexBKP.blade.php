@@ -113,8 +113,7 @@ SSEPD WEBSITE
 								</div>
 							</div>
 						</div>
-						
-						<a href="javascript:void(0)" id="applyFilter" class="btn btn-secondary rounded-pill"> <i class="isax isax-add-circle me-2 fs-10"></i> Add Ticket </a>
+						<a href="#" class="btn btn-secondary rounded-pill" data-bs-toggle="modal" data-bs-target="#add_ticket"><i class="isax isax-add-circle me-2 fs-10"></i>Add Ticket</a>
 					</div> 
 					<div class="row">
 						<div class="col-md-6 col-xl-4">
@@ -192,8 +191,82 @@ SSEPD WEBSITE
 									<th></th>
 								</tr>
 							</thead>
-							<tbody id="ticketTableBody">
-								@include('website.nsap_rows', ['nsapDump' => $nsapDump])
+							<tbody>
+								@foreach ($nsapDump as $index => $row)
+								<tr>
+									<td><a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#ticket_details">{{ $index + 1 }}</a></td>
+									<td>{{ $row->applicant_name ?? '-' }}</td>
+									<td>{{ $row->father_husband_name ?? '-' }}</td>
+									<td>{{ $row->scheme ?? '-' }}</td>
+									<td>
+										@php
+										$value = $row->sanction_date;
+										if (is_numeric($value)) {
+											echo \Carbon\Carbon::create(1899, 12, 30)
+											->addDays((int)$value)
+											->diffForHumans();
+										} elseif (!empty($value)) {
+											echo \Carbon\Carbon::parse($value)->diffForHumans();
+										} else {
+											echo '-';
+										}
+										@endphp
+									</td>
+									<td>{{ $row->sanction_order_no ?? '-' }}</td>
+									<td>{{ $row->disbursement_mode ?? '-' }}</td>
+									<td>
+										@php
+										$value = $row->disbursement_upto;
+										if (is_numeric($value)) {
+											$date = \Carbon\Carbon::create(1899, 12, 30)->addDays((int)$value);
+											echo $date->format('d M Y');
+										} elseif (!empty($value)) {
+											echo \Carbon\Carbon::parse($value)->format('d M Y');
+										} else {
+											echo '-';
+										}
+										@endphp
+									</td>
+									<td>{{ $row->district ?? '-' }}</td>
+									<td>
+										@if ($row->area === 'R')
+										<span class="badge badge-sm bg-success">
+											Rural
+										</span>
+										@elseif ($row->area === 'U')
+										<span class="badge badge-sm bg-success">
+											Urban
+										</span>
+										@else
+										<span class="badge badge-sm bg-danger">
+											-
+										</span>
+										@endif
+									</td>
+									<td><span class="badge badge-sm bg-soft-danger d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>{{ $row->sub_district_municipality ?? '-' }}</span></td>
+									<td>{{ $row->gram_panchayat_ward ?? '-' }}</td>
+									<td>
+										<span class="badge badge-sm bg-purple d-inline-flex align-items-center"><i class="fa-solid fa-circle fs-5 me-1"></i>
+											@if ($row->status === 'Active')
+											<span class="badge badge-sm bg-success">
+												Active
+											</span>
+											@else
+											<span class="badge badge-sm bg-danger">
+												Inactive
+											</span>
+											@endif
+										</span>
+									</td>
+									<td>
+										<div class="d-flex align-items-center">
+											<a href="#" class="d-inline-flex fs-14 me-1 action-icon" data-bs-toggle="modal" data-bs-target="#ticket_details"><i class="isax isax-eye"></i></a>
+											<a href="#" class="d-inline-flex fs-14 me-2 action-icon" data-bs-toggle="modal" data-bs-target="#edit_ticket"><i class="isax isax-edit-2"></i></a>
+											<a href="#" class="d-inline-flex fs-14 action-icon" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash"></i></a>
+										</div>
+									</td>
+								</tr>
+								@endforeach
 							</tbody>
 						</table>
 					</div>
@@ -373,28 +446,5 @@ SSEPD WEBSITE
 			});
 		});
 	}
-</script>
-<script>
-document.getElementById('applyFilter').addEventListener('click', function () {
-
-    if (!selectedDistrict || !selectedArea) {
-        alert('Please select District and Address Type');
-        return;
-    }
-
-    const params = new URLSearchParams({
-        district: selectedDistrict,
-        area: selectedArea,
-        block: selectedBlock ?? '',
-        gp: selectedGp ?? ''
-    });
-
-    fetch(`{{ route('website.pensioners.filter') }}?${params}`)
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('ticketTableBody').innerHTML = html;
-        })
-        .catch(() => alert('Failed to load data'));
-});
 </script>
 @endsection

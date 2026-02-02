@@ -16,59 +16,79 @@ class WebsiteNsapDumpCOntroller extends Controller
      */
     public function index()
     {
-        $maxId = NsapPortal27Jan2026Csv::max('id');
+       $maxId = NsapPortal27Jan2026Csv::max('id');
 
-        $nsapDump = NsapPortal27Jan2026Csv::where('id', '>=', rand(1, $maxId))
-        ->limit(100)
-        ->get();
-        return view('website.index', compact('nsapDump'));
+       $nsapDump = NsapPortal27Jan2026Csv::where('id', '>=', rand(1, $maxId))->limit(100)->get();
+
+       $district = NsapPortal27Jan2026Csv::query()->select('district')->distinct()->orderBy('district')->get();
+
+       $area = NsapPortal27Jan2026Csv::query()->selectRaw('UPPER(TRIM(area)) as area')->whereNotNull('area')->distinct()->orderBy('area')->get();
+
+       return view('website.index', compact('nsapDump', 'district', 'area'));
+   }
+
+   public function getBlocksByDistrictArea(Request $request)
+   {
+    $request->validate([
+        'district' => 'required|string',
+        'area'     => 'required|string|in:R,U',
+    ]);
+
+    $blocks = NsapPortal27Jan2026Csv::query()
+    ->where('district', $request->district)
+    ->where('area', $request->area)
+    ->whereNotNull('sub_district_municipality')
+    ->select('sub_district_municipality')
+    ->distinct()
+    ->orderBy('sub_district_municipality')
+    ->pluck('sub_district_municipality');
+
+    return response()->json($blocks);
+}
+
+public function getGpsByDistrictAreaBlock(Request $request)
+{
+    $request->validate([
+        'district' => 'required|string',
+        'area'     => 'required|in:R,U',
+        'block'    => 'required|string',
+    ]);
+
+    $gps = NsapPortal27Jan2026Csv::query()
+    ->where('district', $request->district)
+    ->where('area', $request->area)
+    ->where('sub_district_municipality', $request->block)
+    ->whereNotNull('gram_panchayat_ward')
+    ->select('gram_panchayat_ward')
+    ->distinct()
+    ->orderBy('gram_panchayat_ward')
+    ->pluck('gram_panchayat_ward');
+
+    return response()->json($gps);
+}
+
+public function filter(Request $request)
+{
+    $query = NsapPortal27Jan2026Csv::query();
+
+    if ($request->district) {
+        $query->where('district', $request->district);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    if ($request->area) {
+        $query->where('area', $request->area);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    if ($request->block) {
+        $query->where('sub_district_municipality', $request->block);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    if ($request->gp) {
+        $query->where('gram_panchayat_ward', $request->gp);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    $nsapDump = $query->limit(100)->get();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    return view('website.nsap_rows', compact('nsapDump'));
+}
 }
