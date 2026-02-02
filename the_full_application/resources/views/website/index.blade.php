@@ -17,6 +17,27 @@ SSEPD WEBSITE
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<style>
+    .lms-page .page-link {
+        min-width: 38px;
+        text-align: center;
+    }
+
+    .lms-page .page-item.disabled .page-link {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    #customPagination {
+        display: flex;
+        flex-wrap: wrap;  /* <-- allows wrapping */
+        gap: 4px;
+        padding: 0;
+        margin: 0;
+    }
+    #customPagination li {
+        flex: 0 0 auto;
+    }
+</style>
 @endsection 
 @section('content')
 <!-- Breadcrumb -->
@@ -199,26 +220,11 @@ SSEPD WEBSITE
 </div>
 <div class="row align-items-center mt-4">
     <div class="col-md-2">
-        <p class="pagination-text">Page 1 of 2</p>
+        <p class="pagination-text" id="pageInfo"></p>
     </div>
     <div class="col-md-10">
-        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0">
-            <li class="page-item prev">
-                <a class="page-link" href="javascript:void(0)" tabindex="-1"><i class="fas fa-angle-left"></i></a>
-            </li>
-            <li class="page-item first-page active">
-                <a class="page-link" href="javascript:void(0)">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript:void(0)">3</a>
-            </li>
-            <li class="page-item next">
-                <a class="page-link" href="javascript:void(0)"><i class="fas fa-angle-right"></i></a>
-            </li>
-        </ul>
+        <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+        id="customPagination"></ul>
     </div>
 </div>
 </div>
@@ -258,84 +264,69 @@ SSEPD WEBSITE
     const blockDropdown = document.getElementById('blockDropdown');
     const gpDropdown    = document.getElementById('gpDropdown');
 
-/* ================= RESETTERS ================= */
+/* ================= RESET FUNCTIONS ================= */
 
-    function resetAddressType() {
+    function resetArea() {
         selectedArea = null;
         areaToggle.innerText = 'Address Type';
     }
 
-    function resetBlockDropdown() {
+    function resetBlock() {
         selectedBlock = null;
         blockToggle.innerText = 'Blocks / ULBs';
         blockToggle.classList.add('disabled');
-
-        blockDropdown.innerHTML = `
-<li><span class="dropdown-item text-muted">
-Select District & Address Type
-        </span></li>`;
+        blockDropdown.innerHTML = `<li><span class="dropdown-item text-muted">Select District & Address Type</span></li>`;
     }
 
-    function resetGpDropdown() {
+    function resetGp() {
         selectedGp = null;
         gpToggle.innerText = 'GPs / Wards';
         gpToggle.classList.add('disabled');
-
-        gpDropdown.innerHTML = `
-<li><span class="dropdown-item text-muted">
-Select District, Address Type & Block
-        </span></li>`;
+        gpDropdown.innerHTML = `<li><span class="dropdown-item text-muted">Select District, Address Type & Block</span></li>`;
     }
 
-/* ================= EVENTS ================= */
+/* ================= DROPDOWN SELECTION ================= */
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         const item = e.target.closest('.dropdown-item');
         if (!item) return;
 
         const dropdown = item.closest('.dropdown');
         const toggle = dropdown.querySelector('.dropdown-toggle');
 
-/* DISTRICT */
         if (item.dataset.district) {
             selectedDistrict = item.dataset.district;
             toggle.innerText = item.innerText.trim();
-
-            resetAddressType();
-            resetBlockDropdown();
-            resetGpDropdown();
+            resetArea();
+            resetBlock();
+            resetGp();
             return;
         }
 
-/* AREA */
         if (item.dataset.area) {
             selectedArea = item.dataset.area;
             toggle.innerText = item.innerText.trim();
-
-            resetBlockDropdown();
-            resetGpDropdown();
+            resetBlock();
+            resetGp();
             loadBlocks();
             return;
         }
 
-/* BLOCK */
         if (item.dataset.block) {
             selectedBlock = item.dataset.block;
             toggle.innerText = item.innerText.trim();
-
-            resetGpDropdown();
+            resetGp();
             loadGps();
             return;
         }
 
-/* GP */
         if (item.dataset.gp) {
             selectedGp = item.dataset.gp;
             toggle.innerText = item.innerText.trim();
         }
     });
 
-/* ================= AJAX ================= */
+/* ================= AJAX FUNCTIONS ================= */
 
     function loadBlocks() {
         if (!selectedDistrict || !selectedArea) return;
@@ -344,7 +335,7 @@ Select District, Address Type & Block
         blockDropdown.innerHTML = `<li><span class="dropdown-item text-muted">Loading...</span></li>`;
 
         fetch(`{{ route('website.pensioners.blocks.by.district.area') }}?district=${encodeURIComponent(selectedDistrict)}&area=${selectedArea}`)
-        .then(r => r.json())
+        .then(res => res.json())
         .then(data => {
             blockDropdown.innerHTML = '';
             if (!data.length) {
@@ -352,8 +343,7 @@ Select District, Address Type & Block
                 return;
             }
             data.forEach(b => {
-                blockDropdown.insertAdjacentHTML('beforeend',
-            `<li><a class="dropdown-item" data-block="${b}">${b}</a></li>`);
+                blockDropdown.insertAdjacentHTML('beforeend', `<li><a class="dropdown-item" data-block="${b}">${b}</a></li>`);
             });
         });
     }
@@ -365,7 +355,7 @@ Select District, Address Type & Block
         gpDropdown.innerHTML = `<li><span class="dropdown-item text-muted">Loading...</span></li>`;
 
         fetch(`{{ route('website.pensioners.gps.by.district.area.block') }}?district=${encodeURIComponent(selectedDistrict)}&area=${selectedArea}&block=${encodeURIComponent(selectedBlock)}`)
-        .then(r => r.json())
+        .then(res => res.json())
         .then(data => {
             gpDropdown.innerHTML = '';
             if (!data.length) {
@@ -373,71 +363,120 @@ Select District, Address Type & Block
                 return;
             }
             data.forEach(gp => {
-                gpDropdown.insertAdjacentHTML('beforeend',
-            `<li><a class="dropdown-item" data-gp="${gp}">${gp}</a></li>`);
+                gpDropdown.insertAdjacentHTML('beforeend', `<li><a class="dropdown-item" data-gp="${gp}">${gp}</a></li>`);
             });
         });
     }
-</script>
-<script>
-    let ticketTable;
 
-    $(document).ready(function () {
+/* ================= DATA TABLE ================= */
 
-        ticketTable = $('#ticketTable').DataTable({
-            processing: true,
-            serverSide: true,
-            responsive: true,
-            ordering: true,
-            scrollX: true,
-            scrollCollapse: true,
+    let ticketTable = $('#ticketTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        ordering: true,
+        scrollX: true,
+        scrollCollapse: true,
+        paging: true,
+        dom: 'lfrt',
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
 
-            ajax: {
-                url: '{{ route("website.pensioners.datatable") }}',
-                type: 'GET',
-                data: function (d) {
-                    d.district = selectedDistrict;
-                    d.area     = selectedArea;
-                    d.block    = selectedBlock;
-                    d.gp       = selectedGp;
-                },
-                error: function (xhr) {
-                    console.error(xhr.responseText);
-                    alert('Failed to load data');
-                }
+        ajax: {
+            url: '{{ route("website.pensioners.datatable") }}',
+            type: 'GET',
+            data: function(d) {
+                d.district = selectedDistrict;
+                d.area     = selectedArea;
+                d.block    = selectedBlock;
+                d.gp       = selectedGp;
             },
-
-            columns: [
-                { data: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'applicant_name', name: 'applicant_name' },
-                { data: 'father_husband_name', name: 'father_husband_name' },
-                { data: 'scheme', name: 'scheme' },
-                { data: 'sanction_date', name: 'sanction_date' },
-                { data: 'sanction_order_no', name: 'sanction_order_no' },
-                { data: 'disbursement_mode', name: 'disbursement_mode' },
-                { data: 'disbursement_upto', name: 'disbursement_upto' },
-                { data: 'district', name: 'district' },
-                { data: 'area', name: 'area' },
-                { data: 'sub_district_municipality', name: 'sub_district_municipality' },
-                { data: 'gram_panchayat_ward', name: 'gram_panchayat_ward' },
-                { data: 'status', name: 'status' }
-            ],
-
-            dom: 'Blfrtip',
-            buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-            lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]]
-        });
-
-        $('#applyFilter').on('click', function () {
-
-            if (!selectedDistrict || !selectedArea || !selectedBlock || !selectedGp) {
-                alert('Please select District, Address Type, Block/ULB & GP/Ward');
-                return;
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                alert('Failed to load data');
             }
+        },
 
-            ticketTable.ajax.reload();
-        });
+        columns: [
+            { data: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'applicant_name', name: 'applicant_name' },
+            { data: 'father_husband_name', name: 'father_husband_name' },
+            { data: 'scheme', name: 'scheme' },
+            { data: 'sanction_date', name: 'sanction_date' },
+            { data: 'sanction_order_no', name: 'sanction_order_no' },
+            { data: 'disbursement_mode', name: 'disbursement_mode' },
+            { data: 'disbursement_upto', name: 'disbursement_upto' },
+            { data: 'district', name: 'district' },
+            { data: 'area', name: 'area' },
+            { data: 'sub_district_municipality', name: 'sub_district_municipality' },
+            { data: 'gram_panchayat_ward', name: 'gram_panchayat_ward' },
+            { data: 'status', name: 'status' }
+        ],
 
+        drawCallback: function() {
+            renderPagination(ticketTable);
+        }
     });
+
+/* ================= APPLY FILTER ================= */
+
+    $('#applyFilter').on('click', function() {
+        if (!selectedDistrict || !selectedArea || !selectedBlock) {
+            alert('Please select District, Address Type, Block/ULB & GP/Ward');
+            return;
+        }
+        ticketTable.ajax.reload();
+    });
+
+/* ================= CUSTOM PAGINATION ================= */
+
+    function renderPagination(table) {
+        const info = table.page.info();
+        const pagination = $('#customPagination');
+        pagination.empty();
+
+        if (info.pages <= 1) {
+            $('#pageInfo').text('');
+            return;
+        }
+
+        $('#pageInfo').text(`Page ${info.page + 1} of ${info.pages}`);
+
+        const maxPagesToShow = 10;
+        let start = Math.max(0, info.page - 5);
+        let end = Math.min(info.pages, start + maxPagesToShow);
+
+        pagination.append(`
+<li class="page-item ${info.page === 0 ? 'disabled' : ''}">
+<a class="page-link" href="#" data-page="${info.page - 1}">
+<i class="fas fa-angle-left"></i>
+</a>
+</li>
+        `);
+
+        for (let i = start; i < end; i++) {
+            pagination.append(`
+<li class="page-item ${i === info.page ? 'active' : ''}">
+<a class="page-link" href="#" data-page="${i}">${i + 1}</a>
+</li>
+            `);
+        }
+
+        pagination.append(`
+<li class="page-item ${info.page + 1 === info.pages ? 'disabled' : ''}">
+<a class="page-link" href="#" data-page="${info.page + 1}">
+<i class="fas fa-angle-right"></i>
+</a>
+</li>
+        `);
+    }
+
+    $('#customPagination').on('click', '.page-link', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        if (page !== undefined && !$(this).parent().hasClass('disabled')) {
+            ticketTable.page(page).draw('page');
+        }
+    });
+
 </script>
 @endsection
