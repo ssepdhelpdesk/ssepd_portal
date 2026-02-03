@@ -62,7 +62,7 @@
 		<div class="main-wrapper">
 
 			<!-- Header Topbar-->
-			<!-- @include('website.layout.partials.top-header') -->
+			@include('website.layout.partials.top-header')
 			<!-- /Header Topbar-->
 		
 			<!-- Header -->

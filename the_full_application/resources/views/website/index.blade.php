@@ -506,7 +506,7 @@ SSEPD WEBSITE
       e.preventDefault();
 
       if (!selectedDistrict || !selectedArea || !selectedBlock) {
-         alert('Please select District, Address Type & Block/ULB');
+         alert('Please Select Your District, Address Type & Block/ULB');
          return;
       }
 

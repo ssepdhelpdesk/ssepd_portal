@@ -10,17 +10,17 @@
 					</span>
 				</a>
 				<div class="navbar-logo">
-					<a class="logo-white header-logo" href="index.html">
+					<a class="logo-white header-logo" href="{{ route('website.pensioners.index') }}">
 						<img src="{{ asset('website_assets/assets/img/logo.svg') }}" class="logo" alt="Logo">
 					</a>
-					<a class="logo-dark header-logo" href="index.html">
+					<a class="logo-dark header-logo" href="{{ route('website.pensioners.index') }}">
 						<img src="{{ asset('website_assets/assets/img/logo-white.svg') }}" class="logo" alt="Logo">
 					</a>
 				</div>
 			</div>
 			<div class="main-menu-wrapper">								
 				<div class="menu-header">
-					<a href="index.html" class="menu-logo">
+					<a href="{{ route('website.pensioners.index') }}" class="menu-logo">
 						<img src="{{ asset('website_assets/assets/img/logo.svg') }}" class="img-fluid" alt="Logo">
 					</a>
 					<a id="menu_close" class="menu-close" href="javascript:void(0);">
@@ -29,7 +29,7 @@
 				</div>
 				<ul class="main-nav">
 					<li class="has-submenu megamenu">
-						<a href="{{ route('website.home.index') }}">Home </a>
+						<a href="{{ route('website.pensioners.index') }}">Home </a>
 					</li>
 				</ul>
 			</div>
@@ -43,10 +43,10 @@
 					</a>
 				</div>
 				<div class="header-btn d-flex align-items-center">				
-					<a href="login.html" class="btn btn-primary d-inline-flex align-items-center me-2">
+					<a href="SSEPD_REPO/ssepd_portal" class="btn btn-primary d-inline-flex align-items-center me-2">
 						<i class="isax isax-user me-2"></i>Sign In
 					</a>
-					<a href="register.html" class="btn btn-secondary me-0">
+					<a href="SSEPD_REPO/ssepd_portal" class="btn btn-secondary me-0">
 						<i class="isax isax-user-edit me-2"></i>Register
 					</a>
 				</div>
