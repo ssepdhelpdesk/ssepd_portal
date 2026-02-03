@@ -117,51 +117,51 @@ SSEPD WEBSITE
                               </div>
                               <div class="drop-detail-three">
                                  @php
-$areaLabels = [
-    'R' => 'Rural',
-    'U' => 'Urban',
-];
-@endphp
+                                 $areaLabels = [
+                                 'R' => 'Rural',
+                                 'U' => 'Urban',
+                                 ];
+                                 @endphp
                                  <select class="form-three-select select" id="areaSelect">
                                     <option value="">Address Type</option>
                                     @foreach ($area as $item)
-            <option value="{{ $item->area }}">
-                {{ $areaLabels[$item->area] }}
-            </option>
-        @endforeach
-                                 </select>
-                              </div>
+                                    <option value="{{ $item->area }}">
+                                      {{ $areaLabels[$item->area] }}
+                                   </option>
+                                   @endforeach
+                                </select>
+                             </div>
 
-                              <div class="drop-detail-three">
-                                 <select class="form-three-select select" id="blockSelect" disabled>
-                                    <option value="">Blocks / ULBs</option>
-                                 </select>
-                              </div>
+                             <div class="drop-detail-three">
+                              <select class="form-three-select select" id="blockSelect" disabled>
+                                 <option value="">Blocks / ULBs</option>
+                              </select>
+                           </div>
 
-                              <div class="drop-detail-three">
-                                 <select class="form-three-select select" id="gpSelect" disabled>
-                                    <option value="">GPs / Wards</option>
-                                 </select>
+                           <div class="drop-detail-three">
+                              <select class="form-three-select select" id="gpSelect" disabled>
+                                 <option value="">GPs / Wards</option>
+                              </select>
+                           </div>
+                           <div class="d-flex align-items-center banner-search5">
+                              <div class="search-icon5">
+                                 <button class="btn btn-primary sub-btn" type="submit"><i class="fas fa-search"></i></button>
                               </div>
-                              <div class="d-flex align-items-center banner-search5">
-                                 <div class="search-icon5">
-                                    <button class="btn btn-primary sub-btn" type="submit"><i class="fas fa-search"></i></button>
-                                 </div>
-                              </div>
-                           </div>                                    
-                        </div>
+                           </div>
+                        </div>                                    
                      </div>
-                  </form>
-               </div>
-            </div>
-         </div>
-         <div class="offset-lg-1 col-lg-5 col-12 text-center" data-aos="fade-up">
-            <div class="banner-slide-img flex-fill aos">
-               <img class="img-fluid ps-lg-5" src="{{ asset('website_assets/assets/img/hero/hero-oldage-dp.png') }}" alt="Img">
+                  </div>
+               </form>
             </div>
          </div>
       </div>
+      <div class="offset-lg-1 col-lg-5 col-12 text-center" data-aos="fade-up">
+         <div class="banner-slide-img flex-fill aos">
+            <img class="img-fluid ps-lg-5" src="{{ asset('website_assets/assets/img/hero/hero-oldage-dp.png') }}" alt="Img">
+         </div>
+      </div>
    </div>
+</div>
 </section>
 <section class="section student-course student-course-five">
    <div class="container">
@@ -172,7 +172,7 @@ $areaLabels = [
                   <div class="align-items-center">
                      <div class="course-count-three course-count ms-0">
                         <div class="course-img">
-                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-01.svg') }}" alt="Img">
+                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/all-beneficiaries.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
                            <h4 class="text-info"><span class="counterUp counterUp-totalActive">0</span></h4>
@@ -187,7 +187,7 @@ $areaLabels = [
                   <div class="align-items-center">
                      <div class="course-count-three course-count ms-0">
                         <div class="course-img">
-                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-02.svg') }}" alt="Img">
+                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/oldage.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
                            <h4 class="text-warning"><span class="counterUp counterUp-schemeCountOap">0</span></h4>
@@ -202,7 +202,7 @@ $areaLabels = [
                   <div class="align-items-center">
                      <div class="course-count-three course-count ms-0">
                         <div class="course-img">
-                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-03.svg') }}" alt="Img">
+                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/disability.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
                            <h4 class="text-skyblue"><span class="counterUp counterUp-schemeCountDp"></span></h4>
@@ -217,7 +217,7 @@ $areaLabels = [
                   <div class="align-items-center">
                      <div class="course-count-three">
                         <div class="course-img">
-                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-04.svg') }}" alt="Img">
+                           <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/other-beneficiaries.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three course-count">
                            <h4 class="text-success"><span class="counterUp counterUp-schemeCountOther"></span></h4>
@@ -237,61 +237,61 @@ $areaLabels = [
          <div class="col-lg-12">
             <div class="tickets">
                <div class="row align-items-center mb-2" id="searchContainer" style="display: none;">
-                <div class="col-md-8">
-                 <div class="input-icon">
-                  <span class="input-icon-addon">
-                   <i class="isax isax-search-normal-14"></i>
-                </span>
-                <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
-             </div>
-          </div>
+                 <div class="col-md-8">
+                   <div class="input-icon">
+                     <span class="input-icon-addon">
+                       <i class="isax isax-search-normal-14"></i>
+                    </span>
+                    <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
+                 </div>
+              </div>
 
-          <div class="col-md-4 text-md-end mt-2 mt-md-0">
-           <div class="dropdown d-inline-block">
-            <a href="javascript:void(0);" 
-            class="dropdown-toggle btn rounded border text-gray-6"
-            data-bs-toggle="dropdown">
-            Show 10
-         </a>
-         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" data-length="10">10</a></li>
-          <li><a class="dropdown-item" data-length="25">25</a></li>
-          <li><a class="dropdown-item" data-length="50">50</a></li>
-          <li><a class="dropdown-item" data-length="100">100</a></li>
-       </ul>
-    </div>
- </div>
-</div>
-<div class="table-responsive custom-table">
-   <table class="table w-100" id="ticketTable">
-      <thead class="thead-light">
-         <tr>
-            <th>Sl.No</th>
-            <th>Beneficiary Name</th>
-            <th>Care Of</th>
-            <th>Scheme</th>
-            <th>Sanction From</th>
-            <th>Sanction Order No</th>
-            <th>Disbursed Mode</th>
-            <th>Disbursed Upto</th>
-            <th>District</th>
-            <th>Address Type</th>
-            <th>Block / ULB Name</th>
-            <th>GP / Ward Name</th>
-            <th>Status</th>
-         </tr>
-      </thead>
-   </table>
-</div>
-<div class="row align-items-center mt-4">
-   <div class="col-md-2">
-      <p class="pagination-text" id="pageInfo"></p>
+              <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <div class="dropdown d-inline-block">
+                  <a href="javascript:void(0);" 
+                  class="dropdown-toggle btn rounded border text-gray-6"
+                  data-bs-toggle="dropdown">
+                  Show 10
+               </a>
+               <ul class="dropdown-menu dropdown-menu-end">
+                 <li><a class="dropdown-item" data-length="10">10</a></li>
+                 <li><a class="dropdown-item" data-length="25">25</a></li>
+                 <li><a class="dropdown-item" data-length="50">50</a></li>
+                 <li><a class="dropdown-item" data-length="100">100</a></li>
+              </ul>
+           </div>
+        </div>
+     </div>
+     <div class="table-responsive custom-table">
+      <table class="table w-100" id="ticketTable">
+         <thead class="thead-light">
+            <tr>
+               <th>Sl.No</th>
+               <th>Beneficiary Name</th>
+               <th>Care Of</th>
+               <th>Scheme</th>
+               <th>Sanction From</th>
+               <th>Sanction Order No</th>
+               <th>Disbursed Mode</th>
+               <th>Disbursed Upto</th>
+               <th>District</th>
+               <th>Address Type</th>
+               <th>Block / ULB Name</th>
+               <th>GP / Ward Name</th>
+               <th>Status</th>
+            </tr>
+         </thead>
+      </table>
    </div>
-   <div class="col-md-10">
-      <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
-      id="customPagination"></ul>
+   <div class="row align-items-center mt-4">
+      <div class="col-md-2">
+         <p class="pagination-text" id="pageInfo"></p>
+      </div>
+      <div class="col-md-10">
+         <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+         id="customPagination"></ul>
+      </div>
    </div>
-</div>
 </div>
 </div>
 </div>
@@ -468,7 +468,7 @@ $areaLabels = [
             $('.counterUp-schemeCountDp').text(json.counters.schemeCountDp);
             $('.counterUp-schemeCountOther').text(json.counters.schemeCountOther);
             return json.data;
-        },
+         },
          error: function(xhr) {
             console.error(xhr.responseText);
             alert('Failed to load data');
