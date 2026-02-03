@@ -26,7 +26,7 @@ public function index()
 
 public function datatable(Request $request)
 {
-    if (empty($request->district) || empty($request->area) || empty($request->block)) {
+    if (!$request->district || !$request->area || !$request->block) {
         return response()->json([
             'draw' => intval($request->draw),
             'recordsTotal' => 0,
@@ -41,79 +41,76 @@ public function datatable(Request $request)
         ]);
     }
 
-    $query = NsapPortal27Jan2026Csv::query()->select([
-        'id',
-        'applicant_name',
-        'father_husband_name',
-        'scheme',
-        'sanction_date',
-        'sanction_order_no',
-        'disbursement_mode',
-        'disbursement_upto',
-        'district',
-        'area',
-        'sub_district_municipality',
-        'gram_panchayat_ward',
-        'status'
-    ]);
-
-    if ($request->district) {
-        $query->where('district', $request->district);
-    }
-
-    if ($request->area) {
-        $query->where('area', $request->area);
-    }
-
-    if ($request->block) {
-        $query->where('sub_district_municipality', $request->block);
-    }
+    $baseQuery = NsapPortal27Jan2026Csv::query()
+        ->whereNot('scheme', 'NFBS')
+        ->where('district', $request->district)
+        ->where('area', $request->area)
+        ->where('sub_district_municipality', $request->block);
 
     if ($request->gp) {
-        $query->where('gram_panchayat_ward', $request->gp);
+        $baseQuery->where('gram_panchayat_ward', $request->gp);
     }
 
-    $totalActive = (clone $query)->where('status', 'Active')->count();
-    $schemeCountOap = (clone $query)->whereIn('scheme', ['IGNOAPS', 'MBPOAP'])->count();
-    $schemeCountDp = (clone $query)->whereIn('scheme', ['IGNDPS', 'MBPDP'])->count();
-    $schemeCountOther = (clone $query)->whereNotIn('scheme', ['IGNOAPS', 'MBPOAP', 'IGNDPS', 'MBPDP', 'NFBS'])->count();
+    /* ===== Counters (before DataTables modifies query) ===== */
+    $totalActive = (clone $baseQuery)->where('status', 'Active')->count();
 
-    return DataTables::of($query)
+    $schemeCountOap = (clone $baseQuery)
+        ->whereIn('scheme', ['IGNOAPS', 'MBPOAP'])
+        ->count();
+
+    $schemeCountDp = (clone $baseQuery)
+        ->whereIn('scheme', ['IGNDPS', 'MBPDP', 'MBPSDP'])
+        ->count();
+
+    $schemeCountOther = (clone $baseQuery)
+        ->whereNotIn('scheme', [
+            'IGNOAPS', 'MBPOAP',
+            'IGNDPS', 'MBPDP', 'MBPSDP'
+        ])
+        ->count();
+
+    return DataTables::of(
+        $baseQuery->select([
+            'id',
+            'applicant_name',
+            'father_husband_name',
+            'scheme',
+            'sanction_date',
+            'sanction_order_no',
+            'disbursement_mode',
+            'disbursement_upto',
+            'district',
+            'area',
+            'sub_district_municipality',
+            'gram_panchayat_ward',
+            'status'
+        ])
+    )
     ->addIndexColumn()
-    ->editColumn('area', function($r) {
-        $value = trim(strtoupper($r->area));
-        return $value === 'R' ? 'Rural' : 'Urban';
-    })
-    ->editColumn('sanction_date', function ($row) {
-        if (is_numeric($row->sanction_date)) {
-            return Carbon::create(1899, 12, 30)
-            ->addDays((int) $row->sanction_date)
-            ->diffForHumans();
-        }
-        return $row->sanction_date
-        ? Carbon::parse($row->sanction_date)->diffForHumans()
-        : '-';
-    })
-    ->editColumn('disbursement_upto', function ($row) {
-        if (is_numeric($row->disbursement_upto)) {
-            return Carbon::create(1899, 12, 30)
-            ->addDays((int) $row->disbursement_upto)
-            ->format('d M Y');
-        }
-        return $row->disbursement_upto
-        ? Carbon::parse($row->disbursement_upto)->format('d M Y')
-        : '-';
-    })
+    ->editColumn('area', fn($r) =>
+        strtoupper(trim($r->area)) === 'R' ? 'Rural' : 'Urban'
+    )
+    ->editColumn('sanction_date', fn($r) =>
+        is_numeric($r->sanction_date)
+            ? Carbon::create(1899, 12, 30)->addDays((int)$r->sanction_date)->diffForHumans()
+            : ($r->sanction_date ? Carbon::parse($r->sanction_date)->diffForHumans() : '-')
+    )
+    ->editColumn('disbursement_upto', fn($r) =>
+        is_numeric($r->disbursement_upto)
+            ? Carbon::create(1899, 12, 30)->addDays((int)$r->disbursement_upto)->format('d M Y')
+            : ($r->disbursement_upto ? Carbon::parse($r->disbursement_upto)->format('d M Y') : '-')
+    )
     ->with([
         'counters' => [
             'totalActive' => $totalActive,
             'schemeCountOap' => $schemeCountOap,
             'schemeCountDp' => $schemeCountDp,
-            'schemeCountOther' => $schemeCountOther
+            'schemeCountOther' => $schemeCountOther,
         ]
     ])
     ->toJson();
 }
+
 
 
 public function index_BKP_BASIC_DATATABLE(Request $request)
