@@ -116,12 +116,19 @@ SSEPD WEBSITE
                                  </select>
                               </div>
                               <div class="drop-detail-three">
+                                 @php
+$areaLabels = [
+    'R' => 'Rural',
+    'U' => 'Urban',
+];
+@endphp
                                  <select class="form-three-select select" id="areaSelect">
                                     <option value="">Address Type</option>
                                     @foreach ($area as $item)
-                                    @php $key = strtoupper(trim($item->area)); @endphp
-                                    <option value="{{ $key }}">{{ $areaLabels[$key] ?? $key }}</option>
-                                    @endforeach
+            <option value="{{ $item->area }}">
+                {{ $areaLabels[$item->area] }}
+            </option>
+        @endforeach
                                  </select>
                               </div>
 

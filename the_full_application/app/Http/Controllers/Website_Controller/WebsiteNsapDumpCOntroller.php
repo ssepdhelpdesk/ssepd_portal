@@ -19,7 +19,7 @@ class WebsiteNsapDumpCOntroller extends Controller
 public function index()
 {
     $district = NsapPortal27Jan2026Csv::query()->select('district')->whereNotNull('district')->distinct()->orderBy('district')->get();
-    $area = NsapPortal27Jan2026Csv::query()->selectRaw('UPPER(TRIM(area)) as area')->whereNotNull('area')->distinct()->orderBy('area')->get();
+    $area = NsapPortal27Jan2026Csv::query() ->selectRaw(" CASE WHEN UPPER(TRIM(area)) IN ('R', 'RURAL') THEN 'R' WHEN UPPER(TRIM(area)) IN ('U', 'URBAN') THEN 'U' END AS area")->whereNotNull('area')->distinct()->orderBy('area')->get();
 
     return view('website.index', compact('district', 'area'));
 }
@@ -80,8 +80,9 @@ public function datatable(Request $request)
 
     return DataTables::of($query)
     ->addIndexColumn()
-    ->editColumn('area', function ($r) {
-        return strtoupper(trim($r->area)) === 'R' ? 'Rural' : 'Urban';
+    ->editColumn('area', function($r) {
+        $value = trim(strtoupper($r->area));
+        return $value === 'R' ? 'Rural' : 'Urban';
     })
     ->editColumn('sanction_date', function ($row) {
         if (is_numeric($row->sanction_date)) {
