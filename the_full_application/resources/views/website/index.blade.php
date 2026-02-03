@@ -1,5 +1,5 @@
 @section('title') 
-SSEPD WEBSITE
+SSEPD-IT
 @endsection 
 @extends('website.layout.mainlayout')
 @section('style')
@@ -98,9 +98,9 @@ SSEPD WEBSITE
          <div class="col-xl-6 col-lg-7 col-md-12 d-flex col-12" data-aos="fade-down">
             <div class="home-five-slide-face flex-fill">
                <div class="home-five-slide-text">
-                  <span class="text-white d-inline-block bg-secondary small rounded-pill px-3 py-2 mb-3 mb-sm-4"><span class="badge bg-white text-secondary rounded-pill me-1">New</span>The Leader in Online Learning</span>
-                  <h1>Engaging <span>&</span>  Accessible Online Courses For All</h1>
-                  <p>Our specialized online courses are designed to bring the classroom experience to you, no matter where you are.</p>
+                  <span class="text-white d-inline-block bg-secondary small rounded-pill px-3 py-2 mb-3 mb-sm-4"><span class="badge bg-white text-secondary rounded-pill me-1">New</span>Consent for DBT Mode of Pension Payment</span>
+                  <h1>Consent for Migration to <span>DBT Mode</span> of Pension</h1>
+                  <p>Submit your consent online for receiving pension through Direct Bank Transfer (DBT).</p>
                </div>
                <div class="banner-three-content">
                   <form class="form" id="bannerFilterForm">

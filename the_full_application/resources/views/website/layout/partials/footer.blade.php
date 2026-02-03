@@ -13,7 +13,7 @@
 								<img class="img-fluid" src="{{ asset('website_assets/assets/img/logo-white.svg') }}" alt="logo">
 							</div>
 							<div class="footer-three-about">
-								<p>Platform designed to help organizations, educators, and learners manage,</p>
+								<p>This platform allows pension beneficiaries to provide consent online for receiving pension through Direct Bank Transfer (DBT).</p>
 							</div>
 							<div class="box-form-newsletter">
 								<form class="form-newsletter">
@@ -46,11 +46,11 @@
 								<div class="footer-widget-three footer-menu-three">
 									<h5 class="footer-three-title">Portals</h5>
 									<ul>
-										<li><a href="javascript:void(0);">SSEPD-IT</a></li>
-										<li><a href="SSEPD_REPO/old_age_and_disability_beneficiaries">EP Beneficiaries</a></li>
+										<li><a href="{{ route('website.pensioners.index') }}">SSEPD-IT</a></li>
+										<li><a href="javascript:void(0);">EP Beneficiaries</a></li>
 										<li><a href="https://siep.ssepdit.in">SIEP</a></li>
-										<li><a href="SSEPD_REPO/ssepd_portal">Login</a></li>
-										<li><a href="SSEPD_REPO/ssepd_portal"> Register</a></li>
+										<li><a href="{{route('login')}}">Login</a></li>
+										<li><a href="{{route('login')}}"> Register</a></li>
 									</ul>
 								</div>
 								<!-- /Footer Widget -->

@@ -43,10 +43,10 @@
 					</a>
 				</div>
 				<div class="header-btn d-flex align-items-center">				
-					<a href="SSEPD_REPO/ssepd_portal" class="btn btn-primary d-inline-flex align-items-center me-2">
+					<a href="{{route('login')}}" class="btn btn-primary d-inline-flex align-items-center me-2">
 						<i class="isax isax-user me-2"></i>Sign In
 					</a>
-					<a href="SSEPD_REPO/ssepd_portal" class="btn btn-secondary me-0">
+					<a href="{{route('login')}}" class="btn btn-secondary me-0">
 						<i class="isax isax-user-edit me-2"></i>Register
 					</a>
 				</div>
