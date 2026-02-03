@@ -62,7 +62,7 @@
 		<div class="main-wrapper">
 
 			<!-- Header Topbar-->
-			@include('website.layout.partials.top-header')
+			<!-- @include('website.layout.partials.top-header') -->
 			<!-- /Header Topbar-->
 		
 			<!-- Header -->
@@ -70,11 +70,11 @@
 			<!-- /Header -->
 			
 			<!-- Home Banner -->
-			@include('website.layout.partials.banner')
+			<!-- @include('website.layout.partials.banner') -->
 			<!-- /Home Banner -->
 			
 			<!--Online Courses -->
-			@include('website.layout.partials.bannercards')
+			<!-- @include('website.layout.partials.bannercards') -->
 			<!-- /Online Courses -->
 			
 			@yield('content')
