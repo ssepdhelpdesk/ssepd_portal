@@ -18,19 +18,109 @@ class WebsiteNsapDumpCOntroller extends Controller
 */
 public function index()
 {
-    $maxId = NsapPortal27Jan2026Csv::max('id');
-
-    $nsapDump = NsapPortal27Jan2026Csv::where('id', '>=', rand(1, $maxId))->limit(100)->get();
-
-    $district = NsapPortal27Jan2026Csv::query()->select('district')->distinct()->orderBy('district')->get();
-
+    $district = NsapPortal27Jan2026Csv::query()->select('district')->whereNotNull('district')->distinct()->orderBy('district')->get();
     $area = NsapPortal27Jan2026Csv::query()->selectRaw('UPPER(TRIM(area)) as area')->whereNotNull('area')->distinct()->orderBy('area')->get();
 
-    return view('website.index', compact('nsapDump', 'district', 'area'));
+    return view('website.index', compact('district', 'area'));
 }
 
 public function datatable(Request $request)
 {
+    if (empty($request->district) || empty($request->area) || empty($request->block)) {
+        return response()->json([
+            'draw' => intval($request->draw),
+            'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+            'data' => [],
+            'counters' => [
+                'totalActive' => 0,
+                'schemeCountOap' => 0,
+                'schemeCountDp' => 0,
+                'schemeCountOther' => 0,
+            ]
+        ]);
+    }
+
+    $query = NsapPortal27Jan2026Csv::query()->select([
+        'id',
+        'applicant_name',
+        'father_husband_name',
+        'scheme',
+        'sanction_date',
+        'sanction_order_no',
+        'disbursement_mode',
+        'disbursement_upto',
+        'district',
+        'area',
+        'sub_district_municipality',
+        'gram_panchayat_ward',
+        'status'
+    ]);
+
+    if ($request->district) {
+        $query->where('district', $request->district);
+    }
+
+    if ($request->area) {
+        $query->where('area', $request->area);
+    }
+
+    if ($request->block) {
+        $query->where('sub_district_municipality', $request->block);
+    }
+
+    if ($request->gp) {
+        $query->where('gram_panchayat_ward', $request->gp);
+    }
+
+    $totalActive = (clone $query)->where('status', 'Active')->count();
+    $schemeCountOap = (clone $query)->whereIn('scheme', ['IGNOAPS', 'MBPOAP'])->count();
+    $schemeCountDp = (clone $query)->whereIn('scheme', ['IGNDPS', 'MBPDP'])->count();
+    $schemeCountOther = (clone $query)->whereNotIn('scheme', ['IGNOAPS', 'MBPOAP', 'IGNDPS', 'MBPDP', 'NFBS'])->count();
+
+    return DataTables::of($query)
+    ->addIndexColumn()
+    ->editColumn('area', function ($r) {
+        return strtoupper(trim($r->area)) === 'R' ? 'Rural' : 'Urban';
+    })
+    ->editColumn('sanction_date', function ($row) {
+        if (is_numeric($row->sanction_date)) {
+            return Carbon::create(1899, 12, 30)
+            ->addDays((int) $row->sanction_date)
+            ->diffForHumans();
+        }
+        return $row->sanction_date
+        ? Carbon::parse($row->sanction_date)->diffForHumans()
+        : '-';
+    })
+    ->editColumn('disbursement_upto', function ($row) {
+        if (is_numeric($row->disbursement_upto)) {
+            return Carbon::create(1899, 12, 30)
+            ->addDays((int) $row->disbursement_upto)
+            ->format('d M Y');
+        }
+        return $row->disbursement_upto
+        ? Carbon::parse($row->disbursement_upto)->format('d M Y')
+        : '-';
+    })
+    ->with([
+        'counters' => [
+            'totalActive' => $totalActive,
+            'schemeCountOap' => $schemeCountOap,
+            'schemeCountDp' => $schemeCountDp,
+            'schemeCountOther' => $schemeCountOther
+        ]
+    ])
+    ->toJson();
+}
+
+
+public function index_BKP_BASIC_DATATABLE(Request $request)
+{
+    if (empty($request->district) || empty($request->area) || empty($request->block)) {
+        return DataTables::of(collect())->make(true);
+    }
+
     $query = NsapPortal27Jan2026Csv::query()
     ->select([
         'id',

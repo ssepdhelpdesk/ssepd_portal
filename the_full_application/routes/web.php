@@ -112,6 +112,7 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('gps-by-district-area-block', 'getGpsByDistrictAreaBlock')->name('gps.by.district.area.block');
 
         Route::get('filter', 'filter')->name('filter');
+        Route::get('index_BKP_BASIC_DATATABLE', 'index_BKP_BASIC_DATATABLE')->name('index_BKP_BASIC_DATATABLE');
         Route::get('datatable', 'datatable')->name('datatable');
     });
 });

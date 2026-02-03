@@ -168,8 +168,8 @@ SSEPD WEBSITE
                            <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-01.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
-                           <h4 class="text-info"><span class="counterUp counterUp-totalActive">0</span></h4>
-                           <p>Total Beneficiaries</p>
+                           <h4 class="text-info"><span class="counterUp">10</span>K</h4>
+                           <p>Online Courses</p>
                         </div>
                      </div>
                   </div>
@@ -183,8 +183,8 @@ SSEPD WEBSITE
                            <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-02.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
-                           <h4 class="text-warning"><span class="counterUp counterUp-schemeCountOap">0</span></h4>
-                           <p>OldAge Beneficiaries</p>
+                           <h4 class="text-warning"><span class="counterUp">200</span>+</h4>
+                           <p>Expert Tutors</p>
                         </div>
                      </div>
                   </div>
@@ -198,8 +198,8 @@ SSEPD WEBSITE
                            <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-03.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three">
-                           <h4 class="text-skyblue"><span class="counterUp counterUp-schemeCountDp"></span></h4>
-                           <p>DP Beneficiaries</p>
+                           <h4 class="text-skyblue"><span class="counterUp">6</span>K+</h4>
+                           <p>Ceritified Courses</p>
                         </div>
                      </div>
                   </div>
@@ -213,8 +213,8 @@ SSEPD WEBSITE
                            <img class="img-fluid" src="{{ asset('website_assets/assets/img/icon/course-04.svg') }}" alt="Img">
                         </div>
                         <div class="course-content-three course-count">
-                           <h4 class="text-success"><span class="counterUp counterUp-schemeCountOther"></span></h4>
-                           <p>Other Beneficiaries</p> 
+                           <h4 class="text-success"><span class="counterUp">60</span>K +</h4>
+                           <p>Online Students</p> 
                         </div>
                      </div>
                   </div>
@@ -230,65 +230,67 @@ SSEPD WEBSITE
          <div class="col-lg-12">
             <div class="tickets">
                <div class="row align-items-center mb-2" id="searchContainer" style="display: none;">
-                <div class="col-md-8">
-                 <div class="input-icon">
-                  <span class="input-icon-addon">
-                   <i class="isax isax-search-normal-14"></i>
-                </span>
-                <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
-             </div>
-          </div>
-
-          <div class="col-md-4 text-md-end mt-2 mt-md-0">
-           <div class="dropdown d-inline-block">
-            <a href="javascript:void(0);" 
-            class="dropdown-toggle btn rounded border text-gray-6"
-            data-bs-toggle="dropdown">
-            Show 10
-         </a>
-         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" data-length="10">10</a></li>
-          <li><a class="dropdown-item" data-length="25">25</a></li>
-          <li><a class="dropdown-item" data-length="50">50</a></li>
-          <li><a class="dropdown-item" data-length="100">100</a></li>
-       </ul>
+    <div class="col-md-8">
+        <div class="input-icon">
+            <span class="input-icon-addon">
+                <i class="isax isax-search-normal-14"></i>
+            </span>
+            <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
+        </div>
     </div>
- </div>
+
+    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+        <div class="dropdown d-inline-block">
+            <a href="javascript:void(0);" 
+               class="dropdown-toggle btn rounded border text-gray-6"
+               data-bs-toggle="dropdown">
+                Show 10
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" data-length="10">10</a></li>
+                <li><a class="dropdown-item" data-length="25">25</a></li>
+                <li><a class="dropdown-item" data-length="50">50</a></li>
+                <li><a class="dropdown-item" data-length="100">100</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
-<div class="table-responsive custom-table">
-   <table class="table w-100" id="ticketTable">
-      <thead class="thead-light">
-         <tr>
-            <th>Sl.No</th>
-            <th>Beneficiary Name</th>
-            <th>Care Of</th>
-            <th>Scheme</th>
-            <th>Sanction From</th>
-            <th>Sanction Order No</th>
-            <th>Disbursed Mode</th>
-            <th>Disbursed Upto</th>
-            <th>District</th>
-            <th>Address Type</th>
-            <th>Block / ULB Name</th>
-            <th>GP / Ward Name</th>
-            <th>Status</th>
-         </tr>
-      </thead>
-   </table>
-</div>
-<div class="row align-items-center mt-4">
-   <div class="col-md-2">
-      <p class="pagination-text" id="pageInfo"></p>
+
+               
+               <div class="table-responsive custom-table">
+                  <table class="table w-100" id="ticketTable">
+                     <thead class="thead-light">
+                        <tr>
+                           <th>Sl.No</th>
+                           <th>Beneficiary Name</th>
+                           <th>Care Of</th>
+                           <th>Scheme</th>
+                           <th>Sanction From</th>
+                           <th>Sanction Order No</th>
+                           <th>Disbursed Mode</th>
+                           <th>Disbursed Upto</th>
+                           <th>District</th>
+                           <th>Address Type</th>
+                           <th>Block / ULB Name</th>
+                           <th>GP / Ward Name</th>
+                           <th>Status</th>
+                        </tr>
+                     </thead>
+                  </table>
+               </div>
+               <div class="row align-items-center mt-4">
+                  <div class="col-md-2">
+                     <p class="pagination-text" id="pageInfo"></p>
+                  </div>
+                  <div class="col-md-10">
+                     <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+                     id="customPagination"></ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
    </div>
-   <div class="col-md-10">
-      <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
-      id="customPagination"></ul>
-   </div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 @endsection 
 @section('script')
@@ -447,7 +449,7 @@ SSEPD WEBSITE
       lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
 
       ajax: {
-         url: '{{ route("website.pensioners.datatable") }}',
+         url: '{{ route("website.pensioners.index_BKP_BASIC_DATATABLE") }}',
          type: 'GET',
          data: function(d) {
             d.district = selectedDistrict;
@@ -455,13 +457,6 @@ SSEPD WEBSITE
             d.block    = selectedBlock;
             d.gp       = selectedGp;
          },
-         dataSrc: function(json) {
-            $('.counterUp-totalActive').text(json.counters.totalActive);
-            $('.counterUp-schemeCountOap').text(json.counters.schemeCountOap);
-            $('.counterUp-schemeCountDp').text(json.counters.schemeCountDp);
-            $('.counterUp-schemeCountOther').text(json.counters.schemeCountOther);
-            return json.data;
-        },
          error: function(xhr) {
             console.error(xhr.responseText);
             alert('Failed to load data');
