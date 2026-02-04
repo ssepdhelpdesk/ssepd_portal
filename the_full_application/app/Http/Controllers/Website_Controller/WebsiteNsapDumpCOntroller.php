@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
 use App\Models\{
-    NsapPortal27Jan2026Csv
+    NsapPortal27Jan2026Csv,
+    BankMaster,
+    District,
+    Block,
+    Subdivision,
+    Municipality,
+    Grampanchayat,
+    WardMaster,
+    Village
 };
 
 class WebsiteNsapDumpCOntroller extends Controller
@@ -125,7 +133,40 @@ public function datatable(Request $request)
 public function dbt_consent_form(Request $request, string $uuid)
 {
     $nsapPortal27Jan2026CsvData = NsapPortal27Jan2026Csv::where('uuid', $uuid)->firstOrFail();
-    return view('website.dbtconsent.dbt_consent_form', compact('nsapPortal27Jan2026CsvData'));
+    $bankMaster = BankMaster::where('is_active', 1)->orderBy('bank_ifsc')->get();
+    $block = Block::where('district_id', $nsapPortal27Jan2026CsvData->district_id)->where('is_active', 'active')->orderBy('block_name')->get();
+    $municipality = Municipality::where('district_id', $nsapPortal27Jan2026CsvData->district_id)->where('is_active', 'active')->orderBy('municipality_name')->get();
+    return view('website.dbtconsent.dbt_consent_form', compact('nsapPortal27Jan2026CsvData', 'bankMaster', 'block', 'municipality'));
+}
+
+public function getGpsByBlock($block_id)
+{
+    $gps = Grampanchayat::where('block_id', $block_id)
+    ->where('is_active', 'active')
+    ->orderBy('gp_name')
+    ->get();
+
+    return response()->json($gps);
+}
+
+public function getVillagesByGp($gp_id)
+{
+    $villages = Village::where('gp_id', $gp_id)
+    ->where('is_active', 'active')
+    ->orderBy('village_name')
+    ->get();
+
+    return response()->json($villages);
+}
+
+public function getWardsByUlb($id)
+{
+    $wards = WardMaster::where('municipal_area_code', $id)
+        ->where('is_active', 1)
+        ->orderBy('ward_name', 'ASC')
+        ->get(['id', 'ward_name']);
+
+    return response()->json($wards);
 }
 
 public function index_BKP_BASIC_DATATABLE(Request $request)
@@ -284,52 +325,50 @@ public function filter(Request $request)
 }
 
 public function consent_aadhar_verification_process(Request $request)
-    {
-        $request->validate([
-            'aadhaar_no' => 'required|digits:12',
-            'applicant_name' => 'required|string',
+{
+    $request->validate([
+        'aadhaar_no' => 'required|digits:12',
+        'name_of_the_beneficiary' => 'required|string',
+    ]);
+
+    try {
+        $response = Http::withOptions([
+            'verify' => false,
+            'timeout' => 60,
+            'connect_timeout' => 20,
+            'curl' => [
+                CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            ],
+        ])
+        ->withHeaders([
+            'Accept' => 'application/json',
+            'User-Agent' => 'PostmanRuntime/7.36.0',
+        ])
+        ->asForm()
+        ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+            'aadhaar_no' => trim($request->aadhaar_no),
+            'name'       => trim($request->name_of_the_beneficiary),
         ]);
 
-        try {
-            $response = Http::withOptions([
-                'verify' => false,
-                'timeout' => 60,
-                'connect_timeout' => 20,
-                'curl' => [
-                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                ],
-            ])
-            ->withHeaders([
-                'Accept' => 'application/json',
-                'User-Agent' => 'PostmanRuntime/7.36.0',
-            ])
-            ->asForm()
-            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                'aadhaar_no' => trim($request->aadhaar_no),
-                'name'       => trim($request->applicant_name),
+        if ($response->successful()) {
+            return response()->json([
+                'status' => true,
+                'data'   => trim($response->body()),
             ]);
-
-            if ($response->successful()) {
-                return response()->json([
-                    'status' => true,
-                    'data'   => trim($response->body()),
-                ]);
-            }
-
-            return response()->json([
-                'status' => false,
-                'http_code' => $response->status(),
-                'response'  => $response->body(),
-            ], 422);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status' => false,
-                'exception' => $e->getMessage(),
-            ], 500);
         }
+
+        return response()->json([
+            'status' => false,
+            'http_code' => $response->status(),
+            'response'  => $response->body(),
+        ]);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => false,
+            'exception' => $e->getMessage(),
+        ], 500);
     }
-
-
+}
 }

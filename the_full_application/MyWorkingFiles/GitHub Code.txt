@@ -11,7 +11,11 @@ git pull origin main
 
 /////////////////////////////////////////////////////
 
-ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `name_as_per_aadhaar` VARCHAR(250) NULL AFTER `aadhar_verified`;
+ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `gender_by_user` VARCHAR(250) NULL AFTER `gender`;
+ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `age_by_user` VARCHAR(250) NULL AFTER `age`;
+
+ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `verified_aadhar` TINYINT(1) NOT NULL DEFAULT 0 AFTER `aadhaar_encrypted`;
+ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `verified_aadhar_remarks` VARCHAR(250) NULL AFTER `verified_aadhar`;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -45,6 +45,9 @@
 	<!-- Select2 CSS -->
 	<link rel="stylesheet" href="{{ asset('website_assets/assets/plugins/select2/css/select2.min.css') }}">
 
+	<!-- Datepicker CSS -->
+	<link rel="stylesheet" href="{{ asset('website_assets/assets/css/bootstrap-datetimepicker.min.css') }}">
+
 	<!-- Swiper CSS -->
 	<link rel="stylesheet" href="{{ asset('website_assets/assets/plugins/swiper/css/swiper.min.css') }}">
 	
@@ -118,9 +121,14 @@
 
 	<!-- Swiper Slider -->
 	<script src="{{ asset('website_assets/assets/plugins/swiper/js/swiper.min.js') }}"></script>
+
+	<!-- Sticky Sidebar JS -->
+	<script src="{{ asset('website_assets/assets/plugins/theia-sticky-sidebar/ResizeSensor.js') }}"></script>
+	<script src="{{ asset('website_assets/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js') }}"></script>
 	
 	<!-- Custom JS -->
 	<script src="{{ asset('website_assets/assets/js/script.js') }}"></script>
+	
 
 	@yield('script')		
 </body>

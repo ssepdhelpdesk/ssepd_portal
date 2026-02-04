@@ -40,7 +40,9 @@ return new class extends Migration
             $table->longText('address')->nullable();
             $table->string('scheme')->nullable();
             $table->string('age')->nullable();
+            $table->string('age_by_user')->nullable();
             $table->string('gender')->nullable();
+            $table->string('gender_by_user')->nullable();
             $table->string('pincode')->nullable();
 
             $table->string('father_husband_name')->nullable();
@@ -67,6 +69,8 @@ return new class extends Migration
             $table->bigInteger('aadhaar_no_by_user')->nullable()->unique();
             $table->string('aadhaar_hash', 64)->nullable()->unique()->index();
             $table->text('aadhaar_encrypted')->nullable();
+            $table->tinyInteger('verified_aadhar')->default(0)->comment('0=Not Verified, 1=Verified');
+            $table->string('verified_aadhar_remarks')->nullable();
 
             $table->string('is_active')->default('active')->index();
             $table->integer('db_status')->default(1)->index();

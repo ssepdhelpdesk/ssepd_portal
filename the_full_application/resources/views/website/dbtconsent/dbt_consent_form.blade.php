@@ -75,8 +75,29 @@ SSEPD-IT
                                  <div class="col-md-4 col-12">
                                     <div class="mb-3 position-relative">
                                        <label class="form-label">Name as per Aadhaar<span class="text-danger"> *</span></label>
+                                       <div class="position-relative readonly-input">
+                                          <input type="text" id="name_of_the_beneficiary" name="name_of_the_beneficiary" value="{{old('name_of_the_beneficiary', $nsapPortal27Jan2026CsvData->applicant_name)}}" class="pass-input form-control" placeholder="Name as per Aadhaar">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Gender<span class="text-danger"> *</span></label>
                                        <div class="position-relative">
-                                          <input type="text" id="applicant_name" name="applicant_name" value="{{old('applicant_name', $nsapPortal27Jan2026CsvData->applicant_name)}}" class="pass-input form-control" placeholder="Name as per Aadhaar">
+                                          <select class="select  pass-input form-control" name="gender" id="gender">
+                                             <option>Select</option>
+                                             <option value="M">Male</option>
+                                             <option value="F">Female</option>
+                                             <option value="O">Other</option>
+                                          </select>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">DOB<span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <input type="date" class="form-control datetimepicker" name="dob" id="dob" max="{{ date('Y-m-d') }}" placeholder="dd/mm/yyyy">
                                        </div>
                                     </div>
                                  </div>
@@ -105,9 +126,115 @@ SSEPD-IT
                                        <label class="error">{{ $message }}</label>
                                        @enderror
                                     </div>
+                                 </div>                                 
+                                 <!-- <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative readonly-input">
+                                       <label class="form-label">District<span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <input type="text" id="district" name="district" value="{{old('district', $nsapPortal27Jan2026CsvData->district)}}" class="pass-input form-control" placeholder="District">
+                                       </div>
+                                    </div>
+                                 </div> -->
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Address Type <span class="text-danger"> *</span></label>
+                                       <div class="d-flex gap-4 mt-2">
+                                          <div class="form-check">
+                                             <input class="form-check-input" type="radio" name="address_type" id="address_type_block" value="1">
+                                             <label class="form-check-label" for="address_type_block">Block</label>
+                                          </div>
+                                          <div class="form-check">
+                                             <input class="form-check-input" type="radio" name="address_type" id="address_type_ulb" value="2">
+                                             <label class="form-check-label" for="address_type_ulb">ULB</label>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12" id="block_div" style="display:none;">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Block <span class="text-danger"> *</span></label>
+                                       <select class="select pass-input form-control" name="block_id" id="block_id">
+                                          <option value="">Select Block</option>
+                                          @foreach($block as $data)
+                                          <option value="{{$data->block_id}}">{{$data->block_name}}</option>
+                                          @endforeach
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12" id="ulb_div" style="display:none;">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">ULB <span class="text-danger"> *</span></label>
+                                       <select class="select pass-input form-control" name="ulb_id" id="ulb_id">
+                                          <option value="">Select ULB</option>
+                                          @foreach($municipality as $data)
+                                          <option value="{{$data->municipality_id}}">{{$data->municipality_name}}</option>
+                                          @endforeach
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12" id="gp_div" style="display:none;">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Grampanchayat <span class="text-danger"> *</span></label>
+                                       <select class="select pass-input form-control" name="gp_id" id="gp_id">
+                                          <option value="">Select Grampanchayat</option>
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12" id="village_div" style="display:none;">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Village <span class="text-danger"> *</span></label>
+                                       <select class="select pass-input form-control" name="village_id" id="village_id">
+                                          <option value="">Select Village</option>
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12" id="ward_div" style="display:none;">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Ward <span class="text-danger"> *</span></label>
+                                       <select class="select pass-input form-control" name="ward_id" id="ward_id">
+                                          <option value="">Select Ward</option>
+                                       </select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">PIN<span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <input type="text" id="pin" name="pin" value="{{old('pin')}}" class="pass-input form-control" placeholder="PIN">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">IFSC<span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <select class="select  pass-input form-control" name="ifsc" id="ifsc">
+                                             <option>Select</option>
+                                             @foreach($bankMaster as $data)
+                                             <option value="{{$data->bank_ifsc}}">{{$data->bank_ifsc}}</option>
+                                             @endforeach
+                                          </select>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Bank Account Number<span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <input type="text" id="bank_po_account" name="bank_po_account" value="{{old('bank_po_account')}}" class="pass-input form-control" placeholder="Bank Account Number">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-4 col-12">
+                                    <div class="mb-3 position-relative">
+                                       <label class="form-label">Upload File <span class="text-danger"> *</span></label>
+                                       <div class="position-relative">
+                                          <input type="file" id="district_file" name="district_file" class="form-control" accept=".pdf">
+                                       </div>
+                                    </div>
                                  </div>
                                  <div class="col-12">
-                                    <button class="btn btn-secondary" type="submit">Change Password</button>
+                                    <button class="btn btn-secondary" type="submit">Submit</button>
                                  </div>
                               </div>
                            </form>
@@ -123,179 +250,506 @@ SSEPD-IT
 @endsection 
 @section('script')
 <script>
-   const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
-   aadhaarInputs.forEach(function(input) {
-      input.addEventListener('blur', function(event) {
-         const uid = event.target.value.trim();
-         const fieldName = event.target.name;
-         const errorDiv = document.querySelector(`#${fieldName}_error`);
-         if (errorDiv) errorDiv.innerHTML = '';
+$(document).ready(function () {
 
-         const Verhoeff = {
-            d: [
-               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-               [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
-               [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
-               [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
-               [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
-               [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
-               [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
-               [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
-               [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
-               [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-            ],
-            p: [
-               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-               [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
-               [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
-               [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
-               [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
-               [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
-               [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
-               [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
-            ],
-            j: [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
-            check: function(str) {
-               var c = 0;
-               str.replace(/\D+/g, "").split("").reverse().join("").replace(/[\d]/g, function(u, i) {
-                  c = Verhoeff.d[c][Verhoeff.p[i % 8][parseInt(u, 10)]];
-               });
-               return c;
-            }
-         };
+    // -------------------------------
+    // Select2 init
+    // -------------------------------
+    $('.select').select2({
+        placeholder: "Select",
+        allowClear: true,
+        width: "100%"
+    });
 
-         if (uid === "") return;
+    // -------------------------------
+    // Error helper
+    // -------------------------------
+    function showError(fieldId, msg) {
+        $('#' + fieldId + '_error').html('<label class="error text-danger">' + msg + '</label>');
+    }
 
-         if (Verhoeff.check(uid) === 0) {
-            event.target.style.borderColor = '';
-         } else {
-            if (errorDiv) {
-               errorDiv.innerHTML = '<label class="error">Aadhaar number is not valid!</label>';
-               errorDiv.style.color = 'red';
-            }
-            event.target.style.borderColor = 'red';
-            event.target.value = '';
-         }
-      });
-   });
-</script>
-<script>
-   $(document).ready(function () {
+    function clearError(fieldId) {
+        $('#' + fieldId + '_error').html('');
+    }
 
-      $('#aadhaar_no, #applicant_name').on('input', function () {
-         $('#verified_aadhar').val('');
-         $('#verified_aadhar_remarks').val('');
-         $('#aadhaar_verify_result').html('');
+    function ensureErrorDiv(fieldId) {
+        if ($('#' + fieldId + '_error').length === 0) {
+            $('#' + fieldId).after('<div id="' + fieldId + '_error" class="error-div"></div>');
+        }
+    }
 
-         $('#btnVerifyAadhaar')
-         .prop('disabled', false)
-         .removeClass('btn-success')
-         .addClass('btn-info')
-         .text('Verify!');
+    // Ensure error div for all required fields
+    let requiredFields = [
+        "name_of_the_beneficiary",
+        "gender",
+        "dob",
+        "aadhaar_no",
+        "pin",
+        "ifsc",
+        "bank_po_account",
+        "district_file",
+        "block_id",
+        "gp_id",
+        "village_id",
+        "ulb_id",
+        "ward_id"
+    ];
 
-         $('#aadhaar_no, #applicant_name').prop('readonly', false);
-      });
+    requiredFields.forEach(function (field) {
+        ensureErrorDiv(field);
+    });
 
-      $(document).on('click', '#btnVerifyAadhaar', function () {
+    // Extra error div for address_type radio
+    if ($('#address_type_error').length === 0) {
+        $('input[name="address_type"]').last().parent().parent().after(
+            '<div id="address_type_error" class="error-div"></div>'
+        );
+    }
 
-         let aadhaar = $('#aadhaar_no').val().trim();
-         let name    = $('#applicant_name').val().trim();
+    // -------------------------------
+    // Aadhaar Verhoeff validation
+    // -------------------------------
+    const Verhoeff = {
+        d: [
+            [0,1,2,3,4,5,6,7,8,9],
+            [1,2,3,4,0,6,7,8,9,5],
+            [2,3,4,0,1,7,8,9,5,6],
+            [3,4,0,1,2,8,9,5,6,7],
+            [4,0,1,2,3,9,5,6,7,8],
+            [5,9,8,7,6,0,4,3,2,1],
+            [6,5,9,8,7,1,0,4,3,2],
+            [7,6,5,9,8,2,1,0,4,3],
+            [8,7,6,5,9,3,2,1,0,4],
+            [9,8,7,6,5,4,3,2,1,0]
+        ],
+        p: [
+            [0,1,2,3,4,5,6,7,8,9],
+            [1,5,7,6,2,8,3,0,9,4],
+            [5,8,0,3,7,9,6,1,4,2],
+            [8,9,1,6,0,4,3,5,2,7],
+            [9,4,5,3,1,2,6,8,7,0],
+            [4,2,8,6,5,7,3,9,0,1],
+            [2,7,9,3,8,0,6,4,1,5],
+            [7,0,4,6,9,1,3,2,5,8]
+        ],
+        j: [0,4,3,2,1,5,6,7,8,9],
+        check: function (str) {
+            let c = 0;
+            str.replace(/\D+/g, "")
+                .split("")
+                .reverse()
+                .join("")
+                .replace(/[\d]/g, function (u, i) {
+                    c = Verhoeff.d[c][Verhoeff.p[i % 8][parseInt(u, 10)]];
+                });
+            return c;
+        }
+    };
 
-         $('#aadhaar_verify_result').html('');
-         $('#verified_aadhar').val('');
-         $('#verified_aadhar_remarks').val('');
+    $('#aadhaar_no').on('blur', function () {
+        let uid = $(this).val().trim();
+        clearError("aadhaar_no");
 
-         if (!/^\d{12}$/.test(aadhaar)) {
-            $('#aadhaar_verify_result').html(
-               '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
-               );
+        if(uid === "") return;
+
+        if(!/^\d{12}$/.test(uid)){
+            showError("aadhaar_no", "Enter valid 12-digit Aadhaar number");
+            $(this).val('');
             return;
-         }
+        }
 
-         if (name === '') {
-            $('#aadhaar_verify_result').html(
-               '<span class="text-danger">Enter beneficiary name first</span>'
-               );
+        if (Verhoeff.check(uid) !== 0) {
+            showError("aadhaar_no", "Aadhaar number is not valid!");
+            $(this).val('');
+        }
+    });
+
+    // -------------------------------
+    // Reset Aadhaar verification if changed
+    // -------------------------------
+    $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+
+        $('#verified_aadhar').val('');
+        $('#verified_aadhar_remarks').val('');
+        $('#aadhaar_verify_result').html('');
+        $('#passwordInfo').show();
+
+        $('#btnVerifyAadhaar')
+            .prop('disabled', false)
+            .removeClass('btn-success')
+            .addClass('btn-info')
+            .text('Verify!');
+
+        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+    });
+
+    // -------------------------------
+    // Aadhaar Verify Button
+    // -------------------------------
+    $('#btnVerifyAadhaar').on('click', function () {
+
+        let aadhaar = $('#aadhaar_no').val().trim();
+        let name = $('#name_of_the_beneficiary').val().trim();
+
+        $('#aadhaar_verify_result').html('');
+        clearError("aadhaar_no");
+        clearError("name_of_the_beneficiary");
+
+        if (name === '') {
+            showError("name_of_the_beneficiary", "Name is required");
             return;
-         }
+        }
 
-         $('#btnVerifyAadhaar')
-         .prop('disabled', true)
-         .text('Verifying...');
+        if (!/^\d{12}$/.test(aadhaar)) {
+            showError("aadhaar_no", "Enter valid 12-digit Aadhaar number");
+            return;
+        }
 
-         $.ajax({
+        if (Verhoeff.check(aadhaar) !== 0) {
+            showError("aadhaar_no", "Aadhaar number is not valid!");
+            return;
+        }
+
+        $('#btnVerifyAadhaar')
+            .prop('disabled', true)
+            .text('Verifying...');
+
+        $.ajax({
             url: "{{ route('website.pensioners.consent_aadhar_verification_process') }}",
             type: "POST",
             dataType: "json",
             data: {
-               _token: "{{ csrf_token() }}",
-               aadhaar_no: aadhaar,
-               applicant_name: name
+                _token: "{{ csrf_token() }}",
+                aadhaar_no: aadhaar,
+                name_of_the_beneficiary: name
             },
 
             success: function (res) {
-               let message = res.data ?? '';
 
-               $('#verified_aadhar_remarks').val(message);
+                let message = res.data ?? "Verification failed";
+                $('#verified_aadhar_remarks').val(message);
 
-               if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+                if (message.toLowerCase().includes('verify successfully')) {
 
-                  $('#verified_aadhar').val(1);
+                    $('#verified_aadhar').val(1);
 
-                  $('#aadhaar_verify_result').html(
-                     '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
-                     );
+                    $('#aadhaar_verify_result').html(
+                        '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+                    );
 
-                  $('#btnVerifyAadhaar')
-                  .prop('disabled', true)
-                  .removeClass('btn-info')
-                  .addClass('btn-success')
-                  .text('Verified');
+                    $('#passwordInfo').hide();
 
-                  $('#aadhaar_no, #applicant_name').prop('readonly', true);
+                    $('#btnVerifyAadhaar')
+                        .removeClass('btn-info')
+                        .addClass('btn-success')
+                        .text('Verified');
 
-               } else {
-                  $('#verified_aadhar').val(0);
+                    $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
 
-                  $('#aadhaar_verify_result').html(
-                     '<span class="badge bg-danger">' + message + '</span>'
-                     );
+                } else {
 
-                  $('#btnVerifyAadhaar')
-                  .prop('disabled', false)
-                  .removeClass('btn-success')
-                  .addClass('btn-info')
-                  .text('Verify!');
+                    $('#verified_aadhar').val(0);
 
-                  $('#aadhaar_no, #applicant_name').prop('readonly', false);
-               }
+                    $('#aadhaar_verify_result').html(
+                        '<span class="badge bg-danger">Please provide valid details as per Aadhaar.</span>'
+                    );
+
+                    $('#btnVerifyAadhaar')
+                        .prop('disabled', false)
+                        .removeClass('btn-success')
+                        .addClass('btn-info')
+                        .text('Verify!');
+                }
             },
 
-            error: function (xhr) {
-               let msg = 'Verification failed';
-               if (xhr.responseJSON) {
-                  msg = xhr.responseJSON.exception ??
-                  xhr.responseJSON.response ??
-                  msg;
-               }
+            error: function () {
 
-               $('#verified_aadhar').val(0);
-               $('#verified_aadhar_remarks').val(msg);
+                $('#verified_aadhar').val(0);
 
-               $('#aadhaar_verify_result').html(
-                  '<span class="badge bg-danger">' + msg + '</span>'
-                  );
+                $('#aadhaar_verify_result').html(
+                    '<span class="badge bg-danger">Verification failed. Try again.</span>'
+                );
 
-               $('#btnVerifyAadhaar')
-               .prop('disabled', false)
-               .removeClass('btn-success')
-               .addClass('btn-info')
-               .text('Verify!');
-
-               $('#aadhaar_no, #applicant_name').prop('readonly', false);
+                $('#btnVerifyAadhaar')
+                    .prop('disabled', false)
+                    .removeClass('btn-success')
+                    .addClass('btn-info')
+                    .text('Verify!');
             }
-         });
-      });
-   });
+        });
+
+    });
+
+    // -------------------------------
+    // Address Type toggle
+    // -------------------------------
+    $('input[name="address_type"]').on('change', function () {
+
+        clearError("block_id");
+        clearError("gp_id");
+        clearError("village_id");
+        clearError("ulb_id");
+        clearError("ward_id");
+        $('#address_type_error').html('');
+
+        let selected = $(this).val();
+
+        if (selected == "1") {
+            $('#block_div').show();
+            $('#gp_div').hide();
+            $('#village_div').hide();
+
+            $('#ulb_div').hide();
+            $('#ward_div').hide();
+
+            $('#ulb_id').val('').trigger('change');
+            $('#ward_id').val('').trigger('change');
+        }
+
+        if (selected == "2") {
+            $('#ulb_div').show();
+            $('#ward_div').hide();
+
+            $('#block_div').hide();
+            $('#gp_div').hide();
+            $('#village_div').hide();
+
+            $('#block_id').val('').trigger('change');
+            $('#gp_id').val('').trigger('change');
+            $('#village_id').val('').trigger('change');
+        }
+
+    });
+
+    // -------------------------------
+    // Block -> GP
+    // -------------------------------
+    $('#block_id').on('change', function () {
+
+        let blockId = $(this).val();
+
+        $('#gp_id').html('<option value="">Select Grampanchayat</option>').trigger('change');
+        $('#village_id').html('<option value="">Select Village</option>').trigger('change');
+
+        $('#gp_div').hide();
+        $('#village_div').hide();
+
+        if (blockId == "") return;
+
+        $.ajax({
+            url: "{{ route('website.pensioners.get.gps.by.block', ':id') }}".replace(':id', blockId),
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+
+                if (res.length > 0) {
+                    $.each(res, function (key, gp) {
+                        $('#gp_id').append('<option value="' + gp.gp_id + '">' + gp.gp_name + '</option>');
+                    });
+                    $('#gp_div').show();
+                }
+            }
+        });
+    });
+
+    // -------------------------------
+    // GP -> Village
+    // -------------------------------
+    $('#gp_id').on('change', function () {
+
+        let gpId = $(this).val();
+
+        $('#village_id').html('<option value="">Select Village</option>').trigger('change');
+        $('#village_div').hide();
+
+        if (gpId == "") return;
+
+        $.ajax({
+            url: "{{ route('website.pensioners.get.villages.by.gp', ':id') }}".replace(':id', gpId),
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+
+                if (res.length > 0) {
+                    $.each(res, function (key, village) {
+                        $('#village_id').append('<option value="' + village.id + '">' + village.village_name + '</option>');
+                    });
+                    $('#village_div').show();
+                }
+            }
+        });
+    });
+
+    // -------------------------------
+    // ULB -> Ward
+    // -------------------------------
+    $('#ulb_id').on('change', function () {
+
+        let ulbId = $(this).val();
+
+        $('#ward_id').html('<option value="">Select Ward</option>').trigger('change');
+        $('#ward_div').hide();
+
+        if (ulbId == "") return;
+
+        $.ajax({
+            url: "{{ route('website.pensioners.get.wards.by.ulb', ':id') }}".replace(':id', ulbId),
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+
+                if (res.length > 0) {
+                    $.each(res, function (key, ward) {
+                        $('#ward_id').append('<option value="' + ward.ward_code + '">' + ward.ward_name + '</option>');
+                    });
+                    $('#ward_div').show();
+                }
+            }
+        });
+    });
+
+    // -------------------------------
+    // Form Submit Validation (Final)
+    // -------------------------------
+    $('form').on('submit', function (e) {
+
+        let isValid = true;
+
+        // Clear all errors
+        $('.error-div').html('');
+        $('#aadhaar_verify_result').html('');
+
+        let name = $('#name_of_the_beneficiary').val().trim();
+        let gender = $('#gender').val();
+        let dob = $('#dob').val();
+        let aadhaar = $('#aadhaar_no').val().trim();
+        let verifiedAadhar = $('#verified_aadhar').val();
+
+        let pin = $('#pin').val().trim();
+        let ifsc = $('#ifsc').val();
+        let bankAcc = $('#bank_po_account').val().trim();
+
+        // Name
+        if (name === '') {
+            showError("name_of_the_beneficiary", "Name is required");
+            isValid = false;
+        }
+
+        // Gender
+        if (!gender || gender === "Select") {
+            showError("gender", "Gender is required");
+            isValid = false;
+        }
+
+        // DOB
+        if (!dob) {
+            showError("dob", "DOB is required");
+            isValid = false;
+        }
+
+        // Aadhaar
+        if (!/^\d{12}$/.test(aadhaar) || Verhoeff.check(aadhaar) !== 0) {
+            showError("aadhaar_no", "Enter valid Aadhaar number");
+            isValid = false;
+        }
+
+        // Aadhaar verified
+        if (verifiedAadhar != "1") {
+            $('#aadhaar_verify_result').html(
+                '<span class="badge bg-danger">Please verify Aadhaar before submitting.</span>'
+            );
+            isValid = false;
+        }
+
+        // Address type
+        let addressType = $('input[name="address_type"]:checked').val();
+        if (!addressType) {
+            $('#address_type_error').html('<label class="error text-danger">Address Type is required</label>');
+            isValid = false;
+        }
+
+        // If Block selected
+        if (addressType == "1") {
+
+            let block = $('#block_id').val();
+            let gp = $('#gp_id').val();
+            let village = $('#village_id').val();
+
+            if (!block) {
+                showError("block_id", "Block is required");
+                isValid = false;
+            }
+
+            if ($('#gp_div').is(':visible') && !gp) {
+                showError("gp_id", "Grampanchayat is required");
+                isValid = false;
+            }
+
+            if ($('#village_div').is(':visible') && !village) {
+                showError("village_id", "Village is required");
+                isValid = false;
+            }
+        }
+
+        // If ULB selected
+        if (addressType == "2") {
+
+            let ulb = $('#ulb_id').val();
+            let ward = $('#ward_id').val();
+
+            if (!ulb) {
+                showError("ulb_id", "ULB is required");
+                isValid = false;
+            }
+
+            if ($('#ward_div').is(':visible') && !ward) {
+                showError("ward_id", "Ward is required");
+                isValid = false;
+            }
+        }
+
+        // PIN
+        if (!/^\d{6}$/.test(pin)) {
+            showError("pin", "Valid 6-digit PIN is required");
+            isValid = false;
+        }
+
+        // IFSC
+        if (!ifsc || ifsc === "Select") {
+            showError("ifsc", "IFSC is required");
+            isValid = false;
+        }
+
+        // Bank account
+        if (bankAcc === '') {
+            showError("bank_po_account", "Bank Account Number is required");
+            isValid = false;
+        }
+
+        // File PDF
+        let fileInput = document.getElementById("district_file");
+        if (!fileInput || fileInput.files.length === 0) {
+            showError("district_file", "PDF file is required");
+            isValid = false;
+        } else {
+            let file = fileInput.files[0];
+            if (file.type !== "application/pdf") {
+                showError("district_file", "Only PDF file is allowed");
+                isValid = false;
+            }
+        }
+
+        // Final Submit
+        if (!isValid) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $(".card-body").offset().top - 100
+            }, 400);
+        }
+
+    });
+
+});
 </script>
+
 @endsection

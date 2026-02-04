@@ -1,97 +1,96 @@
-<footer class="footer footer-five">
-
-	<!-- Footer Top -->
-	<div class="footer-three-top" data-aos="fade-up">
-		<div class="container">
-			<div class="footer-three-top-content">
-				<div class="row align-items-center gy-4">
-					<div class="col-lg-6">
-
-						<!-- Footer Widget -->
-						<div class="footer-widget-three footer-about">
-							<div class="footer-three-logo">
-								<img class="img-fluid" src="{{ asset('website_assets/assets/img/logo-white.svg') }}" alt="logo">
-							</div>
-							<div class="footer-three-about">
+<footer class="footer">
+			<div class="footer-bg">
+				<img src="{{ asset('website_assets/assets/img/bg/footer-bg-01.png') }}" class="footer-bg-1" alt="">
+				<img src="{{ asset('website_assets/assets/img/bg/footer-bg-02.png') }}" class="footer-bg-2" alt="">
+			</div>
+			<div class="footer-top">
+				<div class="container">
+					<div class="row row-gap-4">
+						<div class="col-lg-4">
+							<div class="footer-about">
+								<div class="footer-logo">
+									<img src="{{ asset('website_assets/assets/img/logo.svg') }}" alt="">
+								</div>
 								<p>This platform allows pension beneficiaries to provide consent online for receiving pension through Direct Bank Transfer (DBT).</p>
-							</div>
-							<div class="box-form-newsletter">
-								<form class="form-newsletter">
-									<input class="input-newsletter" type="text" placeholder="Enter your email here">
-									<button class="btn btn-secondary font-heading icon-send-letter">Subscribe</button>
-								</form>
+								<div class="d-flex align-items-center">
+									<a href="javascript:void(0);" class="me-2"><img src="{{ asset('website_assets/assets/img/icon/appstore.svg') }}" alt=""></a>
+									<a href="javascript:void(0);"><img src="{{ asset('website_assets/assets/img/icon/googleplay.svg') }}" alt=""></a>
+								</div>
 							</div>
 						</div>
-						<!-- /Footer Widget -->
-
-					</div>
-					<div class="col-lg-6">
-						<div class="row gy-4">
-							<div class="col-md-6 d-lg-flex justify-content-end">
-								<!-- Footer Widget -->
-								<!-- <div class="footer-widget-three footer-menu-three footer-three-right">
-									<h5 class="footer-three-title">For Instructor</h5>
-									<ul>
-										<li><a href="javascript:void(0);">Profile</a></li>
-										<li><a href="javascript:void(0);">Login</a></li>
-										<li><a href="javascript:void(0);">Register</a></li>
-										<li><a href="javascript:void(0);">Instructor</a></li>
-										<li><a href="javascript:void(0);"> Dashboard</a></li>
-									</ul>
-								</div> -->
-								<!-- /Footer Widget -->
-							</div>
-							<div class="col-md-6 d-lg-flex justify-content-end">
-								<!-- Footer Widget -->
-								<div class="footer-widget-three footer-menu-three">
-									<h5 class="footer-three-title">Portals</h5>
-									<ul>
-										<li><a href="{{ route('website.pensioners.index') }}">SSEPD-IT</a></li>
+						<div class="col-lg-8">
+							<div class="row row-gap-4">
+								<div class="col-lg-3">
+									<!-- <div class="footer-widget footer-menu">
+										<h5 class="footer-title">For Instructor</h5>
+										<ul>
+											<li><a href="course-grid.html">Search Mentors</a></li>
+											<li><a href="login.html">Login</a></li>
+											<li><a href="register.html">Register</a></li>
+											<li><a href="course-list.html">Booking</a></li>
+											<li><a href="student-dashboard.html">Students Dashboard</a></li>
+										</ul>
+									</div> -->
+								</div>
+								<div class="col-lg-3">
+									<div class="footer-widget footer-menu">
+										<h5 class="footer-title">Portals</h5>
+										<ul>
+											<li><a href="{{ route('website.pensioners.index') }}">SSEPD-IT</a></li>
 										<li><a href="javascript:void(0);">EP Beneficiaries</a></li>
 										<li><a href="https://siep.ssepdit.in">SIEP</a></li>
 										<li><a href="{{route('login')}}">Login</a></li>
 										<li><a href="{{route('login')}}"> Register</a></li>
-									</ul>
+										</ul>
+									</div>
 								</div>
-								<!-- /Footer Widget -->
+								<div class="col-lg-6">
+									<div class="footer-widget footer-contact">
+										<h5 class="footer-title">Newsletter</h5>
+										<div class="subscribe-input">
+											<form action="javascript:void(0);">
+												<input type="email" class="form-control" placeholder="Enter your Email Address">
+												<button type="submit" class="btn btn-primary btn-sm inline-flex align-items-center"><i class="isax isax-send-2 me-1"></i>Subscribe</button>
+											</form>
+										</div>
+										<div class="footer-contact-info">
+											<div class="footer-address d-flex align-items-center">
+												<img src="{{ asset('website_assets/assets/img/icon/icon-20.svg') }}" alt="Img" class="img-fluid me-2">
+												<p> SSEPD Department, Red Building, <br> Lokseva Bhawan, Bhubaneswar 751001 </p>
+											</div>
+											<div class="footer-address d-flex align-items-center">
+												<img src="{{ asset('website_assets/assets/img/icon/icon-19.svg') }}" alt="Img" class="img-fluid me-2">
+												<p>ssepdsec.od@od.gov.in</p>
+											</div>
+											<div class="footer-address d-flex align-items-center">
+												<img src="{{ asset('website_assets/assets/img/icon/icon-21.svg') }}" alt="Img" class="img-fluid me-2">
+												<p>0674- 2392803</p>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>						
-		</div>
-	</div>
-	<!-- /Footer Top -->
-
-	<div class="footer-bottom-five">
-		<div class="container">
-
-			<!-- Copyright -->
-			<div class="row row-gap-3">
-				<div class="col-lg-4">
-					<div class="copyright-text">
-						<p>Copyright 2026 © <a href="javascript:void(0);">SSEPD-IT</a>. All right reserved.</p>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="privacy-link">
-						<a href="javascript:void(0);" class="mb-0">Terms &amp; Policy</a>
-						<a href="javascript:void(0);">Privacy Policy</a>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="social-icon">
-						<a href="javascript:void(0);"><i class="fa-brands fa-facebook-f"></i></a>
-						<a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a>
-						<a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a>
-						<a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a>
-						<a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a>
+			</div>
+			<div class="footer-bottom">
+				<div class="container">
+					<div class="row row-gap-2">
+						<div class="col-md-6">
+							<div class="text-center text-md-start">
+								<p class="text-white">Copyright 2026 © SSEPD-IT. All rights reserved.</p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div>
+								<ul class="d-flex align-items-center justify-content-center justify-content-md-end footer-link">
+									<li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+									<li><a href="privacy-policy.html">Privacy Policy</a></li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- /Copyright -->
-
-		</div>
-	</div>
-
-</footer>
+		</footer>

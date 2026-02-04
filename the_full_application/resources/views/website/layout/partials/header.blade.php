@@ -44,7 +44,7 @@
 				</div>
 				<div class="header-btn d-flex align-items-center">				
 					<a href="{{route('login')}}" class="btn btn-primary d-inline-flex align-items-center me-2">
-						<i class="isax isax-user me-2"></i>Sign In
+						<i class="isax isax-user me-2"></i>Department Login
 					</a>
 					<a href="{{route('login')}}" class="btn btn-secondary me-0">
 						<i class="isax isax-user-edit me-2"></i>Register
