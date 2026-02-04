@@ -114,6 +114,7 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('filter', 'filter')->name('filter');
         Route::get('index_BKP_BASIC_DATATABLE', 'index_BKP_BASIC_DATATABLE')->name('index_BKP_BASIC_DATATABLE');
         Route::get('datatable', 'datatable')->name('datatable');
+        Route::get('{uuid}/dbt_consent', 'dbt_consent_form')->name('dbt_consent_form');
     });
 });
 

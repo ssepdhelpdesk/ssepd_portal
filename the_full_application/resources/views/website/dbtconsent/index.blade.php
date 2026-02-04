@@ -571,5 +571,4 @@ SSEPD-IT
       $(this).closest('.dropdown').find('.dropdown-toggle').text('Show ' + length);
    });
 </script>
-
 @endsection
