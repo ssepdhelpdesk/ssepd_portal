@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website_Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
 use App\Models\{
@@ -105,9 +106,7 @@ public function datatable(Request $request)
 
         return '
         <div class="d-flex align-items-center">
-        <a href="'.$url.'" class="d-inline-flex fs-14 me-1 action-icon">
-        <i class="isax isax-eye"></i>
-        </a>
+        <a href="'.$url.'" target="_blank" rel="noopener noreferrer" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-eye"></i></a>
         </div>
         ';
     })
@@ -283,6 +282,54 @@ public function filter(Request $request)
 
     return view('website.nsap_rows', compact('nsapDump'));
 }
+
+public function consent_aadhar_verification_process(Request $request)
+    {
+        $request->validate([
+            'aadhaar_no' => 'required|digits:12',
+            'applicant_name' => 'required|string',
+        ]);
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 60,
+                'connect_timeout' => 20,
+                'curl' => [
+                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                ],
+            ])
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'User-Agent' => 'PostmanRuntime/7.36.0',
+            ])
+            ->asForm()
+            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                'aadhaar_no' => trim($request->aadhaar_no),
+                'name'       => trim($request->applicant_name),
+            ]);
+
+            if ($response->successful()) {
+                return response()->json([
+                    'status' => true,
+                    'data'   => trim($response->body()),
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'http_code' => $response->status(),
+                'response'  => $response->body(),
+            ], 422);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'exception' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
 
 }

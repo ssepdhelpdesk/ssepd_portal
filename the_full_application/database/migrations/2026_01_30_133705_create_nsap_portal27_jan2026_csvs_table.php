@@ -61,6 +61,7 @@ return new class extends Migration
             $table->string('disbursement_mode')->nullable();
 
             $table->string('beneficiary_no')->nullable();
+            $table->string('name_as_per_aadhaar')->nullable();
             $table->string('aadhar_verified')->nullable();
             $table->string('aadhar_no')->nullable();
             $table->bigInteger('aadhaar_no_by_user')->nullable()->unique();
