@@ -214,7 +214,7 @@ public function dbt_consent_store_form(Request $request, $uuid)
             $bankAccountExtension = $bankAccountFile->getClientOriginalExtension();
             $bankAccountRandomName = 'BANK_ACCOUNT_' . Str::random(40) . '.' . $bankAccountExtension;
 
-            $bankAccountStoredPath = $bankAccountFile->storeAs("bank_account_file", $bankAccountRandomName, 'public');
+            $bankAccountStoredPath = $bankAccountFile->storeAs("dbt_consent", $bankAccountRandomName, 'public');
 
             copy(storage_path("app/public/{$bankAccountStoredPath}"), "{$folderPath}/{$bankAccountRandomName}");
             copy(storage_path("app/public/{$bankAccountStoredPath}"), "{$externalPath}/{$bankAccountRandomName}");
