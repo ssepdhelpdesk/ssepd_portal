@@ -71,7 +71,7 @@ public function datatable(Request $request)
     $baseQuery = NsapPortal27Jan2026Csv::query()
     ->whereNotIn('scheme', ['IGNOAPS', 'IGNDPS', 'IGNWPS', 'NFBS'])
     ->whereNot('disbursement_mode', 'BANK')
-    ->whereNot('marked_for_dbt', '1')
+    ->where('marked_for_dbt', '0')
     ->where('district', $request->district)
     ->where('area', $request->area)
     ->where('sub_district_municipality', $request->block)
@@ -187,7 +187,6 @@ public function dbt_consent_store_form(Request $request, $uuid)
     $validatedData = $request->validate($validationRules, $messages);
 
     try {
-
         $village = null;
         $dob = trim($validatedData['dob']);
 
@@ -290,7 +289,7 @@ public function getWardsByUlb($id)
     $wards = WardMaster::where('municipal_area_code', $id)
     ->where('is_active', 1)
     ->orderBy('ward_name', 'ASC')
-    ->get(['id', 'ward_name']);
+    ->get(['ward_code', 'ward_name']);
 
     return response()->json($wards);
 }
