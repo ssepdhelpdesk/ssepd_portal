@@ -200,7 +200,7 @@ SSEPD-IT
                                     <div class="mb-3 position-relative">
                                        <label class="form-label">PIN<span class="text-danger"> *</span></label>
                                        <div class="position-relative">
-                                          <input type="text" id="pin" name="pin" value="{{old('pin')}}" class="pass-input form-control" placeholder="PIN">
+                                          <input type="text" id="pin" name="pin" value="{{old('pin')}}" maxlength="6" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="pass-input form-control" placeholder="PIN">
                                        </div>
                                     </div>
                                  </div>
@@ -221,7 +221,7 @@ SSEPD-IT
                                     <div class="mb-3 position-relative">
                                        <label class="form-label">Bank Account Number<span class="text-danger"> *</span></label>
                                        <div class="position-relative">
-                                          <input type="text" id="bank_po_account" name="bank_po_account" value="{{old('bank_po_account')}}" class="pass-input form-control" placeholder="Bank Account Number">
+                                          <input type="text" id="bank_po_account" name="bank_po_account" value="{{old('bank_po_account')}}" maxlength="20" oninput="this.value=this.value.replace(/[^0-9]/g,'');" class="pass-input form-control" placeholder="Bank Account Number">
                                        </div>
                                     </div>
                                  </div>
@@ -252,18 +252,12 @@ SSEPD-IT
 <script>
 $(document).ready(function () {
 
-    // -------------------------------
-    // Select2 init
-    // -------------------------------
     $('.select').select2({
         placeholder: "Select",
         allowClear: true,
         width: "100%"
     });
 
-    // -------------------------------
-    // Error helper
-    // -------------------------------
     function showError(fieldId, msg) {
         $('#' + fieldId + '_error').html('<label class="error text-danger">' + msg + '</label>');
     }
@@ -278,7 +272,6 @@ $(document).ready(function () {
         }
     }
 
-    // Ensure error div for all required fields
     let requiredFields = [
         "name_of_the_beneficiary",
         "gender",
@@ -299,16 +292,12 @@ $(document).ready(function () {
         ensureErrorDiv(field);
     });
 
-    // Extra error div for address_type radio
     if ($('#address_type_error').length === 0) {
         $('input[name="address_type"]').last().parent().parent().after(
             '<div id="address_type_error" class="error-div"></div>'
         );
     }
 
-    // -------------------------------
-    // Aadhaar Verhoeff validation
-    // -------------------------------
     const Verhoeff = {
         d: [
             [0,1,2,3,4,5,6,7,8,9],
@@ -364,9 +353,6 @@ $(document).ready(function () {
         }
     });
 
-    // -------------------------------
-    // Reset Aadhaar verification if changed
-    // -------------------------------
     $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
 
         $('#verified_aadhar').val('');
@@ -383,9 +369,6 @@ $(document).ready(function () {
         $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
     });
 
-    // -------------------------------
-    // Aadhaar Verify Button
-    // -------------------------------
     $('#btnVerifyAadhaar').on('click', function () {
 
         let aadhaar = $('#aadhaar_no').val().trim();
@@ -480,9 +463,6 @@ $(document).ready(function () {
 
     });
 
-    // -------------------------------
-    // Address Type toggle
-    // -------------------------------
     $('input[name="address_type"]').on('change', function () {
 
         clearError("block_id");
@@ -521,9 +501,6 @@ $(document).ready(function () {
 
     });
 
-    // -------------------------------
-    // Block -> GP
-    // -------------------------------
     $('#block_id').on('change', function () {
 
         let blockId = $(this).val();
@@ -552,9 +529,6 @@ $(document).ready(function () {
         });
     });
 
-    // -------------------------------
-    // GP -> Village
-    // -------------------------------
     $('#gp_id').on('change', function () {
 
         let gpId = $(this).val();
@@ -580,9 +554,6 @@ $(document).ready(function () {
         });
     });
 
-    // -------------------------------
-    // ULB -> Ward
-    // -------------------------------
     $('#ulb_id').on('change', function () {
 
         let ulbId = $(this).val();
@@ -608,14 +579,18 @@ $(document).ready(function () {
         });
     });
 
-    // -------------------------------
-    // Form Submit Validation (Final)
-    // -------------------------------
+    $('#pin').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+    });
+
+    $('#bank_po_account').on('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 20);
+    });
+
     $('form').on('submit', function (e) {
 
         let isValid = true;
 
-        // Clear all errors
         $('.error-div').html('');
         $('#aadhaar_verify_result').html('');
 
@@ -629,31 +604,26 @@ $(document).ready(function () {
         let ifsc = $('#ifsc').val();
         let bankAcc = $('#bank_po_account').val().trim();
 
-        // Name
         if (name === '') {
             showError("name_of_the_beneficiary", "Name is required");
             isValid = false;
         }
 
-        // Gender
         if (!gender || gender === "Select") {
             showError("gender", "Gender is required");
             isValid = false;
         }
 
-        // DOB
         if (!dob) {
             showError("dob", "DOB is required");
             isValid = false;
         }
 
-        // Aadhaar
         if (!/^\d{12}$/.test(aadhaar) || Verhoeff.check(aadhaar) !== 0) {
             showError("aadhaar_no", "Enter valid Aadhaar number");
             isValid = false;
         }
 
-        // Aadhaar verified
         if (verifiedAadhar != "1") {
             $('#aadhaar_verify_result').html(
                 '<span class="badge bg-danger">Please verify Aadhaar before submitting.</span>'
@@ -661,14 +631,12 @@ $(document).ready(function () {
             isValid = false;
         }
 
-        // Address type
         let addressType = $('input[name="address_type"]:checked').val();
         if (!addressType) {
             $('#address_type_error').html('<label class="error text-danger">Address Type is required</label>');
             isValid = false;
         }
 
-        // If Block selected
         if (addressType == "1") {
 
             let block = $('#block_id').val();
@@ -691,7 +659,6 @@ $(document).ready(function () {
             }
         }
 
-        // If ULB selected
         if (addressType == "2") {
 
             let ulb = $('#ulb_id').val();
@@ -708,25 +675,21 @@ $(document).ready(function () {
             }
         }
 
-        // PIN
         if (!/^\d{6}$/.test(pin)) {
             showError("pin", "Valid 6-digit PIN is required");
             isValid = false;
         }
 
-        // IFSC
         if (!ifsc || ifsc === "Select") {
             showError("ifsc", "IFSC is required");
             isValid = false;
         }
 
-        // Bank account
-        if (bankAcc === '') {
-            showError("bank_po_account", "Bank Account Number is required");
+        if (!/^\d{9,20}$/.test(bankAcc)) {
+            showError("bank_po_account", "Enter valid Bank Account Number (9 to 20 digits)");
             isValid = false;
         }
 
-        // File PDF
         let fileInput = document.getElementById("district_file");
         if (!fileInput || fileInput.files.length === 0) {
             showError("district_file", "PDF file is required");
@@ -739,7 +702,6 @@ $(document).ready(function () {
             }
         }
 
-        // Final Submit
         if (!isValid) {
             e.preventDefault();
             $('html, body').animate({
@@ -751,5 +713,6 @@ $(document).ready(function () {
 
 });
 </script>
+
 
 @endsection
