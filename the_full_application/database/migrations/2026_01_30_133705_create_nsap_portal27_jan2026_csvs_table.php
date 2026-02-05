@@ -40,6 +40,7 @@ return new class extends Migration
             $table->longText('address')->nullable();
             $table->string('scheme')->nullable();
             $table->string('age')->nullable();
+            $table->date('dob')->nullable();
             $table->string('age_by_user')->nullable();
             $table->string('gender')->nullable();
             $table->string('gender_by_user')->nullable();
@@ -60,6 +61,7 @@ return new class extends Migration
 
             $table->string('bank_po_account')->nullable();
             $table->string('ifsc_code')->nullable();
+            $table->string('bank_account_file')->nullable();
             $table->string('disbursement_mode')->nullable();
 
             $table->string('beneficiary_no')->nullable();
@@ -72,6 +74,7 @@ return new class extends Migration
             $table->tinyInteger('verified_aadhar')->default(0)->comment('0=Not Verified, 1=Verified');
             $table->string('verified_aadhar_remarks')->nullable();
 
+            $table->tinyInteger('marked_for_dbt')->default(0)->comment('0=Not Verified, 1=Verified');
             $table->string('is_active')->default('active')->index();
             $table->integer('db_status')->default(1)->index();
             $table->enum('status', ['Active', 'Inactive'])->default('Active')->index();

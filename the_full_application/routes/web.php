@@ -115,9 +115,9 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('index_BKP_BASIC_DATATABLE', 'index_BKP_BASIC_DATATABLE')->name('index_BKP_BASIC_DATATABLE');
         Route::get('datatable', 'datatable')->name('datatable');
         Route::get('{uuid}/dbt_consent', 'dbt_consent_form')->name('dbt_consent_form');
+        Route::post('{uuid}/dbt_consent_store', 'dbt_consent_store_form')->name('dbt_consent_store_form');
 
         Route::post('consent_aadhar_verification_process', 'consent_aadhar_verification_process')->name('consent_aadhar_verification_process');
-
         Route::get('get-gps-by-block/{block_id}', 'getGpsByBlock')->name('get.gps.by.block');
         Route::get('get-villages-by-gp/{gp_id}', 'getVillagesByGp')->name('get.villages.by.gp');
         Route::get('wards-by-ulb/{id}', 'getWardsByUlb')->name('get.wards.by.ulb');
