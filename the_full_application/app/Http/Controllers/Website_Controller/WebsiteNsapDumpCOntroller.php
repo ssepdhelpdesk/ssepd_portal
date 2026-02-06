@@ -110,9 +110,21 @@ public function datatable(Request $request)
             'area',
             'sub_district_municipality',
             'gram_panchayat_ward',
+            'aadhaar_no_by_user',
             'status'
         ])
     )
+    ->filter(function ($query) use ($request) {
+        if ($request->has('search') && $request->search['value'] != '') {
+            $search = $request->search['value'];
+            $query->where(function ($q) use ($search) {
+                $q->where('applicant_name', 'like', "%{$search}%")
+                ->orWhere('father_husband_name', 'like', "%{$search}%")
+                ->orWhere('sanction_order_no', 'like', "%{$search}%")
+                ->orWhere('aadhaar_no_by_user', 'like', "%{$search}%");
+            });
+        }
+    })
     ->addIndexColumn()
     ->editColumn('area', fn($r) =>
         strtoupper(trim($r->area)) === 'R' ? 'Rural' : 'Urban'
@@ -168,8 +180,8 @@ public function checkAadhaarDuplicate(Request $request)
     $uuid = trim($request->uuid);
 
     $duplicate = NsapPortal27Jan2026Csv::where('aadhaar_no_by_user', $aadhaar)
-        ->where('uuid', '!=', $uuid)
-        ->exists();
+    ->where('uuid', '!=', $uuid)
+    ->exists();
 
     if ($duplicate) {
         return response()->json([
@@ -285,8 +297,8 @@ public function dbt_consent_store_form(Request $request, $uuid)
         return redirect()->back()->with('success', 'DBT Consent Form submitted successfully.');
 
     } catch (\Exception $e) {
-    dd($e->getMessage(), $e->getLine(), $e->getFile());
-}
+        dd($e->getMessage(), $e->getLine(), $e->getFile());
+    }
 
 }
 

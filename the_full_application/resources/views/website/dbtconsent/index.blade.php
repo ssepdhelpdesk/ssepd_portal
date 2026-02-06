@@ -148,7 +148,7 @@ SSEPD-IT
                                  <button class="btn btn-primary sub-btn" type="submit"><i class="fas fa-search"></i></button>
                               </div>
                            </div>
-                        </div>                                    
+                        </div>
                      </div>
                   </div>
                </form>
@@ -244,6 +244,7 @@ SSEPD-IT
                     </span>
                     <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
                  </div>
+                 <p>Search by Beneficiary Name, Care Of Name, NSAP Sanction Order No., or Aadhaar Number.</p>
               </div>
 
               <div class="col-md-4 text-md-end mt-2 mt-md-0">
