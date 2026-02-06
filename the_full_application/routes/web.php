@@ -118,6 +118,7 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::post('{uuid}/dbt_consent_store', 'dbt_consent_store_form')->name('dbt_consent_store_form');
 
         Route::post('consent_aadhar_verification_process', 'consent_aadhar_verification_process')->name('consent_aadhar_verification_process');
+        Route::post('check-aadhaar-duplicate', 'checkAadhaarDuplicate')->name('check.aadhaar.duplicate');
         Route::get('get-gps-by-block/{block_id}', 'getGpsByBlock')->name('get.gps.by.block');
         Route::get('get-villages-by-gp/{gp_id}', 'getVillagesByGp')->name('get.villages.by.gp');
         Route::get('wards-by-ulb/{id}', 'getWardsByUlb')->name('get.wards.by.ulb');

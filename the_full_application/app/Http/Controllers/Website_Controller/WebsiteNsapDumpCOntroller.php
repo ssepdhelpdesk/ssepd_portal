@@ -82,7 +82,6 @@ public function datatable(Request $request)
         $baseQuery->where('gram_panchayat_ward', $request->gp);
     }
 
-    /* ===== Counters (before DataTables modifies query) ===== */
     $totalActive = (clone $baseQuery)->where('status', 'Active')->count();
 
     $schemeCountOap = (clone $baseQuery)
@@ -156,6 +155,33 @@ public function dbt_consent_form(Request $request, string $uuid)
     $block = Block::where('district_id', $nsapPortal27Jan2026CsvData->district_id)->where('is_active', 'active')->orderBy('block_name')->get();
     $municipality = Municipality::where('district_id', $nsapPortal27Jan2026CsvData->district_id)->where('is_active', 'active')->orderBy('municipality_name')->get();
     return view('website.dbtconsent.dbt_consent_form', compact('nsapPortal27Jan2026CsvData', 'bankMaster', 'block', 'municipality', 'uuid'));
+}
+
+public function checkAadhaarDuplicate(Request $request)
+{
+    $request->validate([
+        'aadhaar_no' => 'required|digits:12',
+        'uuid' => 'nullable|string'
+    ]);
+
+    $aadhaar = trim($request->aadhaar_no);
+    $uuid = trim($request->uuid);
+
+    $duplicate = NsapPortal27Jan2026Csv::where('aadhaar_no_by_user', $aadhaar)
+        ->where('uuid', '!=', $uuid)
+        ->exists();
+
+    if ($duplicate) {
+        return response()->json([
+            'status' => false,
+            'message' => 'This Aadhaar number is already submitted.'
+        ]);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Aadhaar is available.'
+    ]);
 }
 
 public function dbt_consent_store_form(Request $request, $uuid)
