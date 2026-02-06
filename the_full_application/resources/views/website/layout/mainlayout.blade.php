@@ -64,7 +64,6 @@
 			cursor: default;
 		}
 	</style>
-
 	@yield('style')	
 </head>
 <body class="home-five">

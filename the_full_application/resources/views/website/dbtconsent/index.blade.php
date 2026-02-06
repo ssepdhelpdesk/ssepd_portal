@@ -29,7 +29,7 @@ SSEPD-IT
    .banner-five {
       position: relative;
       background-color: var(--light-900);
-      background-image: url(../img/bg/bg-1.png);
+      background-image: url("{{ asset('website_assets/assets/img/bg/bg-1.png') }}");
       background-repeat: no-repeat;
       background-position: right bottom;
       padding-top: 15px;
@@ -126,13 +126,13 @@ SSEPD-IT
                                     <option value="">Address Type</option>
                                     @foreach ($area as $item)
                                     <option value="{{ $item->area }}">
-                                      {{ $areaLabels[$item->area] }}
-                                   </option>
-                                   @endforeach
-                                </select>
-                             </div>
+                                     {{ $areaLabels[$item->area] }}
+                                  </option>
+                                  @endforeach
+                               </select>
+                            </div>
 
-                             <div class="drop-detail-three">
+                            <div class="drop-detail-three">
                               <select class="form-three-select select" id="blockSelect" disabled>
                                  <option value="">Blocks / ULBs</option>
                               </select>
@@ -163,6 +163,7 @@ SSEPD-IT
    </div>
 </div>
 </section>
+
 <section class="section student-course student-course-five">
    <div class="container">
       <div class="course-widget-three">
@@ -237,62 +238,62 @@ SSEPD-IT
          <div class="col-lg-12">
             <div class="tickets">
                <div class="row align-items-center mb-2" id="searchContainer" style="display: none;">
-                 <div class="col-md-8">
-                   <div class="input-icon">
-                     <span class="input-icon-addon">
-                       <i class="isax isax-search-normal-14"></i>
-                    </span>
-                    <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
-                 </div>
-                 <p>Search by Beneficiary Name, Care Of Name, NSAP Sanction Order No., or Aadhaar Number.</p>
-              </div>
+                <div class="col-md-8">
+                 <div class="input-icon">
+                  <span class="input-icon-addon">
+                   <i class="isax isax-search-normal-14"></i>
+                </span>
+                <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
+             </div>
+             <p>Search by Beneficiary Name, Care Of Name, NSAP Sanction Order No., or Aadhaar Number.</p>
+          </div>
 
-              <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                <div class="dropdown d-inline-block">
-                  <a href="javascript:void(0);" 
-                  class="dropdown-toggle btn rounded border text-gray-6"
-                  data-bs-toggle="dropdown">
-                  Show 10
-               </a>
-               <ul class="dropdown-menu dropdown-menu-end">
-                 <li><a class="dropdown-item" data-length="10">10</a></li>
-                 <li><a class="dropdown-item" data-length="25">25</a></li>
-                 <li><a class="dropdown-item" data-length="50">50</a></li>
-                 <li><a class="dropdown-item" data-length="100">100</a></li>
-              </ul>
-           </div>
-        </div>
-     </div>
-     <div class="table-responsive custom-table">
-      <table class="table w-100" id="ticketTable">
-         <thead class="thead-light">
-            <tr>
-               <th>Sl.No</th>
-               <th>Beneficiary Name</th>
-               <th>Care Of</th>
-               <th>Scheme</th>
-               <th>Sanction From</th>
-               <th>Sanction Order No</th>
-               <th>Disbursed Mode</th>
-               <th>Disbursed Upto</th>
-               <th>District</th>
-               <th>Address Type</th>
-               <th>Block / ULB Name</th>
-               <th>GP / Ward Name</th>
-               <th>Provide Consent</th>
-            </tr>
-         </thead>
-      </table>
+          <div class="col-md-4 text-md-end mt-2 mt-md-0">
+           <div class="dropdown d-inline-block">
+            <a href="javascript:void(0);" 
+            class="dropdown-toggle btn rounded border text-gray-6"
+            data-bs-toggle="dropdown">
+            Show 10
+         </a>
+         <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" data-length="10">10</a></li>
+          <li><a class="dropdown-item" data-length="25">25</a></li>
+          <li><a class="dropdown-item" data-length="50">50</a></li>
+          <li><a class="dropdown-item" data-length="100">100</a></li>
+       </ul>
+    </div>
+ </div>
+</div>
+<div class="table-responsive custom-table">
+   <table class="table w-100" id="ticketTable">
+      <thead class="thead-light">
+         <tr>
+            <th>Sl.No</th>
+            <th>Beneficiary Name</th>
+            <th>Care Of</th>
+            <th>Scheme</th>
+            <th>Sanction From</th>
+            <th>Sanction Order No</th>
+            <th>Disbursed Mode</th>
+            <th>Disbursed Upto</th>
+            <th>District</th>
+            <th>Address Type</th>
+            <th>Block / ULB Name</th>
+            <th>GP / Ward Name</th>
+            <th>Provide Consent</th>
+         </tr>
+      </thead>
+   </table>
+</div>
+<div class="row align-items-center mt-4">
+   <div class="col-md-2">
+      <p class="pagination-text" id="pageInfo"></p>
    </div>
-   <div class="row align-items-center mt-4">
-      <div class="col-md-2">
-         <p class="pagination-text" id="pageInfo"></p>
-      </div>
-      <div class="col-md-10">
-         <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
-         id="customPagination"></ul>
-      </div>
+   <div class="col-md-10">
+      <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+      id="customPagination"></ul>
    </div>
+</div>
 </div>
 </div>
 </div>
