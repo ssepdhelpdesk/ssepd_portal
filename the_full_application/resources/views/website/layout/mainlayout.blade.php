@@ -57,6 +57,15 @@
 	<!-- Main CSS -->
 	<link rel="stylesheet" href="{{ asset('website_assets/assets/css/style.css') }}">
 
+	<!-- Daterangepikcer CSS -->
+		<link rel="stylesheet" href="{{ asset('website_assets/assets/plugins/daterangepicker/daterangepicker.css') }}">
+
+		<!-- Feather CSS -->
+      <link rel="stylesheet" href="{{ asset('website_assets/assets/css/feather.css') }}">
+
+<!-- Sweet Alert CSS -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<style>
 		.readonly-input {
 			pointer-events: none;
@@ -113,7 +122,7 @@
 	<script src="{{ asset('website_assets/assets/js/jquery.counterup.min.js') }}"></script>
 	
 	<!-- Select2 JS -->
-	<script src="{{ asset('website_assets/assets/plugins/select2/js/select2.min.js') }}"></script>	
+	<script src="{{ asset('website_assets/assets/plugins/select2/js/select2.min.js') }}"></script>
 
 	<!-- Slick Slider -->
 	<script src="{{ asset('website_assets/assets/plugins/slick/slick.js') }}"></script>
@@ -127,6 +136,11 @@
 	
 	<!-- Custom JS -->
 	<script src="{{ asset('website_assets/assets/js/script.js') }}"></script>
+
+
+        <!-- ApexChart JS -->
+		<script src="{{ asset('website_assets/assets/plugins/apexchart/apexcharts.min.js') }}"></script>
+		<script src="{{ asset('website_assets/assets/plugins/apexchart/chart-data.js') }}"></script>
 	
 
 	@yield('script')		

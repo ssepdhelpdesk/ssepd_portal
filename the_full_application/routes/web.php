@@ -41,7 +41,8 @@ use App\Http\Controllers\Api\{
 
 use App\Http\Controllers\Website_Controller\{
     WebsiteFrontController,
-    WebsiteNsapDumpCOntroller
+    WebsiteNsapDumpCOntroller,
+    WebsitePensionController
 };
 
 Route::get('/', function () {
@@ -122,6 +123,10 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('get-gps-by-block/{block_id}', 'getGpsByBlock')->name('get.gps.by.block');
         Route::get('get-villages-by-gp/{gp_id}', 'getVillagesByGp')->name('get.villages.by.gp');
         Route::get('wards-by-ulb/{id}', 'getWardsByUlb')->name('get.wards.by.ulb');
+    });
+
+    Route::prefix('pension')->name('pension.')->controller(WebsitePensionController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
     });
 });
 

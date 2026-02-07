@@ -16,7 +16,7 @@
 									<!-- <a href="javascript:void(0);" class="me-2"><img src="{{ asset('website_assets/assets/img/icon/appstore.svg') }}" alt=""></a>
 									<a href="javascript:void(0);"><img src="{{ asset('website_assets/assets/img/icon/googleplay.svg') }}" alt=""></a> -->
 									<p class="mb-0">
-										Total Visitors: <strong>{{ number_format($visitorCount) }}</strong>
+										Total Visitors: <strong>{{ number_format(\App\Models\VisitorCount::count()) }}</strong>
 									</p>
 								</div>
 							</div>
