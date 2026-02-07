@@ -515,7 +515,7 @@ $meosQuery = DailyPensionDisbursement::where('status', 1)
 ->where('staff_address_type', 2)
 ->with(['ward.municipality', 'ward.district']);
 
-if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
 if (in_array($userRole, [4,6])) {
 $bssosQuery->where('block_id', $user->posted_block);
 $meosQuery = collect();
@@ -565,7 +565,7 @@ $submittedWardIds = $allRecords->where('staff_address_type',2)->pluck('ward_id')
 $gpQuery = Grampanchayat::where('is_active', 'active')->with('block.district');
 $wardQuery = WardMaster::where('is_active', 1)->with('municipality.district');
 
-if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
 if (in_array($userRole, [4,6])) {
 $gpQuery->where('block_id', $user->posted_block);
 $wardQuery = collect();
@@ -659,7 +659,7 @@ public function combined_report(Request $request)
     ->where('staff_address_type', 2)
     ->with(['ward.municipality', 'ward.district']);
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $bssosQuery->where('block_id', $user->posted_block);
             $meosQuery = collect();
@@ -717,7 +717,7 @@ public function combined_report(Request $request)
     $gpQuery = Grampanchayat::where('is_active', 'active')->with('block.district');
     $wardQuery = WardMaster::where('is_active', 1)->with('municipality.district');
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $gpQuery->where('block_id', $user->posted_block);
             $wardQuery = collect();
@@ -1283,7 +1283,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
     ->where('for_the_month', $month)
     ->where('status', 1);
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $fundsQuery->where('block_id', $user->posted_block);
             $disbQuery->where('block_id', $user->posted_block);
@@ -1358,7 +1358,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
     $blocksQuery = Block::where('is_active','active');
     $municipalitiesQuery = Municipality::where('is_active','active');
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $blocksQuery->where('block_id', $user->posted_block);
             $municipalitiesQuery = collect();
@@ -1474,7 +1474,7 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
     ->where('for_the_month', $month)
     ->where('status', 1);
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $fundsQuery->where('block_id', $user->posted_block);
             $disbQuery->where('block_id', $user->posted_block);
@@ -1549,7 +1549,7 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
     $blocksQuery = Block::where('is_active','active');
     $municipalitiesQuery = Municipality::where('is_active','active');
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $blocksQuery->where('block_id', $user->posted_block);
             $municipalitiesQuery = collect();
@@ -1683,7 +1683,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
     ->where('for_the_month', $month)
     ->where('status', 1);
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $fundsQuery->where('block_id', $user->posted_block);
             $disbQuery->where('block_id', $user->posted_block);
@@ -1758,7 +1758,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
     $blocksQuery = Block::where('is_active','active');
     $municipalitiesQuery = Municipality::where('is_active','active');
 
-    if (!in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
             $blocksQuery->where('block_id', $user->posted_block);
             $municipalitiesQuery = collect();
@@ -2037,7 +2037,7 @@ public function month_wise_fund_requirement_comparison_for_block_ulb(Request $re
         'transgender' => 1000,
     ];
 
-    if (in_array($userRole, [1,2,12,13,14,15,25])) {
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         $allBlocks = Block::with('district')->where('is_active', 'active')->get();
         $allMunicipalities = Municipality::with('district')->where('is_active', 'active')->get();
     } elseif (in_array($userRole, [4,6])) {
@@ -2281,7 +2281,7 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
     $allowedBlockIds = collect();
     $allowedMunicipalityIds = collect();
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
 
         $allowedBlockIds = Block::where('is_active', 'active')->pluck('block_id');
         $allowedMunicipalityIds = Municipality::where('is_active', 'active')->pluck('municipality_id');
@@ -2469,7 +2469,7 @@ public function block_ulb_wise_monthly_report(Request $request)
     $allowedBlockIds = collect();
     $allowedMunicipalityIds = collect();
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
 
         $allowedBlockIds = Block::where('is_active', 'active')->pluck('block_id');
         $allowedMunicipalityIds = Municipality::where('is_active', 'active')->pluck('municipality_id');
@@ -2699,7 +2699,7 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
 
     $allowedDistrictIds = collect();
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         $allowedDistrictIds = District::where('is_active', 'active')->pluck('district_id');
     } elseif (in_array($userRole, [9, 11])) {
         $allowedDistrictIds = collect([$user->posted_district]);
@@ -2860,7 +2860,7 @@ public function block_ulb_wise_monthly_report_ajax(Request $request)
         $allowedBlockIds = collect();
         $allowedMunicipalityIds = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allowedBlockIds = Block::where('is_active', 'active')->pluck('block_id');
             $allowedMunicipalityIds = Municipality::where('is_active', 'active')->pluck('municipality_id');
         } elseif (in_array($userRole, [4, 6])) {

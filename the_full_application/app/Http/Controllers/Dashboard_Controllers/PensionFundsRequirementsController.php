@@ -289,7 +289,7 @@ class PensionFundsRequirementsController extends Controller
         $allMunicipalities = collect();
 
         /*Role-based filtering*/
-        if (in_array($userRole, [1,2,12,13,14,15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allBlocks = Block::where('is_active', 'active')->get();
             $allMunicipalities = Municipality::where('is_active', 'active')->get();
         } elseif (in_array($userRole, [4,6])) {
@@ -498,7 +498,7 @@ class PensionFundsRequirementsController extends Controller
         $allBlocks = collect();
         $allMunicipalities = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allBlocks = Block::where('is_active', 'active')->get();
             $allMunicipalities = Municipality::where('is_active', 'active')->get();
         } elseif (in_array($userRole, [4, 6])) {
@@ -588,7 +588,7 @@ class PensionFundsRequirementsController extends Controller
         $allBlocks = collect();
         $allMunicipalities = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allBlocks = Block::where('is_active', 'active')->get();
             $allMunicipalities = Municipality::where('is_active', 'active')->get();
         } elseif (in_array($userRole, [4, 6])) {
@@ -1043,7 +1043,7 @@ class PensionFundsRequirementsController extends Controller
         $allGps = collect();
         $allWards = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allGps = Grampanchayat::with(['district', 'block'])
             ->where('is_active', 'active')->get();
             $allWards = WardMaster::with(['district', 'municipality'])
@@ -1156,7 +1156,7 @@ class PensionFundsRequirementsController extends Controller
 
         $allowedDistrictIds = collect();
 
-        if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
             $allowedDistrictIds = District::where('is_active', 'active')->pluck('district_id');
         } elseif (in_array($userRole, [9, 11])) {
             $allowedDistrictIds = collect([$user->posted_district]);
