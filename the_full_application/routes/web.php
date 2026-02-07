@@ -45,12 +45,27 @@ use App\Http\Controllers\Website_Controller\{
     WebsitePensionController
 };
 
+use App\Models\{
+    VisitorCount
+};
+
 Route::get('/', function () {
     if (Auth::check()) {
+        VisitorCount::create([
+            'ip_address' => request()->ip(),
+            'visit_date' => now('Asia/Kolkata')->toDateString(),
+            'visit_time' => now('Asia/Kolkata')->toTimeString(),
+        ]);
         return redirect()->route('admin.dashboard');
     }
+    VisitorCount::create([
+            'ip_address' => request()->ip(),
+            'visit_date' => now('Asia/Kolkata')->toDateString(),
+            'visit_time' => now('Asia/Kolkata')->toTimeString(),
+        ]);
     return view('auth.login');
 });
+
 Route::prefix('apis')->name('apis.')->controller(EpPensionersController::class)->group(function () {
     Route::get('/disability-pensioner-datas/{aadhar_no}', 'getDisabilityPensionerByAadharRequiredDatas');
     Route::get('/oldage-pensioner-datas1/{aadhar_no}', 'getOldAgePensionerByAadharRequiredDatas');

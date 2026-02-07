@@ -51,7 +51,14 @@ class WebsitePensionController extends Controller
     public function index()
     {
         $pensionType = PensionType::where('db_status', 1)->get();
-        return view('website.pension.index', compact('pensionType'));
+        VisitorCount::create([
+            'ip_address' => request()->ip(),
+            'visit_date' => now('Asia/Kolkata')->toDateString(),
+            'visit_time' => now('Asia/Kolkata')->toTimeString(),
+        ]);
+
+        $visitorCount = VisitorCount::count();
+        return view('website.pension.index', compact('pensionType', 'visitorCount'));
     }
 
     /**

@@ -134,9 +134,9 @@ SSEPD-IT || Pension
 }
 
 .profile-upload-group.no-border {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
+  border-bottom: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 </style>
 @endsection 
@@ -180,99 +180,99 @@ SSEPD-IT || Pension
          </select>
       </div>
       <div class="col-md-6 mb-3">
-   <label class="form-label required-field">Beneficiary Photograph</label>
-   <div class="profile-upload-group  no-border">
-      <div class="d-flex align-items-center">
-         <!-- Image Preview -->
-         <div class="avatar flex-shrink-0 avatar-xxxl avatar-rounded border me-3">
-            <img id="beneficiary_preview"
-               src="{{ asset('website_assets/assets/img/user/user-01.jpg') }}"
-               alt="Beneficiary Image"
-               class="img-fluid">
-         </div>
-         <div class="profile-upload-head">
-            <h6 class="required-field">Upload Image</h6>
-            <p class="fs-14 mb-0">
-               JPG/JPEG only, max 500 KB (800×800 px)
-            </p>
-            <div class="new-employee-field">
-               <div class="d-flex align-items-center mt-2">
-                  <!-- Upload Button -->
-                  <div class="image-upload position-relative mb-0">
-                     <!-- Hidden file input -->
-                     <input type="file"
-                        name="beneficiary_image"
-                        id="beneficiary_image"
-                        accept="image/jpeg,image/jpg"
-                        onchange="previewBeneficiaryImage(this)"
-                        style="display:none;">
-                     <!-- Upload button triggers file input -->
-                     <label for="beneficiary_image"
-                        class="btn bg-gray-100 btn-sm rounded-pill mb-0"
-                        style="cursor:pointer;">
-                     Upload
-                     </label>
+         <label class="form-label required-field">Beneficiary Photograph</label>
+         <div class="profile-upload-group  no-border">
+            <div class="d-flex align-items-center">
+               <!-- Image Preview -->
+               <div class="avatar flex-shrink-0 avatar-xxxl avatar-rounded border me-3">
+                  <img id="beneficiary_preview"
+                  src="{{ asset('website_assets/assets/img/user/user-01.jpg') }}"
+                  alt="Beneficiary Image"
+                  class="img-fluid">
+               </div>
+               <div class="profile-upload-head">
+                  <h6 class="required-field">Upload Image</h6>
+                  <p class="fs-14 mb-0">
+                     JPG/JPEG only, max 500 KB (800×800 px)
+                  </p>
+                  <div class="new-employee-field">
+                     <div class="d-flex align-items-center mt-2">
+                        <!-- Upload Button -->
+                        <div class="image-upload position-relative mb-0">
+                           <!-- Hidden file input -->
+                           <input type="file"
+                           name="beneficiary_image"
+                           id="beneficiary_image"
+                           accept="image/jpeg,image/jpg"
+                           onchange="previewBeneficiaryImage(this)"
+                           style="display:none;">
+                           <!-- Upload button triggers file input -->
+                           <label for="beneficiary_image"
+                           class="btn bg-gray-100 btn-sm rounded-pill mb-0"
+                           style="cursor:pointer;">
+                           Upload
+                        </label>
+                     </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
    </div>
+   <div class="col-md-4 mb-3">
+      <label class="form-label required-field">Name as per Aadhaar</label>
+      <input type="text" name="applicant_name" id="applicant_name" class="form-control">
+   </div>
+   <div class="col-md-4 mb-3">
+      <label class="form-label required-field">Gender</label>
+      <select name="gender_id" id="gender_id" class="select form-control required-field populate"
+      onchange="checkValidation11();">
+      <option value="">-Select-</option>
+      <option value="1">Male</option>
+      <option value="2">Female</option>
+      <option value="3">Other</option>
+   </select>
 </div>
-      <div class="col-md-4 mb-3">
-         <label class="form-label required-field">Name as per Aadhaar</label>
-         <input type="text" name="applicant_name" id="applicant_name" class="form-control">
-      </div>
-      <div class="col-md-4 mb-3">
-         <label class="form-label required-field">Gender</label>
-         <select name="gender_id" id="gender_id" class="select form-control required-field populate"
-         onchange="checkValidation11();">
-         <option value="">-Select-</option>
-         <option value="1">Male</option>
-         <option value="2">Female</option>
-         <option value="3">Other</option>
-      </select>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Date of Birth</label>
+   <div class="input-group">
+      <input type="text" name="dob" id="dob" class="form-control" placeholder="DD-MM-YYYY" readonly><span class="input-group-text"><i class="fa fa-calendar"></i></span>
    </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Date of Birth</label>
-      <div class="input-group">
-         <input type="text" name="dob" id="dob" class="form-control" placeholder="DD-MM-YYYY" readonly><span class="input-group-text"><i class="fa fa-calendar"></i></span>
-      </div>
+</div>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Age</label>
+   <input type="text" name="age" id="age" class="form-control" readonly>
+</div>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Aadhaar No</label>
+   <div class="d-flex">
+      <input type="text" name="aadhaar_no" id="aadhaar_no" class="form-control me-2">
+      <button type="button" class="btn btn-secondary btn-sm" id="aadhaar_verify_btn">Verify</button>
    </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Age</label>
-      <input type="text" name="age" id="age" class="form-control" readonly>
-   </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Aadhaar No</label>
-      <div class="d-flex">
-         <input type="text" name="aadhaar_no" id="aadhaar_no" class="form-control me-2">
-         <button type="button" class="btn btn-secondary btn-sm" id="aadhaar_verify_btn">Verify</button>
-      </div>
-   </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Father's / Spouse Name</label>
-      <input type="text" name="guardian_name" id="guardian_name" class="form-control">
-   </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Social Category</label>
-      <select name="caste_id" id="caste_id" class="select form-control required-field populate">
-         <option value="">-Select-</option>
-         <option value="1">General</option>
-         <option value="2">OBC</option>
-         <option value="3">SC</option>
-         <option value="4">ST</option>
-         <option value="5">Minority</option>
-      </select>
-   </div>
-   <div class="col-md-4 mb-3">
-      <label class="form-label required-field">Mobile No</label>
-      <input type="text" name="mobile_no" id="mobile_no" class="form-control" maxlength="10">
-   </div>
-   <div class="col-md-4 mb-3 d-none" id="tg_registration_div">
-      <label class="form-label required-field">TG Registration No</label>
-      <input type="text" name="tg_registration_no" id="tg_registration_no" class="form-control">
-   </div>
+</div>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Father's / Spouse Name</label>
+   <input type="text" name="guardian_name" id="guardian_name" class="form-control">
+</div>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Social Category</label>
+   <select name="caste_id" id="caste_id" class="select form-control required-field populate">
+      <option value="">-Select-</option>
+      <option value="1">General</option>
+      <option value="2">OBC</option>
+      <option value="3">SC</option>
+      <option value="4">ST</option>
+      <option value="5">Minority</option>
+   </select>
+</div>
+<div class="col-md-4 mb-3">
+   <label class="form-label required-field">Mobile No</label>
+   <input type="text" name="mobile_no" id="mobile_no" class="form-control" maxlength="10">
+</div>
+<div class="col-md-4 mb-3 d-none" id="tg_registration_div">
+   <label class="form-label required-field">TG Registration No</label>
+   <input type="text" name="tg_registration_no" id="tg_registration_no" class="form-control">
+</div>
 </div>
 </div>
 </div>
@@ -431,45 +431,45 @@ SSEPD-IT || Pension
 @endsection 
 @section('script')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.required-field').forEach(field => {
-        const label = field.closest('.col-md-4')?.querySelector('label');
-        if (label && !label.querySelector('.required-star')) {
-            const star = document.createElement('span');
-            star.textContent = ' *';
-            star.className = 'required-star text-danger';
-            label.appendChild(star);
-        }
-    });
-});
+   document.addEventListener('DOMContentLoaded', function () {
+     document.querySelectorAll('.required-field').forEach(field => {
+       const label = field.closest('.col-md-4')?.querySelector('label');
+       if (label && !label.querySelector('.required-star')) {
+         const star = document.createElement('span');
+         star.textContent = ' *';
+         star.className = 'required-star text-danger';
+         label.appendChild(star);
+      }
+   });
+  });
 </script>
 <script>
-function previewBeneficiaryImage(input) {
+   function previewBeneficiaryImage(input) {
 
-    const file = input.files[0];
-    if (!file) return;
+     const file = input.files[0];
+     if (!file) return;
 
     // Validate file type
-    if (!['image/jpeg', 'image/jpg'].includes(file.type)) {
-        Swal.fire('Invalid File', 'Only JPG/JPEG images are allowed', 'error');
-        input.value = '';
-        return;
+     if (!['image/jpeg', 'image/jpg'].includes(file.type)) {
+       Swal.fire('Invalid File', 'Only JPG/JPEG images are allowed', 'error');
+       input.value = '';
+       return;
     }
 
     // Validate size (500 KB)
     if (file.size > 512000) {
-        Swal.fire('File Too Large', 'Image must be less than 500 KB', 'error');
-        input.value = '';
-        return;
+       Swal.fire('File Too Large', 'Image must be less than 500 KB', 'error');
+       input.value = '';
+       return;
     }
 
     // Preview image
     const reader = new FileReader();
     reader.onload = function (e) {
-        document.getElementById('beneficiary_preview').src = e.target.result;
+       document.getElementById('beneficiary_preview').src = e.target.result;
     };
     reader.readAsDataURL(file);
-}
+ }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -606,123 +606,123 @@ function previewBeneficiaryImage(input) {
 
 /* ================= FORM VALIDATION ================= */
    function validateForm() {
-    let firstInvalid = null;
+     let firstInvalid = null;
 
-    const elements = document.querySelectorAll('input, select');
+     const elements = document.querySelectorAll('input, select');
 
-    elements.forEach(el => {
-        if (el.type === 'button' || el.type === 'submit') return;
+     elements.forEach(el => {
+       if (el.type === 'button' || el.type === 'submit') return;
 
-        const parentCol = el.closest('.col-md-4');
-        if (parentCol && parentCol.classList.contains('d-none')) return;
+       const parentCol = el.closest('.col-md-4');
+       if (parentCol && parentCol.classList.contains('d-none')) return;
 
-        let isEmpty = false;
+       let isEmpty = false;
 
         // Special handling for Select2
-        if (el.classList.contains('select')) {
-            const value = $(el).val();
-            isEmpty = !value || value === '';
-        } else if (el.type === 'file') {
-            isEmpty = el.files.length === 0;
-        } else {
-            isEmpty = el.value.trim() === '';
-        }
+       if (el.classList.contains('select')) {
+         const value = $(el).val();
+         isEmpty = !value || value === '';
+      } else if (el.type === 'file') {
+         isEmpty = el.files.length === 0;
+      } else {
+         isEmpty = el.value.trim() === '';
+      }
 
-        if (isEmpty) {
+      if (isEmpty) {
             // Show red border
-            if (el.classList.contains('select')) {
-                $(el).next('.select2-container').find('.select2-selection').css('border-color', '#dc3545');
-            } else {
-                el.style.borderColor = '#dc3545';
-            }
-
-            if (!firstInvalid) firstInvalid = el;
+         if (el.classList.contains('select')) {
+           $(el).next('.select2-container').find('.select2-selection').css('border-color', '#dc3545');
         } else {
-            // Reset border
-            if (el.classList.contains('select')) {
-                $(el).next('.select2-container').find('.select2-selection').css('border-color', '');
-            } else {
-                el.style.borderColor = '';
-            }
+           el.style.borderColor = '#dc3545';
         }
-    });
 
-    if (firstInvalid) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Incomplete Application',
-            text: 'Please fill all required red marked fields before submitting.',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            if (firstInvalid.classList.contains('select')) {
-                $(firstInvalid).select2('open');
-            } else {
-                firstInvalid.focus();
-            }
-        });
-        return false;
-    }
+        if (!firstInvalid) firstInvalid = el;
+     } else {
+            // Reset border
+      if (el.classList.contains('select')) {
+        $(el).next('.select2-container').find('.select2-selection').css('border-color', '');
+     } else {
+        el.style.borderColor = '';
+     }
+  }
+});
 
-    return true;
+     if (firstInvalid) {
+       Swal.fire({
+         icon: 'error',
+         title: 'Incomplete Application',
+         text: 'Please fill all required red marked fields before submitting.',
+         confirmButtonText: 'OK'
+      }).then(() => {
+         if (firstInvalid.classList.contains('select')) {
+           $(firstInvalid).select2('open');
+        } else {
+           firstInvalid.focus();
+        }
+     });
+      return false;
+   }
+
+   return true;
 }
 
 /* ================= Aadhaar Validation ================= */
-   function initAadhaarValidation() {
+function initAadhaarValidation() {
 
-      const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
+   const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
 
-      aadhaarInputs.forEach(function(input) {
-         input.addEventListener('blur', function(event) {
+   aadhaarInputs.forEach(function(input) {
+      input.addEventListener('blur', function(event) {
 
-            const uid = event.target.value.trim();
-            if (!uid) return;
+         const uid = event.target.value.trim();
+         if (!uid) return;
 
-            const Verhoeff = {
-               d: [
-                  [0,1,2,3,4,5,6,7,8,9],
-                  [1,2,3,4,0,6,7,8,9,5],
-                  [2,3,4,0,1,7,8,9,5,6],
-                  [3,4,0,1,2,8,9,5,6,7],
-                  [4,0,1,2,3,9,5,6,7,8],
-                  [5,9,8,7,6,0,4,3,2,1],
-                  [6,5,9,8,7,1,0,4,3,2],
-                  [7,6,5,9,8,2,1,0,4,3],
-                  [8,7,6,5,9,3,2,1,0,4],
-                  [9,8,7,6,5,4,3,2,1,0]
-               ],
-               p: [
-                  [0,1,2,3,4,5,6,7,8,9],
-                  [1,5,7,6,2,8,3,0,9,4],
-                  [5,8,0,3,7,9,6,1,4,2],
-                  [8,9,1,6,0,4,3,5,2,7],
-                  [9,4,5,3,1,2,6,8,7,0],
-                  [4,2,8,6,5,7,3,9,0,1],
-                  [2,7,9,3,8,0,6,4,1,5],
-                  [7,0,4,6,9,1,3,2,5,8]
-               ],
-               check: function(str) {
-                  let c = 0;
-                  str.replace(/\D+/g, "").split("").reverse().forEach((u, i) => {
-                     c = this.d[c][this.p[i % 8][parseInt(u, 10)]];
-                  });
-                  return c;
-               }
-            };
-
-            if (Verhoeff.check(uid) !== 0) {
-               Swal.fire({
-                  icon: 'error',
-                  title: 'Invalid Aadhaar Number',
-                  text: 'Please enter a valid 12-digit Aadhaar number.',
-                  confirmButtonText: 'OK'
-               }).then(() => {
-                  event.target.value = '';
-                  event.target.focus();
+         const Verhoeff = {
+            d: [
+               [0,1,2,3,4,5,6,7,8,9],
+               [1,2,3,4,0,6,7,8,9,5],
+               [2,3,4,0,1,7,8,9,5,6],
+               [3,4,0,1,2,8,9,5,6,7],
+               [4,0,1,2,3,9,5,6,7,8],
+               [5,9,8,7,6,0,4,3,2,1],
+               [6,5,9,8,7,1,0,4,3,2],
+               [7,6,5,9,8,2,1,0,4,3],
+               [8,7,6,5,9,3,2,1,0,4],
+               [9,8,7,6,5,4,3,2,1,0]
+            ],
+            p: [
+               [0,1,2,3,4,5,6,7,8,9],
+               [1,5,7,6,2,8,3,0,9,4],
+               [5,8,0,3,7,9,6,1,4,2],
+               [8,9,1,6,0,4,3,5,2,7],
+               [9,4,5,3,1,2,6,8,7,0],
+               [4,2,8,6,5,7,3,9,0,1],
+               [2,7,9,3,8,0,6,4,1,5],
+               [7,0,4,6,9,1,3,2,5,8]
+            ],
+            check: function(str) {
+               let c = 0;
+               str.replace(/\D+/g, "").split("").reverse().forEach((u, i) => {
+                  c = this.d[c][this.p[i % 8][parseInt(u, 10)]];
                });
+               return c;
             }
-         });
+         };
+
+         if (Verhoeff.check(uid) !== 0) {
+            Swal.fire({
+               icon: 'error',
+               title: 'Invalid Aadhaar Number',
+               text: 'Please enter a valid 12-digit Aadhaar number.',
+               confirmButtonText: 'OK'
+            }).then(() => {
+               event.target.value = '';
+               event.target.focus();
+            });
+         }
       });
-   }
+   });
+}
 </script>
 
 <script>
