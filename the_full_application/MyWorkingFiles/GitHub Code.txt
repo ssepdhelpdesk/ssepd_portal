@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "DBT Consent Website Work"
+git commit -m "Pension Website Work"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -10,7 +10,7 @@ git clone https://admin_ssepd@bitbucket.org/admin_ssepd/siepv3.git
 git pull origin main
 
 /////////////////////////////////////////////////////
-
+Invalid column count in CSV input on line 1.
 ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `gender_by_user` VARCHAR(250) NULL AFTER `gender`;
 ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `age_by_user` VARCHAR(250) NULL AFTER `age`;
 
