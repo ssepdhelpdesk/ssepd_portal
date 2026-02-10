@@ -506,9 +506,7 @@ SSEPD-IT || Pension
 
       document.getElementById('dob').setAttribute('readonly', true);
 
-      document.getElementById('bank_account_type')?.addEventListener('change', function () {
-         bankAccountTypeChange(this.value);
-      });
+      
 
 /* ================= FORM SUBMIT VALIDATION ================= */
       document.querySelector('form')?.addEventListener('submit', function (e) {
@@ -781,7 +779,6 @@ function initAadhaarValidation() {
    });
 </script>
 
-
 <script>
 /* =========================================================
 PENSION ELIGIBILITY EXTENSION (NON-DESTRUCTIVE ADDITION)
@@ -909,4 +906,110 @@ PENSION ELIGIBILITY EXTENSION (NON-DESTRUCTIVE ADDITION)
 
    })();
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const fields = {
+        block: document.getElementById('block_id'),
+        gp: document.getElementById('gp_id'),
+        village: document.getElementById('village_id'),
+        municipality: document.getElementById('municipality_id'),
+        ward: document.getElementById('ward_id')
+    };
+
+    function wrapper(el) {
+        return el ? el.closest('.col-md-4') : null;
+    }
+
+    function resetField(el) {
+        if (!el) return;
+
+        if (el.tagName === 'SELECT') {
+            if (window.jQuery && $(el).hasClass('select2-hidden-accessible')) {
+                $(el).val(null).trigger('change.select2');
+            } else {
+                el.selectedIndex = 0;
+            }
+        } else {
+            el.value = '';
+        }
+    }
+
+    function hide(el) {
+        resetField(el);
+        wrapper(el)?.classList.add('d-none');
+    }
+
+    function show(el) {
+        wrapper(el)?.classList.remove('d-none');
+    }
+
+    function hideAll() {
+        Object.values(fields).forEach(hide);
+    }
+
+    function handleAddressType(type) {
+        hideAll();
+
+        if (type === '1') {
+            show(fields.block);
+            show(fields.gp);
+            show(fields.village);
+        }
+
+        if (type === '2') {
+            show(fields.municipality);
+            show(fields.ward);
+        }
+    }
+
+    const addressType = document.getElementById('address_type_id');
+
+    hideAll();
+
+    if (addressType) {
+
+        addressType.addEventListener('change', function () {
+            handleAddressType(this.value);
+        });
+
+        if (window.jQuery) {
+            $(addressType).on('select2:select', function (e) {
+                handleAddressType(e.params.data.id);
+            });
+        }
+    }
+
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const bankType = $('#bank_account_type');
+
+    // Initial state
+    hide('second_holder_div');
+
+    function handleBankType(value) {
+        if (value === '2') {
+            show('second_holder_div');
+        } else {
+            hide('second_holder_div');
+            document.getElementById('second_account_holder_name').value = '';
+        }
+    }
+
+    /* ✅ Select2 events */
+    bankType.on('select2:select select2:clear', function () {
+        handleBankType($(this).val());
+    });
+
+    /* ✅ Fallback (non-select2 / safety) */
+    bankType.on('change', function () {
+        handleBankType(this.value);
+    });
+
+});
+</script>
+
 @endsection

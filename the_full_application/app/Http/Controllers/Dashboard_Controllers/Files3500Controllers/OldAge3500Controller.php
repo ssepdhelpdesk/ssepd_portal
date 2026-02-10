@@ -138,7 +138,7 @@ public function index(Request $request)
             is_null($row->discontinued_date) &&
             is_null($row->discontinued_system_gen_date) &&
             is_null($row->discontinued_system_gen_time) &&
-            $row->status === 'Active';
+            $row->discontinued_reason === 'Ineligible';
 
             if ($isActiveAndNotDiscontinued) {
                 if ((int)$row->verified_aadhar === 0) {
