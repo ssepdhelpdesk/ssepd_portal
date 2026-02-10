@@ -138,7 +138,7 @@ public function index(Request $request)
             is_null($row->discontinued_date) &&
             is_null($row->discontinued_system_gen_date) &&
             is_null($row->discontinued_system_gen_time) &&
-            $row->discontinued_reason === 'Ineligible';
+            $row->status === 'Active';
 
             if ($isActiveAndNotDiscontinued) {
                 if ((int)$row->verified_aadhar === 0) {
@@ -1753,7 +1753,7 @@ public function oldage_ineligible_to_eligible_reinstead(Request $request)
     $userRole = $user->role_id;
 
     $oldAgeData = OldAge3500Pensioner::query();
-    $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
+    $oldAgeData->where('status', 'Inactive')->where('verified_aadhar', 1)->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
 
     if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 

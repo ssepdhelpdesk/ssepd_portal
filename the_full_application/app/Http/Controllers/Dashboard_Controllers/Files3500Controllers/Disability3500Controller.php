@@ -1628,7 +1628,7 @@ class Disability3500Controller extends Controller
         $userRole = $user->role_id;
 
         $oldAgeData = Disability3500Pensioner::query();
-        $oldAgeData->where('status', 'Inactive')->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
+        $oldAgeData->where('status', 'Inactive')->where('verified_aadhar', 1)->whereNotNull('discontinued_date')->whereNotNull('discontinued_system_gen_date')->whereNotNull('discontinued_system_gen_time')->whereNotNull('discontinued_reason')->where('discontinued_reason', 'Ineligible')->where('db_status', 1);
 
         if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
 
