@@ -1706,7 +1706,7 @@ class Disability3500Controller extends Controller
             ->make(true);
         }
 
-        return view('dashboard.benf_3500_files.reinitiate.disability_ineligible_to_eligible_reinstead');
+        return view('dashboard.benf_3500_files.reinitiate.disability_ineligible_to_eligible_reinstead')->with('info', 'If any beneficiaries are not appearing in the Eligible list, first verify their Aadhaar details under "Enhanced Pension" -> "Disability Pensioner List".');
     }
 
     public function disability_ineligible_to_eligible_reinstead_process(Request $request)

@@ -1831,7 +1831,7 @@ public function oldage_ineligible_to_eligible_reinstead(Request $request)
         ->make(true);
     }
 
-    return view('dashboard.benf_3500_files.reinitiate.oldage_ineligible_to_eligible_reinstead');
+    return view('dashboard.benf_3500_files.reinitiate.oldage_ineligible_to_eligible_reinstead')->with('info', 'If any beneficiaries are not appearing in the Eligible list, first verify their Aadhaar details under "Enhanced Pension" -> "OldAge Pensioner List".');
 }
 
 public function oldage_ineligible_to_eligible_reinstead_process(Request $request)
