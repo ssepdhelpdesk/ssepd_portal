@@ -19,3 +19,9 @@ Schedule::command('disability:aadhar-verify 100')
     ->withoutOverlapping()
     ->runInBackground()
     ->onOneServer();*/
+
+Schedule::command('ssepdpension:aadhar-verify 200')
+    ->everyFiveMinutes()
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->onOneServer();    
