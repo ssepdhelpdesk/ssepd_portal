@@ -24,7 +24,6 @@ class SsepdPensionBulkAadharVerification extends Command
             ->whereNull('verified_aadhar_remarks')
             ->whereNotNull('aadhar_number')
             ->whereNotNull('applicant_name')
-            ->orderBy('id')
             ->limit($limit)
             ->get();
 
@@ -75,13 +74,8 @@ class SsepdPensionBulkAadharVerification extends Command
             }
 
             $pensioner->update([
-                'created_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                'aadhaar_no_by_user' => $pensioner->aadhar_number,
-                'aadhaar_hash' => hash('sha256', trim($pensioner->aadhar_number) . config('app.key')),
-                'aadhaar_encrypted' => Crypt::encryptString(trim($pensioner->aadhar_number)),
                 'verified_aadhar'         => $verified,
                 'verified_aadhar_remarks' => $remarks,
-                'updated_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
             ]);
 
             $processed++;
