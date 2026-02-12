@@ -10,7 +10,7 @@ class DailyPensionDisbursement extends Model implements Auditable
 {
     use HasFactory;
     use \OwenIt\Auditing\Auditable;
-    protected $guarded = [''];
+    protected $guarded = [];
 
     public function applicationStage()
     {
