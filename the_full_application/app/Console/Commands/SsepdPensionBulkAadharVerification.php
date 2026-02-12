@@ -17,81 +17,78 @@ class SsepdPensionBulkAadharVerification extends Command
     public function handle()
     {
         $limit = (int) $this->argument('limit');
+
         $this->info("Starting Aadhaar verification for {$limit} records");
+
+        $records = SsepdPension::whereNull('verified_aadhar')
+            ->whereNull('verified_aadhar_remarks')
+            ->whereNotNull('aadhar_number')
+            ->whereNotNull('applicant_name')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+
+        if ($records->isEmpty()) {
+            $this->info('No pending Aadhaar records found');
+            return Command::SUCCESS;
+        }
 
         $processed = 0;
 
-        SsepdPension::whereNull('verified_aadhar')
-        ->whereNull('verified_aadhar_remarks')
-        ->whereNotNull('aadhar_number')
-        ->whereNotNull('applicant_name')
-        ->orderBy('id')
-        ->chunkById(50, function ($records) use (&$processed, $limit) {
+        foreach ($records as $pensioner) {
 
-            foreach ($records as $pensioner) {
+            $verified = 0;
+            $remarks  = null;
 
-                // Stop when limit reached
-                if ($processed >= $limit) {
-                    return false; // stops further chunking
-                }
-
-                $verified = 0;
-                $remarks  = null;
-
-                try {
-                    $response = Http::withOptions([
-                        'verify' => false,
-                        'timeout' => 120,
-                        'connect_timeout' => 20,
-                        'curl' => [
-                            \CURLOPT_SSLVERSION   => \CURL_SSLVERSION_TLSv1_2,
-                            \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
-                        ],
-                    ])
-                    ->withHeaders([
-                        'Accept'     => 'application/json',
-                        'User-Agent' => 'PostmanRuntime/7.36.0',
-                    ])
-                    ->asForm()
-                    ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
-                        'aadhaar_no' => trim($pensioner->aadhar_number),
-                        'name'       => trim($pensioner->applicant_name),
-                    ]);
-
-                    $remarks = trim($response->body());
-
-                    if (
-                        $response->successful() &&
-                        str_contains(strtolower($remarks), 'verify successfully')
-                    ) {
-                        $verified = 1;
-                    }
-
-                } catch (\Throwable $e) {
-                    $verified = 0;
-                    $remarks  = 'Exception: ' . $e->getMessage();
-                }
-
-                $pensioner->update([
-                    'aadhaar_no_by_user' => $pensioner->aadhar_number,
-                    'aadhaar_hash' => hash('sha256', trim($pensioner->aadhar_number) . config('app.key')),
-                    'aadhaar_encrypted' => Crypt::encryptString(trim($pensioner->aadhar_number)),
-                    'verified_aadhar' => $verified,
-                    'verified_aadhar_remarks' => $remarks,
+            try {
+                $response = Http::withOptions([
+                    'verify' => false,
+                    'timeout' => 120,
+                    'connect_timeout' => 20,
+                    'curl' => [
+                        \CURLOPT_SSLVERSION   => \CURL_SSLVERSION_TLSv1_2,
+                        \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
+                    ],
+                ])
+                ->withHeaders([
+                    'Accept'     => 'application/json',
+                    'User-Agent' => 'PostmanRuntime/7.36.0',
+                ])
+                ->asForm()
+                ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                    'aadhaar_no' => trim($pensioner->aadhar_number),
+                    'name'       => trim($pensioner->applicant_name),
                 ]);
 
-                $processed++;
+                $remarks = trim($response->body());
+
+                if (
+                    $response->successful() &&
+                    str_contains(strtolower($remarks), 'verify successfully')
+                ) {
+                    $verified = 1;
+                }
+
+            } catch (\Throwable $e) {
+                $verified = 0;
+                $remarks  = 'Exception: ' . $e->getMessage();
             }
 
-        });
+            $pensioner->update([
+                'created_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                'aadhaar_no_by_user' => $pensioner->aadhar_number,
+                'aadhaar_hash' => hash('sha256', trim($pensioner->aadhar_number) . config('app.key')),
+                'aadhaar_encrypted' => Crypt::encryptString(trim($pensioner->aadhar_number)),
+                'verified_aadhar'         => $verified,
+                'verified_aadhar_remarks' => $remarks,
+                'updated_at' => now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+            ]);
 
-        if ($processed === 0) {
-            $this->info('No pending Aadhaar records found');
-        } else {
-            $this->info("Completed. Processed {$processed} records.");
+            $processed++;
         }
+
+        $this->info("Completed. Processed {$processed} records.");
 
         return Command::SUCCESS;
     }
-
 }
