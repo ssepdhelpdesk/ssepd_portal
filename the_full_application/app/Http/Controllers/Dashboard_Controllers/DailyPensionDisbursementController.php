@@ -313,8 +313,8 @@ public function store(Request $request)
 
                 $rowFields = array_merge($rowFields, [
                     'for_the_month'          => $forTheMonth,
-                    'gp_ward_id'             => $request->gp_ward_id[$i],
-                    'gp_ward_name'           => $request->gp_ward_name[$i],
+                    /*'gp_ward_id'             => $request->gp_ward_id[$i],
+                    'gp_ward_name'           => $request->gp_ward_name[$i],*/
                     'staff_address_type'     => $staff_address_type,
                     'state_id'               => 228,
                     'district_id'            => $district_id,

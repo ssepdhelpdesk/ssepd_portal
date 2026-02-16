@@ -61,6 +61,54 @@ class WebsitePensionController extends Controller
         return view('website.pension.index', compact('pensionType', 'visitorCount'));
     }
 
+    public function benf_aadhar_verification(Request $request)
+    {
+        $request->validate([
+            'aadhaar_no' => 'required|digits:12',
+            'applicant_name' => 'required|string',
+        ]);
+
+        try {
+            $response = Http::withOptions([
+                'verify' => false,
+                'timeout' => 60,
+                'connect_timeout' => 20,
+                'curl' => [
+                    CURLOPT_SSLVERSION   => CURL_SSLVERSION_TLSv1_2,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                ],
+            ])
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'User-Agent' => 'PostmanRuntime/7.36.0',
+            ])
+            ->asForm()
+            ->post('https://ssepd.gov.in:8443/swp/api/nfbs/requestToUid', [
+                'aadhaar_no' => trim($request->aadhaar_no),
+                'name'       => trim($request->applicant_name),
+            ]);
+
+            if ($response->successful()) {
+                return response()->json([
+                    'status' => true,
+                    'data'   => trim($response->body()),
+                ]);
+            }
+
+            return response()->json([
+                'status' => false,
+                'http_code' => $response->status(),
+                'response'  => $response->body(),
+            ], 422);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'exception' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      */

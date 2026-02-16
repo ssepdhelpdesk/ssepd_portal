@@ -31,6 +31,18 @@
 					<li class="has-submenu megamenu">
 						<a href="{{ route('website.pensioners.index') }}">Home </a>
 					</li>
+					<li class="has-submenu">
+						<a href="#">Beneficiary Services <i class="fas fa-chevron-down"></i></a>
+						<ul class="submenu">
+							<li class="has-submenu">
+								<a href="javascript:void(0);">Pension</a>
+								<ul class="submenu">
+									<li><a href="{{route('website.pension.index')}}">Apply Pension</a></li>
+								</ul>
+							</li>
+							<li><a href="{{route('website.pension.index')}}">Apply Pension</a></li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 			<div class="header-btn d-flex align-items-center">

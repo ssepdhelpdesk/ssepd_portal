@@ -255,40 +255,40 @@ EP Pension || Disability Data Entry
                               </div>
                            </div> -->
                            <div class="col-md-3">
-                                 <div class="form-group" id="ngo_address_type_div">
-                                    <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
-                                    <div class="d-flex align-items-center">
-                                       @if(in_array(auth()->user()->role_id, [4, 6]))
-                                       <div class="custom-control custom-radio me-3">
-                                          <input type="radio" id="block" name="ngo_address_type" value="1"
-                                          class="form-check-input">
-                                          <label class="form-check-label" for="block">Block</label>
-                                       </div>
-                                       @elseif(auth()->user()->role_id == 5)
-                                       <div class="custom-control custom-radio">
-                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
-                                          class="form-check-input">
-                                          <label class="form-check-label" for="ulb">ULB</label>
-                                       </div>
-                                       @else
-                                       <div class="custom-control custom-radio me-3">
-                                          <input type="radio" id="block" name="ngo_address_type" value="1"
-                                          class="form-check-input">
-                                          <label class="form-check-label" for="block">Block</label>
-                                       </div>
-                                       <div class="custom-control custom-radio">
-                                          <input type="radio" id="ulb" name="ngo_address_type" value="2"
-                                          class="form-check-input">
-                                          <label class="form-check-label" for="ulb">ULB</label>
-                                       </div>
-                                       @endif
+                              <div class="form-group" id="ngo_address_type_div">
+                                 <label class="form-label">Address Type<span class="itsrequired"> *</span></label>
+                                 <div class="d-flex align-items-center">
+                                    @if(in_array(auth()->user()->role_id, [4, 6]))
+                                    <div class="custom-control custom-radio me-3">
+                                       <input type="radio" id="block" name="ngo_address_type" value="1"
+                                       class="form-check-input">
+                                       <label class="form-check-label" for="block">Block</label>
                                     </div>
-                                    <div id="ngo_address_type_error"></div>
-                                    @error('ngo_address_type')
-                                    <label class="error">{{ $message }}</label>
-                                    @enderror
+                                    @elseif(auth()->user()->role_id == 5)
+                                    <div class="custom-control custom-radio">
+                                       <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                       class="form-check-input">
+                                       <label class="form-check-label" for="ulb">ULB</label>
+                                    </div>
+                                    @else
+                                    <div class="custom-control custom-radio me-3">
+                                       <input type="radio" id="block" name="ngo_address_type" value="1"
+                                       class="form-check-input">
+                                       <label class="form-check-label" for="block">Block</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                       <input type="radio" id="ulb" name="ngo_address_type" value="2"
+                                       class="form-check-input">
+                                       <label class="form-check-label" for="ulb">ULB</label>
+                                    </div>
+                                    @endif
                                  </div>
+                                 <div id="ngo_address_type_error"></div>
+                                 @error('ngo_address_type')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
                               </div>
+                           </div>
                         </div>
                         <!--/row-->
                         <div class="row" id="dynamic-content"></div>
@@ -312,19 +312,19 @@ EP Pension || Disability Data Entry
       $("#aadhaar_no").blur(function () {
          const staffAadhar = $(this).val().trim();
          const is12DigitNumber = /^\d{12}$/.test(staffAadhar);
-   
+         
          $('#check_aadhaar_no').html('');
-   
+         
          if (!staffAadhar) {
             $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide an Aadhar number.</span>');
             return;
          }
-   
+         
          if (!is12DigitNumber) {
             $('#check_aadhaar_no').html('<span style="color:#FF0000">Aadhar must be exactly 12 digits.</span>');
             return;
          }
-   
+         
          $.get("{{ route('admin.disability3500data.check_benf_aadhar') }}", 
             { aadhaar_no: staffAadhar }, 
             function (data) {
@@ -337,10 +337,10 @@ EP Pension || Disability Data Entry
                   $('#check_aadhaar_no').html('<span style="color:#FF0000">Please provide a valid Aadhar.</span>');
                }
             }
-         ).fail(function () {
-            $('#check_aadhaar_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            ).fail(function () {
+               $('#check_aadhaar_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            });
          });
-      });
    });
 </script>
 <script>
@@ -354,27 +354,27 @@ EP Pension || Disability Data Entry
          
          const Verhoeff = {
             d: [
-                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                  [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
-                  [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
-                  [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
-                  [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
-                  [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
-                  [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
-                  [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
-                  [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
-                  [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-               ],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+               [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+               [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+               [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+               [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+               [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+               [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+               [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+               [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+               [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+            ],
             p: [
-                  [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                  [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
-                  [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
-                  [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
-                  [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
-                  [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
-                  [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
-                  [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
-               ],
+               [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+               [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+               [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+               [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+               [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+               [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+               [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+               [7, 0, 4, 6, 9, 1, 3, 2, 5, 8]
+            ],
             j: [0, 4, 3, 2, 1, 5, 6, 7, 8, 9],
             check: function(str) {
                var c = 0;
@@ -401,125 +401,125 @@ EP Pension || Disability Data Entry
    });
 </script>
 <script>
-      $(document).ready(function () {
+   $(document).ready(function () {
 
-        $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
-          $('#verified_aadhar').val('');
-          $('#verified_aadhar_remarks').val('');
-          $('#aadhaar_verify_result').html('');
+    $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+     $('#verified_aadhar').val('');
+     $('#verified_aadhar_remarks').val('');
+     $('#aadhaar_verify_result').html('');
 
-          $('#btnVerifyAadhaar')
-          .prop('disabled', false)
-          .removeClass('btn-success')
-          .addClass('btn-info')
-          .text('Verify!');
+     $('#btnVerifyAadhaar')
+     .prop('disabled', false)
+     .removeClass('btn-success')
+     .addClass('btn-info')
+     .text('Verify!');
 
-          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-       });
+     $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+  });
 
-        $(document).on('click', '#btnVerifyAadhaar', function () {
+    $(document).on('click', '#btnVerifyAadhaar', function () {
 
-          let aadhaar = $('#aadhaar_no').val().trim();
-          let name    = $('#name_of_the_beneficiary').val().trim();
+     let aadhaar = $('#aadhaar_no').val().trim();
+     let name    = $('#name_of_the_beneficiary').val().trim();
 
-          $('#aadhaar_verify_result').html('');
-          $('#verified_aadhar').val('');
-          $('#verified_aadhar_remarks').val('');
+     $('#aadhaar_verify_result').html('');
+     $('#verified_aadhar').val('');
+     $('#verified_aadhar_remarks').val('');
 
-          if (!/^\d{12}$/.test(aadhaar)) {
-            $('#aadhaar_verify_result').html(
-              '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
-              );
-            return;
-         }
+     if (!/^\d{12}$/.test(aadhaar)) {
+      $('#aadhaar_verify_result').html(
+       '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
+       );
+      return;
+   }
 
-         if (name === '') {
-            $('#aadhaar_verify_result').html(
-              '<span class="text-danger">Enter beneficiary name first</span>'
-              );
-            return;
-         }
+   if (name === '') {
+      $('#aadhaar_verify_result').html(
+       '<span class="text-danger">Enter beneficiary name first</span>'
+       );
+      return;
+   }
 
-         $('#btnVerifyAadhaar')
-         .prop('disabled', true)
-         .text('Verifying...');
+   $('#btnVerifyAadhaar')
+   .prop('disabled', true)
+   .text('Verifying...');
 
-         $.ajax({
-            url: "{{ route('admin.disability3500data.disability_aadhar_verification_process') }}",
-            type: "POST",
-            dataType: "json",
-            data: {
-              _token: "{{ csrf_token() }}",
-              aadhaar_no: aadhaar,
-              name_of_the_beneficiary: name
-           },
+   $.ajax({
+      url: "{{ route('admin.disability3500data.disability_aadhar_verification_process') }}",
+      type: "POST",
+      dataType: "json",
+      data: {
+       _token: "{{ csrf_token() }}",
+       aadhaar_no: aadhaar,
+       name_of_the_beneficiary: name
+    },
 
-           success: function (res) {
-              let message = res.data ?? '';
+    success: function (res) {
+       let message = res.data ?? '';
 
-              $('#verified_aadhar_remarks').val(message);
+       $('#verified_aadhar_remarks').val(message);
 
-              if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+       if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
 
-                $('#verified_aadhar').val(1);
+        $('#verified_aadhar').val(1);
 
-                $('#aadhaar_verify_result').html(
-                  '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
-                  );
+        $('#aadhaar_verify_result').html(
+         '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+         );
 
-                $('#btnVerifyAadhaar')
-                .prop('disabled', true)
-                .removeClass('btn-info')
-                .addClass('btn-success')
-                .text('Verified');
+        $('#btnVerifyAadhaar')
+        .prop('disabled', true)
+        .removeClass('btn-info')
+        .addClass('btn-success')
+        .text('Verified');
 
-                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
+        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
 
-             } else {
-                $('#verified_aadhar').val(0);
+     } else {
+        $('#verified_aadhar').val(0);
 
-                $('#aadhaar_verify_result').html(
-                  '<span class="badge bg-danger">' + message + '</span>'
-                  );
+        $('#aadhaar_verify_result').html(
+         '<span class="badge bg-danger">' + message + '</span>'
+         );
 
-                $('#btnVerifyAadhaar')
-                .prop('disabled', false)
-                .removeClass('btn-success')
-                .addClass('btn-info')
-                .text('Verify!');
+        $('#btnVerifyAadhaar')
+        .prop('disabled', false)
+        .removeClass('btn-success')
+        .addClass('btn-info')
+        .text('Verify!');
 
-                $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-             }
-          },
+        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+     }
+  },
 
-          error: function (xhr) {
-           let msg = 'Verification failed';
-           if (xhr.responseJSON) {
-             msg = xhr.responseJSON.exception ??
-             xhr.responseJSON.response ??
-             msg;
-          }
+  error: function (xhr) {
+    let msg = 'Verification failed';
+    if (xhr.responseJSON) {
+     msg = xhr.responseJSON.exception ??
+     xhr.responseJSON.response ??
+     msg;
+  }
 
-          $('#verified_aadhar').val(0);
-          $('#verified_aadhar_remarks').val(msg);
+  $('#verified_aadhar').val(0);
+  $('#verified_aadhar_remarks').val(msg);
 
-          $('#aadhaar_verify_result').html(
-             '<span class="badge bg-danger">' + msg + '</span>'
-             );
+  $('#aadhaar_verify_result').html(
+     '<span class="badge bg-danger">' + msg + '</span>'
+     );
 
-          $('#btnVerifyAadhaar')
-          .prop('disabled', false)
-          .removeClass('btn-success')
-          .addClass('btn-info')
-          .text('Verify!');
+  $('#btnVerifyAadhaar')
+  .prop('disabled', false)
+  .removeClass('btn-success')
+  .addClass('btn-info')
+  .text('Verify!');
 
-          $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-       }
-    });
+  $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+}
+});
 
-      });
-     });
-  </script>
+});
+ });
+</script>
 <script type="text/javascript">
    $(document).ready(function () {
       $("#nsap_sanction_order_no").blur(function () {
@@ -544,31 +544,31 @@ EP Pension || Disability Data Entry
                   $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">Please provide a valid NSAP Sanction Order No.</span>');
                }
             }
-         ).fail(function () {
-            $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            ).fail(function () {
+               $('#check_nsap_sanction_order_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+            });
          });
-      });
    });
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-   const udidInput = document.getElementById('udid_no');
-   const errorDiv = document.getElementById('udid_no_error');
+   document.addEventListener("DOMContentLoaded", function () {
+      const udidInput = document.getElementById('udid_no');
+      const errorDiv = document.getElementById('udid_no_error');
 
-   udidInput.addEventListener('blur', function () {
-      const udid = udidInput.value.trim();
-      errorDiv.innerHTML = '';
+      udidInput.addEventListener('blur', function () {
+         const udid = udidInput.value.trim();
+         errorDiv.innerHTML = '';
 
-      if (!udid) {
-         return;
-      }
+         if (!udid) {
+            return;
+         }
 
-      if (udid.length < 18) {
-         errorDiv.innerHTML = '<label class="error">UDID must be at least 18 characters.</label>';
-         return;
-      }
+         if (udid.length < 18) {
+            errorDiv.innerHTML = '<label class="error">UDID must be at least 18 characters.</label>';
+            return;
+         }
 
-      fetch(`{{ route('admin.disability3500data.check_benf_udidno') }}?udid_no=${encodeURIComponent(udid)}`)
+         fetch(`{{ route('admin.disability3500data.check_benf_udidno') }}?udid_no=${encodeURIComponent(udid)}`)
          .then(response => response.json())
          .then(data => {
             if (data === 1) {
@@ -588,8 +588,8 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('Error checking UDID:', error);
             errorDiv.innerHTML = '<label class="error">An error occurred. Try again.</label>';
          });
+      });
    });
-});
 </script>
 <script>
    function Validate() {
@@ -839,131 +839,131 @@ document.addEventListener("DOMContentLoaded", function () {
 
       function bindValidation(type) {
          const naFields = [
-           'ngo_postal_address_at',
-           'ngo_postal_address_post',
-           'ngo_postal_address_via',
-           'ngo_postal_address_ps',
-           'ngo_postal_address_district',
-           'ngo_postal_address_pin'
-        ];
+          'ngo_postal_address_at',
+          'ngo_postal_address_post',
+          'ngo_postal_address_via',
+          'ngo_postal_address_ps',
+          'ngo_postal_address_district',
+          'ngo_postal_address_pin'
+       ];
 
-        naFields.forEach(function (id) {
-           const el = document.getElementById(id);
-           if (el) {
+       naFields.forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) {
             el.value = 'Not Required to Provide';
             el.readOnly = true;
          }
       });
-         const pinField = document.getElementById('ngo_postal_address_pin');
-         const submitButton = document.getElementById('submitButton');
+       const pinField = document.getElementById('ngo_postal_address_pin');
+       const submitButton = document.getElementById('submitButton');
 
-         if (pinField && submitButton) {
-            pinField.addEventListener('input', function () {
-               const pinValue = pinField.value;
-               if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {
-                  submitButton.style.display = 'inline-block';
-               } else {
-                  submitButton.style.display = 'none';
-               }
-            });
-
-            const initialPinValue = pinField.value;
-            if (initialPinValue.length === 6 && /^\d+$/.test(initialPinValue)) {
+       if (pinField && submitButton) {
+         pinField.addEventListener('input', function () {
+            const pinValue = pinField.value;
+            if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {
                submitButton.style.display = 'inline-block';
             } else {
-               submitButton.style.display = 'inline-block';
-            }
-         }
-
-         document.getElementById('submitButton').addEventListener('click', function (e) {
-            e.preventDefault();
-
-            if (type === '1') {
-               if (validateVillageFields()) {
-                  form.submit();
-               }
-            } else if (type === '2') {
-               if (validateMunicipalityFields()) {
-                  form.submit();
-               }
+               submitButton.style.display = 'none';
             }
          });
+
+         const initialPinValue = pinField.value;
+         if (initialPinValue.length === 6 && /^\d+$/.test(initialPinValue)) {
+            submitButton.style.display = 'inline-block';
+         } else {
+            submitButton.style.display = 'inline-block';
+         }
       }
 
-      function showAlert(message, focusElement = null) {
-         const alertContainer = document.getElementById('alert-container') || createAlertContainer();
-         const alertDiv = document.createElement('div');
+      document.getElementById('submitButton').addEventListener('click', function (e) {
+         e.preventDefault();
 
-         alertDiv.classList.add('alert', 'alert-warning', 'alert-rounded', 'alert-dismissible');
-         alertDiv.innerHTML = `
+         if (type === '1') {
+            if (validateVillageFields()) {
+               form.submit();
+            }
+         } else if (type === '2') {
+            if (validateMunicipalityFields()) {
+               form.submit();
+            }
+         }
+      });
+   }
+
+   function showAlert(message, focusElement = null) {
+      const alertContainer = document.getElementById('alert-container') || createAlertContainer();
+      const alertDiv = document.createElement('div');
+
+      alertDiv.classList.add('alert', 'alert-warning', 'alert-rounded', 'alert-dismissible');
+      alertDiv.innerHTML = `
    <img src="{{ url('storage/sad-icon.png') }}" width="30" class="img-circle" alt="img">
             ${message}
    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-         `;
+      `;
 
-         alertContainer.appendChild(alertDiv);
+      alertContainer.appendChild(alertDiv);
 
-         if (focusElement) focusElement.focus();
+      if (focusElement) focusElement.focus();
 
-         setTimeout(() => alertDiv.remove(), 3000);
-      }
+      setTimeout(() => alertDiv.remove(), 3000);
+   }
 
-      function createAlertContainer() {
-         const newContainer = document.createElement('div');
-         newContainer.id = 'alert-container';
-         document.body.appendChild(newContainer);
-         return newContainer;
-      }
+   function createAlertContainer() {
+      const newContainer = document.createElement('div');
+      newContainer.id = 'alert-container';
+      document.body.appendChild(newContainer);
+      return newContainer;
+   }
 
-      function validateFields(fields) {
-         for (let field of fields) {
-            const element = document.getElementById(field.id);
-            if (!element || element.value.trim() === '') {
-               showAlert(field.message, element);
-               return false;
-            }
+   function validateFields(fields) {
+      for (let field of fields) {
+         const element = document.getElementById(field.id);
+         if (!element || element.value.trim() === '') {
+            showAlert(field.message, element);
+            return false;
          }
-         return true;
       }
+      return true;
+   }
 
-      function validateVillageFields() {
-         const fields = [
-            { id: 'state-dropdown', message: 'Please select State.' },
-            { id: 'district-dropdown', message: 'Please select District.' },
-            { id: 'block-dropdown', message: 'Please select Block.' },
-            { id: 'grampanchayat-dropdown', message: 'Please select Grampanchayat.' },
-            { id: 'village-dropdown', message: 'Please select Village.' },
-            { id: 'pin', message: 'Please provide PIN.' },
-            { id: 'ngo_postal_address_at', message: 'Please provide At.' },
-            { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
-            { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
-            { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
-            { id: 'ngo_postal_address_district', message: 'Please provide District.' },
-            { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
-         ];
+   function validateVillageFields() {
+      const fields = [
+         { id: 'state-dropdown', message: 'Please select State.' },
+         { id: 'district-dropdown', message: 'Please select District.' },
+         { id: 'block-dropdown', message: 'Please select Block.' },
+         { id: 'grampanchayat-dropdown', message: 'Please select Grampanchayat.' },
+         { id: 'village-dropdown', message: 'Please select Village.' },
+         { id: 'pin', message: 'Please provide PIN.' },
+         { id: 'ngo_postal_address_at', message: 'Please provide At.' },
+         { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
+         { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
+         { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
+         { id: 'ngo_postal_address_district', message: 'Please provide District.' },
+         { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
+      ];
 
-         return validateFields(fields) && Validate();
-      }
+      return validateFields(fields) && Validate();
+   }
 
-      function validateMunicipalityFields() {
-         const fields = [
-            { id: 'state-dropdown', message: 'Please select State.' },
-            { id: 'district-dropdown', message: 'Please select District.' },
-            { id: 'municipality-dropdown', message: 'Please select Municipality.' },
-            { id: 'ward-dropdown', message: 'Please select Ward.' },
-            { id: 'pin', message: 'Please provide PIN.' },
-            { id: 'ngo_postal_address_at', message: 'Please provide At.' },
-            { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
-            { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
-            { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
-            { id: 'ngo_postal_address_district', message: 'Please provide District.' },
-            { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
-         ];
+   function validateMunicipalityFields() {
+      const fields = [
+         { id: 'state-dropdown', message: 'Please select State.' },
+         { id: 'district-dropdown', message: 'Please select District.' },
+         { id: 'municipality-dropdown', message: 'Please select Municipality.' },
+         { id: 'ward-dropdown', message: 'Please select Ward.' },
+         { id: 'pin', message: 'Please provide PIN.' },
+         { id: 'ngo_postal_address_at', message: 'Please provide At.' },
+         { id: 'ngo_postal_address_post', message: 'Please provide Post.' },
+         { id: 'ngo_postal_address_via', message: 'Please provide Via.' },
+         { id: 'ngo_postal_address_ps', message: 'Please provide Police Station.' },
+         { id: 'ngo_postal_address_district', message: 'Please provide District.' },
+         { id: 'ngo_postal_address_pin', message: 'Please provide Postal Code.' }
+      ];
 
-         return validateFields(fields) && Validate();
-      }   
-      console.log("DOM is fully loaded");
-   });
+      return validateFields(fields) && Validate();
+   }   
+   console.log("DOM is fully loaded");
+});
 </script>
 <script>
    document.addEventListener("DOMContentLoaded", function () {
