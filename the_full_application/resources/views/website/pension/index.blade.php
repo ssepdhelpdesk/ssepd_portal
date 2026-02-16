@@ -228,8 +228,8 @@ SSEPD-IT || Pension
 							<div class="d-flex">
 								<input type="text" name="aadhaar_no" id="aadhaar_no" class="form-control me-2">
 								<button type="button" class="btn btn-secondary btn-sm" id="aadhaar_verify_btn">Verify</button>
-								<input type="text" id="verified_aadhar" class="form-control" name="verified_aadhar">
-								<input type="text" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
+								<input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
+								<input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
 							</div>
 						</div>
 						<div class="col-md-4 mb-3">
@@ -717,10 +717,13 @@ SSEPD-IT || Pension
 					Swal.fire('Verified', message || 'Aadhaar verified1 successfully', 'success');
 
 					verifyBtn.innerText = 'Verified';
+					verifyBtn.classList.remove('btn-primary', 'btn-danger');
+					verifyBtn.classList.add('btn-success');
 				} else {
 
 					verifiedAadharInput.value = 0;
 					verifiedRemarksInput.value = message;
+					fullNameInput.setAttribute('readonly', true);
 
 					Swal.fire('Verification Failed',
 						message || data.response || 'Aadhaar verification failed',
@@ -735,6 +738,7 @@ SSEPD-IT || Pension
 			.catch(error => {
 				verifiedAadharInput.value = 0;
 				verifiedRemarksInput.value = 'Server error';
+				fullNameInput.setAttribute('readonly', true);
 
 				Swal.fire('Error', 'Server error during verification', 'error');
 
@@ -761,7 +765,6 @@ SSEPD-IT || Pension
 				hide('documents_section');
 
 				aadhaarInput.removeAttribute('readonly');
-				fullNameInput.removeAttribute('readonly');
 
 				verifyBtn.disabled = false;
 				verifyBtn.innerText = 'Verify';
