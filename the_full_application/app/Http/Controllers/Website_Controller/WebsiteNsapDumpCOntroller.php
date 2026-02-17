@@ -149,10 +149,11 @@ public function datatable(Request $request)
     )
     ->addColumn('action', function ($row) {
         $url = route('website.pensioners.dbt_consent_form', $row->uuid);
+        // use -> '.$url.' instead of javascript:void(0);
 
         return '
         <div class="d-flex align-items-center">
-        <a href="'.$url.'" target="_blank" rel="noopener noreferrer" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-eye"></i></a>
+        <a href="javascript:void(0);" target="_blank" rel="noopener noreferrer" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-eye"></i></a>
         </div>
         ';
     })

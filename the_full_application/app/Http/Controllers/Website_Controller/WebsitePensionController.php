@@ -109,6 +109,71 @@ class WebsitePensionController extends Controller
         }
     }
 
+
+
+public function benf_udid_verification(Request $request)
+{
+    $request->validate([
+        'udid' => 'required|string',
+        'dob'  => 'required|date'
+    ]);
+
+    try {
+
+        $response = Http::timeout(15)
+            ->asForm()
+            ->post(
+                'http://117.211.75.216:8080/swp/api/nfbs/requestToUdid',
+                [
+                    'udid' => $request->udid,
+                    'dob'  => $request->dob
+                ]
+            );
+
+        if (!$response->successful()) {
+
+            Log::error('UDID API HTTP Failure', [
+                'status_code' => $response->status(),
+                'body'        => $response->body()
+            ]);
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'UDID service unavailable'
+            ]);
+        }
+
+        $result = $response->json();
+
+        if (isset($result['status']) && $result['status'] === "true") {
+
+            return response()->json([
+                'status' => true,
+                'data'   => $result['result']
+            ]);
+        }
+
+        return response()->json([
+            'status'  => false,
+            'message' => $result['message'] ?? 'Verification failed'
+        ]);
+
+    } catch (\Throwable $e) {
+
+        Log::error('UDID API Exception', [
+            'error' => $e->getMessage(),
+            'line'  => $e->getLine(),
+            'file'  => $e->getFile()
+        ]);
+
+        return response()->json([
+            'status'  => false,
+            'message' => 'Something went wrong while verifying UDID'
+        ]);
+    }
+}
+
+
     /**
      * Show the form for creating a new resource.
      */

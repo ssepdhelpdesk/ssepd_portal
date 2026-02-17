@@ -342,9 +342,10 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">UDID No</label>
                            <div class="d-flex">
                               <input type="text" name="udid_no" id="udid_no" class="form-control me-2">
-                              <button type="button" class="btn btn-secondary btn-sm">Verify</button>
+                              <button type="button" id="verify_udid_btn" class="btn btn-secondary btn-sm">Verify</button>
                            </div>
                         </div>
+                        <div id="udid_result" class="mt-3"></div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Disability Category</label>
                            <select name="disability_category_id" id="disability_category_id" class="select form-control required-field">
@@ -1070,6 +1071,54 @@ SSEPD-IT || Pension
    return true;
    }
 </script>
+<script>
+$(document).on('click', '#verify_udid_btn', function () {
+
+    let udid = $('#udid_no').val();
+    let dob  = $('#dob').val();
+
+    if (!udid || !dob) {
+        alert("Please enter UDID and DOB");
+        return;
+    }
+
+    $.ajax({
+        url: "{{ route('website.pension.benf_udid_verification') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            udid: udid,
+            dob: dob
+        },
+        beforeSend: function () {
+            $('#verify_udid_btn').text('Verifying...');
+        },
+        success: function (response) {
+            $('#verify_udid_btn').text('Verify');
+
+            if (response.status === true) {
+                $('#udid_result').html(
+                    `<div class="alert alert-success">
+                        Name: ${response.data.fullname}<br>
+                        Disability: ${response.data.disability_type}<br>
+                        Percentage: ${response.data.disability_percentage}%<br>
+                        Status: ${response.data.application_status}
+                    </div>`
+                );
+            } else {
+                $('#udid_result').html(
+                    `<div class="alert alert-danger">${response.message}</div>`
+                );
+            }
+        },
+        error: function () {
+            $('#verify_udid_btn').text('Verify');
+            alert("Server Error");
+        }
+    });
+});
+</script>
+
 <script>
    document.addEventListener('DOMContentLoaded', function () {
    

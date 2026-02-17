@@ -143,6 +143,7 @@ Route::prefix('website')->name('website.')->group(function () {
     Route::prefix('pension')->name('pension.')->controller(WebsitePensionController::class)->group(function () {
         Route::get('index', 'index')->name('index');
         Route::post('benf_aadhar_verification', 'benf_aadhar_verification')->name('benf_aadhar_verification');
+        Route::post('benf_udid_verification', 'benf_udid_verification')->name('benf_udid_verification');
     });
 });
 
