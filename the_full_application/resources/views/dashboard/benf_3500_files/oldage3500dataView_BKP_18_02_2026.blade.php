@@ -1,12 +1,9 @@
 @section('title') 
 EP Pension || Index - OldAge
 @endsection 
-
 @extends('dashboard.layouts.main')
-
 @section('style')
 @endsection 
-
 @section('content')
 <div class="container-fluid">
     <div class="row page-titles">
@@ -31,7 +28,6 @@ EP Pension || Index - OldAge
                 <div class="card-body">
                     <h4 class="card-title"></h4>
                     @include('dashboard.component.message')
-
                     <div class="table-responsive m-t-40">
                         <table id="oldAgeTable" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                             <thead>
@@ -54,7 +50,6 @@ EP Pension || Index - OldAge
                                     <th style="white-space: normal; word-wrap: break-word;">Action</th>
                                 </tr>
                             </thead>
-
                             <tfoot>
                                 <tr>
                                     <th style="white-space: normal; word-wrap: break-word;">Sl No</th>
@@ -76,87 +71,50 @@ EP Pension || Index - OldAge
                                 </tr>
                             </tfoot>
                         </table>
-
-                        <!-- Modal -->
                         <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content" style="border-radius:15px; overflow:hidden; box-shadow:0px 8px 25px rgba(0,0,0,0.25);">
-
-                                    <div class="modal-header" style="background:linear-gradient(90deg,#0d6efd,#0b5ed7); color:white;">
-                                        <h5 class="modal-title" id="actionModalLabel" style="font-weight:600;">
-                                            <i class="fas fa-tasks"></i> Select Action
-                                        </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="actionModalLabel">Select Action</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-
-                                    <div class="modal-body" style="background:#f8f9fa; padding:20px;">
-
-                                        <div style="background:#fff3cd; border:1px solid #ffeeba; padding:12px; border-radius:10px; margin-bottom:15px;">
-                                            <p style="margin:0; color:#856404; font-weight:600; font-size:14px;">
-                                                <i class="fas fa-exclamation-triangle"></i>
-                                                Please Note: To mark <span style="color:red;">Ineligible</span>, first Verify the Aadhaar.
-                                            </p>
-                                        </div>
-
+                                    <div class="modal-body">
                                         <input type="hidden" id="recordId" value="">
-                                        <input type="hidden" id="verifiedAadharStatus" value="">
-
                                         <div class="form-group mb-3">
-                                            <label for="statusSelect" class="form-label" style="font-weight:600;">Choose Status:</label>
-                                            <select class="form-control" id="statusSelect" name="status"
-                                            style="border-radius:10px; padding:10px;" required>
-                                            <option value="Inactive">Discontinue</option>
-                                        </select>
+                                            <label for="statusSelect" class="form-label">Choose Status:</label>
+                                            <select class="form-control" id="statusSelect" name="status" required>
+                                                <option value="Inactive">Discontinue</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="discontinue_date" class="form-label">Date of Discontinue:</label>
+                                            <input type="date" name="discontinue_date" id="discontinue_date" class="form-control" max="{{ date('Y-m-d') }}" required>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="discontinued_reason" class="form-label">Discontinue Reason:</label>
+                                            <select class="form-control" id="discontinued_reason" name="discontinued_reason" required>
+                                                <option value=""> -Select- </option>
+                                                <option value="Death">Death</option>
+                                                <option value="Ineligible">Ineligible</option>
+                                            </select>
+                                        </div>
                                     </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="discontinue_date" class="form-label" style="font-weight:600;">Date of Discontinue:</label>
-                                        <input type="date" name="discontinue_date" id="discontinue_date"
-                                        class="form-control"
-                                        style="border-radius:10px; padding:10px;"
-                                        max="{{ date('Y-m-d') }}" required>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-success" id="saveStatus">Save</button>
                                     </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="discontinued_reason" class="form-label" style="font-weight:600;">Discontinue Reason:</label>
-                                        <select class="form-control" id="discontinued_reason" name="discontinued_reason"
-                                        style="border-radius:10px; padding:10px;" required>
-                                        <option value=""> -Select- </option>
-                                        <option value="Death">Death</option>
-                                        <option value="Ineligible" id="ineligibleOption" style="display:none;">Ineligible</option>
-                                    </select>
                                 </div>
-
                             </div>
+                        </div>
 
-                            <div class="modal-footer" style="background:#ffffff; border-top:1px solid #dee2e6;">
-                                <button type="button" class="btn btn-secondary"
-                                style="border-radius:10px; padding:8px 18px;"
-                                data-bs-dismiss="modal">
-                                Close
-                            </button>
-
-                            <button type="button" class="btn btn-success" id="saveStatus"
-                            style="border-radius:10px; padding:8px 18px; font-weight:600;">
-                            <i class="fas fa-save"></i> Save
-                        </button>
                     </div>
-
                 </div>
             </div>
         </div>
-
-
-        <!-- Modal End -->
-
     </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-@endsection 
 
+@endsection 
 
 @section('script')
 <script>
@@ -193,35 +151,20 @@ EP Pension || Index - OldAge
         $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
         .addClass('btn btn-primary me-1');
     });
+
 </script>
-
-
 <script>
     $(document).ready(function() {
 
-        /*Handle modal show*/
+    // Handle modal show to get record ID (already added)
         $('#actionModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var recordId = button.data('id');
-
-            /*Get verified status from button attribute (data-verified)*/
-            var verified = button.data('verified');
-
             var modal = $(this);
             modal.find('#recordId').val(recordId);
-
-            /*Reset dropdown selection*/
-            $('#discontinued_reason').val('');
-
-            /*Show/Hide Ineligible based on verified status*/
-            if (verified == 1) {
-                $('#ineligibleOption').show();
-            } else {
-                $('#ineligibleOption').hide();
-            }
         });
 
-        /*AJAX Save Status*/
+    // AJAX Save Status
         $('#saveStatus').on('click', function() {
             var recordId = $('#recordId').val();
             var status = $('#statusSelect').val();

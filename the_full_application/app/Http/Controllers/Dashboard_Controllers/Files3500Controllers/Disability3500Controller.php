@@ -55,8 +55,130 @@ class Disability3500Controller extends Controller
     /**
      * Display a listing of the resource.
      */
-    
-    public function index(Request $request)
+public function index(Request $request)
+{
+    ini_set('memory_limit', '512M');
+
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $oldAgeData = Disability3500Pensioner::query();
+    $oldAgeData->where('db_status', 1);
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+    } elseif (in_array($userRole, [4, 6])) {
+        $oldAgeData->where('block_id', $user->posted_block);
+
+    } elseif ($userRole == 5) {
+        $oldAgeData->where('municipality_id', $user->posted_municipality);
+
+    } elseif (in_array($userRole, [8, 10])) {
+
+        $blockIds = Blocks3500::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('block_id');
+
+        $municipalityIds = Municipality3500::where('subdivision_id', $user->posted_subdiv)
+            ->where('is_active', 'active')
+            ->pluck('municipality_id');
+
+        $oldAgeData->where(function ($query) use ($blockIds, $municipalityIds) {
+            $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+        });
+
+    } elseif (in_array($userRole, [9, 11])) {
+        $oldAgeData->where('district_id', $user->posted_district);
+    }
+
+    if ($request->ajax()) {
+        return DataTables::eloquent($oldAgeData)
+            ->addIndexColumn()
+
+            ->addColumn('aadhaar_verification_status', function ($row) {
+
+                if ($row->verified_aadhar == 1) {
+                    return '<span class="badge bg-success">Verified Aadhaar</span>';
+                }
+
+                if (is_null($row->verified_aadhar)) {
+                    return '<span class="badge bg-warning text-dark">Pending to Verify</span>';
+                }
+
+                if ($row->verified_aadhar == 0) {
+                    return '<span class="badge bg-danger">Demographic Error, Please Retry</span>';
+                }
+
+                return '-';
+            })
+
+            ->addColumn('action', function ($row) {
+
+                $buttons = '<div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle text-white btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                    </button>
+                    <div class="dropdown-menu animated slideInUp">';
+
+                $isActiveAndNotDiscontinued =
+                    is_null($row->discontinued_date) &&
+                    is_null($row->discontinued_system_gen_date) &&
+                    is_null($row->discontinued_system_gen_time) &&
+                    $row->status === 'Active';
+
+                if ($isActiveAndNotDiscontinued) {
+
+                    // If Aadhaar Not Verified (0)
+                    if ((int)$row->verified_aadhar === 0) {
+                        $editUrl = route('admin.disability3500data.edit', $row->id);
+
+                        $buttons .= '
+                        <a class="dropdown-item text-danger" href="'.$editUrl.'">
+                            Verify Aadhaar to Proceed
+                        </a>';
+                    }
+
+                    // If Aadhaar Verified (1)
+                    if ((int)$row->verified_aadhar === 1) {
+                        $editUrl = route('admin.disability3500data.edit', $row->id);
+
+                        $buttons .= '
+                        <a href="'.$editUrl.'" class="dropdown-item">
+                            Migration / Update Address
+                        </a>';
+                    }
+
+                    // Discontinue option
+                    if (auth()->user()->can('pension-3500-edit')) {
+
+                        $verified = (int) $row->verified_aadhar;
+
+                        $buttons .= '
+                        <a class="dropdown-item" href="javascript:void(0)"
+                            data-bs-toggle="modal"
+                            data-bs-target="#actionModal"
+                            data-id="'.$row->id.'"
+                            data-verified="'.$verified.'">
+                            Discontinue
+                        </a>';
+                    }
+                }
+
+                $buttons .= '</div></div>';
+
+                return $buttons;
+            })
+
+            ->rawColumns(['action', 'aadhaar_verification_status'])
+            ->make(true);
+    }
+
+    return view('dashboard.benf_3500_files.disability3500dataView');
+}
+
+
+    public function index_bkp_18_02_2026(Request $request)
     {
         ini_set('memory_limit', '512M');
         $user = auth()->user();
@@ -144,6 +266,16 @@ class Disability3500Controller extends Controller
                         $buttons .= '
                         <a class="dropdown-item text-danger" href="'.$editUrl.'">
                         Verify Aadhaar to Proceed
+                        </a>';
+                    }
+
+                    if (auth()->user()->can('pension-3500-edit')) {
+                        $buttons .= '
+                        <a class="dropdown-item" href="javascript:void(0)"
+                        data-bs-toggle="modal"
+                        data-bs-target="#actionModal"
+                        data-id="'.$row->id.'">
+                        Discontinue
                         </a>';
                     }
 

@@ -1094,23 +1094,30 @@ $(document).on('click', '#verify_udid_btn', function () {
             $('#verify_udid_btn').text('Verifying...');
         },
         success: function (response) {
-            $('#verify_udid_btn').text('Verify');
+    console.log(response);
 
-            if (response.status === true) {
-                $('#udid_result').html(
-                    `<div class="alert alert-success">
-                        Name: ${response.data.fullname}<br>
-                        Disability: ${response.data.disability_type}<br>
-                        Percentage: ${response.data.disability_percentage}%<br>
-                        Status: ${response.data.application_status}
-                    </div>`
-                );
-            } else {
-                $('#udid_result').html(
-                    `<div class="alert alert-danger">${response.message}</div>`
-                );
-            }
-        },
+    $('#verify_udid_btn').text('Verify');
+
+    if (!response || response.status !== true || !response.data) {
+        $('#udid_result').html(
+            `<div class="alert alert-danger">
+                ${response?.message ?? 'Invalid UDID response'}
+            </div>`
+        );
+        return;
+    }
+
+    let data = response.data;
+
+    $('#udid_result').html(
+        `<div class="alert alert-success">
+            Name: ${data.fullname}<br>
+            Disability: ${data.disability_type}<br>
+            Percentage: ${data.disability_percentage}%<br>
+            Status: ${data.application_status}
+        </div>`
+    );
+},
         error: function () {
             $('#verify_udid_btn').text('Verify');
             alert("Server Error");
