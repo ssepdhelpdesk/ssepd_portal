@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "SSEPD Pension Table Work"
+git commit -m "SSEPD EP Pension Table Work"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -10,13 +10,7 @@ git clone https://admin_ssepd@bitbucket.org/admin_ssepd/siepv3.git
 git pull origin main
 
 /////////////////////////////////////////////////////
-Invalid column count in CSV input on line 1.
-ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `gender_by_user` VARCHAR(250) NULL AFTER `gender`;
-ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `age_by_user` VARCHAR(250) NULL AFTER `age`;
-
-ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `verified_aadhar` TINYINT(1) NOT NULL DEFAULT 0 AFTER `aadhaar_encrypted`;
-ALTER TABLE `nsap_portal27_jan2026_csvs` ADD `verified_aadhar_remarks` VARCHAR(250) NULL AFTER `verified_aadhar`;
-
+ALTER TABLE `oldage_pensioner_beneficiaries_withage_80andabove_04_03_2025` ADD `epic_no` VARCHAR(12) NULL DEFAULT NULL AFTER `aadhaar_no`;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.

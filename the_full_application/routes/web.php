@@ -326,6 +326,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('oldage_ineligible_to_eligible_reinstead', 'oldage_ineligible_to_eligible_reinstead')->name('oldage_ineligible_to_eligible_reinstead');
         Route::post('oldage_ineligible_to_eligible_reinstead_process', 'oldage_ineligible_to_eligible_reinstead_process')->name('oldage_ineligible_to_eligible_reinstead_process');
+        
+        Route::get('{id}/oldage_verify_beneficiary_using_epic_number', 'oldage_verify_beneficiary_using_epic_number')->name('oldage_verify_beneficiary_using_epic_number');
+        Route::get('oldage_check_verify_beneficiary_using_epic_number', 'oldage_check_verify_beneficiary_using_epic_number')->name('oldage_check_verify_beneficiary_using_epic_number');
+        Route::post('{id}/oldage_verify_beneficiary_using_epic_number_update', 'oldage_verify_beneficiary_using_epic_number_update')->name('oldage_verify_beneficiary_using_epic_number_update');
     });
 
     Route::prefix('disability3500data')->name('disability3500data.')->controller(Disability3500Controller::class)->group(function () {
@@ -359,6 +363,10 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
         Route::get('disability_ineligible_to_eligible_reinstead', 'disability_ineligible_to_eligible_reinstead')->name('disability_ineligible_to_eligible_reinstead');
         Route::post('disability_ineligible_to_eligible_reinstead_process', 'disability_ineligible_to_eligible_reinstead_process')->name('disability_ineligible_to_eligible_reinstead_process');
+
+        Route::get('{id}/disability_verify_beneficiary_using_epic_number', 'disability_verify_beneficiary_using_epic_number')->name('disability_verify_beneficiary_using_epic_number');
+        Route::get('disability_check_verify_beneficiary_using_epic_number', 'disability_check_verify_beneficiary_using_epic_number')->name('disability_check_verify_beneficiary_using_epic_number');
+        Route::post('{id}/disability_verify_beneficiary_using_epic_number_update', 'disability_verify_beneficiary_using_epic_number_update')->name('disability_verify_beneficiary_using_epic_number_update');
     });
 
     Route::prefix('reportof3500data')->name('reportof3500data.')->controller(ReportOf3500Controller::class)->group(function () {
