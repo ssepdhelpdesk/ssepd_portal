@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "SSEPD EP Pension Verify Using EPIC Number"
+git commit -m "Toilet Construction Geo Location Issue Solved"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git

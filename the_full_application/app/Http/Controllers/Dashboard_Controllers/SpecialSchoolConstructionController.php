@@ -349,8 +349,8 @@ public function construction_timeline_store(Request $request)
         $school_construction->school_postal_address_ps = $specialSchool->school_postal_address_ps;
         $school_construction->school_postal_address_district = $specialSchool->school_postal_address_district;
         $school_construction->school_postal_address_pin = $specialSchool->school_postal_address_pin;
-        $school_construction->system_stored_latitude = $request->system_stored_latitude;
-        $school_construction->system_stored_longitude = $request->system_stored_longitude;
+        $school_construction->system_stored_latitude = $validatedData['latitude_1'];
+        $school_construction->system_stored_longitude = $validatedData['longitude_1'];
         $school_construction->is_active = 'active';
         $school_construction->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
         $school_construction->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
