@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "SSEPD EP Pension Table Work"
+git commit -m "SSEPD EP Pension Verify Using EPIC Number"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -10,7 +10,7 @@ git clone https://admin_ssepd@bitbucket.org/admin_ssepd/siepv3.git
 git pull origin main
 
 /////////////////////////////////////////////////////
-ALTER TABLE `oldage_pensioner_beneficiaries_withage_80andabove_04_03_2025` ADD `epic_no` VARCHAR(12) NULL DEFAULT NULL AFTER `aadhaar_no`;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.

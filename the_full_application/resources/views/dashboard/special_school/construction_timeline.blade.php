@@ -354,44 +354,52 @@ Special School || Construction Progress Details
 @endsection 
 @section('script')
 <script>
-   document.addEventListener("DOMContentLoaded", function () {
-      if (navigator.geolocation) {
-         navigator.geolocation.getCurrentPosition(
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (!window.isSecureContext) {
+        alert("Geolocation requires HTTPS connection.");
+        return;
+    }
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+    }
+
+    navigator.permissions.query({ name: "geolocation" }).then(function (result) {
+
+        if (result.state === "denied") {
+            alert("Location permission is blocked. Please enable it in browser settings.");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
             function (position) {
-               let lat = position.coords.latitude.toFixed(6);
-               let lon = position.coords.longitude.toFixed(6);
 
-               document.getElementById("system_stored_latitude").value = lat;
-               document.getElementById("system_stored_longitude").value = lon;
+                const lat = position.coords.latitude.toFixed(6);
+                const lon = position.coords.longitude.toFixed(6);
 
-               console.log("📍 Location captured:", lat, lon);
+                document.getElementById("system_stored_latitude").value = lat;
+                document.getElementById("system_stored_longitude").value = lon;
+
+                console.log("Location captured:", lat, lon);
+
             },
             function (error) {
-               switch (error.code) {
-               case error.PERMISSION_DENIED:
-                  alert("Geolocation permission denied by the user.");
-                  break;
-               case error.POSITION_UNAVAILABLE:
-                  alert("Location information is unavailable.");
-                  break;
-               case error.TIMEOUT:
-                  alert("The request to get user location timed out.");
-                  break;
-               default:
-                  alert("An unknown error occurred while fetching location.");
-                  break;
-               }
-               console.warn("Geolocation error:", error.message);
+                console.error("Geolocation error:", error);
+
+                alert("Unable to fetch location. Please enable GPS and allow permission.");
             },
             {
-               enableHighAccuracy: true,
-               timeout: 5000,
-               maximumAge: 0
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
             }
-            );
-      } else {
-         alert("Geolocation is not supported by your browser.");
-      }
-   });
+        );
+
+    });
+
+});
+
 </script>
 @endsection
