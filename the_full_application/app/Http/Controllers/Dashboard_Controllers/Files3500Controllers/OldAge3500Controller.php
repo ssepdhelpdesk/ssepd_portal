@@ -1099,7 +1099,7 @@ public function store(Request $request)
         $scheme = $validatedData['scheme_name'];
 
         if (!array_key_exists($scheme, $schemeMap)) {
-            throw new \InvalidArgumentException('Invalid scheme selected.');
+            return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
         }
 
         $old_age_pensioner_verification_app->scheme = $scheme;
@@ -1251,6 +1251,10 @@ public function update(Request $request, string $id)
             $updated_scheme_name = 'MBPOAP';
         } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
             $updated_scheme_name = 'IGNOAP';
+        } elseif ($validatedData['scheme_name'] == 'MBPWP') {
+            $updated_scheme_name = 'MBPWP';
+        } elseif ($validatedData['scheme_name'] == 'IGNWP') {
+            $updated_scheme_name = 'IGNWP';
         } elseif (empty($validatedData['scheme_name'])) {
             return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
         } else {
@@ -1344,7 +1348,7 @@ public function update(Request $request, string $id)
             $scheme = $validatedData['scheme_name'];
 
             if (!array_key_exists($scheme, $schemeMap)) {
-                throw new \InvalidArgumentException('Invalid scheme selected.');
+                return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
             }
 
             $old_age_pensioner_verification_app->scheme = $scheme;

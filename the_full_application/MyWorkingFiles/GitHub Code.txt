@@ -1,6 +1,6 @@
 git status
 git add .
-git commit -m "Toilet Construction Geo Location Issue Solved"
+git commit -m "Added MBPWP & IGNWP in EP Portal"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
