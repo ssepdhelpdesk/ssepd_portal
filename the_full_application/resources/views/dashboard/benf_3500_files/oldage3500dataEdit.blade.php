@@ -67,6 +67,8 @@ EP Pension || OldAge Beneficiary Data Update
                                  <option>Please Select</option>
                                  <option value="MBPOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPOAP' ? 'selected' : '' }}>MBPOAP</option>
                                  <option value="IGNOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNOAP' ? 'selected' : '' }}>IGNOAP</option>
+                                 <option value="MBPWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPWP' ? 'selected' : '' }}>MBPWP</option>
+                                 <option value="IGNWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNWP' ? 'selected' : '' }}>IGNWP</option>
                               </select>
                               <div id="scheme_name_error"></div>
                               @error('scheme_name')
@@ -104,62 +106,62 @@ EP Pension || OldAge Beneficiary Data Update
                               $parsedDate = null;
 
                               try {
-                                if ($dob && strtolower($dob) !== 'not provided by district') {
+                               if ($dob && strtolower($dob) !== 'not provided by district') {
                                  $parsedDate = \Carbon\Carbon::parse($dob);
                                  $year = (int) $parsedDate->format('Y');
 
                                  if ($year >= 1900 && $year <= now()->year && !empty($age) && $age >= 80 && $age <= 140) {
-                                  $isReadonly = true;
-                               }
-                            }
-                         } catch (\Exception $e) {
-                          $parsedDate = null;
-                          $isReadonly = false;
-                       }
-                       @endphp
-                       <input type="date"
-                       id="date_of_birth"
-                       name="date_of_birth"
-                       value="{{ $parsedDate ? $parsedDate->format('Y-m-d') : '' }}"
-                       class="form-control"
-                       placeholder="Enter Date of Birth"
+                                   $isReadonly = true;
+                                }
+                             }
+                          } catch (\Exception $e) {
+                            $parsedDate = null;
+                            $isReadonly = false;
+                         }
+                         @endphp
+                         <input type="date"
+                         id="date_of_birth"
+                         name="date_of_birth"
+                         value="{{ $parsedDate ? $parsedDate->format('Y-m-d') : '' }}"
+                         class="form-control"
+                         placeholder="Enter Date of Birth"
 
-                       max="{{ now()->format('Y-m-d') }}">
-                       @if($dob == '' || $dob == null || $dob == 'Not Provided By District' || $age < 80 || $age > 140 || $age == '' || $age == null || $age == 'Not Provided By District')
-                       <small class="text-danger">
-                        Invalid DOB detected ({{ $dob }})/ or AGE ({{ $age }}). Please correct it.
-                     </small>
-                     @endif
-                     <div id="date_of_birth_error"></div>
-                     @error('date_of_birth')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
+                         max="{{ now()->format('Y-m-d') }}">
+                         @if($dob == '' || $dob == null || $dob == 'Not Provided By District' || $age < 80 || $age > 140 || $age == '' || $age == null || $age == 'Not Provided By District')
+                         <small class="text-danger">
+                           Invalid DOB detected ({{ $dob }})/ or AGE ({{ $age }}). Please correct it.
+                        </small>
+                        @endif
+                        <div id="date_of_birth_error"></div>
+                        @error('date_of_birth')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
                   </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="form-group" id="age_div">
-                     <label class="form-label">Age<span class="itsrequired"> *</span></label>
-                     <input type="text" id="age" name="age" value="{{old('age', $oldAge3500Pensioner->age)}}" class="form-control" placeholder="Age" readonly>
-                     <div id="age_error"></div>
-                     @error('age')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
+                  <div class="col-md-3">
+                     <div class="form-group" id="age_div">
+                        <label class="form-label">Age<span class="itsrequired"> *</span></label>
+                        <input type="text" id="age" name="age" value="{{old('age', $oldAge3500Pensioner->age)}}" class="form-control" placeholder="Age" readonly>
+                        <div id="age_error"></div>
+                        @error('age')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
+                  </div>                        
+                  <div class="col-md-3">
+                     <div class="form-group" id="gender_div">
+                        <label class="form-label">Gender<span class="itsrequired"> *</span></label>
+                        <select class="form-control show-tick ms select2" id="gender" name="gender">
+                           <option >Please Select</option>
+                           <option value="Male" {{ $oldAge3500Pensioner->gender == 'Male' ? 'selected' : '' }}>Male</option>
+                           <option value="Female" {{ $oldAge3500Pensioner->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                        </select>
+                        <div id="gender_error"></div>
+                        @error('gender')
+                        <label class="error">{{ $message }}</label>
+                        @enderror
+                     </div>
                   </div>
-               </div>                        
-               <div class="col-md-3">
-                  <div class="form-group" id="gender_div">
-                     <label class="form-label">Gender<span class="itsrequired"> *</span></label>
-                     <select class="form-control show-tick ms select2" id="gender" name="gender">
-                        <option >Please Select</option>
-                        <option value="Male" {{ $oldAge3500Pensioner->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                        <option value="Female" {{ $oldAge3500Pensioner->gender == 'Female' ? 'selected' : '' }}>Female</option>
-                     </select>
-                     <div id="gender_error"></div>
-                     @error('gender')
-                     <label class="error">{{ $message }}</label>
-                     @enderror
-                  </div>
-               </div>
                         <!-- <div class="col-md-3">
                          <div class="form-group" id="aadhaar_no_div">
                           <label class="form-label">Aadhaar Number<span class="itsrequired"> *</span></label>
@@ -423,122 +425,122 @@ EP Pension || OldAge Beneficiary Data Update
 <script>
    $(document).ready(function () {
 
-    $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
-     $('#verified_aadhar').val('');
-     $('#verified_aadhar_remarks').val('');
-     $('#aadhaar_verify_result').html('');
+     $('#aadhaar_no, #name_of_the_beneficiary').on('input', function () {
+       $('#verified_aadhar').val('');
+       $('#verified_aadhar_remarks').val('');
+       $('#aadhaar_verify_result').html('');
 
-     $('#btnVerifyAadhaar')
-     .prop('disabled', false)
-     .removeClass('btn-success')
-     .addClass('btn-info')
-     .text('Verify!');
+       $('#btnVerifyAadhaar')
+       .prop('disabled', false)
+       .removeClass('btn-success')
+       .addClass('btn-info')
+       .text('Verify!');
 
-     $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-  });
+       $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+    });
 
-    $(document).on('click', '#btnVerifyAadhaar', function () {
+     $(document).on('click', '#btnVerifyAadhaar', function () {
 
-     let aadhaar = $('#aadhaar_no').val().trim();
-     let name    = $('#name_of_the_beneficiary').val().trim();
+       let aadhaar = $('#aadhaar_no').val().trim();
+       let name    = $('#name_of_the_beneficiary').val().trim();
 
-     $('#aadhaar_verify_result').html('');
-     $('#verified_aadhar').val('');
-     $('#verified_aadhar_remarks').val('');
+       $('#aadhaar_verify_result').html('');
+       $('#verified_aadhar').val('');
+       $('#verified_aadhar_remarks').val('');
 
-     if (!/^\d{12}$/.test(aadhaar)) {
-      $('#aadhaar_verify_result').html(
-       '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
-       );
-      return;
-   }
+       if (!/^\d{12}$/.test(aadhaar)) {
+         $('#aadhaar_verify_result').html(
+           '<span class="text-danger">Enter a valid 12-digit Aadhaar number</span>'
+           );
+         return;
+      }
 
-   if (name === '') {
-      $('#aadhaar_verify_result').html(
-       '<span class="text-danger">Enter beneficiary name first</span>'
-       );
-      return;
-   }
+      if (name === '') {
+         $('#aadhaar_verify_result').html(
+           '<span class="text-danger">Enter beneficiary name first</span>'
+           );
+         return;
+      }
 
-   $('#btnVerifyAadhaar')
-   .prop('disabled', true)
-   .text('Verifying...');
+      $('#btnVerifyAadhaar')
+      .prop('disabled', true)
+      .text('Verifying...');
 
-   $.ajax({
-      url: "{{ route('admin.oldage3500data.oldage_aadhar_verification_process') }}",
-      type: "POST",
-      dataType: "json",
-      data: {
-       _token: "{{ csrf_token() }}",
-       aadhaar_no: aadhaar,
-       name_of_the_beneficiary: name
-    },
+      $.ajax({
+         url: "{{ route('admin.oldage3500data.oldage_aadhar_verification_process') }}",
+         type: "POST",
+         dataType: "json",
+         data: {
+           _token: "{{ csrf_token() }}",
+           aadhaar_no: aadhaar,
+           name_of_the_beneficiary: name
+        },
 
-    success: function (res) {
-       let message = res.data ?? '';
+        success: function (res) {
+           let message = res.data ?? '';
 
-       $('#verified_aadhar_remarks').val(message);
+           $('#verified_aadhar_remarks').val(message);
 
-       if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
+           if (typeof message === 'string' && message.toLowerCase().includes('verify successfully')) {
 
-        $('#verified_aadhar').val(1);
+             $('#verified_aadhar').val(1);
 
-        $('#aadhaar_verify_result').html(
-         '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
-         );
+             $('#aadhaar_verify_result').html(
+               '<span class="badge bg-success">Aadhaar Verified Successfully</span>'
+               );
 
-        $('#btnVerifyAadhaar')
-        .prop('disabled', true)
-        .removeClass('btn-info')
-        .addClass('btn-success')
-        .text('Verified');
+             $('#btnVerifyAadhaar')
+             .prop('disabled', true)
+             .removeClass('btn-info')
+             .addClass('btn-success')
+             .text('Verified');
 
-        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
+             $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', true);
 
-     } else {
-        $('#verified_aadhar').val(0);
+          } else {
+             $('#verified_aadhar').val(0);
 
-        $('#aadhaar_verify_result').html(
-         '<span class="badge bg-danger">' + message + '</span>'
-         );
+             $('#aadhaar_verify_result').html(
+               '<span class="badge bg-danger">' + message + '</span>'
+               );
 
-        $('#btnVerifyAadhaar')
-        .prop('disabled', false)
-        .removeClass('btn-success')
-        .addClass('btn-info')
-        .text('Verify!');
+             $('#btnVerifyAadhaar')
+             .prop('disabled', false)
+             .removeClass('btn-success')
+             .addClass('btn-info')
+             .text('Verify!');
 
-        $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-     }
-  },
+             $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+          }
+       },
 
-  error: function (xhr) {
-    let msg = 'Verification failed';
-    if (xhr.responseJSON) {
-     msg = xhr.responseJSON.exception ??
-     xhr.responseJSON.response ??
-     msg;
-  }
+       error: function (xhr) {
+        let msg = 'Verification failed';
+        if (xhr.responseJSON) {
+          msg = xhr.responseJSON.exception ??
+          xhr.responseJSON.response ??
+          msg;
+       }
 
-  $('#verified_aadhar').val(0);
-  $('#verified_aadhar_remarks').val(msg);
+       $('#verified_aadhar').val(0);
+       $('#verified_aadhar_remarks').val(msg);
 
-  $('#aadhaar_verify_result').html(
-     '<span class="badge bg-danger">' + msg + '</span>'
-     );
+       $('#aadhaar_verify_result').html(
+          '<span class="badge bg-danger">' + msg + '</span>'
+          );
 
-  $('#btnVerifyAadhaar')
-  .prop('disabled', false)
-  .removeClass('btn-success')
-  .addClass('btn-info')
-  .text('Verify!');
+       $('#btnVerifyAadhaar')
+       .prop('disabled', false)
+       .removeClass('btn-success')
+       .addClass('btn-info')
+       .text('Verify!');
 
-  $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
-}
-});
-
-});
+       $('#aadhaar_no, #name_of_the_beneficiary').prop('readonly', false);
+    }
  });
+
+   });
+  });
 </script>
 <script type="text/javascript">
    $(document).ready(function () {
@@ -815,25 +817,25 @@ EP Pension || OldAge Beneficiary Data Update
 
       function bindValidation(type) {
          const naFields = [
-          'ngo_postal_address_at',
-          'ngo_postal_address_post',
-          'ngo_postal_address_via',
-          'ngo_postal_address_ps',
-          'ngo_postal_address_district',
-          'ngo_postal_address_pin'
-       ];
+           'ngo_postal_address_at',
+           'ngo_postal_address_post',
+           'ngo_postal_address_via',
+           'ngo_postal_address_ps',
+           'ngo_postal_address_district',
+           'ngo_postal_address_pin'
+        ];
 
-       naFields.forEach(function (id) {
-          const el = document.getElementById(id);
-          if (el) {
+        naFields.forEach(function (id) {
+           const el = document.getElementById(id);
+           if (el) {
             el.value = 'Not Required to Provide';
             el.readOnly = true;
          }
       });
-       const pinField = document.getElementById('ngo_postal_address_pin');
-       const submitButton = document.getElementById('submitButton');
+        const pinField = document.getElementById('ngo_postal_address_pin');
+        const submitButton = document.getElementById('submitButton');
 
-       if (pinField && submitButton) {
+        if (pinField && submitButton) {
          pinField.addEventListener('input', function () {
             const pinValue = pinField.value;
             if (pinValue.length === 6 && /^\d+$/.test(pinValue)) {

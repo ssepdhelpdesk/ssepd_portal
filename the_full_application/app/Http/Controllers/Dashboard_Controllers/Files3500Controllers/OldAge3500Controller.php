@@ -930,7 +930,7 @@ public function create()
 public function store(Request $request)
 {
     $validationRules = [
-        'scheme_name' => 'required|in:MBPOAP,IGNOAP',
+        'scheme_name' => 'required|in:MBPOAP,IGNOAP,MBPWP,IGNWP',
         'name_of_the_beneficiary' => 'required',
         'father_or_husband_name' => 'required',
         'date_of_birth' => 'required|date',
@@ -1081,13 +1081,29 @@ public function store(Request $request)
             $old_age_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
         }        
 
-        if ($validatedData['scheme_name'] === 'MBPOAP') {
+        /*if ($validatedData['scheme_name'] === 'MBPOAP') {
             $old_age_pensioner_verification_app->scheme = 'MBPOAP';
             $old_age_pensioner_verification_app->scheme_type = 'MBPY';
         } else {
             $old_age_pensioner_verification_app->scheme = 'IGNOAP';
             $old_age_pensioner_verification_app->scheme_type = 'NSAP';
+        }*/
+        /*Updated & Added MBPWP & IGNWP on 25-02-2026*/
+        $schemeMap = [
+            'MBPOAP' => 'MBPY',
+            'MBPWP'  => 'MBPY',
+            'IGNOAP' => 'NSAP',
+            'IGNWP'  => 'NSAP',
+        ];
+
+        $scheme = $validatedData['scheme_name'];
+
+        if (!array_key_exists($scheme, $schemeMap)) {
+            throw new \InvalidArgumentException('Invalid scheme selected.');
         }
+
+        $old_age_pensioner_verification_app->scheme = $scheme;
+        $old_age_pensioner_verification_app->scheme_type = $schemeMap[$scheme];
         $old_age_pensioner_verification_app->age = $validatedData['age'];
         $old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
         $old_age_pensioner_verification_app->month = $validatedData['pension_month'];
@@ -1151,7 +1167,7 @@ public function update(Request $request, string $id)
     $connection = $model->getConnectionName();
 
     $validationRules = [
-        'scheme_name' => 'required|in:MBPOAP,IGNOAP',
+        'scheme_name' => 'required|in:MBPOAP,IGNOAP,MBPWP,IGNWP',
         'name_of_the_beneficiary' => 'required',
         'father_or_husband_name' => 'required',
         'date_of_birth' => 'required|date',
@@ -1310,13 +1326,29 @@ public function update(Request $request, string $id)
                 $old_age_pensioner_verification_app->ward_name = $ward_name_of_verification_app;
             }        
 
-            if ($validatedData['scheme_name'] === 'MBPOAP') {
+            /*if ($validatedData['scheme_name'] === 'MBPOAP') {
                 $old_age_pensioner_verification_app->scheme = 'MBPOAP';
                 $old_age_pensioner_verification_app->scheme_type = 'MBPY';
             } else {
                 $old_age_pensioner_verification_app->scheme = 'IGNOAP';
                 $old_age_pensioner_verification_app->scheme_type = 'NSAP';
+            }*/
+            /*Updated & Added MBPWP & IGNWP on 25-02-2026*/
+            $schemeMap = [
+                'MBPOAP' => 'MBPY',
+                'MBPWP'  => 'MBPY',
+                'IGNOAP' => 'NSAP',
+                'IGNWP'  => 'NSAP',
+            ];
+
+            $scheme = $validatedData['scheme_name'];
+
+            if (!array_key_exists($scheme, $schemeMap)) {
+                throw new \InvalidArgumentException('Invalid scheme selected.');
             }
+
+            $old_age_pensioner_verification_app->scheme = $scheme;
+            $old_age_pensioner_verification_app->scheme_type = $schemeMap[$scheme];
             $old_age_pensioner_verification_app->age = $validatedData['age'];
             $old_age_pensioner_verification_app->aadhar_no = hash('sha256', $validatedData['aadhaar_no']);
             /*$old_age_pensioner_verification_app->month = $validatedData['pension_month'];*/

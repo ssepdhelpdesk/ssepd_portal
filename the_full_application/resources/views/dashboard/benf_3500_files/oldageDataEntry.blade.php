@@ -65,8 +65,10 @@ EP Pension || OldAge Data Entry
                                  <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
                                  <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
                                     <!-- <option >Please Select</option> -->
-                                    <option value="MBPOAP">MBPOAP</option>
+                                    <option value="MBPOAP">MBPOAP</option>                                    
                                     <option value="IGNOAP">IGNOAP</option>
+                                    <option value="MBPWP">MBPWP</option>
+                                    <option value="IGNWP">IGNWP</option>
                                  </select>
                                  <div id="scheme_name_error"></div>
                                  @error('scheme_name')

@@ -40,7 +40,8 @@ use App\Models\{
 };
 
 use App\Models\Pension\{
-    PensionType
+    PensionType,
+    SsepdPension
 };
 
 class WebsitePensionController extends Controller
@@ -109,18 +110,16 @@ class WebsitePensionController extends Controller
         }
     }
 
+    public function benf_udid_verification(Request $request)
+    {
+        $request->validate([
+            'udid' => 'required|string',
+            'dob'  => 'required|date'
+        ]);
 
+        try {
 
-public function benf_udid_verification(Request $request)
-{
-    $request->validate([
-        'udid' => 'required|string',
-        'dob'  => 'required|date'
-    ]);
-
-    try {
-
-        $response = Http::timeout(15)
+            $response = Http::timeout(15)
             ->asForm()
             ->post(
                 'http://117.211.75.216:8080/swp/api/nfbs/requestToUdid',
@@ -130,95 +129,191 @@ public function benf_udid_verification(Request $request)
                 ]
             );
 
-        if (!$response->successful()) {
+            if (!$response->successful()) {
 
-            Log::error('UDID API HTTP Failure', [
-                'status_code' => $response->status(),
-                'body'        => $response->body()
+                Log::error('UDID API HTTP Failure', [
+                    'status_code' => $response->status(),
+                    'body'        => $response->body()
+                ]);
+
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'UDID service unavailable'
+                ]);
+            }
+
+            $result = $response->json();
+
+            if (isset($result['status']) && $result['status'] === "true") {
+
+                return response()->json([
+                    'status' => true,
+                    'data'   => $result['result']
+                ]);
+            }
+
+            return response()->json([
+                'status'  => false,
+                'message' => $result['message'] ?? 'Verification failed'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            Log::error('UDID API Exception', [
+                'error' => $e->getMessage(),
+                'line'  => $e->getLine(),
+                'file'  => $e->getFile()
             ]);
 
             return response()->json([
                 'status'  => false,
-                'message' => 'UDID service unavailable'
+                'message' => 'Something went wrong while verifying UDID'
             ]);
         }
-
-        $result = $response->json();
-
-        if (isset($result['status']) && $result['status'] === "true") {
-
-            return response()->json([
-                'status' => true,
-                'data'   => $result['result']
-            ]);
-        }
-
-        return response()->json([
-            'status'  => false,
-            'message' => $result['message'] ?? 'Verification failed'
-        ]);
-
-    } catch (\Throwable $e) {
-
-        Log::error('UDID API Exception', [
-            'error' => $e->getMessage(),
-            'line'  => $e->getLine(),
-            'file'  => $e->getFile()
-        ]);
-
-        return response()->json([
-            'status'  => false,
-            'message' => 'Something went wrong while verifying UDID'
-        ]);
     }
+
+    public function store(Request $request)
+    {
+        $schemeId = (int) $request->pension_type_id;
+
+        $disabilitySchemes = [3,4,6];
+        $widowSchemes      = [2,5];
+        $tgScheme          = 9;
+
+        $validator = Validator::make($request->all(), [
+            'pension_type_id' => ['required','integer'],
+            'beneficiary_image' => [
+                'required','file','mimes:jpg,jpeg,png','max:300'
+            ],
+            'applicant_first_name'  => ['required','regex:/^[A-Z ]+$/','min:13','max:20'],
+            'applicant_middle_name' => ['required','regex:/^[A-Z ]+$/','min:3','max:20'],
+            'applicant_last_name'   => ['required','regex:/^[A-Z ]+$/','min:3','max:20'],
+            'applicant_name'        => ['required','regex:/^[A-Z ]+$/','min:3','max:100'],
+            'gender_id' => ['required', Rule::in([1,2,3])],
+            'dob' => ['required','date','before:today'],
+            'age' => ['required','integer'],
+            'aadhaar_no' => ['required','digits:12'],
+            'verified_aadhar' => ['required', Rule::in([1])],
+            'verified_aadhar_remarks' => ['required','string'],
+            'guardian_type' => ['required', Rule::in([1,2])],
+            'guardian_name' => ['required','string','min:3','max:100'],
+            'caste_id' => ['required', Rule::in([1,2,3,4,5])],
+            'mobile_no' => ['required','digits:10'],
+            'district_id'      => ['required','integer'],
+            'sub_division_id'  => ['required','integer'],
+            'address_type_id'  => ['required', Rule::in([1,2])],
+            'block_id' => [
+                Rule::requiredIf(fn() => $request->address_type_id == 2),
+                'nullable','integer'
+            ],
+            'gp_id' => [
+                Rule::requiredIf(fn() => $request->address_type_id == 2),
+                'nullable','integer'
+            ],
+            'village_id' => [
+                Rule::requiredIf(fn() => $request->address_type_id == 2),
+                'nullable','integer'
+            ],
+            'municipality_id' => [
+                Rule::requiredIf(fn() => $request->address_type_id == 1),
+                'nullable','integer'
+            ],
+            'ward_id' => [
+                Rule::requiredIf(fn() => $request->address_type_id == 1),
+                'nullable','integer'
+            ],
+            'house_no' => ['required','string','max:50'],
+            'pin_code' => ['required','digits:6'],
+            'udid_no' => [
+                Rule::requiredIf(fn() => in_array($schemeId, $disabilitySchemes)),
+                'nullable',
+                'string',
+                'max:30'
+            ],
+            'disability_category_id' => [
+                Rule::requiredIf(fn() => in_array($schemeId,$disabilitySchemes)),
+                'nullable','integer'
+            ],
+            'disability_percentage' => [
+                Rule::requiredIf(fn() => in_array($schemeId,$disabilitySchemes)),
+                'nullable','integer','between:40,100'
+            ],
+            'disability_type_condition_id' => [
+                Rule::requiredIf(fn() => in_array($schemeId, $disabilitySchemes)),
+                'nullable',
+                Rule::in([1,2]),
+            ],
+            'disability_validity_date' => [
+                Rule::requiredIf(fn() => in_array($schemeId, $disabilitySchemes) && $request->disability_type_condition_id == 1),
+                'nullable',
+                'date',
+                'before_or_equal:today'
+            ],
+            'disability_document' => [
+                Rule::requiredIf(fn() => in_array($schemeId,$disabilitySchemes)),
+                'nullable','file','mimes:pdf','max:300'
+            ],
+            'death_self_certificate' => [
+                Rule::requiredIf(fn() => in_array($schemeId,$widowSchemes)),
+                'nullable','file','mimes:pdf','max:300'
+            ],
+            'tg_registration_no' => [
+                Rule::requiredIf(fn() => $schemeId == $tgScheme),
+                'nullable','string','max:50'
+            ],
+            'tg_certificate' => [
+                Rule::requiredIf(fn() => $schemeId == $tgScheme),
+                'nullable','file','mimes:pdf','max:300'
+            ],
+            'bank_account_type' => ['required', Rule::in([1,2])],
+            'account_holder_name' => ['required','string','max:150'],
+            'second_account_holder_name' => [
+                Rule::requiredIf(fn() => $request->bank_account_type == 2),
+                'nullable',
+                'string',
+                'max:100'
+            ],
+            'account_number' => ['required','regex:/^[0-9]{9,18}$/'],
+            'ifsc_code' => [
+                'required'
+            ],
+
+            'income_certificate'  => ['required','file','mimes:pdf','max:300'],
+            'thumb_signature'     => ['required','file','mimes:pdf','max:300'],
+            'aadhaar_document'    => ['required','file','mimes:pdf','max:300'],
+            'age_proof'           => ['required','file','mimes:pdf','max:300'],
+            'passbook_document'   => ['required','file','mimes:pdf','max:300'],
+            'additional_document' => ['required','file','mimes:pdf','max:300'],
+        ]);
+
+/*if ($validator->fails()) {return back()->withErrors($validator)->withInput();}*/
+
+$validator = Validator::make($request->all(), [ /* rules */ ]);
+
+if ($validator->fails()) {
+    return response()->json([
+        'status' => false,
+        'errors' => $validator->errors()
+    ], 422);
+}
+
+return response()->json([
+    'status' => true,
+    'message' => 'Validation successful',
+    'data' => $validator->validated()
+], 200);
 }
 
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+
+private function isValidAadhaar($aadhaar)
+{
+    if (!preg_match('/^[0-9]{12}$/', $aadhaar)) {
+        return false;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        // Implement Verhoeff algorithm if required
+    return true;
+}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

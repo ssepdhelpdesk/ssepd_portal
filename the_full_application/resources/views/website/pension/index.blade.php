@@ -123,6 +123,20 @@ SSEPD-IT || Pension
                </ol>
             </nav>
          </div>
+         @if ($errors->any())
+         <div class="alert alert-danger">
+            <ul>
+               @foreach ($errors->all() as $error)
+               <li>{{ $error }}</li>
+               @endforeach
+            </ul>
+         </div>
+         @endif
+         @if(session('error'))
+         <div class="alert alert-danger">
+            {{ session('error') }}
+         </div>
+         @endif
       </div>
    </div>
 </div>
@@ -131,7 +145,7 @@ SSEPD-IT || Pension
    <div class="container">
       <div class="row">
          <div class="col-lg-12">
-            <form id="pensionApplicationForm" method="post" enctype="multipart/form-data">
+            <form id="pensionApplicationForm" action="{{ route('website.pension.store') }}" method="post" enctype="multipart/form-data">
                @csrf
                <!-- ================= Basic Information ================= -->
                <div class="card" id="basic_section">
@@ -147,6 +161,9 @@ SSEPD-IT || Pension
                               <option value="{{$data->scheme_id}}">{{$data->scheme_name}}</option>
                               @endforeach
                            </select>
+                           @error('pension_type_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-6 mb-3">
                            <label class="form-label required-field">Beneficiary Photograph</label>
@@ -188,22 +205,37 @@ SSEPD-IT || Pension
                                  </div>
                               </div>
                            </div>
+                           @error('beneficiary_image')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">First Name as per Aadhaar</label>
                            <input type="text" name="applicant_first_name" id="applicant_first_name" class="form-control">
+                           @error('applicant_first_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label">Middle Name as per Aadhaar</label>
                            <input type="text" name="applicant_middle_name" id="applicant_middle_name" class="form-control">
+                           @error('applicant_middle_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Last Name as per Aadhaar</label>
                            <input type="text" name="applicant_last_name" id="applicant_last_name" class="form-control">
+                           @error('applicant_last_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Full Name as per Aadhaar</label>
                            <input type="text" name="applicant_name" id="applicant_name" class="form-control" readonly>
+                           @error('applicant_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Gender</label>
@@ -213,16 +245,25 @@ SSEPD-IT || Pension
                               <option value="2">Female</option>
                               <option value="3">Other</option>
                            </select>
+                           @error('gender_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Date of Birth</label>
                            <div class="input-group">
                               <input type="text" name="dob" id="dob" class="form-control" placeholder="DD-MM-YYYY" readonly><span class="input-group-text"><i class="fa fa-calendar"></i></span>
                            </div>
+                           @error('dob')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Age</label>
                            <input type="text" name="age" id="age" class="form-control" readonly>
+                           @error('age')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Aadhaar No</label>
@@ -232,10 +273,27 @@ SSEPD-IT || Pension
                               <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
                               <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
                            </div>
+                           @error('aadhaar_no')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3">
+                           <label class="form-label required-field">Guardian Type</label>
+                           <select name="guardian_type" id="guardian_type" class="select form-control required-field populate">
+                              <option value="">-Select-</option>
+                              <option value="1">Father</option>
+                              <option value="2">Spouse</option>
+                           </select>
+                           @error('guardian_type')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Father's / Spouse Name</label>
                            <input type="text" name="guardian_name" id="guardian_name" class="form-control">
+                           @error('guardian_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Social Category</label>
@@ -247,14 +305,24 @@ SSEPD-IT || Pension
                               <option value="4">ST</option>
                               <option value="5">Minority</option>
                            </select>
+                           @error('caste_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Mobile No</label>
                            <input type="text" name="mobile_no" id="mobile_no" class="form-control" maxlength="10">
+                           <!-- <div id="mobile_no_error" class="text-danger small d-none"></div> -->
+                           @error('mobile_no')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3 d-none" id="tg_registration_div">
                            <label class="form-label required-field">TG Registration No</label>
                            <input type="text" name="tg_registration_no" id="tg_registration_no" class="form-control">
+                           @error('tg_registration_no')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                      </div>
                   </div>
@@ -271,6 +339,9 @@ SSEPD-IT || Pension
                               <option value="1">District1</option>
                               <option value="2">District2</option>
                            </select>
+                           @error('district_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Sub Division</label>
@@ -279,6 +350,9 @@ SSEPD-IT || Pension
                               <option value="1">Sub Division1</option>
                               <option value="2">Sub Division2</option>
                            </select>
+                           @error('sub_division_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Address Type</label>
@@ -287,6 +361,9 @@ SSEPD-IT || Pension
                               <option value="2">Block</option>
                               <option value="1">ULB</option>
                            </select>
+                           @error('address_type_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3" id="block_div">
                            <label class="form-label required-field">Block</label>
@@ -295,6 +372,9 @@ SSEPD-IT || Pension
                               <option value="1">Block1</option>
                               <option value="2">Block2</option>
                            </select>
+                           @error('block_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3" id="gp_div">
                            <label class="form-label required-field">Gram Panchayat</label>
@@ -303,6 +383,9 @@ SSEPD-IT || Pension
                               <option value="1">GP1</option>
                               <option value="2">GP2</option>
                            </select>
+                           @error('gp_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3" id="village_div">
                            <label class="form-label required-field">Village</label>
@@ -311,6 +394,9 @@ SSEPD-IT || Pension
                               <option value="1">Village1</option>
                               <option value="2">Village2</option>
                            </select>
+                           @error('village_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3" id="municipality_div">
                            <label class="form-label required-field">Municipality</label>
@@ -319,6 +405,9 @@ SSEPD-IT || Pension
                               <option value="1">Municipality1</option>
                               <option value="2">Municipality2</option>
                            </select>
+                           @error('municipality_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3" id="ward_div">
                            <label class="form-label required-field">Ward</label>
@@ -327,9 +416,22 @@ SSEPD-IT || Pension
                               <option value="1">Ward1</option>
                               <option value="2">Ward2</option>
                            </select>
+                           @error('ward_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">House / Plot No</label><input type="text" name="house_no" id="house_no" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">PIN</label><input type="text" name="pin_code" id="pin_code" class="form-control" maxlength="6"></div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">House / Plot No</label>
+                           <input type="text" name="house_no" id="house_no" class="form-control">
+                           @error('house_no')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">PIN</label>
+                           <input type="text" name="pin_code" id="pin_code" class="form-control" maxlength="6">
+                           @error('pin_code')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
                      </div>
                   </div>
                </div>
@@ -344,6 +446,9 @@ SSEPD-IT || Pension
                               <input type="text" name="udid_no" id="udid_no" class="form-control me-2">
                               <button type="button" id="verify_udid_btn" class="btn btn-secondary btn-sm">Verify</button>
                            </div>
+                           @error('verify_udid_btn')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div id="udid_result" class="mt-3"></div>
                         <div class="col-md-4 mb-3">
@@ -353,11 +458,17 @@ SSEPD-IT || Pension
                               <option value="1">Category1</option>
                               <option value="2">Category2</option>
                            </select>
+                           @error('disability_category_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Disability Percentage</label>
                            <input type="text" name="disability_percentage" id="disability_percentage" class="form-control" inputmode="numeric" maxlength="3" placeholder="40 - 100">
                            <div id="disability_percent_error" class="text-danger small mt-1 d-none"></div>
+                           @error('disability_percentage')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Disability Type</label>
@@ -367,16 +478,25 @@ SSEPD-IT || Pension
                               <option value="1">Temporary</option>
                               <option value="2">Permanent</option>
                            </select>
+                           @error('disability_type_condition_id')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3 d-none" id="disability_validity_div">
                            <label class="form-label required-field">Validity Date</label>
                            <input type="date" name="disability_validity_date" id="disability_validity_date"
                               class="form-control" max="{{ date('Y-m-d') }}">
+                           @error('disability_validity_date')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Disability Document</label>
                            <input type="file" name="disability_document" id="disability_document"
                               class="form-control" accept="application/pdf">
+                           @error('disability_document')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                      </div>
                   </div>
@@ -393,10 +513,28 @@ SSEPD-IT || Pension
                               <option value="1">Single</option>
                               <option value="2">Joint</option>
                            </select>
+                           @error('bank_account_type')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Account Holder Name</label><input type="text" name="account_holder_name" id="account_holder_name" class="form-control"></div>
-                        <div class="col-md-4 mb-3 d-none" id="second_holder_div"><label class="form-label required-field">Second Holder Name</label><input type="text" name="second_account_holder_name" id="second_account_holder_name" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Account Number</label><input type="text" name="account_number" id="account_number" class="form-control"></div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Account Holder Name</label>
+                           <input type="text" name="account_holder_name" id="account_holder_name" class="form-control">
+                           @error('account_holder_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3 d-none" id="second_holder_div"><label class="form-label required-field">Second Holder Name</label>
+                           <input type="text" name="second_account_holder_name" id="second_account_holder_name" class="form-control">
+                           @error('second_account_holder_name')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Account Number</label>
+                           <input type="text" name="account_number" id="account_number" class="form-control">
+                           @error('account_number')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">IFSC Code</label>
                            <select name="ifsc_code" id="ifsc_code" class="select form-control required-field">
@@ -404,6 +542,9 @@ SSEPD-IT || Pension
                               <option value="1">IFSC Code1</option>
                               <option value="2">IFSC Code2</option>
                            </select>
+                           @error('ifsc_code')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                      </div>
                   </div>
@@ -415,19 +556,55 @@ SSEPD-IT || Pension
                      <p class="fs-14 mb-3">All documents must be in PDF format. Maximum allowed file size is 300 KB per file.</p>
                      <hr>
                      <div class="row">
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Income Certificate / RI / BPL</label><input type="file" name="income_certificate" id="income_certificate" class="form-control" accept="application/pdf"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Thumb / Signature</label><input type="file" name="thumb_signature" id="thumb_signature" class="form-control" accept="application/pdf"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Aadhaar Copy</label><input type="file" name="aadhaar_document" id="aadhaar_document" class="form-control" accept="application/pdf"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Age Proof</label><input type="file" name="age_proof" id="age_proof" class="form-control" accept="application/pdf"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Passbook</label><input type="file" name="passbook_document" id="passbook_document" class="form-control" accept="application/pdf"></div>
-                        <div class="col-md-4 mb-3"><label class="form-label required-field">Additional Document</label><input type="file" name="additional_document" id="additional_document" class="form-control" accept="application/pdf"></div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Income Certificate / RI / BPL</label>
+                           <input type="file" name="income_certificate" id="income_certificate" class="form-control" accept="application/pdf">
+                           @error('income_certificate')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Thumb / Signature</label>
+                           <input type="file" name="thumb_signature" id="thumb_signature" class="form-control" accept="application/pdf">
+                           @error('thumb_signature')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Aadhaar Copy</label>
+                           <input type="file" name="aadhaar_document" id="aadhaar_document" class="form-control" accept="application/pdf">
+                           @error('aadhaar_document')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Age Proof</label>
+                           <input type="file" name="age_proof" id="age_proof" class="form-control" accept="application/pdf">
+                           @error('age_proof')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Passbook</label>
+                           <input type="file" name="passbook_document" id="passbook_document" class="form-control" accept="application/pdf">
+                           @error('passbook_document')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
+                        <div class="col-md-4 mb-3"><label class="form-label required-field">Additional Document</label>
+                           <input type="file" name="additional_document" id="additional_document" class="form-control" accept="application/pdf">
+                           @error('additional_document')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
+                        </div>
                         <div class="col-md-4 mb-3 d-none" id="tg_document_div">
                            <label class="form-label required-field">TG Certificate</label>
                            <input type="file" name="tg_certificate" id="tg_certificate" class="form-control" accept="application/pdf">
+                           @error('tg_certificate')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                         <div class="col-md-4 mb-3 d-none" id="widow_document_div">
                            <label class="form-label required-field">Death / Self Certificate</label>
-                           <input type="file" name="widow_certificate" id="widow_certificate" class="form-control" accept="application/pdf">
+                           <input type="file" name="death_self_certificate" id="death_self_certificate" class="form-control" accept="application/pdf">
+                           @error('death_self_certificate')
+                           <label class="error">{{ $message }}</label>
+                           @enderror
                         </div>
                      </div>
                      <button type="submit" class="btn btn-secondary rounded-pill mt-3">Submit Application</button>
@@ -446,339 +623,339 @@ SSEPD-IT || Pension
    document.addEventListener('DOMContentLoaded', function () {
    
      /* ================= SELECT2 ================= */
-   	$('.select').select2({
-   		placeholder: "Select",
-   		allowClear: true,
-   		width: "100%"
-   	});
+      $('.select').select2({
+         placeholder: "Select",
+         allowClear: true,
+         width: "100%"
+      });
    
    
      /* ================= Required Star Injection ================= */
-   	document.querySelectorAll('.required-field').forEach(field => {
+      document.querySelectorAll('.required-field').forEach(field => {
    
-   		const parentCol = field.closest('[class*="col-md-"]');
-   		const label = parentCol?.querySelector('label');
+         const parentCol = field.closest('[class*="col-md-"]');
+         const label = parentCol?.querySelector('label');
    
-   		if (label && !label.querySelector('.required-star')) {
-   			const star = document.createElement('span');
-   			star.textContent = ' *';
-   			star.className = 'required-star text-danger';
-   			label.appendChild(star);
-   		}
+         if (label && !label.querySelector('.required-star')) {
+            const star = document.createElement('span');
+            star.textContent = ' *';
+            star.className = 'required-star text-danger';
+            label.appendChild(star);
+         }
    
-   	});
+      });
    
-   	const addressType = $('#address_type_id');
-   	const blockDiv = $('#block_div');
-   	const gpDiv = $('#gp_div');
-   	const villageDiv = $('#village_div');
-   	const municipalityDiv = $('#municipality_div');
-   	const wardDiv = $('#ward_div');
+      const addressType = $('#address_type_id');
+      const blockDiv = $('#block_div');
+      const gpDiv = $('#gp_div');
+      const villageDiv = $('#village_div');
+      const municipalityDiv = $('#municipality_div');
+      const wardDiv = $('#ward_div');
    
-   	const blockSelect = $('#block_id');
-   	const gpSelect = $('#gp_id');
-   	const villageSelect = $('#village_id');
-   	const municipalitySelect = $('#municipality_id');
-   	const wardSelect = $('#ward_id');
+      const blockSelect = $('#block_id');
+      const gpSelect = $('#gp_id');
+      const villageSelect = $('#village_id');
+      const municipalitySelect = $('#municipality_id');
+      const wardSelect = $('#ward_id');
    
-   	function hideAll() {
-   		blockDiv.hide();
-   		gpDiv.hide();
-   		villageDiv.hide();
-   		municipalityDiv.hide();
-   		wardDiv.hide();
-   	}
+      function hideAll() {
+         blockDiv.hide();
+         gpDiv.hide();
+         villageDiv.hide();
+         municipalityDiv.hide();
+         wardDiv.hide();
+      }
    
-   	function resetSelect($select) {
-   		$select.val('').trigger('change');
-   	}
+      function resetSelect($select) {
+         $select.val('').trigger('change');
+      }
    
      /*Initial hide*/
-   	hideAll();
+      hideAll();
    
      /*Address type change*/
-   	addressType.on('change', function () {
-   		const type = $(this).val();
-   		hideAll();
-   		resetSelect(blockSelect);
-   		resetSelect(gpSelect);
-   		resetSelect(villageSelect);
-   		resetSelect(municipalitySelect);
-   		resetSelect(wardSelect);
+      addressType.on('change', function () {
+         const type = $(this).val();
+         hideAll();
+         resetSelect(blockSelect);
+         resetSelect(gpSelect);
+         resetSelect(villageSelect);
+         resetSelect(municipalitySelect);
+         resetSelect(wardSelect);
    
-   		if(type === '2') {
-   			blockDiv.show();
-   		} else if(type === '1') {
-   			municipalityDiv.show();
-   		}
-   	});
+         if(type === '2') {
+            blockDiv.show();
+         } else if(type === '1') {
+            municipalityDiv.show();
+         }
+      });
    
      /*Block -> GP*/
-   	blockSelect.on('change', function () {
-   		resetSelect(gpSelect);
-   		resetSelect(villageSelect);
-   		villageDiv.hide();
+      blockSelect.on('change', function () {
+         resetSelect(gpSelect);
+         resetSelect(villageSelect);
+         villageDiv.hide();
    
-   		if($(this).val()) gpDiv.show();
-   		else gpDiv.hide();
-   	});
+         if($(this).val()) gpDiv.show();
+         else gpDiv.hide();
+      });
    
      /*GP -> Village*/
-   	gpSelect.on('change', function () {
-   		resetSelect(villageSelect);
-   		if($(this).val()) villageDiv.show();
-   		else villageDiv.hide();
-   	});
+      gpSelect.on('change', function () {
+         resetSelect(villageSelect);
+         if($(this).val()) villageDiv.show();
+         else villageDiv.hide();
+      });
    
      /*Municipality -> Ward*/
-   	municipalitySelect.on('change', function () {
-   		resetSelect(wardSelect);
-   		if($(this).val()) wardDiv.show();
-   		else wardDiv.hide();
-   	});
+      municipalitySelect.on('change', function () {
+         resetSelect(wardSelect);
+         if($(this).val()) wardDiv.show();
+         else wardDiv.hide();
+      });
    
-   	const schemeSelect = $('#pension_type_id');
+      const schemeSelect = $('#pension_type_id');
    
-   	schemeSelect.on('select2:select', function (e) {
-   		applyingScemeType(e.params.data.id);
-   	});
+      schemeSelect.on('select2:select', function (e) {
+         applyingScemeType(e.params.data.id);
+      });
    
-   	schemeSelect.on('change', function () {
-   		applyingScemeType(this.value);
-   	});
+      schemeSelect.on('change', function () {
+         applyingScemeType(this.value);
+      });
    
    
      /* ================= DIGITS-ONLY INPUT HANDLER ================= */
-   	function allowDigitsOnly(input, maxLength = null, maxValue = null) {
+      function allowDigitsOnly(input, maxLength = null, maxValue = null) {
    
-   		if (!input) return;
+         if (!input) return;
    
-   		input.addEventListener('input', function () {
+         input.addEventListener('input', function () {
    
-   			let value = this.value.replace(/\D/g, '');
+            let value = this.value.replace(/\D/g, '');
    
-   			if (maxLength !== null) value = value.slice(0, maxLength);
+            if (maxLength !== null) value = value.slice(0, maxLength);
    
-   			if (maxValue !== null && value !== '') {
-   				value = Math.min(parseInt(value, 10), maxValue).toString();
-   			}
+            if (maxValue !== null && value !== '') {
+               value = Math.min(parseInt(value, 10), maxValue).toString();
+            }
    
-   			this.value = value;
-   		});
+            this.value = value;
+         });
    
-   		input.addEventListener('paste', function (e) {
-   			e.preventDefault();
+         input.addEventListener('paste', function (e) {
+            e.preventDefault();
    
-   			let pasted = (e.clipboardData || window.clipboardData).getData('text');
-   			pasted = pasted.replace(/\D/g, '');
+            let pasted = (e.clipboardData || window.clipboardData).getData('text');
+            pasted = pasted.replace(/\D/g, '');
    
-   			if (maxLength !== null) pasted = pasted.slice(0, maxLength);
+            if (maxLength !== null) pasted = pasted.slice(0, maxLength);
    
-   			if (maxValue !== null && pasted !== '') {
-   				pasted = Math.min(parseInt(pasted, 10), maxValue).toString();
-   			}
+            if (maxValue !== null && pasted !== '') {
+               pasted = Math.min(parseInt(pasted, 10), maxValue).toString();
+            }
    
-   			this.value = pasted;
-   		});
-   	}
+            this.value = pasted;
+         });
+      }
    
    
      /* ================= APPLY DIGIT RULES ================= */
-   	allowDigitsOnly(document.getElementById('aadhaar_no'), 12);
-   	allowDigitsOnly(document.getElementById('mobile_no'), 10);
-   	allowDigitsOnly(document.getElementById('pin_code'), 6);
-   	allowDigitsOnly(document.getElementById('house_no'), 3);
-   	allowDigitsOnly(document.getElementById('disability_percentage'), 3, 100);
-   	allowDigitsOnly(document.getElementById('account_number'), 22);
+      allowDigitsOnly(document.getElementById('aadhaar_no'), 12);
+      allowDigitsOnly(document.getElementById('mobile_no'), 10);
+      allowDigitsOnly(document.getElementById('pin_code'), 6);
+      allowDigitsOnly(document.getElementById('house_no'), 3);
+      allowDigitsOnly(document.getElementById('disability_percentage'), 3, 100);
+      allowDigitsOnly(document.getElementById('account_number'), 22);
    
    
      /* ================= MODERN DOB PICKER ================= */
-   	flatpickr("#dob", {
-   		dateFormat: "d-m-Y",
-   		maxDate: "today",
-   		allowInput: false,
-   		disableMobile: false,
-   		monthSelectorType: "dropdown",
-   		yearSelectorType: "dropdown",
-   		animate: true,
-   		clickOpens: true,
-   		position: "auto center",
-   		onChange: function () {
-   			calculateAge();
-   		}
-   	});
+      flatpickr("#dob", {
+         dateFormat: "d-m-Y",
+         maxDate: "today",
+         allowInput: false,
+         disableMobile: false,
+         monthSelectorType: "dropdown",
+         yearSelectorType: "dropdown",
+         animate: true,
+         clickOpens: true,
+         position: "auto center",
+         onChange: function () {
+            calculateAge();
+         }
+      });
    
-   	const dobField = document.getElementById('dob');
-   	if (dobField) dobField.setAttribute('readonly', true);
+      const dobField = document.getElementById('dob');
+      if (dobField) dobField.setAttribute('readonly', true);
    
-   	const bankType = $('#bank_account_type');
+      const bankType = $('#bank_account_type');
    
-   	bankType.on('select2:select', function (e) {
-   		bankAccountTypeChange(e.params.data.id);
-   	});
+      bankType.on('select2:select', function (e) {
+         bankAccountTypeChange(e.params.data.id);
+      });
    
-   	bankType.on('change', function () {
-   		bankAccountTypeChange(this.value);
-   	});
+      bankType.on('change', function () {
+         bankAccountTypeChange(this.value);
+      });
    
    
    
      /* ================= INIT AADHAAR VALIDATION ================= */
-   	initAadhaarValidation();
-   	disabilityTypeCondition();
+      initAadhaarValidation();
+      disabilityTypeCondition();
    
      /* ================= INITIAL HIDE ================= */
-   	hide('tg_registration_div');
-   	hide('tg_document_div');
-   	hide('widow_document_div');
-   	hide('disability_section');
-   	hide('disability_validity_div');
-   	hide('second_holder_div');
+      hide('tg_registration_div');
+      hide('tg_document_div');
+      hide('widow_document_div');
+      hide('disability_section');
+      hide('disability_validity_div');
+      hide('second_holder_div');
    
         /* ================= AADHAAR SECTION LOCK ================= */
    
    
    
-   	const basicSection     = document.getElementById('basic_section');
-   	const addressSection   = document.getElementById('address_section');
-   	const bankSection      = document.getElementById('bank_section');
-   	const documentsSection = document.getElementById('documents_section');
+      const basicSection     = document.getElementById('basic_section');
+      const addressSection   = document.getElementById('address_section');
+      const bankSection      = document.getElementById('bank_section');
+      const documentsSection = document.getElementById('documents_section');
    
-   	const aadhaarInput = document.getElementById('aadhaar_no');
-   	const verifyBtn    = document.getElementById('aadhaar_verify_btn');
+      const aadhaarInput = document.getElementById('aadhaar_no');
+      const verifyBtn    = document.getElementById('aadhaar_verify_btn');
    
    /* Hide all sections except basic on load */
-   	hide('address_section');
-   	hide('bank_section');
-   	hide('documents_section');
+      hide('address_section');
+      hide('bank_section');
+      hide('documents_section');
    
    /* ================= REAL AADHAAR VERIFICATION ================= */
    
-   	const fullNameInput = document.getElementById('applicant_name');
-   	const verifiedAadharInput = document.getElementById('verified_aadhar');
-   	const verifiedRemarksInput = document.getElementById('verified_aadhar_remarks');
-   	const firstNameInput = document.getElementById('applicant_first_name');
-   	const middleNameInput = document.getElementById('applicant_middle_name');
-   	const lastNameInput = document.getElementById('applicant_last_name');
+      const fullNameInput = document.getElementById('applicant_name');
+      const verifiedAadharInput = document.getElementById('verified_aadhar');
+      const verifiedRemarksInput = document.getElementById('verified_aadhar_remarks');
+      const firstNameInput = document.getElementById('applicant_first_name');
+      const middleNameInput = document.getElementById('applicant_middle_name');
+      const lastNameInput = document.getElementById('applicant_last_name');
    
    
-   	verifyBtn.addEventListener('click', function () {
+      verifyBtn.addEventListener('click', function () {
    
-   		const aadhaarNo = aadhaarInput.value.trim();
-   		const fullName  = fullNameInput.value.trim();
+         const aadhaarNo = aadhaarInput.value.trim();
+         const fullName  = fullNameInput.value.trim();
    
-   		verifiedAadharInput.value = '';
-   		verifiedRemarksInput.value = '';
+         verifiedAadharInput.value = '';
+         verifiedRemarksInput.value = '';
    
-   		if (!/^\d{12}$/.test(aadhaarNo)) {
-   			Swal.fire('Invalid Aadhaar', 'Enter valid 12 digit Aadhaar number', 'error');
-   			return;
-   		}
+         if (!/^\d{12}$/.test(aadhaarNo)) {
+            Swal.fire('Invalid Aadhaar', 'Enter valid 12 digit Aadhaar number', 'error');
+            return;
+         }
    
-   		if (!fullName || fullName.length < 2) {
-   			Swal.fire('Invalid Name', 'Enter full name as per Aadhaar', 'error');
-   			return;
-   		}
+         if (!fullName || fullName.length < 2) {
+            Swal.fire('Invalid Name', 'Enter full name as per Aadhaar', 'error');
+            return;
+         }
    
-   		verifyBtn.disabled = true;
-   		verifyBtn.innerText = 'Verifying...';
+         verifyBtn.disabled = true;
+         verifyBtn.innerText = 'Verifying...';
    
-   		fetch("{{ route('website.pension.benf_aadhar_verification') }}", {
-   			method: "POST",
-   			headers: {
-   				"Content-Type": "application/json",
-   				"X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-   			},
-   			body: JSON.stringify({
-   				aadhaar_no: aadhaarNo,
-   				applicant_name: fullName
-   			})
-   		})
-   		.then(response => response.json())
-   		.then(data => {
+         fetch("{{ route('website.pension.benf_aadhar_verification') }}", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+               aadhaar_no: aadhaarNo,
+               applicant_name: fullName
+            })
+         })
+         .then(response => response.json())
+         .then(data => {
    
-   			let message = data.data ?? '';
+            let message = data.data ?? '';
    
-   			if (data.status === true) {
+            if (data.status === true) {
    
-   				verifiedAadharInput.value = 1;
-   				verifiedRemarksInput.value = message;
+               verifiedAadharInput.value = 1;
+               verifiedRemarksInput.value = message;
    
-   				aadhaarVerified = true;
+               aadhaarVerified = true;
    
-   				show('address_section');
-   				show('bank_section');
-   				show('documents_section');
+               show('address_section');
+               show('bank_section');
+               show('documents_section');
    
-   				aadhaarInput.setAttribute('readonly', true);
-   				fullNameInput.setAttribute('readonly', true);
-   				firstNameInput.setAttribute('readonly', true);
-   				middleNameInput.setAttribute('readonly', true);
-   				lastNameInput.setAttribute('readonly', true);
+               aadhaarInput.setAttribute('readonly', true);
+               fullNameInput.setAttribute('readonly', true);
+               firstNameInput.setAttribute('readonly', true);
+               middleNameInput.setAttribute('readonly', true);
+               lastNameInput.setAttribute('readonly', true);
    
-   				Swal.fire('Verified', message || 'Aadhaar verified1 successfully', 'success');
+               Swal.fire('Verified', message || 'Aadhaar verified1 successfully', 'success');
    
-   				verifyBtn.innerText = 'Verified';
-   				verifyBtn.classList.remove('btn-primary', 'btn-danger');
-   				verifyBtn.classList.add('btn-success');
-   			} else {
+               verifyBtn.innerText = 'Verified';
+               verifyBtn.classList.remove('btn-primary', 'btn-danger');
+               verifyBtn.classList.add('btn-success');
+            } else {
    
-   				verifiedAadharInput.value = 0;
-   				verifiedRemarksInput.value = message;
-   				fullNameInput.setAttribute('readonly', true);
+               verifiedAadharInput.value = 0;
+               verifiedRemarksInput.value = message;
+               fullNameInput.setAttribute('readonly', true);
    
-   				Swal.fire('Verification Failed',
-   					message || data.response || 'Aadhaar verification failed',
-   					'error'
-   					);
+               Swal.fire('Verification Failed',
+                  message || data.response || 'Aadhaar verification failed',
+                  'error'
+                  );
    
-   				verifyBtn.disabled = false;
-   				verifyBtn.innerText = 'Verify';
-   			}
+               verifyBtn.disabled = false;
+               verifyBtn.innerText = 'Verify';
+            }
    
-   		})
-   		.catch(error => {
-   			verifiedAadharInput.value = 0;
-   			verifiedRemarksInput.value = 'Server error';
-   			fullNameInput.setAttribute('readonly', true);
+         })
+         .catch(error => {
+            verifiedAadharInput.value = 0;
+            verifiedRemarksInput.value = 'Server error';
+            fullNameInput.setAttribute('readonly', true);
    
-   			Swal.fire('Error', 'Server error during verification', 'error');
+            Swal.fire('Error', 'Server error during verification', 'error');
    
-   			verifyBtn.disabled = false;
-   			verifyBtn.innerText = 'Verify';
-   		});
+            verifyBtn.disabled = false;
+            verifyBtn.innerText = 'Verify';
+         });
    
-   	});
+      });
    
    
    /* Reset verification if Aadhaar or Name edited */
-   	[aadhaarInput, fullNameInput].forEach(field => {
+      [aadhaarInput, fullNameInput].forEach(field => {
    
-   		if (!field) return;
+         if (!field) return;
    
-   		field.addEventListener('input', function () {
-   			verifiedAadharInput.value = '';
-   			verifiedRemarksInput.value = '';
+         field.addEventListener('input', function () {
+            verifiedAadharInput.value = '';
+            verifiedRemarksInput.value = '';
    
-   			aadhaarVerified = false;
+            aadhaarVerified = false;
    
-   			hide('address_section');
-   			hide('bank_section');
-   			hide('documents_section');
+            hide('address_section');
+            hide('bank_section');
+            hide('documents_section');
    
-   			aadhaarInput.removeAttribute('readonly');
+            aadhaarInput.removeAttribute('readonly');
    
-   			verifyBtn.disabled = false;
-   			verifyBtn.innerText = 'Verify';
-   		});
+            verifyBtn.disabled = false;
+            verifyBtn.innerText = 'Verify';
+         });
    
-   	});
+      });
    
    
-   	const initialScheme = document.getElementById('pension_type_id')?.value;
-   	if (initialScheme !== null && initialScheme !== '') {
-   		applyingScemeType(initialScheme);
-   	}
+      const initialScheme = document.getElementById('pension_type_id')?.value;
+      if (initialScheme !== null && initialScheme !== '') {
+         applyingScemeType(initialScheme);
+      }
    });
    
    
@@ -789,8 +966,8 @@ SSEPD-IT || Pension
    const ageField = document.getElementById('age');
    
    if (!dobValue || !ageField) {
-   	if (ageField) ageField.value = '';
-   	return;
+      if (ageField) ageField.value = '';
+      return;
    }
    
    const [day, month, year] = dobValue.split('-');
@@ -801,7 +978,7 @@ SSEPD-IT || Pension
    const m = today.getMonth() - dob.getMonth();
    
    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-   	age--;
+      age--;
    }
    
    ageField.value = age >= 0 ? age : '';
@@ -815,59 +992,59 @@ SSEPD-IT || Pension
    const aadhaarInputs = document.querySelectorAll('[name="aadhaar_no"]');
    
    const Verhoeff = {
-   	d: [
-   		[0,1,2,3,4,5,6,7,8,9],
-   		[1,2,3,4,0,6,7,8,9,5],
-   		[2,3,4,0,1,7,8,9,5,6],
-   		[3,4,0,1,2,8,9,5,6,7],
-   		[4,0,1,2,3,9,5,6,7,8],
-   		[5,9,8,7,6,0,4,3,2,1],
-   		[6,5,9,8,7,1,0,4,3,2],
-   		[7,6,5,9,8,2,1,0,4,3],
-   		[8,7,6,5,9,3,2,1,0,4],
-   		[9,8,7,6,5,4,3,2,1,0]
-   	],
-   	p: [
-   		[0,1,2,3,4,5,6,7,8,9],
-   		[1,5,7,6,2,8,3,0,9,4],
-   		[5,8,0,3,7,9,6,1,4,2],
-   		[8,9,1,6,0,4,3,5,2,7],
-   		[9,4,5,3,1,2,6,8,7,0],
-   		[4,2,8,6,5,7,3,9,0,1],
-   		[2,7,9,3,8,0,6,4,1,5],
-   		[7,0,4,6,9,1,3,2,5,8]
-   	],
-   	check: function(str) {
-   		let c = 0;
-   		str.replace(/\D+/g, "").split("").reverse().forEach((u, i) => {
-   			c = this.d[c][this.p[i % 8][parseInt(u, 10)]];
-   		});
-   		return c;
-   	}
+      d: [
+         [0,1,2,3,4,5,6,7,8,9],
+         [1,2,3,4,0,6,7,8,9,5],
+         [2,3,4,0,1,7,8,9,5,6],
+         [3,4,0,1,2,8,9,5,6,7],
+         [4,0,1,2,3,9,5,6,7,8],
+         [5,9,8,7,6,0,4,3,2,1],
+         [6,5,9,8,7,1,0,4,3,2],
+         [7,6,5,9,8,2,1,0,4,3],
+         [8,7,6,5,9,3,2,1,0,4],
+         [9,8,7,6,5,4,3,2,1,0]
+      ],
+      p: [
+         [0,1,2,3,4,5,6,7,8,9],
+         [1,5,7,6,2,8,3,0,9,4],
+         [5,8,0,3,7,9,6,1,4,2],
+         [8,9,1,6,0,4,3,5,2,7],
+         [9,4,5,3,1,2,6,8,7,0],
+         [4,2,8,6,5,7,3,9,0,1],
+         [2,7,9,3,8,0,6,4,1,5],
+         [7,0,4,6,9,1,3,2,5,8]
+      ],
+      check: function(str) {
+         let c = 0;
+         str.replace(/\D+/g, "").split("").reverse().forEach((u, i) => {
+            c = this.d[c][this.p[i % 8][parseInt(u, 10)]];
+         });
+         return c;
+      }
    };
    
    aadhaarInputs.forEach(function(input) {
    
-   	input.addEventListener('blur', function(event) {
+      input.addEventListener('blur', function(event) {
    
-   		const uid = event.target.value.trim();
-   		if (!uid) return;
+         const uid = event.target.value.trim();
+         if (!uid) return;
    
-   		if (uid.length !== 12 || Verhoeff.check(uid) !== 0) {
+         if (uid.length !== 12 || Verhoeff.check(uid) !== 0) {
    
-   			Swal.fire({
-   				icon: 'error',
-   				title: 'Invalid Aadhaar Number',
-   				text: 'Please enter a valid 12-digit Aadhaar number.',
-   				confirmButtonText: 'OK'
-   			}).then(() => {
-   				event.target.value = '';
-   				event.target.focus();
-   			});
+            Swal.fire({
+               icon: 'error',
+               title: 'Invalid Aadhaar Number',
+               text: 'Please enter a valid 12-digit Aadhaar number.',
+               confirmButtonText: 'OK'
+            }).then(() => {
+               event.target.value = '';
+               event.target.focus();
+            });
    
-   		}
+         }
    
-   	});
+      });
    
    });
    
@@ -881,20 +1058,20 @@ SSEPD-IT || Pension
    if (!file) return;
    
    if (!['image/jpeg', 'image/jpg'].includes(file.type)) {
-   	Swal.fire('Invalid File', 'Only JPG/JPEG images are allowed', 'error');
-   	input.value = '';
-   	return;
+      Swal.fire('Invalid File', 'Only JPG/JPEG images are allowed', 'error');
+      input.value = '';
+      return;
    }
    
    if (file.size > 307200) {
-   	Swal.fire('File Too Large', 'Image must be less than 300 KB', 'error');
-   	input.value = '';
-   	return;
+      Swal.fire('File Too Large', 'Image must be less than 300 KB', 'error');
+      input.value = '';
+      return;
    }
    
    const reader = new FileReader();
    reader.onload = function (e) {
-   	document.getElementById('beneficiary_preview').src = e.target.result;
+      document.getElementById('beneficiary_preview').src = e.target.result;
    };
    reader.readAsDataURL(file);
    }
@@ -924,16 +1101,16 @@ SSEPD-IT || Pension
    hide('disability_section');
    
    if (typeId == '9') {
-   	show('tg_registration_div');
-   	show('tg_document_div');
+      show('tg_registration_div');
+      show('tg_document_div');
    }
    
    if (typeId == '2' || typeId == '5') {
-   	show('widow_document_div');
+      show('widow_document_div');
    }
    
    if (typeId == '3' || typeId == '4' || typeId == '6') {
-   	show('disability_section');
+      show('disability_section');
    }
    }
    
@@ -944,9 +1121,9 @@ SSEPD-IT || Pension
    const type = document.getElementById('disability_type_condition_id')?.value;
    
    if (type == '1') {
-   	show('disability_validity_div');
+      show('disability_validity_div');
    } else {
-   	hide('disability_validity_div');
+      hide('disability_validity_div');
    }
    }
    
@@ -955,9 +1132,9 @@ SSEPD-IT || Pension
    function bankAccountTypeChange(type) {
    
    if (type == '2') {
-   	show('second_holder_div');
+      show('second_holder_div');
    } else {
-   	hide('second_holder_div');
+      hide('second_holder_div');
    }
    }
    
@@ -1007,234 +1184,258 @@ SSEPD-IT || Pension
    function validatePensionEligibilityExtended() {
    
    const pensionType = Number(
-   	document.getElementById('pension_type_id')?.value || 0
-   	);
+      document.getElementById('pension_type_id')?.value || 0
+      );
    
    const age = Number(
-   	document.getElementById('age')?.value || 0
-   	);
+      document.getElementById('age')?.value || 0
+      );
    
    const disabilityPercent = Number(
-   	document.getElementById('disability_percentage')?.value || 0
-   	);
+      document.getElementById('disability_percentage')?.value || 0
+      );
    
    hideInlineError('disability_percent_error');
    
      /* ---- TG Pension ---- */
    if (pensionTGTypesExtended.includes(pensionType)) {
-   	return true;
+      return true;
    }
    
      /* ---- Disability Pension ---- */
    if (pensionDisabilityRulesExtended[pensionType]) {
-   	const rule = pensionDisabilityRulesExtended[pensionType];
+      const rule = pensionDisabilityRulesExtended[pensionType];
    
-   	if (disabilityPercent < rule.minPercent) {
-   		Swal.fire({
-   			icon: 'error',
-   			title: 'Not Eligible',
-   			text: `${rule.label} requires minimum ${rule.minPercent}% disability`
-   		}).then(() => {
-   			const disabilityInput = document.getElementById('disability_percentage');
-   			if (disabilityInput) {
-   				disabilityInput.value = '';
-   				disabilityInput.focus();
-   			}
-   		});
-   		return false;
-   	}
+      if (disabilityPercent < rule.minPercent) {
+         Swal.fire({
+            icon: 'error',
+            title: 'Not Eligible',
+            text: `${rule.label} requires minimum ${rule.minPercent}% disability`
+         }).then(() => {
+            const disabilityInput = document.getElementById('disability_percentage');
+            if (disabilityInput) {
+               disabilityInput.value = '';
+               disabilityInput.focus();
+            }
+         });
+         return false;
+      }
    
-   	return true;
+      return true;
    }
    
      /* ---- Age-based Pension ---- */
    if (pensionAgeRulesExtended[pensionType]) {
-   	const rule = pensionAgeRulesExtended[pensionType];
+      const rule = pensionAgeRulesExtended[pensionType];
    
-   	if (age < rule.min) {
-   		Swal.fire({
-   			icon: 'error',
-   			title: 'Not Eligible',
-   			text: `${rule.label} requires minimum age of ${rule.min} years`
-   		}).then(() => {
-   			const ageInput = document.getElementById('age');
-   			if (ageInput) {
-   				ageInput.value = '';
-   				const dobInput = document.getElementById('dob');
-   				if (dobInput) dobInput.focus();
-   			}
-   		});
-   		return false;
-   	}
+      if (age < rule.min) {
+         Swal.fire({
+            icon: 'error',
+            title: 'Not Eligible',
+            text: `${rule.label} requires minimum age of ${rule.min} years`
+         }).then(() => {
+            const ageInput = document.getElementById('age');
+            if (ageInput) {
+               ageInput.value = '';
+               const dobInput = document.getElementById('dob');
+               if (dobInput) dobInput.focus();
+            }
+         });
+         return false;
+      }
    }
    
    return true;
    }
 </script>
 <script>
-$(document).on('click', '#verify_udid_btn', function () {
-
-    let udid = $('#udid_no').val();
-    let dob  = $('#dob').val();
-
-    if (!udid || !dob) {
-        alert("Please enter UDID and DOB");
-        return;
+   $(document).on('click', '#verify_udid_btn', function () {
+   
+     let udid = $('#udid_no').val();
+     let dob  = $('#dob').val();
+   
+     if (!udid) {
+       Swal.fire('Missing UDID', 'Please enter UDID number', 'error');
+       return;
     }
-
+   
+    $('#verify_udid_btn')
+    .text('Verified')
+    .removeClass('btn-secondary')
+    .addClass('btn-success')
+    .prop('disabled', true);
+   
+    $('#udid_result').html(
+       `<div class="alert alert-success">
+            UDID Verified Successfully (Default Mode)
+    </div>`
+    );
+   
+   });
+</script>
+<!-- <script>
+   $(document).on('click', '#verify_udid_btn', function () {
+   
+     let udid = $('#udid_no').val();
+     let dob  = $('#dob').val();
+   
+     if (!udid || !dob) {
+       alert("Please enter UDID and DOB");
+       return;
+    }
+   
     $.ajax({
-        url: "{{ route('website.pension.benf_udid_verification') }}",
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            udid: udid,
-            dob: dob
-        },
-        beforeSend: function () {
-            $('#verify_udid_btn').text('Verifying...');
-        },
-        success: function (response) {
-    console.log(response);
-
-    $('#verify_udid_btn').text('Verify');
-
-    if (!response || response.status !== true || !response.data) {
-        $('#udid_result').html(
+       url: "{{ route('website.pension.benf_udid_verification') }}",
+       type: "POST",
+       data: {
+         _token: "{{ csrf_token() }}",
+         udid: udid,
+         dob: dob
+      },
+      beforeSend: function () {
+         $('#verify_udid_btn').text('Verifying...');
+      },
+      success: function (response) {
+        console.log(response);
+   
+        $('#verify_udid_btn').text('Verify');
+   
+        if (!response || response.status !== true || !response.data) {
+          $('#udid_result').html(
             `<div class="alert alert-danger">
                 ${response?.message ?? 'Invalid UDID response'}
-            </div>`
-        );
-        return;
-    }
-
-    let data = response.data;
-
-    $('#udid_result').html(
-        `<div class="alert alert-success">
+         </div>`
+         );
+          return;
+       }
+   
+       let data = response.data;
+   
+       $('#udid_result').html(
+          `<div class="alert alert-success">
             Name: ${data.fullname}<br>
             Disability: ${data.disability_type}<br>
             Percentage: ${data.disability_percentage}%<br>
             Status: ${data.application_status}
-        </div>`
-    );
-},
-        error: function () {
-            $('#verify_udid_btn').text('Verify');
-            alert("Server Error");
-        }
-    });
-});
-</script>
-
+       </div>`
+       );
+    },
+    error: function () {
+      $('#verify_udid_btn').text('Verify');
+      alert("Server Error");
+   }
+   });
+   });
+   </script> -->
 <script>
    document.addEventListener('DOMContentLoaded', function () {
    
-   	const pensionForm = document.getElementById('pensionApplicationForm');
-   	const disabilityInput = document.getElementById('disability_percentage');
+      const pensionForm = document.getElementById('pensionApplicationForm');
+      const disabilityInput = document.getElementById('disability_percentage');
    
          /* ================= REAL-TIME DISABILITY VALIDATION ================= */
-   	if (disabilityInput) {
-   		disabilityInput.addEventListener('input', function () {
-   			if (this.value.length >= 2) {
-   				validatePensionEligibilityExtended();
-   			}
-   		});
-   	}
+      if (disabilityInput) {
+         disabilityInput.addEventListener('input', function () {
+            if (this.value.length >= 2) {
+               validatePensionEligibilityExtended();
+            }
+         });
+      }
    
          /* ================= FORM SUBMIT VALIDATION ================= */
-   	if (pensionForm) {
-   		pensionForm.addEventListener('submit', function (e) {
+      if (pensionForm) {
+         pensionForm.addEventListener('submit', function (e) {
    
-   			if (!validateFormFields(pensionForm)) {
-   				e.preventDefault();
-   				e.stopPropagation();
-   				return false;
-   			}
+            if (!validateFormFields(pensionForm)) {
+               e.preventDefault();
+               e.stopPropagation();
+               return false;
+            }
    
-   			if (!validatePensionEligibilityExtended()) {
-   				e.preventDefault();
-   				e.stopPropagation();
-   				return false;
-   			}
+            if (!validatePensionEligibilityExtended()) {
+               e.preventDefault();
+               e.stopPropagation();
+               return false;
+            }
    
-   			if (!aadhaarVerified) {
-   				e.preventDefault();
-   				Swal.fire({
-   					icon: 'warning',
-   					title: 'Aadhaar Verification Required',
-   					text: 'Please verify Aadhaar before submitting.'
-   				});
-   				return false;
-   			}
+            if (!aadhaarVerified) {
+               e.preventDefault();
+               Swal.fire({
+                  icon: 'warning',
+                  title: 'Aadhaar Verification Required',
+                  text: 'Please verify Aadhaar before submitting.'
+               });
+               return false;
+            }
    
-   		});
-   	}
+         });
+      }
    
    });
    
       /* ================= UNIVERSAL FILE SIZE VALIDATION (300KB) ================= */
    document.querySelectorAll('input[type="file"]').forEach(input => {
    
-   	input.addEventListener('change', function () {
+      input.addEventListener('change', function () {
    
-   		const file = this.files[0];
-   		if (!file) return;
+         const file = this.files[0];
+         if (!file) return;
    
-   		const maxSize = 307200;
+         const maxSize = 307200;
    
-   		if (file.size > maxSize) {
+         if (file.size > maxSize) {
    
-   			Swal.fire({
-   				icon: 'error',
-   				title: 'File Too Large',
-   				text: 'Maximum allowed file size is 300 KB.'
-   			}).then(() => {
-   				this.value = '';
-   			});
+            Swal.fire({
+               icon: 'error',
+               title: 'File Too Large',
+               text: 'Maximum allowed file size is 300 KB.'
+            }).then(() => {
+               this.value = '';
+            });
    
-   		}
+         }
    
-   	});
+      });
    
    });
    
      /* ================= AADHAAR STYLE NAME VALIDATION ================= */
    
    function validateAadhaarName(inputField, isRequired = true) {
-   	if (!inputField) return;
+      if (!inputField) return;
    
-   	inputField.addEventListener('input', function () {
+      inputField.addEventListener('input', function () {
    
-   		let value = this.value.toUpperCase();
+         let value = this.value.toUpperCase();
    
-   		value = value.replace(/[^A-Z\s]/g, '');
-   		value = value.replace(/\s+/g, ' ');
-   		value = value.replace(/^\s/, '');
+         value = value.replace(/[^A-Z\s]/g, '');
+         value = value.replace(/\s+/g, ' ');
+         value = value.replace(/^\s/, '');
    
-   		this.value = value;
-   	});
+         this.value = value;
+      });
    
-   	inputField.addEventListener('blur', function () {
+      inputField.addEventListener('blur', function () {
    
-   		const value = this.value.trim();
+         const value = this.value.trim();
    
-   		if (isRequired) {
-   			if (value.length < 2) {
-   				this.classList.add('is-invalid');
-   				this.setCustomValidity('Name must be at least 2 characters.');
-   				return;
-   			}
-   		}
+         if (isRequired) {
+            if (value.length < 2) {
+               this.classList.add('is-invalid');
+               this.setCustomValidity('Name must be at least 2 characters.');
+               return;
+            }
+         }
    
-   		if (!isRequired && value.length === 0) {
-   			this.classList.remove('is-invalid');
-   			this.setCustomValidity('');
-   			return;
-   		}
+         if (!isRequired && value.length === 0) {
+            this.classList.remove('is-invalid');
+            this.setCustomValidity('');
+            return;
+         }
    
-   		this.classList.remove('is-invalid');
-   		this.setCustomValidity('');
-   	});
+         this.classList.remove('is-invalid');
+         this.setCustomValidity('');
+      });
    }
    
    
@@ -1254,137 +1455,137 @@ $(document).on('click', '#verify_udid_btn', function () {
    let fullNameEditedManually = false;
    
    if (fullName) {
-   	fullName.addEventListener('input', function () {
-   		fullNameEditedManually = true;
-   	});
+      fullName.addEventListener('input', function () {
+         fullNameEditedManually = true;
+      });
    }
    
    function updateFullName() {
    
-   	if (!firstName || !middleName || !lastName || !fullName) return;
-   	if (fullNameEditedManually) return;
+      if (!firstName || !middleName || !lastName || !fullName) return;
+      if (fullNameEditedManually) return;
    
-   	const mergedName = [
-   		firstName.value.trim(),
-   		middleName.value.trim(),
-   		lastName.value.trim()
-   	]
-   	.filter(part => part !== '')
-   	.join(' ')
-   	.replace(/\s+/g, ' ')
-   	.trim();
+      const mergedName = [
+         firstName.value.trim(),
+         middleName.value.trim(),
+         lastName.value.trim()
+      ]
+      .filter(part => part !== '')
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
    
-   	fullName.value = mergedName;
+      fullName.value = mergedName;
    }
    
    [firstName, middleName, lastName].forEach(field => {
-   	if (field) {
-   		field.addEventListener('input', updateFullName);
-   		field.addEventListener('blur', updateFullName);
-   	}
+      if (field) {
+         field.addEventListener('input', updateFullName);
+         field.addEventListener('blur', updateFullName);
+      }
    });
    
    
      /* ================= FORM FIELD VALIDATION ================= */
    function validateFormFields(form) {
    
-   	/* ===== Beneficiary Image Mandatory Validation ===== */
-   	const beneficiaryImageInput = form.querySelector('#beneficiary_image');
+      /* ===== Beneficiary Image Mandatory Validation ===== */
+      const beneficiaryImageInput = form.querySelector('#beneficiary_image');
    
-   	if (beneficiaryImageInput) {
+      if (beneficiaryImageInput) {
    
-   		const isVisible = $(beneficiaryImageInput).closest('.col-md-6').is(':visible');
+         const isVisible = $(beneficiaryImageInput).closest('.col-md-6').is(':visible');
    
-   		if (isVisible && beneficiaryImageInput.files.length === 0) {
+         if (isVisible && beneficiaryImageInput.files.length === 0) {
    
-   			Swal.fire({
-   				icon: 'error',
-   				title: 'Beneficiary Photograph Required',
-   				text: 'Please upload Beneficiary Photograph before submitting.'
-   			}).then(() => {
-   				document.querySelector('label[for="beneficiary_image"]')?.click();
-   			});
+            Swal.fire({
+               icon: 'error',
+               title: 'Beneficiary Photograph Required',
+               text: 'Please upload Beneficiary Photograph before submitting.'
+            }).then(() => {
+               document.querySelector('label[for="beneficiary_image"]')?.click();
+            });
    
-   			return false;
-   		}
-   	}
+            return false;
+         }
+      }
    
-   	let firstInvalid = null;
+      let firstInvalid = null;
    
-   	const requiredLabels = form.querySelectorAll('label.required-field');
+      const requiredLabels = form.querySelectorAll('label.required-field');
    
-   	requiredLabels.forEach(label => {
+      requiredLabels.forEach(label => {
    
-   		const parentCol = label.closest('.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12');
+         const parentCol = label.closest('.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12');
    
-   		if (!parentCol) return;
+         if (!parentCol) return;
    
              /* Skip if entire column is hidden (d-none or jQuery hide) */
-   		if (!$(parentCol).is(':visible')) return;
+         if (!$(parentCol).is(':visible')) return;
    
-   		const field = parentCol.querySelector('input, select, textarea');
-   		if (!field) return;
+         const field = parentCol.querySelector('input, select, textarea');
+         if (!field) return;
    
-   		let isEmpty = false;
+         let isEmpty = false;
    
-   		if (field.classList.contains('select')) {
-   			const value = $(field).val();
-   			isEmpty = !value || value === '';
-   		}
-   		else if (field.type === 'file') {
-   			isEmpty = field.files.length === 0;
-   		}
-   		else {
-   			isEmpty = field.value.trim() === '';
-   		}
+         if (field.classList.contains('select')) {
+            const value = $(field).val();
+            isEmpty = !value || value === '';
+         }
+         else if (field.type === 'file') {
+            isEmpty = field.files.length === 0;
+         }
+         else {
+            isEmpty = field.value.trim() === '';
+         }
    
-   		if (isEmpty) {
+         if (isEmpty) {
    
-   			if (field.classList.contains('select')) {
-   				$(field).next('.select2-container')
-   				.find('.select2-selection')
-   				.css('border-color', '#dc3545');
-   			} else {
-   				field.style.borderColor = '#dc3545';
-   			}
+            if (field.classList.contains('select')) {
+               $(field).next('.select2-container')
+               .find('.select2-selection')
+               .css('border-color', '#dc3545');
+            } else {
+               field.style.borderColor = '#dc3545';
+            }
    
-   			if (!firstInvalid) firstInvalid = field;
+            if (!firstInvalid) firstInvalid = field;
    
-   		} else {
+         } else {
    
-   			if (field.classList.contains('select')) {
-   				$(field).next('.select2-container')
-   				.find('.select2-selection')
-   				.css('border-color', '');
-   			} else {
-   				field.style.borderColor = '';
-   			}
+            if (field.classList.contains('select')) {
+               $(field).next('.select2-container')
+               .find('.select2-selection')
+               .css('border-color', '');
+            } else {
+               field.style.borderColor = '';
+            }
    
-   		}
+         }
    
-   	});
+      });
    
-   	if (firstInvalid) {
+      if (firstInvalid) {
    
-   		Swal.fire({
-   			icon: 'error',
-   			title: 'Incomplete Application',
-   			text: 'Please fill all required red marked fields before submitting.',
-   			confirmButtonText: 'OK'
-   		}).then(() => {
+         Swal.fire({
+            icon: 'error',
+            title: 'Incomplete Application',
+            text: 'Please fill all required red marked fields before submitting.',
+            confirmButtonText: 'OK'
+         }).then(() => {
    
-   			if (firstInvalid.classList.contains('select')) {
-   				$(firstInvalid).select2('open');
-   			} else {
-   				firstInvalid.focus();
-   			}
+            if (firstInvalid.classList.contains('select')) {
+               $(firstInvalid).select2('open');
+            } else {
+               firstInvalid.focus();
+            }
    
-   		});
+         });
    
-   		return false;
-   	}
+         return false;
+      }
    
-   	return true;
+      return true;
    }   
 </script>
 @endsection
