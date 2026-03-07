@@ -442,126 +442,6 @@ Log::info(
     ], JSON_PRETTY_PRINT)
 );
 
-$district_name = null;
-$district_name = District::where('district_id', $validated['district_id'])->value('district_name');
-
-$address_type_id = null;
-$municipality = null;
-$municipality_name = null;
-$ulb_type_id = null;
-$ward_name = null;
-$municipality_id = null;
-$ward_id = null;
-$habitation_id = null;
-$block_name = null;
-$block_id = null;
-$gp_name = null;
-$gp_id = null;
-$village_name = null;
-$village_id = null;
-
-if ($request->address_type_id == '2') {
-
-    $address_type_id = 2;
-    $block_name = Block::where('block_id', $validated['block_id'])->value('block_name');
-    $gp_name = Grampanchayat::where('gp_id', $validated['gp_id'])->value('gp_name');
-    $village_name = Village::where('village_id', $validated['village_id'])->value('village_name');
-    $habitation_id = Habitation::where('village_code', $validated['village_id'])->value('habitation_code');
-    $block_id = $validated['block_id'];
-    $gp_id = $validated['gp_id'];
-    $village_id = $validated['village_id'];
-
-    $municipality_name = null;
-    $municipality_id = null;
-    $ulb_type_id = null;
-    $ward_name = null;
-    $ward_id = null;
-    Log::info(
-        "Address Details ULB:\n" . json_encode([
-            'address_type' => $address_type_id,
-            'municipality' => $municipality,
-            'municipality_name' => $municipality_name,
-            'ulb_type_id' => $ulb_type_id,
-            'ward_name' => $ward_name,
-            'municipality_id' => $municipality_id,
-            'ward_id' => $ward_id,
-            'habitation_id' => $habitation_id,
-            'block_name' => $block_name,
-            'block_id' => $block_id,
-            'gp_name' => $gp_name,
-            'gp_id' => $gp_id,
-            'village_name' => $village_name,
-            'village_id' => $village_id
-        ], JSON_PRETTY_PRINT)
-    );
-} elseif ($request->address_type_id == '1') {
-
-    $address_type_id = 1;
-    $municipality = Municipality::select('municipality_name','ulb_type')->where('municipality_id', $validated['municipality_id'])->first();
-    $municipality_name = $municipality->municipality_name ?? null;
-    $ulb_type_id = $municipality->ulb_type ?? null;
-    $ward_name = WardMaster::where('ward_code', $validated['ward_id'])->value('ward_name');
-    $municipality_id = $validated['municipality_id'];
-    $ward_id = $validated['ward_id'];
-    $habitation_id = $validated['ward_id'];
-
-    $block_name = null;
-    $block_id = null;
-    $gp_name = null;
-    $gp_id = null;
-    $village_name = null;
-    $village_id = null;
-    Log::info(
-        "Address Details Block:\n" . json_encode([
-            'address_type' => $address_type_id,
-            'municipality' => $municipality,
-            'municipality_name' => $municipality_name,
-            'ulb_type_id' => $ulb_type_id,
-            'ward_name' => $ward_name,
-            'municipality_id' => $municipality_id,
-            'ward_id' => $ward_id,
-            'habitation_id' => $habitation_id,
-            'block_name' => $block_name,
-            'block_id' => $block_id,
-            'gp_name' => $gp_name,
-            'gp_id' => $gp_id,
-            'village_name' => $village_name,
-            'village_id' => $village_id
-        ], JSON_PRETTY_PRINT)
-    );
-}
-
-Log::info(
-    "Address Details:\n" . json_encode([
-        'address_type' => $address_type_id,
-        'municipality' => $municipality,
-        'municipality_name' => $municipality_name,
-        'ulb_type_id' => $ulb_type_id,
-        'ward_name' => $ward_name,
-        'municipality_id' => $municipality_id,
-        'ward_id' => $ward_id,
-        'habitation_id' => $habitation_id,
-        'block_name' => $block_name,
-        'block_id' => $block_id,
-        'gp_name' => $gp_name,
-        'gp_id' => $gp_id,
-        'village_name' => $village_name,
-        'village_id' => $village_id
-    ], JSON_PRETTY_PRINT)
-);
-
-if($validated['guardian_type'] == 1) {
-    $father_name = strtoupper(trim($validated['guardian_name']));
-} elseif($validated['guardian_type'] == 2) {
-    $mother_name = strtoupper(trim($validated['guardian_name']));
-}
-
-if($validated['bank_account_type'] == 1) {
-    $second_account_holder_name = null;
-} elseif($validated['bank_account_type'] == 2) {
-    $second_account_holder_name = strtoupper(trim($validated['second_account_holder_name']));
-}
-
 $folderPath = public_path("pension_files/{$pensionSystemGenRegNo}");
 /*A folder i.e. storage/pension_files is created inside the root directory ssepd_ngo_working_portal/storage/pension_files*/
 $externalBasePath = dirname(base_path());
@@ -717,8 +597,8 @@ $ssepdpension->which_govt = '1';
 $ssepdpension->applicant_name = strtoupper(preg_replace('/^[^A-Z]+|[^A-Z ]+$/', '', trim($validated['applicant_name'])));
 $ssepdpension->guardian_type = $validated['guardian_type'];
 $ssepdpension->father_husband_name = strtoupper(trim($validated['guardian_name']));
-$ssepdpension->father_name = $father_name ?? null;
-$ssepdpension->mother_name = $mother_name ?? null;
+$ssepdpension->father_name = null;
+$ssepdpension->mother_name = null;
 $ssepdpension->first_name = strtoupper(preg_replace('/^[^A-Z]+|[^A-Z ]+$/', '', trim($validated['applicant_first_name'])));
 $ssepdpension->middle_name = strtoupper(preg_replace('/^[^A-Z]+|[^A-Z ]+$/', '', trim($validated['applicant_middle_name'])));
 $ssepdpension->last_name = strtoupper(preg_replace('/^[^A-Z]+|[^A-Z ]+$/', '', trim($validated['applicant_last_name'])));
@@ -730,21 +610,20 @@ $ssepdpension->caste_id = $validated['caste_id'];
 $ssepdpension->mobile_number = $validated['mobile_no'];
 $ssepdpension->district_id = $validated['district_id'];
 $ssepdpension->subdivision_id = $validated['sub_division_id'];
-$ssepdpension->block_id = $block_id;
-$ssepdpension->gp_id = $gp_id;
-$ssepdpension->village_id = $village_id;
-$ssepdpension->municipality_id = $municipality_id;
-$ssepdpension->ward_id = $ward_id;
-$ssepdpension->habitation_id = $habitation_id;
-$ssepdpension->address_type = $address_type_id;
-$ssepdpension->ulb_type_id = $ulb_type_id;
-$ssepdpension->district_name = $district_name;
-$ssepdpension->block_name = $block_name;
-$ssepdpension->municipality_name = $municipality_name;
-$ssepdpension->gp_name = $gp_name;
-$ssepdpension->village_name = $village_name;
-$ssepdpension->ward_name = $ward_name;
-$ssepdpension->ward_number = $ward_id;
+$ssepdpension->block_id = $validated['block_id'] ?? null;
+$ssepdpension->gp_id = $validated['gp_id'] ?? null;
+$ssepdpension->village_id = $validated['village_id'] ?? null;
+$ssepdpension->municipality_id = $validated['municipality_id'] ?? null;
+$ssepdpension->ward_id = $validated['ward_id'] ?? null;
+$ssepdpension->habitation_id = null;
+$ssepdpension->address_type = $validated['address_type_id'];
+$ssepdpension->ulb_type_id = null;
+$ssepdpension->district_name = null;
+$ssepdpension->block_name = null;
+$ssepdpension->municipality_name = null;
+$ssepdpension->gp_name = null;
+$ssepdpension->ward_name = null;
+$ssepdpension->ward_number = null;
 $ssepdpension->city_town_name = null;
 $ssepdpension->house_plot_number = $validated['house_no'];
 $ssepdpension->pin_number = $validated['pin_code'];
@@ -753,13 +632,10 @@ $ssepdpension->uid_number = null;
 $ssepdpension->aadhar_number = $validated['aadhaar_no'];
 $ssepdpension->aadhaar_no_by_user = $validated['aadhaar_no'];
 $ssepdpension->aadhaar_hash = hash('sha256', $validated['aadhaar_no']);
-$ssepdpension->aadhaar_encrypted = Crypt::encryptString(trim($validated['aadhaar_no']));
+$ssepdpension->aadhaar_encrypted = null;
 $ssepdpension->verified_aadhar = $validated['verified_aadhar'];
 $ssepdpension->verified_aadhar_remarks = trim($validated['verified_aadhar_remarks']);
 $ssepdpension->bank_tbl_id = null;
-$ssepdpension->bank_account_type = $validated['bank_account_type'];
-$ssepdpension->account_holder_name = strtoupper(trim($validated['account_holder_name']));
-$ssepdpension->second_account_holder_name = $second_account_holder_name;
 $ssepdpension->bank_account_po_number = $validated['account_number'];
 $ssepdpension->bank_po_account_number = null;
 $ssepdpension->ifsc_code = $validated['ifsc_code'];

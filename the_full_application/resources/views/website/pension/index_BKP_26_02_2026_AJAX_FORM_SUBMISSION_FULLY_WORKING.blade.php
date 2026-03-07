@@ -122,7 +122,7 @@ SSEPD-IT || Pension
                   <li class="breadcrumb-item active" aria-current="page">Apply for Enhanced Pension</li>
                </ol>
             </nav>
-         </div>
+         </div>         
          @if ($errors->any())
          <div class="alert alert-danger">
             <ul>
@@ -241,9 +241,9 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Gender</label>
                            <select name="gender_id" id="gender_id" class="select form-control required-field populate">
                               <option value="">-Select-</option>
-                              @foreach($gender as $data)
-                              <option value="{{$data->id}}">{{$data->gender_name}}</option>
-                              @endforeach
+                              <option value="1">Male</option>
+                              <option value="2">Female</option>
+                              <option value="3">Other</option>
                            </select>
                            @error('gender_id')
                            <label class="error">{{ $message }}</label>
@@ -268,7 +268,7 @@ SSEPD-IT || Pension
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Aadhaar No</label>
                            <div class="d-flex">
-                              <input type="text" name="aadhaar_no" id="aadhaar_no" value="381669807370" class="form-control me-2">
+                              <input type="text" name="aadhaar_no" id="aadhaar_no" class="form-control me-2">
                               <button type="button" class="btn btn-secondary btn-sm" id="aadhaar_verify_btn">Verify</button>
                               <input type="hidden" id="verified_aadhar" class="form-control" name="verified_aadhar">
                               <input type="hidden" id="verified_aadhar_remarks" class="form-control" name="verified_aadhar_remarks">
@@ -282,8 +282,7 @@ SSEPD-IT || Pension
                            <select name="guardian_type" id="guardian_type" class="select form-control required-field populate">
                               <option value="">-Select-</option>
                               <option value="1">Father</option>
-                              <option value="2">Mother</option>
-                              <option value="3">Spouse</option>
+                              <option value="2">Spouse</option>
                            </select>
                            @error('guardian_type')
                            <label class="error">{{ $message }}</label>
@@ -336,10 +335,9 @@ SSEPD-IT || Pension
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">District</label>
                            <select name="district_id" id="district_id" class="select form-control required-field">
-                              <option value="">-Select District-</option>
-                              @foreach($district as $data)
-                              <option value="{{$data->district_id}}">{{$data->district_name}}</option>
-                              @endforeach
+                              <option value="">-Select-</option>
+                              <option value="1">District1</option>
+                              <option value="2">District2</option>
                            </select>
                            @error('district_id')
                            <label class="error">{{ $message }}</label>
@@ -348,7 +346,9 @@ SSEPD-IT || Pension
                         <div class="col-md-4 mb-3">
                            <label class="form-label required-field">Sub Division</label>
                            <select name="sub_division_id" id="sub_division_id" class="select form-control required-field">
-                              <option value="">-Select Sub Division-</option>
+                              <option value="">-Select-</option>
+                              <option value="1">Sub Division1</option>
+                              <option value="2">Sub Division2</option>
                            </select>
                            @error('sub_division_id')
                            <label class="error">{{ $message }}</label>
@@ -369,6 +369,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Block</label>
                            <select name="block_id" id="block_id" class="select form-control required-field">
                               <option value="">-Select-</option>
+                              <option value="1">Block1</option>
+                              <option value="2">Block2</option>
                            </select>
                            @error('block_id')
                            <label class="error">{{ $message }}</label>
@@ -378,6 +380,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Gram Panchayat</label>
                            <select name="gp_id" id="gp_id" class="select form-control required-field">
                               <option value="">-Select-</option>
+                              <option value="1">GP1</option>
+                              <option value="2">GP2</option>
                            </select>
                            @error('gp_id')
                            <label class="error">{{ $message }}</label>
@@ -387,6 +391,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Village</label>
                            <select name="village_id" id="village_id" class="select form-control required-field">
                               <option value="">-Select-</option>
+                              <option value="1">Village1</option>
+                              <option value="2">Village2</option>
                            </select>
                            @error('village_id')
                            <label class="error">{{ $message }}</label>
@@ -396,6 +402,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Municipality</label>
                            <select name="municipality_id" id="municipality_id" class="select form-control required-field">
                               <option value="">-Select-</option>
+                              <option value="1">Municipality1</option>
+                              <option value="2">Municipality2</option>
                            </select>
                            @error('municipality_id')
                            <label class="error">{{ $message }}</label>
@@ -405,6 +413,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">Ward</label>
                            <select name="ward_id" id="ward_id" class="select form-control required-field">
                               <option value="">-Select-</option>
+                              <option value="1">Ward1</option>
+                              <option value="2">Ward2</option>
                            </select>
                            @error('ward_id')
                            <label class="error">{{ $message }}</label>
@@ -472,11 +482,10 @@ SSEPD-IT || Pension
                            <label class="error">{{ $message }}</label>
                            @enderror
                         </div>
-                        <div class="col-md-4 mb-3" id="disability_validity_div">
+                        <div class="col-md-4 mb-3 d-none" id="disability_validity_div">
                            <label class="form-label required-field">Validity Date</label>
-                           <div class="input-group">
-                              <input type="text" name="disability_validity_date" id="disability_validity_date" class="form-control" placeholder="DD-MM-YYYY" readonly><span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                           </div>
+                           <input type="date" name="disability_validity_date" id="disability_validity_date"
+                              class="form-control" max="{{ date('Y-m-d') }}">
                            @error('disability_validity_date')
                            <label class="error">{{ $message }}</label>
                            @enderror
@@ -530,9 +539,8 @@ SSEPD-IT || Pension
                            <label class="form-label required-field">IFSC Code</label>
                            <select name="ifsc_code" id="ifsc_code" class="select form-control required-field">
                               <option value="">-Select-</option>
-                              @foreach($bank as $data)
-                              <option value="{{$data->bank_id}}">{{$data->bank_ifsc}}</option>
-                              @endforeach
+                              <option value="1">IFSC Code1</option>
+                              <option value="2">IFSC Code2</option>
                            </select>
                            @error('ifsc_code')
                            <label class="error">{{ $message }}</label>
@@ -605,14 +613,14 @@ SSEPD-IT || Pension
             </form>
          </div>
          <div class="col-lg-12">
-            <div id="ajaxErrorContainer" class="alert alert-danger" style="display:none;">
-               <ul id="ajaxErrorList"></ul>
-            </div>
+         <div id="ajaxErrorContainer" class="alert alert-danger" style="display:none;">
+            <ul id="ajaxErrorList"></ul>
+         </div>
          </div>
       </div>
    </div>
 </div>
-@endsection
+@endsection 
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
@@ -625,36 +633,36 @@ SSEPD-IT || Pension
          allowClear: true,
          width: "100%"
       });
-      
-      
+   
+   
      /* ================= Required Star Injection ================= */
       document.querySelectorAll('.required-field').forEach(field => {
    
          const parentCol = field.closest('[class*="col-md-"]');
          const label = parentCol?.querySelector('label');
-         
+   
          if (label && !label.querySelector('.required-star')) {
             const star = document.createElement('span');
             star.textContent = ' *';
             star.className = 'required-star text-danger';
             label.appendChild(star);
          }
-         
+   
       });
-      
+   
       const addressType = $('#address_type_id');
       const blockDiv = $('#block_div');
       const gpDiv = $('#gp_div');
       const villageDiv = $('#village_div');
       const municipalityDiv = $('#municipality_div');
       const wardDiv = $('#ward_div');
-      
+   
       const blockSelect = $('#block_id');
       const gpSelect = $('#gp_id');
       const villageSelect = $('#village_id');
       const municipalitySelect = $('#municipality_id');
       const wardSelect = $('#ward_id');
-      
+   
       function hideAll() {
          blockDiv.hide();
          gpDiv.hide();
@@ -662,14 +670,14 @@ SSEPD-IT || Pension
          municipalityDiv.hide();
          wardDiv.hide();
       }
-      
+   
       function resetSelect($select) {
          $select.val('').trigger('change');
       }
-      
+   
      /*Initial hide*/
       hideAll();
-      
+   
      /*Address type change*/
       addressType.on('change', function () {
          const type = $(this).val();
@@ -679,84 +687,84 @@ SSEPD-IT || Pension
          resetSelect(villageSelect);
          resetSelect(municipalitySelect);
          resetSelect(wardSelect);
-         
+   
          if(type === '2') {
             blockDiv.show();
          } else if(type === '1') {
             municipalityDiv.show();
          }
       });
-      
+   
      /*Block -> GP*/
       blockSelect.on('change', function () {
          resetSelect(gpSelect);
          resetSelect(villageSelect);
          villageDiv.hide();
-         
+   
          if($(this).val()) gpDiv.show();
          else gpDiv.hide();
       });
-      
+   
      /*GP -> Village*/
       gpSelect.on('change', function () {
          resetSelect(villageSelect);
          if($(this).val()) villageDiv.show();
          else villageDiv.hide();
       });
-      
+   
      /*Municipality -> Ward*/
       municipalitySelect.on('change', function () {
          resetSelect(wardSelect);
          if($(this).val()) wardDiv.show();
          else wardDiv.hide();
       });
-      
+   
       const schemeSelect = $('#pension_type_id');
-      
+   
       schemeSelect.on('select2:select', function (e) {
          applyingScemeType(e.params.data.id);
       });
-      
+   
       schemeSelect.on('change', function () {
          applyingScemeType(this.value);
       });
-      
-      
+   
+   
      /* ================= DIGITS-ONLY INPUT HANDLER ================= */
       function allowDigitsOnly(input, maxLength = null, maxValue = null) {
    
          if (!input) return;
-         
+   
          input.addEventListener('input', function () {
    
             let value = this.value.replace(/\D/g, '');
-            
+   
             if (maxLength !== null) value = value.slice(0, maxLength);
-            
+   
             if (maxValue !== null && value !== '') {
                value = Math.min(parseInt(value, 10), maxValue).toString();
             }
-            
+   
             this.value = value;
          });
-         
+   
          input.addEventListener('paste', function (e) {
             e.preventDefault();
-            
+   
             let pasted = (e.clipboardData || window.clipboardData).getData('text');
             pasted = pasted.replace(/\D/g, '');
-            
+   
             if (maxLength !== null) pasted = pasted.slice(0, maxLength);
-            
+   
             if (maxValue !== null && pasted !== '') {
                pasted = Math.min(parseInt(pasted, 10), maxValue).toString();
             }
-            
+   
             this.value = pasted;
          });
       }
-      
-      
+   
+   
      /* ================= APPLY DIGIT RULES ================= */
       allowDigitsOnly(document.getElementById('aadhaar_no'), 12);
       allowDigitsOnly(document.getElementById('mobile_no'), 10);
@@ -764,8 +772,8 @@ SSEPD-IT || Pension
       allowDigitsOnly(document.getElementById('house_no'), 3);
       allowDigitsOnly(document.getElementById('disability_percentage'), 3, 100);
       allowDigitsOnly(document.getElementById('account_number'), 22);
-      
-      
+   
+   
      /* ================= MODERN DOB PICKER ================= */
       flatpickr("#dob", {
          dateFormat: "d-m-Y",
@@ -781,41 +789,26 @@ SSEPD-IT || Pension
             calculateAge();
          }
       });
-      
+   
       const dobField = document.getElementById('dob');
       if (dobField) dobField.setAttribute('readonly', true);
    
-      flatpickr("#disability_validity_date", {
-         dateFormat: "d-m-Y",
-         minDate: "today",
-         allowInput: false,
-         disableMobile: false,
-         monthSelectorType: "dropdown",
-         yearSelectorType: "dropdown",
-         animate: true,
-         clickOpens: true,
-         position: "auto center",
-         onChange: function () {
-            calculateAge();
-         }
-      });
-      
       const bankType = $('#bank_account_type');
-      
+   
       bankType.on('select2:select', function (e) {
          bankAccountTypeChange(e.params.data.id);
       });
-      
+   
       bankType.on('change', function () {
          bankAccountTypeChange(this.value);
       });
-      
-      
-      
+   
+   
+   
      /* ================= INIT AADHAAR VALIDATION ================= */
       initAadhaarValidation();
       disabilityTypeCondition();
-      
+   
      /* ================= INITIAL HIDE ================= */
       hide('tg_registration_div');
       hide('tg_document_div');
@@ -823,55 +816,55 @@ SSEPD-IT || Pension
       hide('disability_section');
       hide('disability_validity_div');
       hide('second_holder_div');
-      
+   
         /* ================= AADHAAR SECTION LOCK ================= */
-      
-      
-      
+   
+   
+   
       const basicSection     = document.getElementById('basic_section');
       const addressSection   = document.getElementById('address_section');
       const bankSection      = document.getElementById('bank_section');
       const documentsSection = document.getElementById('documents_section');
-      
+   
       const aadhaarInput = document.getElementById('aadhaar_no');
       const verifyBtn    = document.getElementById('aadhaar_verify_btn');
-      
+   
    /* Hide all sections except basic on load */
       hide('address_section');
       hide('bank_section');
       hide('documents_section');
-      
+   
    /* ================= REAL AADHAAR VERIFICATION ================= */
-      
+   
       const fullNameInput = document.getElementById('applicant_name');
       const verifiedAadharInput = document.getElementById('verified_aadhar');
       const verifiedRemarksInput = document.getElementById('verified_aadhar_remarks');
       const firstNameInput = document.getElementById('applicant_first_name');
       const middleNameInput = document.getElementById('applicant_middle_name');
       const lastNameInput = document.getElementById('applicant_last_name');
-      
-      
+   
+   
       verifyBtn.addEventListener('click', function () {
    
          const aadhaarNo = aadhaarInput.value.trim();
          const fullName  = fullNameInput.value.trim();
-         
+   
          verifiedAadharInput.value = '';
          verifiedRemarksInput.value = '';
-         
+   
          if (!/^\d{12}$/.test(aadhaarNo)) {
             Swal.fire('Invalid Aadhaar', 'Enter valid 12 digit Aadhaar number', 'error');
             return;
          }
-         
+   
          if (!fullName || fullName.length < 2) {
             Swal.fire('Invalid Name', 'Enter full name as per Aadhaar', 'error');
             return;
          }
-         
+   
          verifyBtn.disabled = true;
          verifyBtn.innerText = 'Verifying...';
-         
+   
          fetch("{{ route('website.pension.benf_aadhar_verification') }}", {
             method: "POST",
             headers: {
@@ -883,40 +876,30 @@ SSEPD-IT || Pension
                applicant_name: fullName
             })
          })
-         .then(async response => {
-
-   const data = await response.json();
-
-   if (!response.ok) {
-      throw data;
-   }
-
-   return data;
-
-})
-.then(data => {
+         .then(response => response.json())
+         .then(data => {
    
             let message = data.data ?? '';
-            
+   
             if (data.status === true) {
    
                verifiedAadharInput.value = 1;
                verifiedRemarksInput.value = message;
-               
+   
                aadhaarVerified = true;
-               
+   
                show('address_section');
                show('bank_section');
                show('documents_section');
-               
+   
                aadhaarInput.setAttribute('readonly', true);
                fullNameInput.setAttribute('readonly', true);
                firstNameInput.setAttribute('readonly', true);
                middleNameInput.setAttribute('readonly', true);
                lastNameInput.setAttribute('readonly', true);
-               
+   
                Swal.fire('Verified', message || 'Aadhaar verified1 successfully', 'success');
-               
+   
                verifyBtn.innerText = 'Verified';
                verifyBtn.classList.remove('btn-primary', 'btn-danger');
                verifyBtn.classList.add('btn-success');
@@ -925,55 +908,55 @@ SSEPD-IT || Pension
                verifiedAadharInput.value = 0;
                verifiedRemarksInput.value = message;
                fullNameInput.setAttribute('readonly', true);
-               
+   
                Swal.fire('Verification Failed',
                   message || data.response || 'Aadhaar verification failed',
                   'error'
                   );
-               
+   
                verifyBtn.disabled = false;
                verifyBtn.innerText = 'Verify';
             }
-            
+   
          })
          .catch(error => {
             verifiedAadharInput.value = 0;
             verifiedRemarksInput.value = 'Server error';
             fullNameInput.setAttribute('readonly', true);
-            
+   
             Swal.fire('Error', 'Server error during verification', 'error');
-            
+   
             verifyBtn.disabled = false;
             verifyBtn.innerText = 'Verify';
          });
-         
+   
       });
-      
-      
+   
+   
    /* Reset verification if Aadhaar or Name edited */
       [aadhaarInput, fullNameInput].forEach(field => {
    
          if (!field) return;
-         
+   
          field.addEventListener('input', function () {
             verifiedAadharInput.value = '';
             verifiedRemarksInput.value = '';
-            
+   
             aadhaarVerified = false;
-            
+   
             hide('address_section');
             hide('bank_section');
             hide('documents_section');
-            
+   
             aadhaarInput.removeAttribute('readonly');
-            
+   
             verifyBtn.disabled = false;
             verifyBtn.innerText = 'Verify';
          });
-         
+   
       });
-      
-      
+   
+   
       const initialScheme = document.getElementById('pension_type_id')?.value;
       if (initialScheme !== null && initialScheme !== '') {
          applyingScemeType(initialScheme);
@@ -1051,7 +1034,7 @@ SSEPD-IT || Pension
    
          const uid = event.target.value.trim();
          if (!uid) return;
-         
+   
          if (uid.length !== 12 || Verhoeff.check(uid) !== 0) {
    
             Swal.fire({
@@ -1063,11 +1046,11 @@ SSEPD-IT || Pension
                event.target.value = '';
                event.target.focus();
             });
-            
+   
          }
-         
+   
       });
-      
+   
    });
    
    }
@@ -1227,7 +1210,7 @@ SSEPD-IT || Pension
      /* ---- Disability Pension ---- */
    if (pensionDisabilityRulesExtended[pensionType]) {
       const rule = pensionDisabilityRulesExtended[pensionType];
-      
+   
       if (disabilityPercent < rule.minPercent) {
          Swal.fire({
             icon: 'error',
@@ -1242,14 +1225,14 @@ SSEPD-IT || Pension
          });
          return false;
       }
-      
+   
       return true;
    }
    
      /* ---- Age-based Pension ---- */
    if (pensionAgeRulesExtended[pensionType]) {
       const rule = pensionAgeRulesExtended[pensionType];
-      
+   
       if (age < rule.min) {
          Swal.fire({
             icon: 'error',
@@ -1354,8 +1337,8 @@ SSEPD-IT || Pension
    
       const pensionForm = document.getElementById('pensionApplicationForm');
       const disabilityInput = document.getElementById('disability_percentage');
-      
-   /* ================= REAL-TIME DISABILITY VALIDATION ================= */
+   
+      /* ================= REAL-TIME DISABILITY VALIDATION ================= */
       if (disabilityInput) {
          disabilityInput.addEventListener('input', function () {
             if (this.value.length >= 2) {
@@ -1363,8 +1346,8 @@ SSEPD-IT || Pension
             }
          });
       }
-      
-   /* ================= FORM SUBMIT VALIDATION ================= */
+   
+      /* ================= FORM SUBMIT VALIDATION ================= */
       if (pensionForm) {
          pensionForm.addEventListener('submit', function (e) {
    
@@ -1373,13 +1356,13 @@ SSEPD-IT || Pension
                e.stopPropagation();
                return false;
             }
-            
+   
             if (!validatePensionEligibilityExtended()) {
                e.preventDefault();
                e.stopPropagation();
                return false;
             }
-            
+   
             if (!aadhaarVerified) {
                e.preventDefault();
                Swal.fire({
@@ -1389,10 +1372,10 @@ SSEPD-IT || Pension
                });
                return false;
             }
-            
+   
          });
       }
-      
+   
    });
    
    /* ================= UNIVERSAL FILE SIZE VALIDATION (300KB) ================= */
@@ -1402,9 +1385,9 @@ SSEPD-IT || Pension
    
          const file = this.files[0];
          if (!file) return;
-         
+   
          const maxSize = 307200;
-         
+   
          if (file.size > maxSize) {
    
             Swal.fire({
@@ -1414,33 +1397,33 @@ SSEPD-IT || Pension
             }).then(() => {
                this.value = '';
             });
-            
+   
          }
-         
+   
       });
-      
+   
    });
    
    /* ================= AADHAAR STYLE NAME VALIDATION ================= */
    
    function validateAadhaarName(inputField, isRequired = true) {
       if (!inputField) return;
-      
+   
       inputField.addEventListener('input', function () {
    
          let value = this.value.toUpperCase();
-         
+   
          value = value.replace(/[^A-Z\s]/g, '');
          value = value.replace(/\s+/g, ' ');
          value = value.replace(/^\s/, '');
-         
+   
          this.value = value;
       });
-      
+   
       inputField.addEventListener('blur', function () {
    
          const value = this.value.trim();
-         
+   
          if (isRequired) {
             if (value.length < 2) {
                this.classList.add('is-invalid');
@@ -1448,13 +1431,13 @@ SSEPD-IT || Pension
                return;
             }
          }
-         
+   
          if (!isRequired && value.length === 0) {
             this.classList.remove('is-invalid');
             this.setCustomValidity('');
             return;
          }
-         
+   
          this.classList.remove('is-invalid');
          this.setCustomValidity('');
       });
@@ -1486,7 +1469,7 @@ SSEPD-IT || Pension
    
       if (!firstName || !middleName || !lastName || !fullName) return;
       if (fullNameEditedManually) return;
-      
+   
       const mergedName = [
          firstName.value.trim(),
          middleName.value.trim(),
@@ -1496,7 +1479,7 @@ SSEPD-IT || Pension
       .join(' ')
       .replace(/\s+/g, ' ')
       .trim();
-      
+   
       fullName.value = mergedName;
    }
    
@@ -1513,443 +1496,221 @@ SSEPD-IT || Pension
    
    /* ===== Beneficiary Image Mandatory Validation ===== */
       const beneficiaryImageInput = form.querySelector('#beneficiary_image');
-      
+   
       if (beneficiaryImageInput) {
    
          const isVisible = $(beneficiaryImageInput).closest('.col-md-6').is(':visible');
-         
+   
          if (isVisible && beneficiaryImageInput.files.length === 0) {
    
             Swal.fire({
-              icon: 'error',
-              title: 'Beneficiary Photograph Required',
-              text: 'Please upload Beneficiary Photograph before submitting.',
-              confirmButtonText: 'OK',
-              allowOutsideClick: false,
-              allowEscapeKey: false
-           }).then((result) => {
+               icon: 'error',
+               title: 'Beneficiary Photograph Required',
+               text: 'Please upload Beneficiary Photograph before submitting.'
+            }).then(() => {
+               document.querySelector('label[for="beneficiary_image"]')?.click();
+            });
    
-              if (result.isConfirmed) {
-                document
-                .querySelector('label[for="beneficiary_image"]')
-                ?.click();
-             }
-   
-          });
-   
-           return false;
-        }
-     }
-   
-     let firstInvalid = null;
-   
-     const requiredLabels = form.querySelectorAll('label.required-field');
-   
-     requiredLabels.forEach(label => {
-   
-      const parentCol = label.closest('.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12');
-   
-      if (!parentCol) return;
-   
-       /* Skip if entire column is hidden (d-none or jQuery hide) */
-      if (!$(parentCol).is(':visible')) return;
-   
-      const field = parentCol.querySelector('input, select, textarea');
-      if (!field) return;
-   
-      let isEmpty = false;
-   
-      if (field.classList.contains('select')) {
-         const value = $(field).val();
-         isEmpty = !value || value === '';
-      }
-      else if (field.type === 'file') {
-         isEmpty = field.files.length === 0;
-      }
-      else {
-         isEmpty = field.value.trim() === '';
+            return false;
+         }
       }
    
-      if (isEmpty) {
+      let firstInvalid = null;
+   
+      const requiredLabels = form.querySelectorAll('label.required-field');
+   
+      requiredLabels.forEach(label => {
+   
+         const parentCol = label.closest('.col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12');
+   
+         if (!parentCol) return;
+   
+          /* Skip if entire column is hidden (d-none or jQuery hide) */
+         if (!$(parentCol).is(':visible')) return;
+   
+         const field = parentCol.querySelector('input, select, textarea');
+         if (!field) return;
+   
+         let isEmpty = false;
    
          if (field.classList.contains('select')) {
-            $(field).next('.select2-container')
-            .find('.select2-selection')
-            .css('border-color', '#dc3545');
-         } else {
-            field.style.borderColor = '#dc3545';
+            const value = $(field).val();
+            isEmpty = !value || value === '';
+         }
+         else if (field.type === 'file') {
+            isEmpty = field.files.length === 0;
+         }
+         else {
+            isEmpty = field.value.trim() === '';
          }
    
-         if (!firstInvalid) firstInvalid = field;
+         if (isEmpty) {
    
-      } else {
+            if (field.classList.contains('select')) {
+               $(field).next('.select2-container')
+               .find('.select2-selection')
+               .css('border-color', '#dc3545');
+            } else {
+               field.style.borderColor = '#dc3545';
+            }
    
-         if (field.classList.contains('select')) {
-            $(field).next('.select2-container')
-            .find('.select2-selection')
-            .css('border-color', '');
+            if (!firstInvalid) firstInvalid = field;
+   
          } else {
-            field.style.borderColor = '';
-         }
    
-      }
+            if (field.classList.contains('select')) {
+               $(field).next('.select2-container')
+               .find('.select2-selection')
+               .css('border-color', '');
+            } else {
+               field.style.borderColor = '';
+            }
    
-   });
-   
-     if (firstInvalid) {
-   
-      Swal.fire({
-         icon: 'error',
-         title: 'Incomplete Application',
-         text: 'Please fill all required red marked fields before submitting.',
-         confirmButtonText: 'OK'
-      }).then(() => {
-   
-         if (firstInvalid.classList.contains('select')) {
-            $(firstInvalid).select2('open');
-         } else {
-            firstInvalid.focus();
          }
    
       });
    
-      return false;
-   }
+      if (firstInvalid) {
    
-   return true;
+         Swal.fire({
+            icon: 'error',
+            title: 'Incomplete Application',
+            text: 'Please fill all required red marked fields before submitting.',
+            confirmButtonText: 'OK'
+         }).then(() => {
+   
+            if (firstInvalid.classList.contains('select')) {
+               $(firstInvalid).select2('open');
+            } else {
+               firstInvalid.focus();
+            }
+   
+         });
+   
+         return false;
+      }
+   
+      return true;
    }   
 </script>
-<!-- Location Depnedent Dropdown -->
-<script>
-   function loadDropdown(url, targetSelect, placeholderText) {
-   
-       let select = $(targetSelect);
-   
-       select.html('<option value="">Loading...</option>').trigger('change');
-   
-       $.ajax({
-           url: url,
-           type: "GET",
-           success: function (response) {
-   
-               select.empty()
-                     .append(`<option value="">${placeholderText}</option>`);
-   
-               if (response.status === true && response.data.length > 0) {
-   
-                   response.data.forEach(function (item) {
-   
-                       let value = Object.values(item)[0];
-                       let text  = Object.values(item)[1];
-   
-                       select.append(`<option value="${value}">${text}</option>`);
-                   });
-               }
-   
-               select.trigger('change'); // Important for Select2
-           },
-           error: function () {
-               select.html('<option value="">Error loading data</option>')
-                     .trigger('change');
-           }
-       });
-   }
-   
-   /* ===============================
-      District → Subdivision
-   ================================= */
-   $(document).on('change', '#district_id', function () {
-   
-       let districtId = $(this).val();
-   
-       // Reset lower hierarchy
-       $('#sub_division_id, #block_id, #gp_id, #village_id, #municipality_id, #ward_id')
-           .empty()
-           .append('<option value="">Select</option>')
-           .trigger('change');
-   
-       if (!districtId) return;
-   
-       let url = "{{ route('website.pension.subdivisions.by.district', ':id') }}"
-                   .replace(':id', districtId);
-   
-       loadDropdown(url, '#sub_division_id', 'Select Subdivision');
-   });
-   
-   
-   /* ===============================
-      Subdivision → Block
-   ================================= */
-   $(document).on('change', '#sub_division_id', function () {
-   
-       let subdivisionId = $(this).val();
-   
-       // Reset lower hierarchy
-       $('#block_id, #gp_id, #village_id, #municipality_id, #ward_id')
-           .empty()
-           .append('<option value="">Select</option>')
-           .trigger('change');
-   
-       if (!subdivisionId) return;
-   
-       let urlBlock = "{{ route('website.pension.blocks.by.subdivision', ':id') }}"
-                       .replace(':id', subdivisionId);
-   
-       loadDropdown(urlBlock, '#block_id', 'Select Block');
-   
-       let urlMunicipality = "{{ route('website.pension.municipalities.by.subdivision', ':id') }}"
-                               .replace(':id', subdivisionId);
-   
-       loadDropdown(urlMunicipality, '#municipality_id', 'Select Municipality');
-   });
-   
-   
-   /* ===============================
-      Block → GP
-   ================================= */
-   $(document).on('change', '#block_id', function () {
-   
-       let blockId = $(this).val();
-   
-       $('#gp_id, #village_id')
-           .empty()
-           .append('<option value="">Select</option>')
-           .trigger('change');
-   
-       if (!blockId) return;
-   
-       let url = "{{ route('website.pension.grampanchyats.by.block', ':id') }}"
-                   .replace(':id', blockId);
-   
-       loadDropdown(url, '#gp_id', 'Select Grampanchayat');
-   });
-   
-   
-   /* ===============================
-      GP → Village
-   ================================= */
-   $(document).on('change', '#gp_id', function () {
-   
-       let gpId = $(this).val();
-   
-       $('#village_id')
-           .empty()
-           .append('<option value="">Select</option>')
-           .trigger('change');
-   
-       if (!gpId) return;
-   
-       let url = "{{ route('website.pension.villages.by.grampanchyat', ':id') }}"
-                   .replace(':id', gpId);
-   
-       loadDropdown(url, '#village_id', 'Select Village');
-   });
-   
-   
-   /* ===============================
-      Municipality → Ward
-   ================================= */
-   $(document).on('change', '#municipality_id', function () {
-   
-       let municipalityId = $(this).val();
-   
-       $('#ward_id')
-           .empty()
-           .append('<option value="">Select</option>')
-           .trigger('change');
-   
-       if (!municipalityId) return;
-   
-       let url = "{{ route('website.pension.wards.by.municipality', ':id') }}"
-                   .replace(':id', municipalityId);
-   
-       loadDropdown(url, '#ward_id', 'Select Ward');
-   });
-   
-</script>
-<!-- AJAX Form Submission -->
 <script>
    document.addEventListener('DOMContentLoaded', function () {
    
-    const form = document.getElementById('pensionApplicationForm');
-    if (!form) return;
+       const form = document.getElementById('pensionApplicationForm');
+       if (!form) return;
    
-    const errorContainer = document.getElementById('ajaxErrorContainer');
-    const errorList = document.getElementById('ajaxErrorList');
+       const errorContainer = document.getElementById('ajaxErrorContainer');
+       const errorList = document.getElementById('ajaxErrorList');
    
-    let isSubmitting = false;
+       form.addEventListener('submit', function (e) {
    
-    form.addEventListener('submit', function (e) {
+           e.preventDefault(); // STOP normal submit immediately
    
-       e.preventDefault();
+           const formData = new FormData(form);
+           const submitBtn = form.querySelector('button[type="submit"]');
    
-    // 🚫 Prevent multiple clicks
-       if (isSubmitting) return false;
+           // Disable button
+           if (submitBtn) {
+               submitBtn.disabled = true;
+               submitBtn.innerText = 'Submitting...';
+           }
    
-    // 🔍 Run validations FIRST
-       if (!validateFormFields(form)) return false;
+           // Clear old errors
+           errorList.innerHTML = '';
+           errorContainer.style.display = 'none';
    
-       if (!validatePensionEligibilityExtended()) return false;
+           fetch(form.action, {
+               method: "POST",
+               headers: {
+                   "X-CSRF-TOKEN": document
+                       .querySelector('meta[name="csrf-token"]')
+                       .getAttribute('content')
+               },
+               body: formData
+           })
+           .then(response => response.json())
+           .then(data => {
    
-       if (!aadhaarVerified) {
-        Swal.fire({
-         icon: 'warning',
-         title: 'Aadhaar Verification Required',
-         text: 'Please verify Aadhaar before submitting.'
-      });
-        return false;
-     }
+               if (data.status === true) {
    
-    // 🔒 Lock submission
-     isSubmitting = true;
+                   Swal.fire({
+                       icon: 'success',
+                       title: 'Success',
+                       text: data.message || 'Application submitted successfully'
+                   });
    
-     const formData = new FormData(form);
-     const submitBtn = form.querySelector('button[type="submit"]');
+                   form.reset();
    
-     if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Submitting...';
-     }
+               } else if (data.errors) {
    
-     errorList.innerHTML = '';
-     errorContainer.style.display = 'none';
+                   renderErrors(data.errors);
    
-     fetch(form.action, {
-        method: "POST",
-        headers: {
-         "X-CSRF-TOKEN": document
-         .querySelector('meta[name="csrf-token"]')
-         .getAttribute('content')
-      },
-      body: formData
-   })
-     .then(response => response.json())
-     .then(data => {
+               } else {
    
-        if (data.status === true) {
+                   renderGenericError();
+               }
    
-         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: data.message || 'Application submitted successfully'
+           })
+           .catch(error => {
+               renderGenericError();
+           })
+           .finally(() => {
+   
+               if (submitBtn) {
+                   submitBtn.disabled = false;
+                   submitBtn.innerText = 'Submit';
+               }
+   
+           });
+   
        });
-   
-         resetEntireForm();
-   
-      } else if (data.errors) {
-   
-         renderErrors(data.errors);
-   
-      } else {
-   
-         renderGenericError();
-      }
-   
-   })
-     .catch(() => {
-        renderGenericError();
-     })
-     .finally(() => {
-   
-        // 🔓 Unlock
-        isSubmitting = false;
-   
-        if (submitBtn) {
-         submitBtn.disabled = false;
-         submitBtn.innerText = 'Submit';
-      }
-   
-   });
-   
-   });
    
        // ===============================
        // ERROR RENDERING
        // ===============================
-    function renderErrors(errors) {
+       function renderErrors(errors) {
    
-     errorList.innerHTML = '';
-     let firstErrorField = null;
+           errorList.innerHTML = '';
+           let firstErrorField = null;
    
-     Object.keys(errors).forEach(function (field) {
+           Object.keys(errors).forEach(function (field) {
    
-      errors[field].forEach(function (message) {
+               errors[field].forEach(function (message) {
    
-       const li = document.createElement('li');
-       li.textContent = message;
-       errorList.appendChild(li);
+                   const li = document.createElement('li');
+                   li.textContent = message;
+                   errorList.appendChild(li);
    
-    });
+               });
    
-      if (!firstErrorField) {
-       firstErrorField = form.querySelector('[name="' + field + '"]');
-    }
+               if (!firstErrorField) {
+                   firstErrorField = form.querySelector('[name="' + field + '"]');
+               }
    
-   });
+           });
    
-     errorContainer.style.display = 'block';
+           errorContainer.style.display = 'block';
    
-     window.scrollTo({
-      top: errorContainer.offsetTop - 20,
-      behavior: 'smooth'
-   });
+           window.scrollTo({
+               top: errorContainer.offsetTop - 20,
+               behavior: 'smooth'
+           });
    
-     if (firstErrorField) {
-      firstErrorField.focus();
-   }
-   }
+           if (firstErrorField) {
+               firstErrorField.focus();
+           }
+       }
    
-   function renderGenericError() {
+       function renderGenericError() {
    
-   errorList.innerHTML = '<li>Something went wrong. Please try again.</li>';
-   errorContainer.style.display = 'block';
+           errorList.innerHTML = '<li>Something went wrong. Please try again.</li>';
+           errorContainer.style.display = 'block';
    
-   window.scrollTo({
-   top: errorContainer.offsetTop - 20,
-   behavior: 'smooth'
-   });
-   }
-   
-       // ===============================
-       // COMPLETE FORM RESET FUNCTION
-       // ===============================
-   function resetEntireForm() {
-   
-       // 1️⃣ Reset normal inputs
-   form.reset();
-   
-       // 2️⃣ Clear all file inputs
-   form.querySelectorAll('input[type="file"]').forEach(function (fileInput) {
-   fileInput.value = '';
-   });
-   
-       // 3️⃣ Clear Beneficiary Image Preview ✅
-   const previewImage = document.getElementById('beneficiary_preview');
-   if (previewImage) {
-           previewImage.src = ''; // remove preview
-        }
-        
-       // 4️⃣ Reset Select2 properly
-        if (window.jQuery && jQuery().select2) {
-           $(form).find('select').each(function () {
-            $(this).val(null).trigger('change');
-         });
-        } else {
-           form.querySelectorAll('select').forEach(function (select) {
-            select.selectedIndex = 0;
-         });
-        }
-   
-       // 5️⃣ Hide error container
-        errorList.innerHTML = '';
-        errorContainer.style.display = 'none';
-   
-       // 6️⃣ Scroll to top
-        window.scrollTo({
-           top: 0,
-           behavior: 'smooth'
-        });
-     }
+           window.scrollTo({
+               top: errorContainer.offsetTop - 20,
+               behavior: 'smooth'
+           });
+       }
    
    });
 </script>

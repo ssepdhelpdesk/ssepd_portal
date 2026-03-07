@@ -66,8 +66,10 @@ EP Pension || DP to OAP Migration
                                  <label class="form-label">Scheme Name<span class="itsrequired"> *</span></label>
                                  <select class="form-control show-tick ms select2" id="scheme_name" name="scheme_name">
                                     <option>Please Select</option>
-                                    <option value="MBPOAP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'MBPOAP' ? 'selected' : '' }}>MBPOAP</option>
-                                    <option value="IGNOAP" {{ old('scheme_name', $disability3500Pensioner->scheme_name ?? '') == 'IGNOAP' ? 'selected' : '' }}>IGNOAP</option>
+                                    <option value="MBPOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPOAP' ? 'selected' : '' }}>MBPOAP</option>
+                                    <option value="IGNOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNOAP' ? 'selected' : '' }}>IGNOAP</option>
+                                    <option value="MBPWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPWP' ? 'selected' : '' }}>MBPWP</option>
+                                    <option value="IGNWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNWP' ? 'selected' : '' }}>IGNWP</option>
                                  </select>
                                  <div id="scheme_name_error"></div>
                                  @error('scheme_name')

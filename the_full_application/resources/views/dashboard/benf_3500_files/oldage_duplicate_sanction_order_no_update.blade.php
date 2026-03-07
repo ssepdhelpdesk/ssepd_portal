@@ -67,6 +67,8 @@ EP Pension || OldAge Beneficiary Data Update
                                  <option>Please Select</option>
                                  <option value="MBPOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPOAP' ? 'selected' : '' }}>MBPOAP</option>
                                  <option value="IGNOAP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNOAP' ? 'selected' : '' }}>IGNOAP</option>
+                                 <option value="MBPWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'MBPWP' ? 'selected' : '' }}>MBPWP</option>
+                                 <option value="IGNWP" {{ old('scheme_name', $oldAge3500Pensioner->scheme_name ?? '') == 'IGNWP' ? 'selected' : '' }}>IGNWP</option>
                               </select>
                               <div id="scheme_name_error"></div>
                               @error('scheme_name')

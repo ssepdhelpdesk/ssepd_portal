@@ -1582,6 +1582,10 @@ public function oldage_duplicate_sanction_order_no_update(Request $request, stri
             $updated_scheme_name = 'MBPOAP';
         } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
             $updated_scheme_name = 'IGNOAP';
+        } elseif ($validatedData['scheme_name'] == 'MBPWP') {
+            $updated_scheme_name = 'MBPWP';
+        } elseif ($validatedData['scheme_name'] == 'IGNWP') {
+            $updated_scheme_name = 'IGNWP';
         } elseif (empty($validatedData['scheme_name'])) {
             return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
         } else {
@@ -2205,6 +2209,10 @@ public function oldage_verify_beneficiary_using_epic_number_update(Request $requ
             $updated_scheme_name = 'MBPOAP';
         } elseif ($validatedData['scheme_name'] == 'IGNOAP') {
             $updated_scheme_name = 'IGNOAP';
+        } elseif ($validatedData['scheme_name'] == 'MBPWP') {
+            $updated_scheme_name = 'MBPWP';
+        } elseif ($validatedData['scheme_name'] == 'IGNWP') {
+            $updated_scheme_name = 'IGNWP';
         } elseif (empty($validatedData['scheme_name'])) {
             return redirect()->back()->withErrors(['scheme_name' => 'Please select an appropriate Scheme Name']);
         } else {

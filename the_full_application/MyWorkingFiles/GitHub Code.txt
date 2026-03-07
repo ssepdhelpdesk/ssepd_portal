@@ -1,3 +1,4 @@
+cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
 git commit -m "Added MBPWP & IGNWP in EP Portal"
@@ -10,7 +11,15 @@ git clone https://admin_ssepd@bitbucket.org/admin_ssepd/siepv3.git
 git pull origin main
 
 /////////////////////////////////////////////////////
+ALTER TABLE `ssepd_pensions` CHANGE `father_husband_name` `father_husband_name` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
 
+ALTER TABLE `ssepd_pensions` CHANGE `applicant_name` `applicant_name` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `ssepd_pensions` CHANGE `father_name` `father_name` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `ssepd_pensions` CHANGE `mother_name` `mother_name` VARCHAR(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+ALTER TABLE `ssepd_pensions` CHANGE `verified_aadhar_remarks` `verified_aadhar_remarks` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;
+
+ALTER TABLE `ssepd_pensions` ADD `village_name` VARCHAR(250) NULL AFTER `gp_name`;
+ALTER TABLE `ssepd_pensions` ADD `bank_account_type` INT NULL DEFAULT NULL AFTER `bank_tbl_id`, ADD `account_holder_name` VARCHAR(250) NULL DEFAULT NULL AFTER `bank_account_type`, ADD `second_account_holder_name` VARCHAR(250) NULL DEFAULT NULL AFTER `account_holder_name`;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.

@@ -40,10 +40,10 @@ $table->tinyInteger('which_govt')->default(0)->comment('0=Default, 1=GOO, 2=GOI'
 /**
 * Applicant Personal Details
 */
-$table->string('applicant_name', 100)->nullable();
-$table->string('father_husband_name', 100)->nullable();
-$table->string('father_name', 55)->nullable();
-$table->string('mother_name', 55)->nullable();
+$table->string('applicant_name', 250)->nullable();
+$table->string('father_husband_name', 250)->nullable();
+$table->string('father_name', 250)->nullable();
+$table->string('mother_name', 250)->nullable();
 $table->string('first_name', 100)->nullable();
 $table->string('middle_name', 100)->nullable();
 $table->string('last_name', 100)->nullable();
@@ -75,7 +75,8 @@ $table->bigInteger('ulb_type_id')->nullable();
 $table->string('district_name', 100)->nullable();
 $table->string('block_name', 100)->nullable();
 $table->string('municipality_name', 100)->nullable();
-$table->string('gp_name', 100)->nullable();
+$table->string('gp_name', 250)->nullable();
+$table->string('village_name', 250)->nullable();
 $table->string('ward_name', 50)->nullable();
 $table->string('ward_number', 50)->nullable();
 $table->string('city_town_name', 50)->nullable();
@@ -92,10 +93,10 @@ $table->bigInteger('aadhaar_no_by_user')->nullable()->unique();
 $table->string('aadhaar_hash', 64)->nullable()->unique()->index();
 $table->text('aadhaar_encrypted')->nullable();
 $table->tinyInteger('verified_aadhar')->default(0)->comment('0=Not Verified, 1=Verified');
-$table->string('verified_aadhar_remarks')->nullable();
+$table->longText('verified_aadhar_remarks')->nullable();
 $table->bigInteger('bank_tbl_id')->nullable();
 $table->string('bank_account_po_number', 100)->nullable();
-$table->string('bank_po_account_number', 50)->nullable();
+$table->string('bank_po_account_number', 100)->nullable();
 $table->string('ifsc_code', 100)->nullable();
 $table->double('sanction_amount')->nullable()->default(0);
 
@@ -128,7 +129,7 @@ $table->string('disability_type_Condition_date', 100)->nullable();
 $table->string('bpl_number', 50)->nullable();
 $table->string('bpl_scan_copy_path', 300)->nullable();
 $table->string('ration_card_no', 300)->nullable();
-$table->string('ration_card_scan_copy_path', 350)->nullable();
+$table->string('ration_card_scan_copy_path', 500)->nullable();
 
 /**
 * Document Uploads
@@ -136,16 +137,16 @@ $table->string('ration_card_scan_copy_path', 350)->nullable();
 $table->string('upload_image', 500)->nullable();
 $table->string('upload_signature_thumb', 500)->nullable();
 $table->string('aadhar_scan_copy_path', 500)->nullable();
-$table->string('age_proof_scan_copy_Path', 300)->nullable();
-$table->string('income_certificate_path', 300)->nullable();
-$table->string('additional_certificate_path', 300)->nullable();
-$table->string('death_certificate_path', 300)->nullable();
-$table->string('attach_Addtional_Document', 100)->nullable();
-$table->string('guardian_type', 350)->nullable();
-$table->string('tg_certf_path', 200)->nullable();
+$table->string('age_proof_scan_copy_Path', 500)->nullable();
+$table->string('income_certificate_path', 500)->nullable();
+$table->string('additional_certificate_path', 500)->nullable();
+$table->string('death_certificate_path', 500)->nullable();
+$table->string('attach_Addtional_Document', 500)->nullable();
+$table->string('guardian_type', 500)->nullable();
+$table->string('tg_certf_path', 500)->nullable();
 $table->string('tg_reg_no', 50)->nullable();
-$table->string('self_declartion_certificate', 100)->nullable();
-$table->string('misa_certificate', 100)->nullable();
+$table->string('self_declartion_certificate', 500)->nullable();
+$table->string('misa_certificate', 500)->nullable();
 
 /**
 * Verification / Flags

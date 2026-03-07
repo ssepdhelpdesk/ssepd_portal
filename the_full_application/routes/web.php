@@ -144,6 +144,16 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('index', 'index')->name('index');
         Route::post('benf_aadhar_verification', 'benf_aadhar_verification')->name('benf_aadhar_verification');
         Route::post('benf_udid_verification', 'benf_udid_verification')->name('benf_udid_verification');
+
+        Route::get('subdivisions-by-district/{district_id}', 'getSubdivisionsByDistrict')->name('subdivisions.by.district');
+        Route::get('blocks-by-subdivision/{subdivision_id}', 'getBlocksBySubdivision')->name('blocks.by.subdivision');
+        Route::get('grampanchyats-by-block/{block_id}', 'getGrampanchyatsByBlock')->name('grampanchyats.by.block');
+        Route::get('villages-by-grampanchyat/{gp_id}', 'getVillagesByGrampanchyat')->name('villages.by.grampanchyat');
+
+        Route::get('municipalities-by-subdivision/{subdivision_id}', 'getMunicipalitiesBySubdivision')->name('municipalities.by.subdivision');
+        Route::get('wards-by-municipality/{municipality_id}', 'getWardsByMunicipality')->name('wards.by.municipality');
+
+
         Route::post('store', 'store')->name('store')->middleware(['throttle:10,1']);
     });
 });
