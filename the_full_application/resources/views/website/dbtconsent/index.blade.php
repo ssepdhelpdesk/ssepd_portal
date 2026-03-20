@@ -93,7 +93,7 @@ SSEPD-IT
 @endsection 
 @section('content')
 <section class="banner-five">
-   <div class="container">
+   <div class="container">      
       <div class="row align-items-center">
          <div class="col-xl-6 col-lg-7 col-md-12 d-flex col-12" data-aos="fade-down">
             <div class="home-five-slide-face flex-fill">
@@ -102,65 +102,93 @@ SSEPD-IT
                   <h1>One Consent, Lifetime Convenience – Move to <span>DBT!</span></h1>
                   <p>Submit your consent online for receiving pension through Direct Bank Transfer (DBT).</p>
                </div>
-               <div class="banner-three-content">
-                  <form class="form" id="bannerFilterForm">
-                     <div class="form-inner-three">
-                        <div class="input-group justify-content-between">
-                           <div class="d-flex flex-wrap gap-3">
-                              <div class="drop-detail-three">
-                                 <select class="form-three-select select" id="districtSelect">
-                                    <option value="">Select District</option>
-                                    @foreach ($district as $item)
-                                    <option value="{{ $item->district }}">{{ $item->district }}</option>
-                                    @endforeach
-                                 </select>
-                              </div>
-                              <div class="drop-detail-three">
-                                 @php
-                                 $areaLabels = [
-                                 'R' => 'Rural',
-                                 'U' => 'Urban',
-                                 ];
-                                 @endphp
-                                 <select class="form-three-select select" id="areaSelect">
-                                    <option value="">Address Type</option>
-                                    @foreach ($area as $item)
-                                    <option value="{{ $item->area }}">
-                                     {{ $areaLabels[$item->area] }}
-                                  </option>
-                                  @endforeach
-                               </select>
-                            </div>
+               <div class="container mt-3">
 
-                            <div class="drop-detail-three">
-                              <select class="form-three-select select" id="blockSelect" disabled>
-                                 <option value="">Blocks / ULBs</option>
-                              </select>
-                           </div>
+                  @if(session('success'))
+                  <div class="alert alert-success alert-dismissible fade show auto-hide-alert" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                 </div>
+                 @endif
 
+                 @if(session('error'))
+                 <div class="alert alert-danger alert-dismissible fade show auto-hide-alert" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                 </div>
+                 @endif
+
+                 @if ($errors->any())
+                 <div class="alert alert-danger alert-dismissible fade show auto-hide-alert" role="alert">
+                    <ul class="mb-0">
+                      @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                      @endforeach
+                   </ul>
+                   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                @endif
+
+             </div>
+             <div class="banner-three-content">
+               <form class="form" id="bannerFilterForm">
+                  <div class="form-inner-three">
+                     <div class="input-group justify-content-between">
+                        <div class="d-flex flex-wrap gap-3">
                            <div class="drop-detail-three">
-                              <select class="form-three-select select" id="gpSelect" disabled>
-                                 <option value="">GPs / Wards</option>
+                              <select class="form-three-select select" id="districtSelect">
+                                 <option value="">Select District</option>
+                                 @foreach ($district as $item)
+                                 <option value="{{ $item->district }}">{{ $item->district }}</option>
+                                 @endforeach
                               </select>
                            </div>
-                           <div class="d-flex align-items-center banner-search5">
-                              <div class="search-icon5">
-                                 <button class="btn btn-primary sub-btn" type="submit"><i class="fas fa-search"></i></button>
-                              </div>
+                           <div class="drop-detail-three">
+                              @php
+                              $areaLabels = [
+                              'R' => 'Rural',
+                              'U' => 'Urban',
+                              ];
+                              @endphp
+                              <select class="form-three-select select" id="areaSelect">
+                                 <option value="">Address Type</option>
+                                 @foreach ($area as $item)
+                                 <option value="{{ $item->area }}">
+                                   {{ $areaLabels[$item->area] }}
+                                </option>
+                                @endforeach
+                             </select>
+                          </div>
+
+                          <div class="drop-detail-three">
+                           <select class="form-three-select select" id="blockSelect" disabled>
+                              <option value="">Blocks / ULBs</option>
+                           </select>
+                        </div>
+
+                        <div class="drop-detail-three">
+                           <select class="form-three-select select" id="gpSelect" disabled>
+                              <option value="">GPs / Wards</option>
+                           </select>
+                        </div>
+                        <div class="d-flex align-items-center banner-search5">
+                           <div class="search-icon5">
+                              <button class="btn btn-primary sub-btn" type="submit"><i class="fas fa-search"></i></button>
                            </div>
                         </div>
                      </div>
                   </div>
-               </form>
-            </div>
-         </div>
-      </div>
-      <div class="offset-lg-1 col-lg-5 col-12 text-center" data-aos="fade-up">
-         <div class="banner-slide-img flex-fill aos">
-            <img class="img-fluid ps-lg-5" src="{{ asset('website_assets/assets/img/hero/hero-oldage-dp.png') }}" alt="Img">
+               </div>
+            </form>
          </div>
       </div>
    </div>
+   <div class="offset-lg-1 col-lg-5 col-12 text-center" data-aos="fade-up">
+      <div class="banner-slide-img flex-fill aos">
+         <img class="img-fluid ps-lg-5" src="{{ asset('website_assets/assets/img/hero/hero-oldage-dp.png') }}" alt="Img">
+      </div>
+   </div>
+</div>
 </div>
 </section>
 
@@ -238,62 +266,62 @@ SSEPD-IT
          <div class="col-lg-12">
             <div class="tickets">
                <div class="row align-items-center mb-2" id="searchContainer" style="display: none;">
-                <div class="col-md-8">
-                 <div class="input-icon">
-                  <span class="input-icon-addon">
-                   <i class="isax isax-search-normal-14"></i>
-                </span>
-                <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
-             </div>
-             <p>Search by Beneficiary Name, Care Of Name, NSAP Sanction Order No., or Aadhaar Number.</p>
-          </div>
+                 <div class="col-md-8">
+                   <div class="input-icon">
+                     <span class="input-icon-addon">
+                       <i class="isax isax-search-normal-14"></i>
+                    </span>
+                    <input type="text" id="customSearch" class="form-control form-control-md" placeholder="Search">
+                 </div>
+                 <p>Search by Beneficiary Name, Care Of Name, NSAP Sanction Order No., or Aadhaar Number.</p>
+              </div>
 
-          <div class="col-md-4 text-md-end mt-2 mt-md-0">
-           <div class="dropdown d-inline-block">
-            <a href="javascript:void(0);" 
-            class="dropdown-toggle btn rounded border text-gray-6"
-            data-bs-toggle="dropdown">
-            Show 10
-         </a>
-         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" data-length="10">10</a></li>
-          <li><a class="dropdown-item" data-length="25">25</a></li>
-          <li><a class="dropdown-item" data-length="50">50</a></li>
-          <li><a class="dropdown-item" data-length="100">100</a></li>
-       </ul>
-    </div>
- </div>
-</div>
-<div class="table-responsive custom-table">
-   <table class="table w-100" id="ticketTable">
-      <thead class="thead-light">
-         <tr>
-            <th>Sl.No</th>
-            <th>Beneficiary Name</th>
-            <th>Care Of</th>
-            <th>Scheme</th>
-            <th>Sanction From</th>
-            <th>Sanction Order No</th>
-            <th>Disbursed Mode</th>
-            <th>Disbursed Upto</th>
-            <th>District</th>
-            <th>Address Type</th>
-            <th>Block / ULB Name</th>
-            <th>GP / Ward Name</th>
-            <th>Provide Consent</th>
-         </tr>
-      </thead>
-   </table>
-</div>
-<div class="row align-items-center mt-4">
-   <div class="col-md-2">
-      <p class="pagination-text" id="pageInfo"></p>
+              <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                <div class="dropdown d-inline-block">
+                  <a href="javascript:void(0);" 
+                  class="dropdown-toggle btn rounded border text-gray-6"
+                  data-bs-toggle="dropdown">
+                  Show 10
+               </a>
+               <ul class="dropdown-menu dropdown-menu-end">
+                 <li><a class="dropdown-item" data-length="10">10</a></li>
+                 <li><a class="dropdown-item" data-length="25">25</a></li>
+                 <li><a class="dropdown-item" data-length="50">50</a></li>
+                 <li><a class="dropdown-item" data-length="100">100</a></li>
+              </ul>
+           </div>
+        </div>
+     </div>
+     <div class="table-responsive custom-table">
+      <table class="table w-100" id="ticketTable">
+         <thead class="thead-light">
+            <tr>
+               <th>Sl.No</th>
+               <th>Beneficiary Name</th>
+               <th>Care Of</th>
+               <th>Scheme</th>
+               <th>Sanction From</th>
+               <th>Sanction Order No</th>
+               <th>Disbursed Mode</th>
+               <th>Disbursed Upto</th>
+               <th>District</th>
+               <th>Address Type</th>
+               <th>Block / ULB Name</th>
+               <th>GP / Ward Name</th>
+               <th>Provide Consent</th>
+            </tr>
+         </thead>
+      </table>
    </div>
-   <div class="col-md-10">
-      <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
-      id="customPagination"></ul>
+   <div class="row align-items-center mt-4">
+      <div class="col-md-2">
+         <p class="pagination-text" id="pageInfo"></p>
+      </div>
+      <div class="col-md-10">
+         <ul class="pagination lms-page justify-content-center justify-content-md-end mt-2 mt-md-0"
+         id="customPagination"></ul>
+      </div>
    </div>
-</div>
 </div>
 </div>
 </div>
@@ -319,6 +347,13 @@ SSEPD-IT
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
 <script>
+   setTimeout(function () {
+     document.querySelectorAll('.auto-hide-alert').forEach(function(alert) {
+       alert.style.transition = "opacity 0.5s";
+       alert.style.opacity = "0";
+       setTimeout(() => alert.remove(), 500);
+    });
+  }, 5000);
 /* ================= GLOBAL STATE ================= */
 
    let selectedDistrict = null;

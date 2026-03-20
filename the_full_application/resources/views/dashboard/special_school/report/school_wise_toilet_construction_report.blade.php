@@ -82,7 +82,7 @@ Special School || Toilet Construction Status
                                 <th>New/Existing</th>
                                 <th>Images</th>
                                 <th class="wrap-text">Construction Status</th>
-                                <th class="wrap-text">Approve Status</th>
+                                <th class="wrap-text">Completed Status</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -95,7 +95,7 @@ Special School || Toilet Construction Status
                                 <th>New/Existing</th>
                                 <th>Images</th>                                
                                 <th class="wrap-text">Construction Status</th>
-                                <th class="wrap-text">Approve Status</th>
+                                <th class="wrap-text">Completed Status</th>
                             </tr>
                         </tfoot>
                         <tbody>

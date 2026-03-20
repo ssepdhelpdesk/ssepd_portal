@@ -153,7 +153,7 @@ public function datatable(Request $request)
 
         return '
         <div class="d-flex align-items-center">
-        <a href="javascript:void(0);" target="_blank" rel="noopener noreferrer" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-eye"></i></a>
+        <a href="'.$url.'" target="_blank" rel="noopener noreferrer" class="d-inline-flex fs-14 me-1 action-icon"><i class="isax isax-eye"></i></a>
         </div>
         ';
     })
@@ -207,6 +207,8 @@ public function checkAadhaarDuplicate(Request $request)
 
 public function dbt_consent_store_form(Request $request, $uuid)
 {
+    Log::info('DBT Consent submission started', ['uuid' => $uuid]);
+
     $validationRules = [
         'name_of_the_beneficiary' => 'required|string|max:150',
         'gender' => 'required|in:M,F,O',
@@ -228,18 +230,27 @@ public function dbt_consent_store_form(Request $request, $uuid)
 
     $messages = [
         'verified_aadhar.required' => 'Please verify Aadhaar before submitting.',
-        'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details (name, DOB, etc.) are entered correctly.',
+        'verified_aadhar.in' => 'Demographic mismatch detected. Please verify that the Aadhaar number and beneficiary details are correct.',
     ];
 
     $validatedData = $request->validate($validationRules, $messages);
 
-    try {
-        $village = null;
-        $dob = trim($validatedData['dob']);
+    Log::info('Validation successful', ['uuid' => $uuid]);
 
-        if (trim($validatedData['address_type']) == 1) {
-            $village = Village::where('village_id', trim($validatedData['village_id']))
-            ->value('village_name');
+    DB::beginTransaction();
+
+    try {
+
+        $village = null;
+
+        if ($validatedData['address_type'] == 1) {
+            $village = Village::where('village_id', $validatedData['village_id'])
+                ->value('village_name');
+
+            Log::info('Village fetched', [
+                'village_id' => $validatedData['village_id'],
+                'village_name' => $village
+            ]);
         }
 
         $folderPath = public_path("dbt_consent");
@@ -248,52 +259,69 @@ public function dbt_consent_store_form(Request $request, $uuid)
 
         if (!file_exists($folderPath)) {
             mkdir($folderPath, 0755, true);
+            Log::info('Public folder created', ['path' => $folderPath]);
         }
 
         if (!file_exists($externalPath)) {
             mkdir($externalPath, 0755, true);
+            Log::info('External storage folder created', ['path' => $externalPath]);
         }
 
         $bankAccountStoredPath = null;
 
         if ($request->hasFile('bank_account_file')) {
+
+            Log::info('Bank account file upload started');
+
             $bankAccountFile = $request->file('bank_account_file');
             $bankAccountExtension = $bankAccountFile->getClientOriginalExtension();
+
             $bankAccountRandomName = 'BANK_ACCOUNT_' . Str::random(40) . '.' . $bankAccountExtension;
 
             $bankAccountStoredPath = $bankAccountFile->storeAs("dbt_consent", $bankAccountRandomName, 'public');
 
+            Log::info('File stored in storage', [
+                'file_name' => $bankAccountRandomName,
+                'path' => $bankAccountStoredPath
+            ]);
+
             copy(storage_path("app/public/{$bankAccountStoredPath}"), "{$folderPath}/{$bankAccountRandomName}");
             copy(storage_path("app/public/{$bankAccountStoredPath}"), "{$externalPath}/{$bankAccountRandomName}");
+
+            Log::info('File copied to public and external directories');
         }
 
         $nsapPortal27Jan2026Csv = NsapPortal27Jan2026Csv::where('uuid', $uuid)->firstOrFail();
 
-        $nsapPortal27Jan2026Csv->name_as_per_aadhaar = trim($validatedData['name_of_the_beneficiary']);
-        $nsapPortal27Jan2026Csv->gender_by_user = trim($validatedData['gender']);
-        $nsapPortal27Jan2026Csv->dob = trim($validatedData['dob']);
-        $nsapPortal27Jan2026Csv->age_by_user = Carbon::parse(trim($validatedData['dob']))->age;
+        Log::info('Beneficiary record fetched', ['uuid' => $uuid]);
 
-        $nsapPortal27Jan2026Csv->aadhaar_no_by_user = trim($validatedData['aadhaar_no']);
-        $nsapPortal27Jan2026Csv->aadhaar_hash = hash('sha256', trim($validatedData['aadhaar_no']));
-        $nsapPortal27Jan2026Csv->aadhaar_encrypted = Crypt::encryptString(trim($validatedData['aadhaar_no']));
+        $nsapPortal27Jan2026Csv->name_as_per_aadhaar = $validatedData['name_of_the_beneficiary'];
+        $nsapPortal27Jan2026Csv->gender_by_user = $validatedData['gender'];
+        $nsapPortal27Jan2026Csv->dob = $validatedData['dob'];
+        $nsapPortal27Jan2026Csv->age_by_user = Carbon::parse($validatedData['dob'])->age;
 
-        $nsapPortal27Jan2026Csv->verified_aadhar = trim($validatedData['verified_aadhar']);
-        $nsapPortal27Jan2026Csv->verified_aadhar_remarks = trim($validatedData['verified_aadhar_remarks']);
+        $nsapPortal27Jan2026Csv->aadhaar_no_by_user = $validatedData['aadhaar_no'];
+        $nsapPortal27Jan2026Csv->aadhaar_hash = hash('sha256', $validatedData['aadhaar_no']);
+        $nsapPortal27Jan2026Csv->aadhaar_encrypted = Crypt::encryptString($validatedData['aadhaar_no']);
 
-        $nsapPortal27Jan2026Csv->block_or_ulb = trim($validatedData['address_type']);
+        Log::info('Aadhaar processed (hashed & encrypted)', ['uuid' => $uuid]);
 
-        $nsapPortal27Jan2026Csv->block_id = $validatedData['block_id'] ? trim($validatedData['block_id']) : null;
-        $nsapPortal27Jan2026Csv->gp_id = $validatedData['gp_id'] ? trim($validatedData['gp_id']) : null;
-        $nsapPortal27Jan2026Csv->village_id = $validatedData['village_id'] ? trim($validatedData['village_id']) : null;
+        $nsapPortal27Jan2026Csv->verified_aadhar = $validatedData['verified_aadhar'];
+        $nsapPortal27Jan2026Csv->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'];
+
+        $nsapPortal27Jan2026Csv->block_or_ulb = $validatedData['address_type'];
+
+        $nsapPortal27Jan2026Csv->block_id = $validatedData['block_id'] ?? null;
+        $nsapPortal27Jan2026Csv->gp_id = $validatedData['gp_id'] ?? null;
+        $nsapPortal27Jan2026Csv->village_id = $validatedData['village_id'] ?? null;
         $nsapPortal27Jan2026Csv->village = $village;
 
-        $nsapPortal27Jan2026Csv->municipality_id = $validatedData['ulb_id'] ? trim($validatedData['ulb_id']) : null;
-        $nsapPortal27Jan2026Csv->ward_id = $validatedData['ward_id'] ? trim($validatedData['ward_id']) : null;
+        $nsapPortal27Jan2026Csv->municipality_id = $validatedData['ulb_id'] ?? null;
+        $nsapPortal27Jan2026Csv->ward_id = $validatedData['ward_id'] ?? null;
 
-        $nsapPortal27Jan2026Csv->pin = trim($validatedData['pin']);
-        $nsapPortal27Jan2026Csv->ifsc_code = trim($validatedData['ifsc']);
-        $nsapPortal27Jan2026Csv->bank_po_account = trim($validatedData['bank_po_account']);
+        $nsapPortal27Jan2026Csv->pin = $validatedData['pin'];
+        $nsapPortal27Jan2026Csv->ifsc_code = $validatedData['ifsc'];
+        $nsapPortal27Jan2026Csv->bank_po_account = $validatedData['bank_po_account'];
         $nsapPortal27Jan2026Csv->bank_account_file = $bankAccountStoredPath;
 
         $nsapPortal27Jan2026Csv->disbursement_mode = "Bank";
@@ -303,12 +331,27 @@ public function dbt_consent_store_form(Request $request, $uuid)
         $nsapPortal27Jan2026Csv->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
 
         $nsapPortal27Jan2026Csv->save();
-        return redirect()->back()->with('success', 'DBT Consent Form submitted successfully.');
+
+        Log::info('DBT Consent saved successfully', ['uuid' => $uuid]);
+
+        DB::commit();
+        return redirect()->route('website.pensioners.index')->with('success', 'DBT Consent Form submitted successfully.');
+
+        /*return redirect()->back()->with('success', 'DBT Consent Form submitted successfully.');*/
 
     } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        Log::error('DBT Consent submission failed', [
+            'uuid' => $uuid,
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile()
+        ]);
+
         dd($e->getMessage(), $e->getLine(), $e->getFile());
     }
-
 }
 
 public function getGpsByBlock($block_id)
@@ -335,7 +378,7 @@ public function getWardsByUlb($id)
 {
     $wards = WardMaster::where('municipal_area_code', $id)
     ->where('is_active', 1)
-    ->orderBy('ward_name', 'ASC')
+    ->orderBy('ward_code', 'ASC')
     ->get(['ward_code', 'ward_name']);
 
     return response()->json($wards);

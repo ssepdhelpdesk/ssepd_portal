@@ -497,7 +497,7 @@ public function school_wise_toilet_construction_report()
                 $school->approve_status_text = 'Pending at HO';
             } elseif ($latestConstruction->approve_status == 1) {
                 $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved
-                . ' Approved on ' . Carbon::parse($latestConstruction->approved_date)->format('d-m-Y');
+                . ' Completed on ' . Carbon::parse($latestConstruction->approved_date)->format('d-m-Y');
             } elseif ($latestConstruction->approve_status == 2) {
                 $school->approve_status_text = 'Phase ' . $latestConstruction->no_of_phase_approved
                 . ' Rejected on ' . Carbon::parse($latestConstruction->approved_date)->format('d-m-Y');
