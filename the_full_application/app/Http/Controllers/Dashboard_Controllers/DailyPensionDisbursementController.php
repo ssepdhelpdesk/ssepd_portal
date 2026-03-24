@@ -406,11 +406,13 @@ public function listing_report(Request $request)
 
     $bssosQuery = DailyPensionDisbursement::where('status', 1)
     ->where('for_the_month', $forTheMonth)
+    ->where('status', 1)
     ->where('staff_address_type', 1)
     ->with(['grampanchayat.block', 'grampanchayat.district']);
 
     $meosQuery = DailyPensionDisbursement::where('status', 1)
     ->where('for_the_month', $forTheMonth)
+    ->where('status', 1)
     ->where('staff_address_type', 2)
     ->with(['ward.municipality', 'ward.district']);
 

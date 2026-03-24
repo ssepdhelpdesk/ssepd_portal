@@ -32,7 +32,7 @@ Pension || GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forT
    <div class="col-12">
       <div class="card">
          <div class="card-body">
-            <h4 class="card-title">GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}}</h4>
+            <h4 class="card-title">11GP/Ward wise Daily Basis Pension Disbursement for the month - {{$forTheMonth}}</h4>
             @include('dashboard.component.message')
             <div class="table-responsive m-t-40">
                <form class="from-prevent-multiple-submits">
