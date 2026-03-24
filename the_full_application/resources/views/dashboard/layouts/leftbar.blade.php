@@ -181,6 +181,9 @@
                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                         <ul aria-expanded="false" class="collapse">
                            @can('pension-access')
+                           @can('pension-fund-requirement-approval')
+                           <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension Funds Requirement Approval</a></li>
+                           @endcan
                            <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
                            <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
                            <li><a href="{{route('admin.pension.district_wise_monthly_fund_requirement_report')}}">District wise Combined Fund Requirements</a></li>

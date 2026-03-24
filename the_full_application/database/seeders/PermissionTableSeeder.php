@@ -98,7 +98,8 @@ class PermissionTableSeeder extends Seeder
          'ARC-create',
          'ARC-edit',
          'ARC-delete',
-         'ARC-approve-form'
+         'ARC-approve-form',
+         'pension-fund-requirement-approval'
      ];
      
      foreach ($permissions as $permission) {

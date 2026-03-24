@@ -26,6 +26,9 @@ return new class extends Migration
             $table->date('updated_date')->nullable();
             $table->time('updated_time')->nullable();
             $table->foreignId('updated_by')->nullable();
+            $table->tinyInteger('approve_status')->default(0);
+            $table->bigInteger('approved_by')->nullable();
+            $table->dateTime('approved_date_time')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

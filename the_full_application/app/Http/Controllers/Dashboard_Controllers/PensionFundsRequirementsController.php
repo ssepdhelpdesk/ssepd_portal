@@ -35,6 +35,7 @@ use App\Models\Grampanchayat;
 use App\Models\WardMaster;
 use App\Models\PensionDisbursementAuthority;
 use App\Models\PensionFundRequirementDates;
+use App\Models\SsepdNotification;
 use Yajra\DataTables\Facades\DataTables;
 
 class PensionFundsRequirementsController extends Controller
@@ -141,6 +142,7 @@ class PensionFundsRequirementsController extends Controller
             $municipality_id = null;
 
             $district_id = Block::where('block_id', $block_id)->value('district_id');
+            $block_ulb_name = Block::where('block_id', $block_id)->value('block_name');
             if (!$district_id) {
                 return redirect()->back()->with('info', 'Invalid Block mapping. Contact admin.');
             }
@@ -150,6 +152,7 @@ class PensionFundsRequirementsController extends Controller
             $block_id = null;
 
             $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
+            $block_ulb_name = Municipality::where('municipality_id', $municipality_id)->value('municipality_name');
             if (!$district_id) {
                 return redirect()->back()->with('info', 'Invalid Municipality mapping. Contact admin.');
             }
@@ -233,6 +236,33 @@ class PensionFundsRequirementsController extends Controller
             $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
             $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
             $applicationstagehistory->save();
+
+            $ssepdnotification = new SsepdNotification();
+            $ssepdnotification->title = 'Pension Fund Requirement for the Month ' .$pensionFundsRequirement->for_the_month;
+            $ssepdnotification->message = 'The ' . $block_ulb_name . ' has submitted the Pension Fund Requirement for the month ' . $pensionFundsRequirement->for_the_month . '.';
+            $ssepdnotification->type = 'Important';
+            $ssepdnotification->priority = 'urgent';
+            $ssepdnotification->start_date = $pensionFundsRequirement->created_date;
+            $ssepdnotification->start_time = $pensionFundsRequirement->created_time;
+            $ssepdnotification->end_date = Carbon::parse($pensionFundsRequirement->created_date)->addDay()->toDateString();
+            $ssepdnotification->end_time = '23:59:59';
+            $ssepdnotification->read_status = '0';
+            $ssepdnotification->state_id = $pensionFundsRequirement->state_id;
+            $ssepdnotification->district_id = $pensionFundsRequirement->district_id;
+            $ssepdnotification->block_id = $pensionFundsRequirement->block_id;
+            $ssepdnotification->gp_id = $pensionFundsRequirement->gp_id;
+            $ssepdnotification->village_id = $pensionFundsRequirement->village_id;
+            $ssepdnotification->municipality_id = $pensionFundsRequirement->municipality_id;
+            $ssepdnotification->ward_id = $pensionFundsRequirement->ward_id;
+            $ssepdnotification->is_active = 'active';
+            $ssepdnotification->status = '1';
+            $ssepdnotification->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->created_by = Auth::id() ?? null;
+            $ssepdnotification->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->updated_by = Auth::id() ?? null;
+            $ssepdnotification->save();
 
             DB::commit();
             return redirect()->route('admin.dashboard')->with('success', 'Submitted Successfully.');
@@ -583,7 +613,7 @@ class PensionFundsRequirementsController extends Controller
         $userRole = $user->role_id;
 
         $pensionFundsRequirementQuery = PensionFundsRequirement::with(['state', 'district', 'block', 'grampanchayat', 'village', 'municipality'])
-        ->where('status', 1)->whereBetween('created_date', [$startDate, $endDate]);
+        ->where('status', 1)->where('approve_status', 1)->whereBetween('created_date', [$startDate, $endDate]);
 
         $allBlocks = collect();
         $allMunicipalities = collect();
@@ -660,7 +690,131 @@ class PensionFundsRequirementsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $pensionFundsRequirement = PensionFundsRequirement::findOrFail($id);
+
+        $pensionFundsRequirementDates = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $pensionFundsRequirement->for_the_month)
+        ->first();
+
+        if (!$pensionFundsRequirementDates) {
+            return redirect()->back()->with('error', 'Date configuration not found for this month.');
+        }
+
+        $today = now()->toDateString();
+
+        if ($today >= $pensionFundsRequirementDates->start_date && $today <= $pensionFundsRequirementDates->end_date) {
+            return view('dashboard.pension.show', compact('pensionFundsRequirement'));
+        } else {
+            $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
+            $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');
+
+            return redirect()->back()->with(
+                'error',
+                "The date for Pension Funds Requirement submission or updation was between {$startFormatted} and {$endFormatted}."
+            );
+        }
+    }
+
+    public function fund_requirement_approval(Request $request)
+    {
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
+
+        $month = $request->for_the_month 
+        ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+
+        $activeConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $month)
+        ->first();
+
+        if (!$activeConfig) {
+            return redirect()->back()->with('error', 'Submission dates are not configured for the selected month. Please contact admin.');
+        }
+
+        $startDate = $activeConfig->start_date;
+        $endDate   = $activeConfig->end_date;
+        $forTheMonth = $activeConfig->for_the_month;
+
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        $pensionFundsRequirementQuery = PensionFundsRequirement::with([
+            'state', 'district', 'block', 'grampanchayat', 'village', 'municipality'
+        ])
+        ->where('status', 1)
+        ->where('approve_status', 0)
+        ->whereBetween('created_date', [$startDate, $endDate]);
+
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+
+        } 
+        elseif (in_array($userRole, [4, 6])) {
+            $pensionFundsRequirementQuery->where('block_id', $user->posted_block);
+        } 
+        elseif ($userRole == 5) {
+            $pensionFundsRequirementQuery->where('municipality_id', $user->posted_municipality);
+        } 
+        elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+
+            $pensionFundsRequirementQuery->where(function ($query) use ($blockIds, $municipalityIds) {
+                $query->whereIn('block_id', $blockIds)
+                ->orWhereIn('municipality_id', $municipalityIds);
+            });
+        } 
+        elseif (in_array($userRole, [9, 11])) {
+            $pensionFundsRequirementQuery->where('district_id', $user->posted_district);
+        }
+
+        $pensionFundsRequirements = $pensionFundsRequirementQuery->get()
+        ->sortBy(function ($item) {
+            return $item->district->district_name ?? '';
+        })
+        ->values();
+
+        return view('dashboard.pension.pension_funds_requirements_report_BKP_06_11_2025', compact(
+            'pensionFundsRequirements',
+            'startDate',
+            'endDate',
+            'forTheMonth',
+            'dateConfig',
+            'month'
+        ));
+    }
+
+    public function fund_requirement_approval_process(string $id)
+    {
+        $pensionFundsRequirement = PensionFundsRequirement::findOrFail($id);
+
+        $pensionFundsRequirementDates = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $pensionFundsRequirement->for_the_month)
+        ->first();
+
+        if (!$pensionFundsRequirementDates) {
+            return redirect()->back()->with('error', 'Date configuration not found for this month.');
+        }
+
+        $today = now()->toDateString();
+
+        if ($today >= $pensionFundsRequirementDates->start_date && $today <= $pensionFundsRequirementDates->end_date) {
+            $pensionFundsRequirement->approve_status = 1;
+            $pensionFundsRequirement->approved_by = Auth::id() ?? null;
+            $pensionFundsRequirement->approved_date_time = Carbon::now('Asia/Kolkata');
+            $pensionFundsRequirement->save();
+            
+            return redirect()->route('admin.pension.report_without_ajax')->with('info', 'Fund Requirement Approved.');
+        } else {
+            $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
+            $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');
+
+            return redirect()->back()->with(
+                'error',
+                "The date for Pension Funds Requirement submission or updation was between {$startFormatted} and {$endFormatted}."
+            );
+        }
     }
 
     /**
@@ -806,6 +960,9 @@ class PensionFundsRequirementsController extends Controller
             $pensionFundsRequirement->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
             $pensionFundsRequirement->updated_by = Auth::id() ?? null;
             $pensionFundsRequirement->status = 1;
+            $pensionFundsRequirement->approve_status = 0;
+            $pensionFundsRequirement->approved_by = null;
+            $pensionFundsRequirement->approved_date_time = null;
             $pensionFundsRequirement->save();
 
             $applicationstagehistory = new ApplicationStageHistory();
@@ -825,8 +982,44 @@ class PensionFundsRequirementsController extends Controller
             $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
             $applicationstagehistory->save();
 
+            if($pensionFundsRequirement->block_id!= null)
+            {
+                $block_ulb_name = Block::where('block_id', $pensionFundsRequirement->block_id)->value('block_name');
+            } elseif($pensionFundsRequirement->municipality_id!= null) {
+                $block_ulb_name = Municipality::where('municipality_id', $pensionFundsRequirement->municipality_id)->value('municipality_name');
+            } else {
+                $block_ulb_name = 'Not Provided';
+            }
+
+            $ssepdnotification = new SsepdNotification();
+            $ssepdnotification->title = 'Pension Fund Requirement is Updated for the Month ' .$pensionFundsRequirement->for_the_month;
+            $ssepdnotification->message = 'The ' . $block_ulb_name . ' has updated the Pension Fund Requirement for the month ' . $pensionFundsRequirement->for_the_month . '.';
+            $ssepdnotification->type = 'Important';
+            $ssepdnotification->priority = 'urgent';
+            $ssepdnotification->start_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->start_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->end_date = Carbon::parse($pensionFundsRequirement->created_date)->addDay()->toDateString();
+            $ssepdnotification->end_time = '23:59:59';
+            $ssepdnotification->read_status = '0';
+            $ssepdnotification->state_id = $pensionFundsRequirement->state_id;
+            $ssepdnotification->district_id = $pensionFundsRequirement->district_id;
+            $ssepdnotification->block_id = $pensionFundsRequirement->block_id;
+            $ssepdnotification->gp_id = $pensionFundsRequirement->gp_id;
+            $ssepdnotification->village_id = $pensionFundsRequirement->village_id;
+            $ssepdnotification->municipality_id = $pensionFundsRequirement->municipality_id;
+            $ssepdnotification->ward_id = $pensionFundsRequirement->ward_id;
+            $ssepdnotification->is_active = 'active';
+            $ssepdnotification->status = '1';
+            $ssepdnotification->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->created_by = Auth::id() ?? null;
+            $ssepdnotification->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->updated_by = Auth::id() ?? null;
+            $ssepdnotification->save();
+
             DB::commit();
-            return redirect()->route('admin.pension.report')->with('info', 'Updated Successfully.');
+            return redirect()->route('admin.pension.report_without_ajax')->with('info', 'Updated Successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("🛑 Pension Funds Requirements form update failed", [

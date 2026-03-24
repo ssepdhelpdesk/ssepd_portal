@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "Pension Portal"
+git commit -m "Toilet Construction Status is changed from Approved to Completed"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -20,6 +20,9 @@ ALTER TABLE `ssepd_pensions` CHANGE `verified_aadhar_remarks` `verified_aadhar_r
 
 ALTER TABLE `ssepd_pensions` ADD `village_name` VARCHAR(250) NULL AFTER `gp_name`;
 ALTER TABLE `ssepd_pensions` ADD `bank_account_type` INT NULL DEFAULT NULL AFTER `bank_tbl_id`, ADD `account_holder_name` VARCHAR(250) NULL DEFAULT NULL AFTER `bank_account_type`, ADD `second_account_holder_name` VARCHAR(250) NULL DEFAULT NULL AFTER `account_holder_name`;
+
+
+ALTER TABLE `pension_funds_requirements` ADD `approve_status` TINYINT NOT NULL DEFAULT '0' AFTER `updated_by`, ADD `approved_by` BIGINT NULL DEFAULT NULL AFTER `approve_status`, ADD `approved_date_time` DATETIME NULL DEFAULT NULL AFTER `approved_by`;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 To **completely remove the Git repository** that was initialized with `git init` inside your folder `/var/www/html/siep/SSEPD_REPO/ssepd_ngo_working_portal/the_full_application`, you simply need to **delete the `.git` folder** inside it.

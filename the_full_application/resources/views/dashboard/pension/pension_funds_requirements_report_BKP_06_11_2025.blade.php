@@ -55,7 +55,8 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                         <th>District</th>
                         <th>For the Month</th>
                         <th>Block/ULB Name</th>
-                        <th>Provided/Not Provided</th>
+                        <th>Submitted/Not Submitted</th>
+                        <th>Approved/Not Approved</th>
                         <th>MBPOAP (Below 80 Years)</th>
                         <th>Fund Requirements</th>
                         <th>MBPOAP (Above 80 Years)</th>
@@ -103,7 +104,8 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                         <th>District</th>
                         <th>For the Month</th>
                         <th>Block/ULB Name</th>
-                        <th>Provided/Not Provided</th>
+                        <th>Submitted/Not Submitted</th>
+                        <th>Approved/Not Approved</th>
                         <th>MBPOAP (Below 80 Years)</th>
                         <th>Fund Requirements</th>
                         <th>MBPOAP (Above 80 Years)</th>
@@ -166,6 +168,18 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                         ->where('municipality_id', $municipalityId)->exists();
                      }
                      $status = $isSubmitted ? 'Submitted' : 'Not Submitted';
+
+                     $isApproved = false;
+                     if ($blockId) {
+                        $isApproved = DB::table('pension_funds_requirements')
+                        ->whereBetween('created_date', [$startDate, $endDate])
+                        ->where('block_id', $blockId)->where('approve_status', 1)->exists();
+                     } elseif ($municipalityId) {
+                        $isApproved = DB::table('pension_funds_requirements')
+                        ->whereBetween('created_date', [$startDate, $endDate])
+                        ->where('municipality_id', $municipalityId)->where('approve_status', 1)->exists();
+                     }
+                     $approveStatus = $isApproved ? 'Approved' : 'Not Approved';
 
                      $district = 'Not Provided';
                      if ($blockId) {
@@ -233,6 +247,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                         <td>{{ $forTheMonth }}</td>
                         <td>{{ $fundsRequirements->address_type == 1 ? 'Block: ' . ($block ?: 'Not Provided') : 'ULB: ' . ($municipality ?: 'Not Provided') }}</td>
                         <td><span class="badge {{ $status == 'Submitted' ? 'bg-success' : 'bg-danger' }}">{{ $status }}</span></td>
+                        <td><span class="badge {{ $approveStatus == 'Approved' ? 'bg-success' : 'bg-danger' }}">{{ $approveStatus }}</span></td>
 
                         <td>{{ $oapBelow80 }}</td><td>{{ number_format($oapBelow80 * 1000) }}</td>
                         <td>{{ $oapAbove80 }}</td><td>{{ number_format($oapAbove80 * 3500) }}</td>
@@ -278,32 +293,39 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                               $today = now()->toDateString();
                               @endphp
                               <div class="dropdown-menu">
-                                 @if($today >= $startDate && $today <= $endDate && !empty($fundsRequirements->id))
-                                    @can('pension-edit')
-                                    <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
-                                    @endcan
+                                @if(
+                                $today >= $startDate &&
+                                $today <= $endDate &&
+                                is_numeric($fundsRequirements->id)
+                                )
+                                @can('pension-show')
+                                <a class="dropdown-item" href="{{ route('admin.pension.show', $fundsRequirements->id) }}">Show</a>
+                                @endcan
 
-                                    @can('pension-delete')
-                                    <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
-                                    @endcan
-                                    @endif
-                                 </div>
-                              </div>
-                           </td>
-                        </tr>
-                        @empty
-                        <tr>
-                           <td colspan="45" class="text-center">No records found.</td>
-                        </tr>
-                        @endforelse
-                     </tbody>
-                  </table>
+                                @can('pension-edit')
+                                <a class="dropdown-item" href="{{ route('admin.pension.edit', $fundsRequirements->id) }}">Edit</a>
+                                @endcan
 
-               </div>
-            </div>
+                                @can('pension-delete')
+                                <a class="dropdown-item" href="{{ route('admin.pension.delete', $fundsRequirements->id) }}" id="delete">Delete</a>
+                                @endcan
+                                @endif
+                             </div>
+                          </div>
+                       </td>
+                    </tr>
+                    @empty
+                    <tr>
+                     <td colspan="45" class="text-center">No records found.</td>
+                  </tr>
+                  @endforelse
+               </tbody>
+            </table>
          </div>
       </div>
    </div>
+</div>
+</div>
 <!-- row -->
 <!-- ============================================================== -->
 <!-- End Page Content -->
@@ -315,7 +337,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
    $(function () {
       $('#example23').DataTable({
          processing: true,
-         responsive: false,
+         responsive: true,
          ordering: true,
          scrollX: true,
          lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],

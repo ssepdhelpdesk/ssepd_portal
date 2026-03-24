@@ -283,6 +283,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/update', 'update')->name('update');
         Route::get('{id}/delete', 'delete')->name('delete');
         Route::get('report', 'report')->name('report');
+        Route::get('{id}/show', 'show')->name('show');
+        Route::get('fund_requirement_approval', 'fund_requirement_approval')->name('fund_requirement_approval');
+        Route::post('{id}/fund_requirement_approval_process', 'fund_requirement_approval_process')->name('fund_requirement_approval_process');
         Route::get('report_without_ajax', 'report_without_ajax')->name('report_without_ajax');
 
         Route::get('pension_authority_index', 'pension_authority_index')->name('pension_authority_index');

@@ -54,7 +54,7 @@ class DashboardController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    /*public function index()
     {
         $user = Auth::user();
         $totalPensions = PensionFundsRequirement::count();
@@ -62,6 +62,62 @@ class DashboardController extends Controller
         $ssepdNotification = SsepdNotification::where('status', 1)->where(function ($query) use ($now) { $query->whereRaw("CONCAT(start_date, ' ', start_time) <= ?", [$now])->whereRaw("CONCAT(end_date, ' ', end_time) >= ?", [$now]); })->orderBy('priority', 'desc')->orderBy('start_date', 'desc')->get();
         $ssepdNotificationFirst = $ssepdNotification->first();
         return view('dashboard.layouts.index', compact('user', 'totalPensions', 'ssepdNotification', 'ssepdNotificationFirst'));
+    }*/
+
+    public function index()
+    {
+        $user = Auth::user();
+        $totalPensions = PensionFundsRequirement::count();
+        $now = Carbon::now();
+
+        $ssepdNotification = SsepdNotification::where('status', 1)
+        ->where('is_active', 'active')
+
+        ->where(function ($query) use ($now) {
+            $query->whereRaw("CONCAT(start_date, ' ', start_time) <= ?", [$now])
+            ->whereRaw("CONCAT(end_date, ' ', end_time) >= ?", [$now]);
+        })
+
+        ->where(function ($query) use ($user) {
+
+            $query->where(function ($q) {
+                $q->whereNull('district_id')
+                ->whereNull('block_id')
+                ->whereNull('gp_id')
+                ->whereNull('municipality_id');
+            });
+
+            $query->orWhere(function ($q) use ($user) {
+                $q->where('district_id', $user->posted_district);
+            });
+
+            $query->orWhere(function ($q) use ($user) {
+                $q->where('block_id', $user->posted_block);
+            });
+
+            $query->orWhere(function ($q) use ($user) {
+                $q->where('gp_id', $user->posted_gp);
+            });
+
+            $query->orWhere(function ($q) use ($user) {
+                $q->where('municipality_id', $user->posted_municipality);
+            });
+        })
+
+        ->orderByRaw("
+            FIELD(priority, 'urgent', 'high', 'medium', 'low')
+            ")
+        ->orderBy('start_date', 'desc')
+        ->get();
+
+        $ssepdNotificationFirst = $ssepdNotification->first();
+
+        return view('dashboard.layouts.index', compact(
+            'user',
+            'totalPensions',
+            'ssepdNotification',
+            'ssepdNotificationFirst'
+        ));
     }
 
     /**
