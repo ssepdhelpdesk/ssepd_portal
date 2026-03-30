@@ -805,7 +805,7 @@ class PensionFundsRequirementsController extends Controller
             $pensionFundsRequirement->approved_date_time = Carbon::now('Asia/Kolkata');
             $pensionFundsRequirement->save();
             
-            return redirect()->route('admin.pension.report_without_ajax')->with('info', 'Fund Requirement Approved.');
+            return redirect()->route('admin.pension.fund_requirement_approval')->with('info', 'Fund Requirement Approved.');
         } else {
             $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
             $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');

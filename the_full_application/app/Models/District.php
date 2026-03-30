@@ -31,4 +31,9 @@ class District extends Model implements Auditable
     {
         return $this->hasMany(WardMaster::class, 'district_code', 'district_id');
     }
+
+    public function pensionFunds()
+    {
+        return $this->hasMany(PensionFundsRequirement::class, 'district_id', 'district_id');
+    }
 }

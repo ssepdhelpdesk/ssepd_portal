@@ -245,6 +245,7 @@
                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">SuperAdmin Level Report</a>
                         <ul aria-expanded="false" class="collapse">
                            <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
+                           <li><a href="{{route('admin.pensionfundrequirementdisbursement.index')}}">District Wise</a></li>
                         </ul>
                      </li>
                      @endif

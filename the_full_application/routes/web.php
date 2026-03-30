@@ -29,6 +29,13 @@ use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
     SchemeMigrationEpController
 };
 
+/*New Controller Added on 25-03-2026*/
+use App\Http\Controllers\Dashboard_Controllers\PensionFundManagement\{
+    PensionFundRequirementController,
+    PensionFundDisbursementController,
+    PensionFundRequirementDisbursementController
+};
+
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
     LocationFrontendController,
@@ -449,6 +456,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('block_ulb_wise_monthly_report', 'block_ulb_wise_monthly_report')->name('block_ulb_wise_monthly_report');
         Route::get('block_ulb_wise_monthly_report_ajax', 'block_ulb_wise_monthly_report_ajax')->name('block_ulb_wise_monthly_report_ajax');
         Route::get('district_wise_monthly_pension_disbursement_report', 'district_wise_monthly_pension_disbursement_report')->name('district_wise_monthly_pension_disbursement_report');
+    });
+
+    /*New WorkFlow Added on 25-03-2026*/
+    Route::prefix('pensionFundRequirementDisbursement')->name('pensionfundrequirementdisbursement.')->controller(PensionFundRequirementDisbursementController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {
