@@ -66,10 +66,10 @@ Route::get('/', function () {
         return redirect()->route('admin.dashboard');
     }
     VisitorCount::create([
-            'ip_address' => request()->ip(),
-            'visit_date' => now('Asia/Kolkata')->toDateString(),
-            'visit_time' => now('Asia/Kolkata')->toTimeString(),
-        ]);
+        'ip_address' => request()->ip(),
+        'visit_date' => now('Asia/Kolkata')->toDateString(),
+        'visit_time' => now('Asia/Kolkata')->toTimeString(),
+    ]);
     return view('auth.login');
 });
 
@@ -460,7 +460,9 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
 
     /*New WorkFlow Added on 25-03-2026*/
     Route::prefix('pensionFundRequirementDisbursement')->name('pensionfundrequirementdisbursement.')->controller(PensionFundRequirementDisbursementController::class)->group(function () {
-        Route::get('index', 'index')->name('index');
+        Route::get('pension_fund_requirement_report_of_districts', 'pension_fund_requirement_report_of_districts')->name('pension_fund_requirement_report_of_districts');
+        Route::match(['get','post'], 'pension_fund_requirement_report_of_block_ulb', 'pension_fund_requirement_report_of_block_ulb')
+    ->name('pension_fund_requirement_report_of_block_ulb');
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {
