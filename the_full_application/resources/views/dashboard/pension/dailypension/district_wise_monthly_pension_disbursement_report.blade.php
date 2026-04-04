@@ -86,7 +86,8 @@ Pension || District Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \Ca
                   <th class="text-end">Orphan (COVID)</th>
                   <th class="text-end">Widow (COVID)</th>
                   <th class="text-end">Divorce / Destitute</th>
-                  <th class="text-end th-border-right">Transgender</th>
+                  <th class="text-end">Transgender</th>
+                  <th class="text-end th-border-right">Death Reported</th>
                   <th class="text-end">Normal Pensioners</th>
                   <th class="text-end">EP Pensioners</th>
                   <th class="text-end">Total Pensioners</th>
@@ -137,7 +138,8 @@ Pension || District Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \Ca
                   <td class="text-end">{{ number_format($row['orphan_covid']) }}</td>
                   <td class="text-end">{{ number_format($row['widow_covid']) }}</td>
                   <td class="text-end">{{ number_format($row['divorce_destitute']) }}</td>
-                  <td class="text-end th-border-right">{{ number_format($row['transgender']) }}</td>
+                  <td class="text-end">{{ number_format($row['transgender']) }}</td>
+                  <td class="text-end th-border-right">{{ number_format($row['death_reported']) }}</td>
                   <td class="text-end">{{ number_format($row['no_of_normal_pensioners']) }}</td>
                   <td class="text-end">{{ number_format($row['no_of_ep_pensioners']) }}</td>
                   <td class="text-end fw-bold">{{ number_format($rowTotalPensioners) }}</td>

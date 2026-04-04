@@ -409,12 +409,8 @@ class PensionFundRequirementDisbursementController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
 
-        // ==============================
-        // 🔴 DATA NOT PROVIDED
-        // ==============================
             if ($approve_status == 3) {
 
-            // BLOCKS
                 $blocksQuery = \DB::table('blocks as b')
                 ->select(
                     'd.district_id',
@@ -441,18 +437,14 @@ class PensionFundRequirementDisbursementController extends Controller
                     \DB::raw('0 as mbpy_transgender')
                 )
                 ->leftJoin('districts as d', 'b.district_id', '=', 'd.district_id')
-
                 ->leftJoin('pension_funds_requirements as pfr', function ($join) use ($month) {
                     $join->on('b.block_id', '=', 'pfr.block_id')
                     ->where('pfr.for_the_month', $month)
                     ->where('pfr.status', 1);
                 })
-
-                ->where('b.is_active', 'active') // ✅ ADDED
+                ->where('b.is_active', 'active')
                 ->whereNull('pfr.id');
 
-
-            // MUNICIPALITIES
                 $ulbQuery = \DB::table('municipalities as m')
                 ->select(
                     'd.district_id',
@@ -479,23 +471,36 @@ class PensionFundRequirementDisbursementController extends Controller
                     \DB::raw('0 as mbpy_transgender')
                 )
                 ->leftJoin('districts as d', 'm.district_id', '=', 'd.district_id')
-
                 ->leftJoin('pension_funds_requirements as pfr', function ($join) use ($month) {
                     $join->on('m.municipality_id', '=', 'pfr.municipality_id')
                     ->where('pfr.for_the_month', $month)
                     ->where('pfr.status', 1);
                 })
-
-                ->where('m.is_active', 'active') // ✅ ADDED
+                ->where('m.is_active', 'active')
                 ->whereNull('pfr.id');
 
                 $query = $blocksQuery->unionAll($ulbQuery);
 
+                $totalsQuery = (object)[
+                    'mbpy_oap_below_80_years' => 0,
+                    'mbpy_oap_above_80_years' => 0,
+                    'mbpy_wp' => 0,
+                    'mbpy_dp' => 0,
+                    'mbpy_sdp_below_80_percent' => 0,
+                    'mbpy_sdp_above_80_percent' => 0,
+                    'mbpy_sdoap' => 0,
+                    'mbpy_clp' => 0,
+                    'mbpy_wp_aids' => 0,
+                    'mbpy_dp_aids' => 0,
+                    'mbpy_unmarried_women' => 0,
+                    'mbpy_orphan_due_to_covide' => 0,
+                    'mbpy_widow_due_to_covid' => 0,
+                    'mbpy_divorce_or_destitute' => 0,
+                    'mbpy_transgender' => 0,
+                ];
+
             } else {
 
-            // ==============================
-            // 🟢 NORMAL CASE
-            // ==============================
                 $query = \DB::table('pension_funds_requirements as pfr')
                 ->select(
                     'd.district_id',
@@ -524,11 +529,9 @@ class PensionFundRequirementDisbursementController extends Controller
                 ->leftJoin('districts as d', 'pfr.district_id', '=', 'd.district_id')
                 ->leftJoin('blocks as b', 'pfr.block_id', '=', 'b.block_id')
                 ->leftJoin('municipalities as m', 'pfr.municipality_id', '=', 'm.municipality_id')
-
                 ->where('pfr.for_the_month', $month)
                 ->where('pfr.approve_status', $approve_status)
                 ->where('pfr.status', 1)
-
                 ->groupBy(
                     'd.district_id',
                     'd.district_name',
@@ -537,19 +540,178 @@ class PensionFundRequirementDisbursementController extends Controller
                     'm.municipality_id',
                     'm.municipality_name'
                 );
+
+                $totalsQuery = \DB::table('pension_funds_requirements as pfr')
+                ->select(
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_oap_below_80_years),0) as mbpy_oap_below_80_years'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_oap_above_80_years),0) as mbpy_oap_above_80_years'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_wp),0) as mbpy_wp'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_dp),0) as mbpy_dp'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_sdp_below_80_percent),0) as mbpy_sdp_below_80_percent'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_sdp_above_80_percent),0) as mbpy_sdp_above_80_percent'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_sdoap),0) as mbpy_sdoap'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_clp),0) as mbpy_clp'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_wp_aids),0) as mbpy_wp_aids'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_dp_aids),0) as mbpy_dp_aids'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_unmarried_women),0) as mbpy_unmarried_women'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_orphan_due_to_covide),0) as mbpy_orphan_due_to_covide'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_widow_due_to_covid),0) as mbpy_widow_due_to_covid'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_divorce_or_destitute),0) as mbpy_divorce_or_destitute'),
+                    \DB::raw('COALESCE(SUM(pfr.mbpy_transgender),0) as mbpy_transgender')
+                )
+                ->where('pfr.for_the_month', $month)
+                ->where('pfr.approve_status', $approve_status)
+                ->where('pfr.status', 1);
             }
 
-        // ROLE FILTER
             $user = auth()->user();
-            if (in_array($user->role_id, [9, 11])) {
-                $query->where('district_id', $user->posted_district);
+            $userRole = $user->role_id;
+
+            if ($approve_status == 3) {
+
+                if (in_array($userRole, [4, 6])) {
+                    $blocksQuery->where('b.block_id', $user->posted_block);
+                }
+
+                elseif ($userRole == 5) {
+                    $ulbQuery->where('m.municipality_id', $user->posted_municipality);
+                }
+
+                elseif (in_array($userRole, [8, 10])) {
+
+                    $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+                    ->pluck('block_id');
+
+                    $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+                    ->pluck('municipality_id');
+
+                    $blocksQuery->whereIn('b.block_id', $blockIds);
+                    $ulbQuery->whereIn('m.municipality_id', $municipalityIds);
+                }
+
+                elseif (in_array($userRole, [9, 11])) {
+                    $blocksQuery->where('d.district_id', $user->posted_district);
+                    $ulbQuery->where('d.district_id', $user->posted_district);
+                }
+
+                $query = $blocksQuery->unionAll($ulbQuery);
+
+            } else {
+
+                if (in_array($userRole, [4, 6])) {
+
+                    $query->where('pfr.block_id', $user->posted_block);
+                    $totalsQuery->where('pfr.block_id', $user->posted_block);
+
+                }
+
+                elseif ($userRole == 5) {
+
+                    $query->where('pfr.municipality_id', $user->posted_municipality);
+                    $totalsQuery->where('pfr.municipality_id', $user->posted_municipality);
+
+                }
+
+                elseif (in_array($userRole, [8, 10])) {
+
+                    $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+                    ->pluck('block_id');
+
+                    $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+                    ->pluck('municipality_id');
+
+                    $query->where(function ($q) use ($blockIds, $municipalityIds) {
+                        $q->whereIn('pfr.block_id', $blockIds)
+                        ->orWhereIn('pfr.municipality_id', $municipalityIds);
+                    });
+
+                    $totalsQuery->where(function ($q) use ($blockIds, $municipalityIds) {
+                        $q->whereIn('pfr.block_id', $blockIds)
+                        ->orWhereIn('pfr.municipality_id', $municipalityIds);
+                    });
+                }
+
+                elseif (in_array($userRole, [9, 11])) {
+
+                    $query->where('pfr.district_id', $user->posted_district);
+                    $totalsQuery->where('pfr.district_id', $user->posted_district);
+                }
+
             }
+
+            $totalsQuery = ($approve_status == 3) ? $totalsQuery : $totalsQuery->first();
+
+            $totals = [
+                'mbpy_oap_below_80_years' => $totalsQuery->mbpy_oap_below_80_years,
+                'funds_mbpy_oap_below_80_years' => $totalsQuery->mbpy_oap_below_80_years * 1000,
+
+                'mbpy_oap_above_80_years' => $totalsQuery->mbpy_oap_above_80_years,
+                'funds_mbpy_oap_above_80_years' => $totalsQuery->mbpy_oap_above_80_years * 3500,
+
+                'mbpy_wp' => $totalsQuery->mbpy_wp,
+                'funds_mbpy_wp' => $totalsQuery->mbpy_wp * 1000,
+
+                'mbpy_dp' => $totalsQuery->mbpy_dp,
+                'funds_mbpy_dp' => $totalsQuery->mbpy_dp * 1000,
+
+                'mbpy_sdp_below_80_percent' => $totalsQuery->mbpy_sdp_below_80_percent,
+                'funds_mbpy_sdp_below_80_percent' => $totalsQuery->mbpy_sdp_below_80_percent * 1200,
+
+                'mbpy_sdp_above_80_percent' => $totalsQuery->mbpy_sdp_above_80_percent,
+                'funds_mbpy_sdp_above_80_percent' => $totalsQuery->mbpy_sdp_above_80_percent * 3500,
+
+                'mbpy_sdoap' => $totalsQuery->mbpy_sdoap,
+                'funds_mbpy_sdoap' => $totalsQuery->mbpy_sdoap * 3500,
+
+                'mbpy_clp' => $totalsQuery->mbpy_clp,
+                'funds_mbpy_clp' => $totalsQuery->mbpy_clp * 1000,
+
+                'mbpy_wp_aids' => $totalsQuery->mbpy_wp_aids,
+                'funds_mbpy_wp_aids' => $totalsQuery->mbpy_wp_aids * 1000,
+
+                'mbpy_dp_aids' => $totalsQuery->mbpy_dp_aids,
+                'funds_mbpy_dp_aids' => $totalsQuery->mbpy_dp_aids * 1000,
+
+                'mbpy_unmarried_women' => $totalsQuery->mbpy_unmarried_women,
+                'funds_mbpy_unmarried_women' => $totalsQuery->mbpy_unmarried_women * 1000,
+
+                'mbpy_orphan_due_to_covide' => $totalsQuery->mbpy_orphan_due_to_covide,
+                'funds_mbpy_orphan_due_to_covide' => $totalsQuery->mbpy_orphan_due_to_covide * 1000,
+
+                'mbpy_widow_due_to_covid' => $totalsQuery->mbpy_widow_due_to_covid,
+                'funds_mbpy_widow_due_to_covid' => $totalsQuery->mbpy_widow_due_to_covid * 1000,
+
+                'mbpy_divorce_or_destitute' => $totalsQuery->mbpy_divorce_or_destitute,
+                'funds_mbpy_divorce_or_destitute' => $totalsQuery->mbpy_divorce_or_destitute * 1000,
+
+                'mbpy_transgender' => $totalsQuery->mbpy_transgender,
+                'funds_mbpy_transgender' => $totalsQuery->mbpy_transgender * 1000,
+            ];
+
+            $totals['total_beneficiaries'] = array_sum([
+                $totalsQuery->mbpy_oap_below_80_years,
+                $totalsQuery->mbpy_oap_above_80_years,
+                $totalsQuery->mbpy_wp,
+                $totalsQuery->mbpy_dp,
+                $totalsQuery->mbpy_sdp_below_80_percent,
+                $totalsQuery->mbpy_sdp_above_80_percent,
+                $totalsQuery->mbpy_sdoap,
+                $totalsQuery->mbpy_clp,
+                $totalsQuery->mbpy_wp_aids,
+                $totalsQuery->mbpy_dp_aids,
+                $totalsQuery->mbpy_unmarried_women,
+                $totalsQuery->mbpy_orphan_due_to_covide,
+                $totalsQuery->mbpy_widow_due_to_covid,
+                $totalsQuery->mbpy_divorce_or_destitute,
+                $totalsQuery->mbpy_transgender,
+            ]);
+
+            $totals['total_fund'] = array_sum(array_filter($totals, fn($k) => str_starts_with($k, 'funds_'), ARRAY_FILTER_USE_KEY));
 
             return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('area_name', fn($row) => $row->block_name ?? $row->municipality_name)
 
-    // 💰 Add calculated fund columns
             ->addColumn('funds_mbpy_oap_below_80_years', fn($row) => $row->mbpy_oap_below_80_years * 1000)
             ->addColumn('funds_mbpy_oap_above_80_years', fn($row) => $row->mbpy_oap_above_80_years * 3500)
             ->addColumn('funds_mbpy_wp', fn($row) => $row->mbpy_wp * 1000)
@@ -566,9 +728,7 @@ class PensionFundRequirementDisbursementController extends Controller
             ->addColumn('funds_mbpy_divorce_or_destitute', fn($row) => $row->mbpy_divorce_or_destitute * 1000)
             ->addColumn('funds_mbpy_transgender', fn($row) => $row->mbpy_transgender * 1000)
 
-    // 🧮 Totals
-            ->addColumn('total_beneficiaries', function ($row) {
-                return
+            ->addColumn('total_beneficiaries', fn($row) =>
                 $row->mbpy_oap_below_80_years +
                 $row->mbpy_oap_above_80_years +
                 $row->mbpy_wp +
@@ -583,10 +743,10 @@ class PensionFundRequirementDisbursementController extends Controller
                 $row->mbpy_orphan_due_to_covide +
                 $row->mbpy_widow_due_to_covid +
                 $row->mbpy_divorce_or_destitute +
-                $row->mbpy_transgender;
-            })
-            ->addColumn('total_fund', function ($row) {
-                return
+                $row->mbpy_transgender
+            )
+
+            ->addColumn('total_fund', fn($row) =>
                 ($row->mbpy_oap_below_80_years * 1000) +
                 ($row->mbpy_oap_above_80_years * 3500) +
                 ($row->mbpy_wp * 1000) +
@@ -601,13 +761,47 @@ class PensionFundRequirementDisbursementController extends Controller
                 ($row->mbpy_orphan_due_to_covide * 1000) +
                 ($row->mbpy_widow_due_to_covid * 1000) +
                 ($row->mbpy_divorce_or_destitute * 1000) +
-                ($row->mbpy_transgender * 1000);
+                ($row->mbpy_transgender * 1000)
+            )
+
+            ->with(['totals' => $totals])
+
+            ->filter(function ($query) use ($request, $approve_status) {
+
+                if ($request->filled('search.value')) {
+
+                    $search = $request->search['value'];
+
+                    if ($approve_status == 3) {
+                        $query->havingRaw("
+                            district_name LIKE ?
+                            OR COALESCE(block_name,'') LIKE ?
+                            OR COALESCE(municipality_name,'') LIKE ?
+                            ", [
+                                "%{$search}%",
+                                "%{$search}%",
+                                "%{$search}%"
+                            ]);
+                    } else {
+                        $query->havingRaw("
+                            d.district_name LIKE ?
+                            OR COALESCE(b.block_name,'') LIKE ?
+                            OR COALESCE(m.municipality_name,'') LIKE ?
+                            ", [
+                                "%{$search}%",
+                                "%{$search}%",
+                                "%{$search}%"
+                            ]);
+                    }
+                }
             })
+
             ->make(true);
         }
 
-        return view('dashboard.pension.pension_fund_management.pension_fund_requirement_report_of_block_ulb',
-            compact('dateConfig', 'month', 'approve_status'));
+        return view(
+            'dashboard.pension.pension_fund_management.pension_fund_requirement_report_of_block_ulb', compact('dateConfig', 'month', 'approve_status')
+        );
     }
 
     /**

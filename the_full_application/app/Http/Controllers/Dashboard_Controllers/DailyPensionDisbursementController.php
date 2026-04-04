@@ -2762,6 +2762,7 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
             SUM(mbpy_widow_due_to_covid) AS widow_covid,
             SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
             SUM(mbpy_transgender) AS transgender,
+            SUM(death_reported) AS death_reported,
             SUM(no_of_normal_pensioners) AS no_of_normal_pensioners,
             SUM(no_of_ep_pensioners) AS no_of_ep_pensioners
         ")
@@ -2808,6 +2809,7 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
             'widow_covid' => $fundSource->widow_covid ?? 0,
             'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
             'transgender' => $fundSource->transgender ?? 0,
+            'death_reported' => $fundSource->death_reported ?? 0,
 
             'no_of_normal_pensioners' => $fundSource->no_of_normal_pensioners ?? 0,
             'no_of_ep_pensioners' => $fundSource->no_of_ep_pensioners ?? 0,

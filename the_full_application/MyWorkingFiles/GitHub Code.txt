@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "Development using controller PensionFundRequirementDisbursementController"
+git commit -m "Added the death_reported column in daily_pension_disbursements table"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git

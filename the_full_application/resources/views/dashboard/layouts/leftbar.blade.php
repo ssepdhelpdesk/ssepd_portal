@@ -178,6 +178,20 @@
                   <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Reports</span></a>
                   <ul aria-expanded="false" class="collapse in">
                      <li>
+                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension Fund Management</a>
+                        <ul aria-expanded="false" class="collapse">
+                           @can('pension-access')
+                           <li>
+                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Requirement</a>
+                              <ul aria-expanded="false" class="collapse">
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise Pension Fund Requirement Report</a></li>
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB-wise Pension Fund Requirement Report</a></li>
+                              </ul>
+                           </li>
+                           @endcan
+                        </ul>
+                     </li>
+                     <li>
                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                         <ul aria-expanded="false" class="collapse">
                            @can('pension-access')

@@ -153,151 +153,160 @@ Pension || Block/ULB wise Pension Fund Requirement for the Month {{$month}} As o
 
 @section('script')
 <script>
-   $(document).ready(function () {
+$(document).ready(function () {
 
+    // =============================
+    // FORMATTERS
+    // =============================
     function formatCurrency(data) {
-     if (data === null || data === undefined || data === '') return '₹ 0';
-     return '₹ ' + Number(data).toLocaleString('en-IN');
-  }
+        if (!data) return '₹ 0';
+        return '₹ ' + Number(data).toLocaleString('en-IN');
+    }
 
-  function formatNumber(data) {
-     if (data === null || data === undefined || data === '') return '0';
-     return Number(data).toLocaleString('en-IN');
-  }
+    function formatNumber(data) {
+        if (!data) return '0';
+        return Number(data).toLocaleString('en-IN');
+    }
 
-  let table = $('#example23').DataTable({
-     processing: true,
-     serverSide: true,
-     deferLoading: 0,
-     order: [[1, 'asc']],
+    // =============================
+    // FIELD DEFINITIONS (CORE)
+    // =============================
+    const fields = [
+        'mbpy_oap_below_80_years',
+        'mbpy_oap_above_80_years',
+        'mbpy_wp',
+        'mbpy_dp',
+        'mbpy_sdp_below_80_percent',
+        'mbpy_sdp_above_80_percent',
+        'mbpy_sdoap',
+        'mbpy_clp',
+        'mbpy_wp_aids',
+        'mbpy_dp_aids',
+        'mbpy_unmarried_women',
+        'mbpy_orphan_due_to_covide',
+        'mbpy_widow_due_to_covid',
+        'mbpy_divorce_or_destitute',
+        'mbpy_transgender'
+    ];
 
-     ajax: {
-       url: "{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
-       type: 'POST',
-       data: function (d) {
-        d.for_the_month = $('#monthFilter').val();
-        d.approve_status = $('#districtApprovalStatus').val();
-     },
-     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-     }
-  },
+    // =============================
+    // DYNAMIC COLUMN BUILDING
+    // =============================
+    let columns = [
+        { data: 'DT_RowIndex', orderable: false, searchable: false },
+        { data: 'district_name', name: 'district_name' },
+        { data: 'area_name', name: 'area_name' }
+    ];
 
-  columns: [
-   { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-   { data: 'district_name', name: 'district_name' },
-   { data: 'area_name', name: 'area_name' },
+    fields.forEach(field => {
+        columns.push({ data: field, render: formatNumber });
+        columns.push({ data: 'funds_' + field, render: formatCurrency });
+    });
 
-   { data: 'mbpy_oap_below_80_years', render: formatNumber },
-   { data: 'funds_mbpy_oap_below_80_years', render: formatCurrency },
+    columns.push({ data: 'total_beneficiaries', render: formatNumber });
+    columns.push({ data: 'total_fund', render: formatCurrency });
 
-   { data: 'mbpy_oap_above_80_years', render: formatNumber },
-   { data: 'funds_mbpy_oap_above_80_years', render: formatCurrency },
+    // =============================
+    // DATATABLE INITIALIZATION
+    // =============================
+    let table = $('#example23').DataTable({
+        processing: true,
+        serverSide: true,
+        deferLoading: 0,
+        stateSave: true,
+        order: [[1, 'asc']],
+        scrollX: true,
 
-   { data: 'mbpy_wp', render: formatNumber },
-   { data: 'funds_mbpy_wp', render: formatCurrency },
+        ajax: {
+            url: "{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
+            type: 'POST',
+            data: function (d) {
+                d.for_the_month = $('#monthFilter').val();
+                d.approve_status = $('#districtApprovalStatus').val();
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        },
 
-   { data: 'mbpy_dp', render: formatNumber },
-   { data: 'funds_mbpy_dp', render: formatCurrency },
+        columns: columns,
 
-   { data: 'mbpy_sdp_below_80_percent', render: formatNumber },
-   { data: 'funds_mbpy_sdp_below_80_percent', render: formatCurrency },
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+            .map(btn => ({ extend: btn, footer: true })),
 
-   { data: 'mbpy_sdp_above_80_percent', render: formatNumber },
-   { data: 'funds_mbpy_sdp_above_80_percent', render: formatCurrency },
+        lengthMenu: [[30, 50, 100, -1], [30, 50, 100, "All"]],
 
-   { data: 'mbpy_sdoap', render: formatNumber },
-   { data: 'funds_mbpy_sdoap', render: formatCurrency },
+        columnDefs: [
+            { targets: '_all', className: 'text-center' },
+            { targets: 0, className: 'text-start' }
+        ],
 
-   { data: 'mbpy_clp', render: formatNumber },
-   { data: 'funds_mbpy_clp', render: formatCurrency },
+        // =============================
+        // FOOTER TOTALS (OPTIMIZED)
+        // =============================
+        drawCallback: function (settings) {
 
-   { data: 'mbpy_wp_aids', render: formatNumber },
-   { data: 'funds_mbpy_wp_aids', render: formatCurrency },
+            let json = settings.json;
+            if (!json || !json.totals) return;
 
-   { data: 'mbpy_dp_aids', render: formatNumber },
-   { data: 'funds_mbpy_dp_aids', render: formatCurrency },
+            let t = json.totals;
+            let api = this.api();
 
-   { data: 'mbpy_unmarried_women', render: formatNumber },
-   { data: 'funds_mbpy_unmarried_women', render: formatCurrency },
+            $(api.column(0).footer()).html('');
+            $(api.column(1).footer()).html('<b>Total</b>');
+            $(api.column(2).footer()).html('');
 
-   { data: 'mbpy_orphan_due_to_covide', render: formatNumber },
-   { data: 'funds_mbpy_orphan_due_to_covide', render: formatCurrency },
+            let colIndex = 3;
 
-   { data: 'mbpy_widow_due_to_covid', render: formatNumber },
-   { data: 'funds_mbpy_widow_due_to_covid', render: formatCurrency },
+            function setValue(val, isCurrency = false) {
+                $(api.column(colIndex).footer()).html(
+                    isCurrency ? formatCurrency(val) : formatNumber(val)
+                );
+                colIndex++;
+            }
 
-   { data: 'mbpy_divorce_or_destitute', render: formatNumber },
-   { data: 'funds_mbpy_divorce_or_destitute', render: formatCurrency },
+            // Dynamic footer mapping
+            fields.forEach(field => {
+                setValue(t[field]);
+                setValue(t['funds_' + field], true);
+            });
 
-   { data: 'mbpy_transgender', render: formatNumber },
-   { data: 'funds_mbpy_transgender', render: formatCurrency },
+            setValue(t.total_beneficiaries);
+            setValue(t.total_fund, true);
+        }
+    });
 
-   { data: 'total_beneficiaries', render: formatNumber },
-   { data: 'total_fund', render: formatCurrency }
-],
+    // =============================
+    // FILTER BUTTON
+    // =============================
+    $('#filterBtn').click(function () {
 
-dom: 'Blfrtip',
-buttons: ['copy', 'csv', 'excel', 'pdf', 'print'].map(btn => ({ extend: btn, footer: true })),
-lengthMenu: [[500, 700, 1000, -1], [500, 700, 1000, "All"]],
-scrollX: true,
-columnDefs: [
-   { targets: '_all', className: 'text-center' },
-   { targets: 0, className: 'text-start' }
-],
+        let month = $('#monthFilter').val();
+        let status = $('#districtApprovalStatus').val();
 
-footerCallback: function (row, data, start, end, display) {
- let api = this.api();
+        if (!month) {
+            toastr.error('Please select Month');
+            return;
+        }
 
-    // Helper to parse number from table cell
- let parseValue = function (i) {
-  return typeof i === 'string' ? i.replace(/₹|,/g, '')*1 : typeof i === 'number' ? i : 0;
-};
+        if (status === '') {
+            toastr.error('Please select District Approval Status');
+            return;
+        }
 
-api.columns().every(function (index) {
-        // Skip first 3 columns: Sl No, District, Area
-  if (index <= 2) return;
+        $(this).prop('disabled', true);
 
-  let total = this.data().reduce((a, b) => parseValue(a) + parseValue(b), 0);
+        table.ajax.reload(() => {
+            $('#filterBtn').prop('disabled', false);
+        });
+    });
 
-        // Fund columns start at index 4, every 2nd column
-  let formatted;
-        if ((index - 3) % 2 === 1) { // fund columns
-         formatted = '₹ ' + total.toLocaleString('en-IN');
-        } else { // beneficiary columns
-         formatted = total.toLocaleString('en-IN');
-      }
-
-      $(this.footer()).html(formatted);
-   });
-
-$(api.column(0).footer()).html('');
-$(api.column(1).footer()).html('<b>Total</b>');
-    $(api.column(2).footer()).html(''); // optional, Area column
- }
-});
-
-  $('#filterBtn').click(function () {
-     let month = $('#monthFilter').val();
-     let status = $('#districtApprovalStatus').val();
-
-     if (!month) {
-      alert('Please select Month');
-      return;
-   }
-   if (status === '') {
-      alert('Please select District Approval Status');
-      return;
-   }
-
-   $(this).prop('disabled', true);
-   table.ajax.reload(function () {
-      $('#filterBtn').prop('disabled', false);
-   });
-});
-
-  $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
-  .addClass('btn btn-primary btn-sm me-1');
+    // =============================
+    // BUTTON STYLING
+    // =============================
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary btn-sm me-1');
 
 });
 </script>
