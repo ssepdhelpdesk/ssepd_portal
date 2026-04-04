@@ -246,6 +246,7 @@
                         <ul aria-expanded="false" class="collapse">
                            <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
                            <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_districts')}}">District Wise</a></li>
+                           <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District Wise2</a></li>
                            <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB Wise</a></li>
                         </ul>
                      </li>

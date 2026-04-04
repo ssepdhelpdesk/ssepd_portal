@@ -137,6 +137,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
                                  <th>Widow due to Covid</th>
                                  <th>Divorcee or Destitute</th>
                                  <th>Transgender</th>
+                                 <th>Death Reported</th>
                                  <th>No of Beneficiaries Received Normal Pension</th>
                                  <th>No of Beneficiaries Received Enhanced Pension</th>
                               </tr>
@@ -186,6 +187,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
                                  'mbpy_widow_due_to_covid',
                                  'mbpy_divorce_or_destitute',
                                  'mbpy_transgender',
+                                 'death_reported',
                                  'no_of_normal_pensioners',
                                  'no_of_ep_pensioners'
                                  ];
@@ -203,7 +205,7 @@ Pension || GP/Ward wise Pension Daily Disbursement
                                     value="{{ old($field.'.'.$index) }}" 
                                     class="form-control {{ $isReadonly ? 'readonly-input' : '' }}" 
                                     min="0" step="1" 
-                                    placeholder="{{ $isReadonly ? 'Auto Calculated' : 'Enter beneficiary count' }}"
+                                    placeholder="{{ $isReadonly ? 'Auto Calculated' : 'Enter No of Beneficiaries' }}"
                                     {{ $isReadonly ? 'readonly' : '' }}>
                                     
                                     @error($field.'.'.$index)

@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "Maker checker concept in Pension Fund RequiremenT"
+git commit -m "Development using controller PensionFundRequirementDisbursementController"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git

@@ -260,6 +260,7 @@ public function store(Request $request)
                 'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[$i] ?? null,
                 'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[$i] ?? null,
                 'mbpy_transgender'             => $request->mbpy_transgender[$i] ?? null,
+                'death_reported'             => $request->death_reported[$i] ?? null,
                 'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[$i] ?? null,
                 'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[$i] ?? null,
             ];

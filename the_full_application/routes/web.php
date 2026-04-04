@@ -461,6 +461,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     /*New WorkFlow Added on 25-03-2026*/
     Route::prefix('pensionFundRequirementDisbursement')->name('pensionfundrequirementdisbursement.')->controller(PensionFundRequirementDisbursementController::class)->group(function () {
         Route::get('pension_fund_requirement_report_of_districts', 'pension_fund_requirement_report_of_districts')->name('pension_fund_requirement_report_of_districts');
+        Route::get('pension_fund_requirement_report_of_district', 'pension_fund_requirement_report_of_district')->name('pension_fund_requirement_report_of_district');
         Route::match(['get','post'], 'pension_fund_requirement_report_of_block_ulb', 'pension_fund_requirement_report_of_block_ulb')
     ->name('pension_fund_requirement_report_of_block_ulb');
     });

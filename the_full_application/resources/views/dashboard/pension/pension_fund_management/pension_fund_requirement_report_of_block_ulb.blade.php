@@ -155,35 +155,35 @@ Pension || Block/ULB wise Pension Fund Requirement for the Month {{$month}} As o
 <script>
    $(document).ready(function () {
 
-     function formatCurrency(data) {
-       if (data === null || data === undefined || data === '') return '₹ 0';
-       return '₹ ' + Number(data).toLocaleString('en-IN');
-    }
+    function formatCurrency(data) {
+     if (data === null || data === undefined || data === '') return '₹ 0';
+     return '₹ ' + Number(data).toLocaleString('en-IN');
+  }
 
-    function formatNumber(data) {
-       if (data === null || data === undefined || data === '') return '0';
-       return Number(data).toLocaleString('en-IN');
-    }
+  function formatNumber(data) {
+     if (data === null || data === undefined || data === '') return '0';
+     return Number(data).toLocaleString('en-IN');
+  }
 
-    let table = $('#example23').DataTable({
-       processing: true,
-       serverSide: true,
-       deferLoading: 0,
-       order: [[1, 'asc']],
+  let table = $('#example23').DataTable({
+     processing: true,
+     serverSide: true,
+     deferLoading: 0,
+     order: [[1, 'asc']],
 
-       ajax: {
-        url: "{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
-    type: 'POST', // explicitly set POST
-    data: function (d) {
-       d.for_the_month = $('#monthFilter').val();
-       d.approve_status = $('#districtApprovalStatus').val();
-    },
-    headers: {
-       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
- },
+     ajax: {
+       url: "{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
+       type: 'POST',
+       data: function (d) {
+        d.for_the_month = $('#monthFilter').val();
+        d.approve_status = $('#districtApprovalStatus').val();
+     },
+     headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+     }
+  },
 
- columns: [
+  columns: [
    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
    { data: 'district_name', name: 'district_name' },
    { data: 'area_name', name: 'area_name' },
@@ -247,21 +247,21 @@ columnDefs: [
 ],
 
 footerCallback: function (row, data, start, end, display) {
-  let api = this.api();
+ let api = this.api();
 
     // Helper to parse number from table cell
-  let parseValue = function (i) {
-    return typeof i === 'string' ? i.replace(/₹|,/g, '')*1 : typeof i === 'number' ? i : 0;
- };
+ let parseValue = function (i) {
+  return typeof i === 'string' ? i.replace(/₹|,/g, '')*1 : typeof i === 'number' ? i : 0;
+};
 
- api.columns().every(function (index) {
+api.columns().every(function (index) {
         // Skip first 3 columns: Sl No, District, Area
-    if (index <= 2) return;
+  if (index <= 2) return;
 
-    let total = this.data().reduce((a, b) => parseValue(a) + parseValue(b), 0);
+  let total = this.data().reduce((a, b) => parseValue(a) + parseValue(b), 0);
 
         // Fund columns start at index 4, every 2nd column
-    let formatted;
+  let formatted;
         if ((index - 3) % 2 === 1) { // fund columns
          formatted = '₹ ' + total.toLocaleString('en-IN');
         } else { // beneficiary columns
@@ -271,34 +271,34 @@ footerCallback: function (row, data, start, end, display) {
       $(this.footer()).html(formatted);
    });
 
- $(api.column(0).footer()).html('');
- $(api.column(1).footer()).html('<b>Total</b>');
+$(api.column(0).footer()).html('');
+$(api.column(1).footer()).html('<b>Total</b>');
     $(api.column(2).footer()).html(''); // optional, Area column
  }
 });
 
-    $('#filterBtn').click(function () {
-       let month = $('#monthFilter').val();
-       let status = $('#districtApprovalStatus').val();
+  $('#filterBtn').click(function () {
+     let month = $('#monthFilter').val();
+     let status = $('#districtApprovalStatus').val();
 
-       if (!month) {
-         alert('Please select Month');
-         return;
-      }
-      if (status === '') {
-         alert('Please select District Approval Status');
-         return;
-      }
+     if (!month) {
+      alert('Please select Month');
+      return;
+   }
+   if (status === '') {
+      alert('Please select District Approval Status');
+      return;
+   }
 
-      $(this).prop('disabled', true);
-      table.ajax.reload(function () {
-         $('#filterBtn').prop('disabled', false);
-      });
+   $(this).prop('disabled', true);
+   table.ajax.reload(function () {
+      $('#filterBtn').prop('disabled', false);
    });
+});
 
-    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
-    .addClass('btn btn-primary btn-sm me-1');
+  $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+  .addClass('btn btn-primary btn-sm me-1');
 
- });
+});
 </script>
 @endsection

@@ -45,6 +45,7 @@ return new class extends Migration
             $table->bigInteger('mbpy_divorce_or_destitute')->nullable();
             $table->bigInteger('funds_mbpy_divorce_or_destitute')->default(0);
             $table->bigInteger('mbpy_transgender')->nullable();
+            $table->bigInteger('death_reported')->nullable();
             $table->bigInteger('funds_mbpy_transgender')->default(0);
             $table->bigInteger('mbpy_total_beneficiaries')->default(0);
             $table->bigInteger('funds_mbpy_total_beneficiaries')->default(0);
