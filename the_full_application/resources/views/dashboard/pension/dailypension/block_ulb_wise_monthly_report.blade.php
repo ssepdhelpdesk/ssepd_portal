@@ -3,6 +3,11 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \C
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
+<style>
+   .th-border-right {
+    border-right: 3px solid #000;
+ }
+</style>
 @endsection 
 @section('content')
 <div class="container-fluid">
@@ -69,21 +74,22 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \C
                   <th>Type</th>
                   <th>Block / ULB Name</th>
                   <th>Status</th>
-                  <th class="text-end">OAP &lt;80</th>
+                  <th class="text-end">OAP 60-79 Yrs</th>
                   <th class="text-end">OAP ≥80</th>
                   <th class="text-end">Widow</th>
-                  <th class="text-end">Disabled</th>
-                  <th class="text-end">SDP &lt;80%</th>
+                  <th class="text-end">DP (40-59)%</th>
+                  <th class="text-end">SDP (60-79)%</th>
                   <th class="text-end">SDP ≥80%</th>
                   <th class="text-end">SDOAP</th>
                   <th class="text-end">CLP</th>
                   <th class="text-end">WP (AIDS)</th>
                   <th class="text-end">DP (AIDS)</th>
-                  <th class="text-end">Unmarried Women</th>
+                  <th class="text-end">UMW</th>
                   <th class="text-end">Orphan (COVID)</th>
                   <th class="text-end">Widow (COVID)</th>
                   <th class="text-end">Divorce / Destitute</th>
                   <th class="text-end">Transgender</th>
+                  <th class="text-end th-border-right">Death Reported</th>
                   <th class="text-end">Normal Pensioners</th>
                   <th class="text-end">EP Pensioners</th>
                   <th class="text-end">Total Pensioners</th>
@@ -137,6 +143,7 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \C
                   <td class="text-end">{{ number_format($row['widow_covid']) }}</td>
                   <td class="text-end">{{ number_format($row['divorce_destitute']) }}</td>
                   <td class="text-end">{{ number_format($row['transgender']) }}</td>
+                  <td class="text-end th-border-right">{{ number_format($row['death_reported']) }}</td>
                   <td class="text-end">{{ number_format($row['no_of_normal_pensioners']) }}</td>
                   <td class="text-end">{{ number_format($row['no_of_ep_pensioners']) }}</td>
                   <td class="text-end fw-bold">{{ number_format($rowTotalPensioners) }}</td>
@@ -155,7 +162,7 @@ Pension || Block/ULB Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \C
             @if(count($data) > 0)
             <tfoot class="table-secondary fw-bold">
                <tr>
-                  <td colspan="5" class="text-end">Grand Total</td>
+                  <td colspan="21" class="text-end">Grand Total</td>
                   <td class="text-end">{{ number_format($totalNormalPensioners) }}</td>
                   <td class="text-end">{{ number_format($totalEPPensioners) }}</td>
                   <td class="text-end">{{ number_format($totalNormalPensioners + $totalEPPensioners) }}</td>

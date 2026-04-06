@@ -2565,7 +2565,8 @@ public function block_ulb_wise_monthly_report(Request $request)
         SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-        SUM(mbpy_transgender) AS transgender
+        SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported
         ")
     ->groupBy('staff_address_type', 'district_id', 'block_id', 'municipality_id')
     ->get()
@@ -2615,6 +2616,7 @@ public function block_ulb_wise_monthly_report(Request $request)
             'widow_covid'         => $fundSource->widow_covid         ?? 0,
             'divorce_destitute'   => $fundSource->divorce_destitute   ?? 0,
             'transgender'         => $fundSource->transgender         ?? 0,
+            'death_reported'      => $fundSource->death_reported      ?? 0,
             'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
             'no_of_ep_pensioners'     => $entries->sum('no_of_ep_pensioners'),
             'funds_no_of_normal_pensioners' => $fund_normal,
@@ -2661,6 +2663,7 @@ public function block_ulb_wise_monthly_report(Request $request)
             'widow_covid'         => $fundSource->widow_covid         ?? 0,
             'divorce_destitute'   => $fundSource->divorce_destitute   ?? 0,
             'transgender'         => $fundSource->transgender         ?? 0,
+            'death_reported'      => $fundSource->death_reported      ?? 0,
             'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
             'no_of_ep_pensioners'     => $entries->sum('no_of_ep_pensioners'),
             'funds_no_of_normal_pensioners' => $fund_normal,

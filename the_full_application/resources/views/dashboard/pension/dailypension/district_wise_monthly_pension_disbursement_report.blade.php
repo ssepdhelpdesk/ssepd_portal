@@ -72,17 +72,17 @@ Pension || District Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \Ca
                   <th>Sl.No</th>
                   <th>District</th>
                   <th>Status</th>
-                  <th class="text-end">OAP &lt;80</th>
+                  <th class="text-end">OAP 60-79 Yrs</th>
                   <th class="text-end">OAP ≥80</th>
                   <th class="text-end">Widow</th>
-                  <th class="text-end">Disabled</th>
-                  <th class="text-end">SDP &lt;80%</th>
+                  <th class="text-end">DP (40-59)%</th>
+                  <th class="text-end">SDP (60-79)%</th>
                   <th class="text-end">SDP ≥80%</th>
                   <th class="text-end">SDOAP</th>
                   <th class="text-end">CLP</th>
                   <th class="text-end">WP (AIDS)</th>
                   <th class="text-end">DP (AIDS)</th>
-                  <th class="text-end">Unmarried Women</th>
+                  <th class="text-end">UMW</th>
                   <th class="text-end">Orphan (COVID)</th>
                   <th class="text-end">Widow (COVID)</th>
                   <th class="text-end">Divorce / Destitute</th>
@@ -158,7 +158,7 @@ Pension || District Wise Daily Pension Disbursement - {{$forTheMonth}} || {{ \Ca
             @if(count($data) > 0)
             <tfoot class="table-secondary fw-bold">
                <tr>
-                  <td colspan="5" class="text-end">Grand Total</td>
+                  <td colspan="19" class="text-end">Grand Total</td>
                   <td class="text-end">{{ number_format($totalNormalPensioners) }}</td>
                   <td class="text-end">{{ number_format($totalEPPensioners) }}</td>
                   <td class="text-end">{{ number_format($totalNormalPensioners + $totalEPPensioners) }}</td>

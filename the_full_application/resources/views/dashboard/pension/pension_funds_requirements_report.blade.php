@@ -68,30 +68,30 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                                     <th>For the Month</th>
                                     <th>Block/ULB Name</th>
                                     <th>Status</th>
-                                    <th>MBPY OAP Below 80 Years</th>
-                                    <th>Fund Below 80</th>
-                                    <th>MBPY OAP Above 80 Years</th>
-                                    <th>Fund Above 80</th>
-                                    <th>MBPY WP</th>
-                                    <th>Fund WP</th>
-                                    <th>MBPY DP</th>
-                                    <th>Fund DP</th>
-                                    <th>MBPY SDP Below 80%</th>
-                                    <th>Fund SDP Below 80</th>
-                                    <th>MBPY SDP Above 80%</th>
-                                    <th>Fund SDP Above 80</th>
-                                    <th>MBPY SDOAP</th>
-                                    <th>Fund SDOAP</th>
-                                    <th>MBPY CLP</th>
-                                    <th>Fund CLP</th>
-                                    <th>MBPY WP AIDS</th>
-                                    <th>Fund WP AIDS</th>
-                                    <th>MBPY DP AIDS</th>
-                                    <th>Fund DP AIDS</th>
-                                    <th>MBPY Unmarried Women</th>
-                                    <th>Fund Unmarried Women</th>
-                                    <th>MBPY Orphan Due To COVID</th>
-                                    <th>Fund Orphan</th>
+                                    <th>MBPOAP 60-79 Yrs</th>
+                                    <th>MBPOAP 60-79 Yrs (Fund)</th>
+                                    <th>OAP ≥ 80 Yrs</th>
+                                    <th>OAP ≥ 80 Yrs (Fund)</th>
+                                    <th>MBPWP</th>
+                                    <th>MBPWP (Fund)</th>
+                                    <th>MBPDP (40-59)%</th>
+                                    <th>MBPDP (40-59)% (Fund)</th>
+                                    <th>MBPSDP (60-79)%</th>
+                                    <th>MBPSDP (60-79)% (Fund)</th>
+                                    <th>MBPSDP ≥ 80%</th>
+                                    <th>MBPSDP ≥ 80% (Fund)</th>
+                                    <th>MBPSDOAP</th>
+                                    <th>MBPSDOAP (Fund)</th>
+                                    <th>MBPCLP</th>
+                                    <th>MBPCLP (Fund)</th>
+                                    <th>MBPWP (AIDS)</th>
+                                    <th>MBPWP (AIDS) (Fund)</th>
+                                    <th>MBPDP (AIDS)</th>
+                                    <th>MBPDP (AIDS) (Fund)</th>
+                                    <th>MBPUMW</th>
+                                    <th>MBPUMW (Fund)</th>
+                                    <th>MBPOrphan (COVID)</th>
+                                    <th>MBPOrphan (COVID) (Fund)</th>
                                     <th>Total Fund</th>
                                     <th>A/C No</th>
                                     <th>IFSC Code</th>
