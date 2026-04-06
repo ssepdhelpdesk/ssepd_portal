@@ -211,7 +211,7 @@
                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                         <ul aria-expanded="false" class="collapse">
                            @can('pension-access')                           
-                           <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
+                           <!-- <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
                            <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
                            <li><a href="{{route('admin.pension.district_wise_monthly_fund_requirement_report')}}">District wise Combined Fund Requirements</a></li>
                            <li>
@@ -224,7 +224,7 @@
                                  <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward wise Combined Daily Pension Disbursement</a></li>
                                  <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
                               </ul>
-                           </li>
+                           </li> -->
                            <li>
                               <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Data Analysis</a>
                               <ul aria-expanded="false" class="collapse">

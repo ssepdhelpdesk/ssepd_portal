@@ -156,7 +156,7 @@ Pension || District Wise Monthly Fund Requirement - {{$forTheMonth}} || {{ \Carb
          @if(count($data) > 0)
          <tfoot class="table-secondary fw-bold">
             <tr>
-               <td colspan="5" class="text-end">Grand Total</td>
+               <td colspan="19" class="text-end">Grand Total</td>
                <td class="text-end">{{ number_format($totalNormalPensioners) }}</td>
                <td class="text-end">{{ number_format($totalEPPensioners) }}</td>
                <td class="text-end">{{ number_format($totalNormalPensioners + $totalEPPensioners) }}</td>
