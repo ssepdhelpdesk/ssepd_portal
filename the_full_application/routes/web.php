@@ -230,6 +230,64 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('fetch-ward', 'fetchWard')->name('fetchWard');
     });
 
+    Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::get('{id}/delete', 'delete')->name('delete');
+        Route::get('report', 'report')->name('report');
+        Route::get('{id}/show', 'show')->name('show');
+        Route::get('fund_requirement_approval', 'fund_requirement_approval')->name('fund_requirement_approval');
+        Route::post('{id}/fund_requirement_approval_process', 'fund_requirement_approval_process')->name('fund_requirement_approval_process');
+        Route::get('report_without_ajax', 'report_without_ajax')->name('report_without_ajax');
+
+        Route::get('pension_authority_index', 'pension_authority_index')->name('pension_authority_index');
+        Route::post('pension_authority_store', 'pension_authority_store')->name('pension_authority_store');
+        Route::get('pension_authority_report', 'pension_authority_report')->name('pension_authority_report');
+        Route::get('{id}/pension_authority_edit', 'pension_authority_edit')->name('pension_authority_edit');
+        Route::post('{id}/pension_authority_update', 'pension_authority_update')->name('pension_authority_update');
+        Route::get('{id}/pension_authority_delete', 'pension_authority_delete')->name('pension_authority_delete');
+
+        Route::get('district_wise_monthly_fund_requirement_report', 'district_wise_monthly_fund_requirement_report')->name('district_wise_monthly_fund_requirement_report');
+    });
+    
+    Route::prefix('DailyPensionDisbursement')->name('dailypensiondisbursement.')->controller(DailyPensionDisbursementController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::get('listing_report', 'listing_report')->name('listing_report');
+        Route::get('combined_report', 'combined_report')->name('combined_report');
+        Route::get('daily_pension_disbursement_approval', 'daily_pension_disbursement_approval')->name('daily_pension_disbursement_approval');
+        Route::get('{id}/daily_pension_disbursement_approval_view', 'daily_pension_disbursement_approval_view')->name('daily_pension_disbursement_approval_view');
+        Route::post('{id}/daily_pension_disbursement_approval_process', 'daily_pension_disbursement_approval_process')->name('daily_pension_disbursement_approval_process');
+        Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
+        Route::post('update_record', 'update_record')->name('update_record');
+
+        Route::get('daily_pension_disbursement_vs_funds_requirements', 'daily_pension_disbursement_vs_funds_requirements')->name('daily_pension_disbursement_vs_funds_requirements');
+        Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries');
+        Route::get('daily_pension_disbursement_fund_vs_funds_requirements', 'daily_pension_disbursement_fund_vs_funds_requirements')->name('daily_pension_disbursement_fund_vs_funds_requirements');
+        Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds');
+        Route::get('month_wise_fund_requirement_comparison_for_district', 'month_wise_fund_requirement_comparison_for_district')->name('month_wise_fund_requirement_comparison_for_district');
+        Route::get('month_wise_fund_requirement_comparison_for_block_ulb', 'month_wise_fund_requirement_comparison_for_block_ulb')->name('month_wise_fund_requirement_comparison_for_block_ulb');
+
+        Route::get('block_ulb_wise_daily_pension_disbursement_report', 'block_ulb_wise_daily_pension_disbursement_report')->name('block_ulb_wise_daily_pension_disbursement_report');
+        Route::get('block_ulb_wise_monthly_report', 'block_ulb_wise_monthly_report')->name('block_ulb_wise_monthly_report');
+        Route::get('block_ulb_wise_monthly_report_ajax', 'block_ulb_wise_monthly_report_ajax')->name('block_ulb_wise_monthly_report_ajax');
+        Route::get('district_wise_monthly_pension_disbursement_report', 'district_wise_monthly_pension_disbursement_report')->name('district_wise_monthly_pension_disbursement_report');
+    });
+
+    /*New WorkFlow Added on 25-03-2026*/
+    Route::prefix('pensionFundRequirementDisbursement')->name('pensionfundrequirementdisbursement.')->controller(PensionFundRequirementDisbursementController::class)->group(function () {
+        Route::match(['get','post'], 'pension_fund_requirement_report_of_district', 'pension_fund_requirement_report_of_district')->name('pension_fund_requirement_report_of_district');
+        Route::match(['get','post'], 'pension_fund_requirement_report_of_block_ulb', 'pension_fund_requirement_report_of_block_ulb')->name('pension_fund_requirement_report_of_block_ulb');
+        Route::match(['get','post'], 'pension_dpr_report_of_district', 'pension_dpr_report_of_district')->name('pension_dpr_report_of_district');
+        Route::match(['get','post'], 'pension_dpr_report_of_block_ulb', 'pension_dpr_report_of_block_ulb')->name('pension_dpr_report_of_block_ulb');
+        Route::get('pension_fund_requirement_report_of_districts', 'pension_fund_requirement_report_of_districts')->name('pension_fund_requirement_report_of_districts');
+        Route::get('pension_fund_requirement_report_of_district_data', 'pension_fund_requirement_report_of_district_data')->name('pension_fund_requirement_report_of_district_data');        
+    });
+
     Route::prefix('ngo')->name('ngo.')->controller(NgoRegdController::class)->group(function () {
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
@@ -281,29 +339,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('all_in_one_approval', 'all_in_one_approval')->name('all_in_one_approval');
 
         Route::get('school_wise_toilet_construction_report', 'school_wise_toilet_construction_report')->name('school_wise_toilet_construction_report');
-    });
-
-    Route::prefix('pension')->name('pension.')->controller(PensionFundsRequirementsController::class)->group(function () {
-        Route::get('create', 'create')->name('create');
-        Route::post('store', 'store')->name('store');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::post('{id}/update', 'update')->name('update');
-        Route::get('{id}/delete', 'delete')->name('delete');
-        Route::get('report', 'report')->name('report');
-        Route::get('{id}/show', 'show')->name('show');
-        Route::get('fund_requirement_approval', 'fund_requirement_approval')->name('fund_requirement_approval');
-        Route::post('{id}/fund_requirement_approval_process', 'fund_requirement_approval_process')->name('fund_requirement_approval_process');
-        Route::get('report_without_ajax', 'report_without_ajax')->name('report_without_ajax');
-
-        Route::get('pension_authority_index', 'pension_authority_index')->name('pension_authority_index');
-        Route::post('pension_authority_store', 'pension_authority_store')->name('pension_authority_store');
-        Route::get('pension_authority_report', 'pension_authority_report')->name('pension_authority_report');
-        Route::get('{id}/pension_authority_edit', 'pension_authority_edit')->name('pension_authority_edit');
-        Route::post('{id}/pension_authority_update', 'pension_authority_update')->name('pension_authority_update');
-        Route::get('{id}/pension_authority_delete', 'pension_authority_delete')->name('pension_authority_delete');
-
-        Route::get('district_wise_monthly_fund_requirement_report', 'district_wise_monthly_fund_requirement_report')->name('district_wise_monthly_fund_requirement_report');
-    });
+    });    
 
     Route::prefix('pensionforbeneficiaries')->name('pensionforbeneficiaries.')->controller(PensionController::class)->group(function () {
         Route::get('oldage_pensioner_consents_create', 'oldage_pensioner_consents_create')->name('oldage_pensioner_consents_create');
@@ -433,37 +469,6 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
         Route::get('monthly_pension_disbursement_report_abstract', 'monthly_pension_disbursement_report_abstract')->name('monthly_pension_disbursement_report_abstract');
         Route::get('daily_pension_disbursement_submission', 'daily_pension_disbursement_submission')->name('daily_pension_disbursement_submission');
-    });
-
-    Route::prefix('DailyPensionDisbursement')->name('dailypensiondisbursement.')->controller(DailyPensionDisbursementController::class)->group(function () {
-        Route::get('index', 'index')->name('index');
-        Route::post('store', 'store')->name('store');
-        Route::get('{id}/edit', 'edit')->name('edit');
-        Route::post('{id}/update', 'update')->name('update');
-        Route::get('listing_report', 'listing_report')->name('listing_report');
-        Route::get('combined_report', 'combined_report')->name('combined_report');
-        Route::get('pension_disbursement_daily_not_submission', 'pension_disbursement_daily_not_submission')->name('pension_disbursement_daily_not_submission');
-        Route::post('update_record', 'update_record')->name('update_record');
-
-        Route::get('daily_pension_disbursement_vs_funds_requirements', 'daily_pension_disbursement_vs_funds_requirements')->name('daily_pension_disbursement_vs_funds_requirements');
-        Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries');
-        Route::get('daily_pension_disbursement_fund_vs_funds_requirements', 'daily_pension_disbursement_fund_vs_funds_requirements')->name('daily_pension_disbursement_fund_vs_funds_requirements');
-        Route::get('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds', 'daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')->name('daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds');
-        Route::get('month_wise_fund_requirement_comparison_for_district', 'month_wise_fund_requirement_comparison_for_district')->name('month_wise_fund_requirement_comparison_for_district');
-        Route::get('month_wise_fund_requirement_comparison_for_block_ulb', 'month_wise_fund_requirement_comparison_for_block_ulb')->name('month_wise_fund_requirement_comparison_for_block_ulb');
-
-        Route::get('block_ulb_wise_daily_pension_disbursement_report', 'block_ulb_wise_daily_pension_disbursement_report')->name('block_ulb_wise_daily_pension_disbursement_report');
-        Route::get('block_ulb_wise_monthly_report', 'block_ulb_wise_monthly_report')->name('block_ulb_wise_monthly_report');
-        Route::get('block_ulb_wise_monthly_report_ajax', 'block_ulb_wise_monthly_report_ajax')->name('block_ulb_wise_monthly_report_ajax');
-        Route::get('district_wise_monthly_pension_disbursement_report', 'district_wise_monthly_pension_disbursement_report')->name('district_wise_monthly_pension_disbursement_report');
-    });
-
-    /*New WorkFlow Added on 25-03-2026*/
-    Route::prefix('pensionFundRequirementDisbursement')->name('pensionfundrequirementdisbursement.')->controller(PensionFundRequirementDisbursementController::class)->group(function () {
-        Route::get('pension_fund_requirement_report_of_districts', 'pension_fund_requirement_report_of_districts')->name('pension_fund_requirement_report_of_districts');
-        Route::get('pension_fund_requirement_report_of_district', 'pension_fund_requirement_report_of_district')->name('pension_fund_requirement_report_of_district');
-        Route::match(['get','post'], 'pension_fund_requirement_report_of_block_ulb', 'pension_fund_requirement_report_of_block_ulb')
-    ->name('pension_fund_requirement_report_of_block_ulb');
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {

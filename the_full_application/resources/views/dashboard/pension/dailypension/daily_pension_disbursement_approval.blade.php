@@ -108,7 +108,7 @@ Pension || GP/Ward-wise Daily Pension Disbursement for the month - {{$forTheMont
          serverSide: true,
          responsive: true,
          ajax: {
-            url: "{{ route('admin.dailypensiondisbursement.listing_report') }}",
+            url: "{{ route('admin.dailypensiondisbursement.daily_pension_disbursement_approval') }}",
             data: function (d) {
                d.for_the_month = $('select[name=for_the_month]').val();
             }
@@ -170,7 +170,7 @@ Pension || GP/Ward-wise Daily Pension Disbursement for the month - {{$forTheMont
                dropdownHtml = `
             <div class="btn-group">
                 <button type="button" class="btn btn-danger dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Edit
+                    Action
                 </button>
                 <div class="dropdown-menu animated flipInX">
                `;
@@ -187,14 +187,14 @@ Pension || GP/Ward-wise Daily Pension Disbursement for the month - {{$forTheMont
                 }).replace(',', '');
 
                  dropdownHtml += `
-                    <a class="dropdown-item" href="{{ url('dashboard/DailyPensionDisbursement') }}/${id}/edit">
-                        Edit - ${formattedDate}
+                    <a class="dropdown-item" href="{{ url('dashboard/DailyPensionDisbursement') }}/${id}/daily_pension_disbursement_approval_view">
+                        View - ${formattedDate}
                  </a>`;
               });
 
                dropdownHtml += `</div></div>`;
             } else {
-               dropdownHtml = `<span class="text-muted">Edit not allowed</span>`;
+               dropdownHtml = `<span class="text-muted">Action not allowed</span>`;
             }
 
             return dropdownHtml;

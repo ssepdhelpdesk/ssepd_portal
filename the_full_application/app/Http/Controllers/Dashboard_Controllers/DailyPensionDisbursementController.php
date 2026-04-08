@@ -76,7 +76,7 @@ public function index()
         $gpIds   = [];
         $wardIds = $gp_ward_id->pluck('ward_code')->toArray();
     } else {
-        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+        return redirect()->back()->with('error', 'You have no specific permission for this action. Please contact admin.');
     }
     return view('dashboard.pension.dailypension.daily_pension_disbursement', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth'));
 }
@@ -121,7 +121,7 @@ $block_id = null;
 $municipality_id = $user->posted_municipality;
 $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
 } else {
-return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+return redirect()->back()->with('error', 'You have no specific permission for this action. Please contact admin.');
 }
 
 for ($i = 0; $i < $rows; $i++) {
@@ -236,7 +236,7 @@ public function store(Request $request)
         $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
         $block_id = null;
     } else {
-        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+        return redirect()->back()->with('error', 'You have no specific permission for this action. Please contact admin.');
     }
 
     DB::beginTransaction();
@@ -260,7 +260,7 @@ public function store(Request $request)
                 'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[$i] ?? null,
                 'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[$i] ?? null,
                 'mbpy_transgender'             => $request->mbpy_transgender[$i] ?? null,
-                'death_reported'             => $request->death_reported[$i] ?? null,
+                'death_reported'               => $request->death_reported[$i] ?? null,
                 'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[$i] ?? null,
                 'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[$i] ?? null,
             ];
@@ -329,6 +329,7 @@ public function store(Request $request)
                     'created_time'           => now('Asia/Kolkata')->toTimeString(),
                     'created_by'             => $user->user_table_id,
                     'status'                 => 1,
+                    'approve_status'         => 0,
                 ]);
 
                 $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
@@ -401,6 +402,7 @@ public function listing_report(Request $request)
         'mbpy_widow_due_to_covid',
         'mbpy_divorce_or_destitute',
         'mbpy_transgender',
+        'death_reported',
         'no_of_normal_pensioners',
         'no_of_ep_pensioners',
     ];
@@ -408,12 +410,14 @@ public function listing_report(Request $request)
     $bssosQuery = DailyPensionDisbursement::where('status', 1)
     ->where('for_the_month', $forTheMonth)
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->where('staff_address_type', 1)
     ->with(['grampanchayat.block', 'grampanchayat.district']);
 
     $meosQuery = DailyPensionDisbursement::where('status', 1)
     ->where('for_the_month', $forTheMonth)
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->where('staff_address_type', 2)
     ->with(['ward.municipality', 'ward.district']);
 
@@ -648,16 +652,18 @@ public function combined_report(Request $request)
         'mbpy_oap_below_80_years','mbpy_oap_above_80_years','mbpy_wp','mbpy_dp',
         'mbpy_sdp_below_80_percent','mbpy_sdp_above_80_percent','mbpy_sdoap','mbpy_clp',
         'mbpy_wp_aids','mbpy_dp_aids','mbpy_unmarried_women','mbpy_orphan_due_to_covide',
-        'mbpy_widow_due_to_covid','mbpy_divorce_or_destitute','mbpy_transgender',
+        'mbpy_widow_due_to_covid','mbpy_divorce_or_destitute','mbpy_transgender', 'death_reported',
         'no_of_normal_pensioners','no_of_ep_pensioners',
     ];
 
     $bssosQuery = DailyPensionDisbursement::where('status', 1)
+    ->where('approve_status', 1)
     ->where('for_the_month', $forTheMonth)
     ->where('staff_address_type', 1)
     ->with(['grampanchayat.block', 'grampanchayat.district']);
 
     $meosQuery = DailyPensionDisbursement::where('status', 1)
+    ->where('approve_status', 1)
     ->where('for_the_month', $forTheMonth)
     ->where('staff_address_type', 2)
     ->with(['ward.municipality', 'ward.district']);
@@ -811,6 +817,7 @@ public function pension_disbursement_daily_not_submission()
     ->where('for_the_month', $forTheMonth)
     ->where('is_active', 'active')
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->with(['state', 'district', 'block', 'grampanchayat', 'municipality', 'ward']);
 
     $allGps   = collect();
@@ -862,6 +869,7 @@ public function pension_disbursement_daily_not_submission()
     $monthlyPension = $dailyPensionDisbursemenetQuery
     ->where('is_active', 'active')
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->where('disbursement_started', 1)
     ->get();
 
@@ -959,7 +967,7 @@ public function edit(string $id)
         $gpIds   = [];
         $wardIds = $gp_ward_id->pluck('ward_code')->toArray();
     } else {
-        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+        return redirect()->back()->with('error', 'You have no specific permission for this action. Please contact admin.');
     }
     $dailypensiondisbursementdata =  DailyPensionDisbursement::whereId($id)->firstOrFail();
     return view('dashboard.pension.dailypension.daily_pension_disbursement_edit', compact('gp_ward_id', 'user', 'startDate', 'endDate', 'forTheMonth', 'dailypensiondisbursementdata'));
@@ -993,7 +1001,7 @@ public function update(Request $request, string $id)
         $district_id = Municipality::where('municipality_id', $municipality_id)->value('district_id');
         $block_id = null;
     } else {
-        return redirect()->back()->with('error', 'You have no specific permission for this page. Please contact admin.');
+        return redirect()->back()->with('error', 'You have no specific permission for this action. Please contact admin.');
     }
 
     DB::beginTransaction();
@@ -1064,6 +1072,9 @@ public function update(Request $request, string $id)
             'updated_date'           => now('Asia/Kolkata')->toDateString(),
             'updated_time'           => now('Asia/Kolkata')->toTimeString(),
             'updated_by'             => $user->user_table_id,
+            'approve_status'         => 0,
+            'approved_by'            => null,
+            'approved_date_time'     => null,
         ]);
 
         $dailypensiondisbursementdata->update($rowFields);
@@ -1117,11 +1128,12 @@ public function daily_pension_disbursement_vs_funds_requirements()
         SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_transgender) AS transgender,        
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")
     ->where('for_the_month', $month)
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->groupBy('address_type', 'district_id', 'block_id', 'municipality_id')
     ->get();
 
@@ -1154,10 +1166,12 @@ public function daily_pension_disbursement_vs_funds_requirements()
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported,
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")
     ->where('for_the_month', $month)
     ->where('status', 1)
+    ->where('approve_status', 1)
     ->groupBy('staff_address_type', 'district_id', 'block_id', 'municipality_id')
     ->get();
 
@@ -1211,6 +1225,7 @@ public function daily_pension_disbursement_vs_funds_requirements()
             'widow_covid_disbursement' => $d->widow_covid ?? 0,
             'divorce_destitute_disbursement' => $d->divorce_destitute ?? 0,
             'transgender_disbursement' => $d->transgender ?? 0,
+            'death_reported' => $d->death_reported ?? 0,
             'total_benf_disbursement' => $d->total_benf ?? 0,
         ];
     };
@@ -1280,11 +1295,11 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
 
     $fundsQuery = DB::table('pension_funds_requirements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
@@ -1326,7 +1341,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
         SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-        SUM(mbpy_transgender) AS transgender,
+        SUM(mbpy_transgender) AS transgender,        
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
@@ -1351,6 +1366,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported,
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
 
@@ -1421,6 +1437,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries(R
             'widow_covid_disbursement' => $d->widow_covid ?? 0,
             'divorce_destitute_disbursement' => $d->divorce_destitute ?? 0,
             'transgender_disbursement' => $d->transgender ?? 0,
+            'death_reported' => $d->death_reported ?? 0,
             'total_benf_disbursement' => $d->total_benf ?? 0,
         ];
     };
@@ -1471,11 +1488,11 @@ public function daily_pension_disbursement_fund_vs_funds_requirements(Request $r
 
     $fundsQuery = DB::table('pension_funds_requirements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
@@ -1680,11 +1697,11 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
 
     $fundsQuery = DB::table('pension_funds_requirements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     $disbQuery = DB::table('daily_pension_disbursements')
     ->where('for_the_month', $month)
-    ->where('status', 1);
+    ->where('status', 1)->where('approve_status', 1);
 
     if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
         if (in_array($userRole, [4,6])) {
@@ -1727,6 +1744,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported,
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")->groupBy('address_type','district_id','block_id','municipality_id')->get();
 
@@ -1751,6 +1769,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
         SUM(mbpy_widow_due_to_covid) AS widow_covid,
         SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
         SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported,
         SUM(mbpy_total_beneficiaries) AS total_benf
         ")->groupBy('staff_address_type','district_id','block_id','municipality_id')->get();
 
@@ -1792,7 +1811,7 @@ public function daily_pension_disbursement_vs_funds_requirements_beneficiaries_a
         foreach ([
             'oap_below_80','oap_above_80','widow_pension','disabled_pension',
             'sdp_below_80','sdp_above_80','sdoap','clp','wp_aids','dp_aids',
-            'unmarried_women','orphan_covid','widow_covid','divorce_destitute','transgender','total_benf'
+            'unmarried_women','orphan_covid','widow_covid','divorce_destitute','transgender','death_reported','total_benf'
         ] as $field) {
             $vals["{$field}_requirement"] = $f->$field ?? 0;
             $vals["{$field}_disbursement"] = $d->$field ?? 0;
@@ -2322,7 +2341,7 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
     $municipalities = Municipality::whereIn('municipality_id', $allowedMunicipalityIds)->get();
 
     $daily = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
-    ->where('status', 1)
+    ->where('status', 1)->where('approve_status', 1)
     ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
 
         if ($allowedBlockIds->count() > 0) {
@@ -2355,7 +2374,7 @@ public function block_ulb_wise_daily_pension_disbursement_report(Request $reques
     ];
 
     $fundsRaw = DailyPensionDisbursement::where('disbursement_start_date', $selectedDate)
-    ->where('status', 1)
+    ->where('status', 1)->where('approve_status', 1)
     ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
 
         if ($allowedBlockIds->count() > 0) {
@@ -2510,7 +2529,7 @@ public function block_ulb_wise_monthly_report(Request $request)
     $municipalities = Municipality::whereIn('municipality_id', $allowedMunicipalityIds)->get();
 
     $daily = DailyPensionDisbursement::where('for_the_month', $forTheMonth)
-    ->where('status', 1)
+    ->where('status', 1)->where('approve_status', 1)
     ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
         if ($allowedBlockIds->count() > 0) {
             $q->whereIn('block_id', $allowedBlockIds);
@@ -2540,7 +2559,7 @@ public function block_ulb_wise_monthly_report(Request $request)
     ];
 
     $fundsRaw = DailyPensionDisbursement::where('for_the_month', $forTheMonth)
-    ->where('status', 1)
+    ->where('status', 1)->where('approve_status', 1)
     ->where(function ($q) use ($allowedBlockIds, $allowedMunicipalityIds) {
         if ($allowedBlockIds->count() > 0) {
             $q->whereIn('block_id', $allowedBlockIds);
@@ -2697,7 +2716,7 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
     ->get();
 
     $forTheMonth = $request->for_the_month
-        ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
+    ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
 
     if (!$forTheMonth) {
         abort(404, 'Disbursement month not configured');
@@ -2723,9 +2742,10 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
     }
 
     $daily = DailyPensionDisbursement::where('for_the_month', $forTheMonth)
-        ->where('status', 1)
-        ->whereIn('district_id', $allowedDistrictIds)
-        ->get();
+    ->where('status', 1)
+    ->where('approve_status', 1)
+    ->whereIn('district_id', $allowedDistrictIds)
+    ->get();
 
     $fundRates = [
         'oap_below_80' => 1000,
@@ -2746,32 +2766,33 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
     ];
 
     $fundsRaw = DailyPensionDisbursement::where('for_the_month', $forTheMonth)
-        ->where('status', 1)
-        ->whereIn('district_id', $allowedDistrictIds)
-        ->selectRaw("
-            district_id,
-            SUM(mbpy_oap_below_80_years) AS oap_below_80,
-            SUM(mbpy_oap_above_80_years) AS oap_above_80,
-            SUM(mbpy_wp) AS widow_pension,
-            SUM(mbpy_dp) AS disabled_pension,
-            SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
-            SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
-            SUM(mbpy_sdoap) AS sdoap,
-            SUM(mbpy_clp) AS clp,
-            SUM(mbpy_wp_aids) AS wp_aids,
-            SUM(mbpy_dp_aids) AS dp_aids,
-            SUM(mbpy_unmarried_women) AS unmarried_women,
-            SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
-            SUM(mbpy_widow_due_to_covid) AS widow_covid,
-            SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
-            SUM(mbpy_transgender) AS transgender,
-            SUM(death_reported) AS death_reported,
-            SUM(no_of_normal_pensioners) AS no_of_normal_pensioners,
-            SUM(no_of_ep_pensioners) AS no_of_ep_pensioners
+    ->where('status', 1)
+    ->where('approve_status', 1)
+    ->whereIn('district_id', $allowedDistrictIds)
+    ->selectRaw("
+        district_id,
+        SUM(mbpy_oap_below_80_years) AS oap_below_80,
+        SUM(mbpy_oap_above_80_years) AS oap_above_80,
+        SUM(mbpy_wp) AS widow_pension,
+        SUM(mbpy_dp) AS disabled_pension,
+        SUM(mbpy_sdp_below_80_percent) AS sdp_below_80,
+        SUM(mbpy_sdp_above_80_percent) AS sdp_above_80,
+        SUM(mbpy_sdoap) AS sdoap,
+        SUM(mbpy_clp) AS clp,
+        SUM(mbpy_wp_aids) AS wp_aids,
+        SUM(mbpy_dp_aids) AS dp_aids,
+        SUM(mbpy_unmarried_women) AS unmarried_women,
+        SUM(mbpy_orphan_due_to_covide) AS orphan_covid,
+        SUM(mbpy_widow_due_to_covid) AS widow_covid,
+        SUM(mbpy_divorce_or_destitute) AS divorce_destitute,
+        SUM(mbpy_transgender) AS transgender,
+        SUM(death_reported) AS death_reported,
+        SUM(no_of_normal_pensioners) AS no_of_normal_pensioners,
+        SUM(no_of_ep_pensioners) AS no_of_ep_pensioners
         ")
-        ->groupBy('district_id')
-        ->get()
-        ->keyBy('district_id');
+    ->groupBy('district_id')
+    ->get()
+    ->keyBy('district_id');
 
     $final = [];
 
@@ -2822,9 +2843,9 @@ public function district_wise_monthly_pension_disbursement_report(Request $reque
     }
 
     $final = collect($final)
-        ->sortBy('district_name', SORT_NATURAL | SORT_FLAG_CASE)
-        ->values()
-        ->toArray();
+    ->sortBy('district_name', SORT_NATURAL | SORT_FLAG_CASE)
+    ->values()
+    ->toArray();
 
     return view(
         'dashboard.pension.dailypension.district_wise_monthly_pension_disbursement_report',
@@ -2842,19 +2863,19 @@ public function block_ulb_wise_monthly_report_ajax(Request $request)
     $userRole = $user->role_id;
 
     $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
-        ->where('is_active', 'active')
-        ->orderByDesc('id')
-        ->get();
+    ->where('is_active', 'active')
+    ->orderByDesc('id')
+    ->get();
 
     $forTheMonth = $request->for_the_month
-        ?? optional($dateConfig->first())->for_the_month;
+    ?? optional($dateConfig->first())->for_the_month;
 
     /* ===============================
        FORCE JSON RESPONSE FOR TESTING
        =============================== */
 
     // simulate AJAX even from browser
-    if (true) {
+       if (true) {
 
         if (!$forTheMonth) {
             return response()->json([
@@ -2881,127 +2902,384 @@ public function block_ulb_wise_monthly_report_ajax(Request $request)
         $municipalities = Municipality::whereIn('municipality_id', $allowedMunicipalityIds)->get();
 
         $daily = DailyPensionDisbursement::where('for_the_month', $forTheMonth)
-            ->where('status', 1)
-            ->get();
+        ->where('status', 1)
+        ->where('approve_status', 1)
+        ->get();
 
         $final = [];
 
-/* ================= BLOCK DATA ================= */
-foreach ($blocks as $b) {
+        /* ================= BLOCK DATA ================= */
+        foreach ($blocks as $b) {
 
-    $entries = $daily->where('block_id', $b->block_id);
-    $fundSource = $fundsRaw[$b->block_id] ?? null;
+            $entries = $daily->where('block_id', $b->block_id);
+            $fundSource = $fundsRaw[$b->block_id] ?? null;
 
-    $normalFund = 0;
-    $epFund = 0;
+            $normalFund = 0;
+            $epFund = 0;
 
-    if ($fundSource) {
-        foreach ($fundRates as $key => $rate) {
-            $count = $fundSource->$key ?? 0;
-            $rate == 3500
-                ? $epFund += $count * 3500
-                : $normalFund += $count * $rate;
-        }
-    }
+            if ($fundSource) {
+                foreach ($fundRates as $key => $rate) {
+                    $count = $fundSource->$key ?? 0;
+                    $rate == 3500
+                    ? $epFund += $count * 3500
+                    : $normalFund += $count * $rate;
+                }
+            }
 
-    $final[] = [
-        'district_name' => District::where('district_id', $b->district_id)->value('district_name'),
-        'staff_address_type' => 'Block',
-        'block_ulb_name' => $b->block_name,
-        'status' => $entries->count()
-            ? '<span class="badge bg-success">Available</span>'
-            : '<span class="badge bg-danger">Not Available</span>',
+            $final[] = [
+                'district_name' => District::where('district_id', $b->district_id)->value('district_name'),
+                'staff_address_type' => 'Block',
+                'block_ulb_name' => $b->block_name,
+                'status' => $entries->count()
+                ? '<span class="badge bg-success">Available</span>'
+                : '<span class="badge bg-danger">Not Available</span>',
 
         // scheme counts
-        'oap_below_80' => $fundSource->oap_below_80 ?? 0,
-        'oap_above_80' => $fundSource->oap_above_80 ?? 0,
-        'widow_pension' => $fundSource->widow_pension ?? 0,
-        'disabled_pension' => $fundSource->disabled_pension ?? 0,
-        'sdp_below_80' => $fundSource->sdp_below_80 ?? 0,
-        'sdp_above_80' => $fundSource->sdp_above_80 ?? 0,
-        'sdoap' => $fundSource->sdoap ?? 0,
-        'clp' => $fundSource->clp ?? 0,
-        'wp_aids' => $fundSource->wp_aids ?? 0,
-        'dp_aids' => $fundSource->dp_aids ?? 0,
-        'unmarried_women' => $fundSource->unmarried_women ?? 0,
-        'orphan_covid' => $fundSource->orphan_covid ?? 0,
-        'widow_covid' => $fundSource->widow_covid ?? 0,
-        'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
-        'transgender' => $fundSource->transgender ?? 0,
+                'oap_below_80' => $fundSource->oap_below_80 ?? 0,
+                'oap_above_80' => $fundSource->oap_above_80 ?? 0,
+                'widow_pension' => $fundSource->widow_pension ?? 0,
+                'disabled_pension' => $fundSource->disabled_pension ?? 0,
+                'sdp_below_80' => $fundSource->sdp_below_80 ?? 0,
+                'sdp_above_80' => $fundSource->sdp_above_80 ?? 0,
+                'sdoap' => $fundSource->sdoap ?? 0,
+                'clp' => $fundSource->clp ?? 0,
+                'wp_aids' => $fundSource->wp_aids ?? 0,
+                'dp_aids' => $fundSource->dp_aids ?? 0,
+                'unmarried_women' => $fundSource->unmarried_women ?? 0,
+                'orphan_covid' => $fundSource->orphan_covid ?? 0,
+                'widow_covid' => $fundSource->widow_covid ?? 0,
+                'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
+                'transgender' => $fundSource->transgender ?? 0,
 
         // totals
-        'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
-        'no_of_ep_pensioners' => $entries->sum('no_of_ep_pensioners'),
-        'total_pensioners' =>
-            $entries->sum('no_of_normal_pensioners')
-            + $entries->sum('no_of_ep_pensioners'),
+                'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
+                'no_of_ep_pensioners' => $entries->sum('no_of_ep_pensioners'),
+                'total_pensioners' =>
+                $entries->sum('no_of_normal_pensioners')
+                + $entries->sum('no_of_ep_pensioners'),
 
-        'funds_no_of_normal_pensioners' => $normalFund,
-        'funds_no_of_ep_pensioners' => $epFund,
-        'total_funds' => $normalFund + $epFund,
-    ];
+                'funds_no_of_normal_pensioners' => $normalFund,
+                'funds_no_of_ep_pensioners' => $epFund,
+                'total_funds' => $normalFund + $epFund,
+            ];
+        }
+
+        /* ================= ULB DATA ================= */
+        foreach ($municipalities as $m) {
+
+            $entries = $daily->where('municipality_id', $m->municipality_id);
+            $fundSource = $fundsRaw['ULB_'.$m->municipality_id] ?? null;
+
+            $normalFund = 0;
+            $epFund = 0;
+
+            if ($fundSource) {
+                foreach ($fundRates as $key => $rate) {
+                    $count = $fundSource->$key ?? 0;
+                    $rate == 3500
+                    ? $epFund += $count * 3500
+                    : $normalFund += $count * $rate;
+                }
+            }
+
+            $final[] = [
+                'district_name' => District::where('district_id', $m->district_id)->value('district_name'),
+                'staff_address_type' => 'ULB',
+                'block_ulb_name' => $m->municipality_name,
+                'status' => $entries->count()
+                ? '<span class="badge bg-success">Available</span>'
+                : '<span class="badge bg-danger">Not Available</span>',
+
+                'oap_below_80' => $fundSource->oap_below_80 ?? 0,
+                'oap_above_80' => $fundSource->oap_above_80 ?? 0,
+                'widow_pension' => $fundSource->widow_pension ?? 0,
+                'disabled_pension' => $fundSource->disabled_pension ?? 0,
+                'sdp_below_80' => $fundSource->sdp_below_80 ?? 0,
+                'sdp_above_80' => $fundSource->sdp_above_80 ?? 0,
+                'sdoap' => $fundSource->sdoap ?? 0,
+                'clp' => $fundSource->clp ?? 0,
+                'wp_aids' => $fundSource->wp_aids ?? 0,
+                'dp_aids' => $fundSource->dp_aids ?? 0,
+                'unmarried_women' => $fundSource->unmarried_women ?? 0,
+                'orphan_covid' => $fundSource->orphan_covid ?? 0,
+                'widow_covid' => $fundSource->widow_covid ?? 0,
+                'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
+                'transgender' => $fundSource->transgender ?? 0,
+
+                'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
+                'no_of_ep_pensioners' => $entries->sum('no_of_ep_pensioners'),
+                'total_pensioners' =>
+                $entries->sum('no_of_normal_pensioners')
+                + $entries->sum('no_of_ep_pensioners'),
+
+                'funds_no_of_normal_pensioners' => $normalFund,
+                'funds_no_of_ep_pensioners' => $epFund,
+                'total_funds' => $normalFund + $epFund,
+            ];
+        }
+
+        /* ================= DATATABLES RETURN ================= */
+
+        return DataTables::of(collect($final)->sortBy('district_name')->values())
+        ->addIndexColumn()
+        ->rawColumns(['status'])
+        ->make(true);
+    }
 }
 
-/* ================= ULB DATA ================= */
-foreach ($municipalities as $m) {
+public function daily_pension_disbursement_approval(Request $request)
+{
+    $user = Auth::user();
+    $userRole = $user->role_id;
 
-    $entries = $daily->where('municipality_id', $m->municipality_id);
-    $fundSource = $fundsRaw['ULB_'.$m->municipality_id] ?? null;
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('is_active', 'active')
+    ->orderBy('id', 'desc')
+    ->get();
 
-    $normalFund = 0;
-    $epFund = 0;
+    $forTheMonth = $request->for_the_month 
+    ?? ($dateConfig->sortByDesc('id')->first()->for_the_month ?? null);
 
-    if ($fundSource) {
-        foreach ($fundRates as $key => $rate) {
-            $count = $fundSource->$key ?? 0;
-            $rate == 3500
-                ? $epFund += $count * 3500
-                : $normalFund += $count * $rate;
+    $numericColumns = [
+        'mbpy_oap_below_80_years',
+        'mbpy_oap_above_80_years',
+        'mbpy_wp',
+        'mbpy_dp',
+        'mbpy_sdp_below_80_percent',
+        'mbpy_sdp_above_80_percent',
+        'mbpy_sdoap',
+        'mbpy_clp',
+        'mbpy_wp_aids',
+        'mbpy_dp_aids',
+        'mbpy_unmarried_women',
+        'mbpy_orphan_due_to_covide',
+        'mbpy_widow_due_to_covid',
+        'mbpy_divorce_or_destitute',
+        'mbpy_transgender',
+        'death_reported',
+        'no_of_normal_pensioners',
+        'no_of_ep_pensioners',
+    ];
+
+    $bssosQuery = DailyPensionDisbursement::where('status', 1)
+    ->where('for_the_month', $forTheMonth)
+    ->where('status', 1)
+    ->where('approve_status', 0)
+    ->where('staff_address_type', 1)
+    ->with(['grampanchayat.block', 'grampanchayat.district']);
+
+    $meosQuery = DailyPensionDisbursement::where('status', 1)
+    ->where('for_the_month', $forTheMonth)
+    ->where('status', 1)
+    ->where('approve_status', 0)
+    ->where('staff_address_type', 2)
+    ->with(['ward.municipality', 'ward.district']);
+
+    if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+        if (in_array($userRole, [4, 6])) {
+            $bssosQuery->where('block_id', $user->posted_block);
+            $meosQuery = collect();
+        } elseif ($userRole == 5) {
+            $meosQuery->where('municipality_id', $user->posted_municipality);
+            $bssosQuery = collect();
+        } elseif (in_array($userRole, [8, 10])) {
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id');
+            $bssosQuery->whereIn('block_id', $blockIds);
+            $meosQuery->whereIn('municipality_id', $municipalityIds);
+        } elseif (in_array($userRole, [9, 11])) {
+            $bssosQuery->where('district_id', $user->posted_district);
+            $meosQuery->where('district_id', $user->posted_district);
         }
     }
 
-    $final[] = [
-        'district_name' => District::where('district_id', $m->district_id)->value('district_name'),
-        'staff_address_type' => 'ULB',
-        'block_ulb_name' => $m->municipality_name,
-        'status' => $entries->count()
-            ? '<span class="badge bg-success">Available</span>'
-            : '<span class="badge bg-danger">Not Available</span>',
+    $bssos = $bssosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $bssosQuery->get() : $bssosQuery;
+    $meos  = $meosQuery instanceof \Illuminate\Database\Eloquent\Builder ? $meosQuery->get() : $meosQuery;
+    $allRecords = collect($bssos)->merge($meos);
 
-        'oap_below_80' => $fundSource->oap_below_80 ?? 0,
-        'oap_above_80' => $fundSource->oap_above_80 ?? 0,
-        'widow_pension' => $fundSource->widow_pension ?? 0,
-        'disabled_pension' => $fundSource->disabled_pension ?? 0,
-        'sdp_below_80' => $fundSource->sdp_below_80 ?? 0,
-        'sdp_above_80' => $fundSource->sdp_above_80 ?? 0,
-        'sdoap' => $fundSource->sdoap ?? 0,
-        'clp' => $fundSource->clp ?? 0,
-        'wp_aids' => $fundSource->wp_aids ?? 0,
-        'dp_aids' => $fundSource->dp_aids ?? 0,
-        'unmarried_women' => $fundSource->unmarried_women ?? 0,
-        'orphan_covid' => $fundSource->orphan_covid ?? 0,
-        'widow_covid' => $fundSource->widow_covid ?? 0,
-        'divorce_destitute' => $fundSource->divorce_destitute ?? 0,
-        'transgender' => $fundSource->transgender ?? 0,
+    $grouped = $allRecords->groupBy(function ($item) {
+        return $item->staff_address_type == 1
+        ? 'gp_' . $item->gp_id
+        : 'ward_' . $item->ward_id;
+    })->map(function ($group) use ($numericColumns) {
+        $first = $group->first();
 
-        'no_of_normal_pensioners' => $entries->sum('no_of_normal_pensioners'),
-        'no_of_ep_pensioners' => $entries->sum('no_of_ep_pensioners'),
-        'total_pensioners' =>
-            $entries->sum('no_of_normal_pensioners')
-            + $entries->sum('no_of_ep_pensioners'),
+        $dateIdMap = $group->mapWithKeys(function($item) {
+            $date = \Carbon\Carbon::parse($item->disbursement_start_date)->format('Y-m-d');
+            return [$date => $item->id];
+        });
 
-        'funds_no_of_normal_pensioners' => $normalFund,
-        'funds_no_of_ep_pensioners' => $epFund,
-        'total_funds' => $normalFund + $epFund,
-    ];
+        $row = [
+            'staff_address_type' => $first->staff_address_type,
+            'district_name'      => $first->staff_address_type == 1
+            ? ($first->grampanchayat->district->district_name ?? '')
+            : ($first->ward->district->district_name ?? ''),
+            'block_ulb_name'     => $first->staff_address_type == 1
+            ? ($first->grampanchayat->block->block_name ?? '')
+            : ($first->ward->municipality->municipality_name ?? ''),
+            'gp_ward_name'       => $first->staff_address_type == 1
+            ? ($first->grampanchayat->gp_name ?? '')
+            : ($first->ward->ward_name ?? ''),
+            'forTheMonth'        => $first->for_the_month,
+            'disbursement_dates' => $dateIdMap,
+        ];
+
+        foreach ($numericColumns as $col) {
+            $row['totals']['total_' . $col] = $group->sum($col);
+        }
+
+        return $row;
+    })->values();
+
+    if ($request->ajax()) {
+        return DataTables::of($grouped)
+        ->addIndexColumn()
+        ->rawColumns(['disbursement_dates'])
+        ->make(true);
+    }
+
+    return view(
+        'dashboard.pension.dailypension.daily_pension_disbursement_approval',
+        compact('forTheMonth', 'numericColumns', 'dateConfig')
+    );
 }
 
-/* ================= DATATABLES RETURN ================= */
+public function daily_pension_disbursement_approval_view(string $id)
+{
+    $user = auth()->user();
 
-return DataTables::of(collect($final)->sortBy('district_name')->values())
-    ->addIndexColumn()
-    ->rawColumns(['status'])
-    ->make(true);
+    if ($user->role_name !== 'DSSO') {
+        return redirect()->back()->with('error', 'You have no permission for this action.');
+    }
+
+    $today_date = Carbon::today('Asia/Kolkata')->format('Y-m-d');
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+        ->where('status', 1)
+        ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured.');
+    }
+
+    $startDate   = $dateConfig->start_date;
+    $endDate     = $dateConfig->end_date;
+    $forTheMonth = $dateConfig->for_the_month;
+
+    $dailypensiondisbursementdata = DailyPensionDisbursement::findOrFail($id);
+
+    return view('dashboard.pension.dailypension.daily_pension_disbursement_approval_view', compact(
+        'user',
+        'startDate',
+        'endDate',
+        'forTheMonth',
+        'dailypensiondisbursementdata'
+    ));
+}
+
+public function daily_pension_disbursement_approval_process(Request $request, string $id)
+{
+    $user = auth()->user();
+
+    $dateConfig = PensionFundRequirementDates::where('for_which_page', 'daily_pension_disbursemenets')
+    ->where('status', 1)
+    ->first();
+
+    if (!$dateConfig) {
+        return redirect()->back()->with('error', 'Submission dates are not configured. Please contact admin.');
+    }
+
+    $forTheMonth = $dateConfig->for_the_month;
+
+    DB::beginTransaction();
+    try {
+
+        $dailypensiondisbursementdata = DailyPensionDisbursement::findOrFail($id);
+
+        $rowFields = [
+            'mbpy_oap_below_80_years'      => $request->mbpy_oap_below_80_years[0] ?? null,
+            'mbpy_oap_above_80_years'      => $request->mbpy_oap_above_80_years[0] ?? null,
+            'mbpy_wp'                      => $request->mbpy_wp[0] ?? null,
+            'mbpy_dp'                      => $request->mbpy_dp[0] ?? null,
+            'mbpy_sdp_below_80_percent'    => $request->mbpy_sdp_below_80_percent[0] ?? null,
+            'mbpy_sdp_above_80_percent'    => $request->mbpy_sdp_above_80_percent[0] ?? null,
+            'mbpy_sdoap'                   => $request->mbpy_sdoap[0] ?? null,
+            'mbpy_clp'                     => $request->mbpy_clp[0] ?? null,
+            'mbpy_wp_aids'                 => $request->mbpy_wp_aids[0] ?? null,
+            'mbpy_dp_aids'                 => $request->mbpy_dp_aids[0] ?? null,
+            'mbpy_unmarried_women'         => $request->mbpy_unmarried_women[0] ?? null,
+            'mbpy_orphan_due_to_covide'    => $request->mbpy_orphan_due_to_covide[0] ?? null,
+            'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[0] ?? null,
+            'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[0] ?? null,
+            'mbpy_transgender'             => $request->mbpy_transgender[0] ?? null,
+            'death_reported'               => $request->death_reported[0] ?? null,
+            'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[0] ?? null,
+            'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[0] ?? null,
+        ];
+
+        $hasAnyValue = collect($rowFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+
+        if (!$hasAnyValue) {
+            return back()->withErrors([
+                'at_least_one_row' => 'Please fill at least one complete GP/Ward Beneficiary Count before submitting the form.'
+            ])->withInput();
+        }
+
+        $fundMultipliers = [
+            'mbpy_oap_below_80_years'        => 1000,
+            'mbpy_oap_above_80_years'        => 3500,
+            'mbpy_wp'                        => 1000,
+            'mbpy_dp'                        => 1000,
+            'mbpy_sdp_below_80_percent'      => 1200,
+            'mbpy_sdp_above_80_percent'      => 3500,
+            'mbpy_sdoap'                     => 3500,
+            'mbpy_clp'                       => 1000,
+            'mbpy_wp_aids'                   => 1000,
+            'mbpy_dp_aids'                   => 1000,
+            'mbpy_unmarried_women'           => 1000,
+            'mbpy_orphan_due_to_covide'      => 1000,
+            'mbpy_widow_due_to_covid'        => 1000,
+            'mbpy_divorce_or_destitute'      => 1000,
+            'mbpy_transgender'               => 1000,
+        ];
+
+        $totalBeneficiaries = 0;
+        $totalFunds = 0;
+
+        foreach ($fundMultipliers as $field => $rate) {
+            $count = (int)($rowFields[$field] ?? 0);
+            $rowFields["funds_{$field}"] = $count * $rate;
+            $totalBeneficiaries += $count;
+            $totalFunds += ($count * $rate);
+        }
+
+        $rowFields['mbpy_total_beneficiaries'] = $totalBeneficiaries;
+        $rowFields['funds_mbpy_total_beneficiaries'] = $totalFunds;
+
+        $rowFields = array_merge($rowFields, [
+            'updated_date'           => now('Asia/Kolkata')->toDateString(),
+            'updated_time'           => now('Asia/Kolkata')->toTimeString(),
+            'updated_by'             => $user->user_table_id,
+            'approve_status'         => 1,
+            'approved_by'            => Auth::id() ?? null,
+            'approved_date_time'     => Carbon::now('Asia/Kolkata'),
+        ]);
+
+        $dailypensiondisbursementdata->update($rowFields);
+        DB::commit();
+
+        return redirect()->route('admin.dailypensiondisbursement.daily_pension_disbursement_approval')->with('success', 'Pension disbursement record Approved successfully.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Daily Pension disbursement Approval form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
     }
 }
 

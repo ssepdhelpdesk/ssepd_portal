@@ -25,7 +25,7 @@ Pension || District wise Pension Fund Requirement for the Month {{$month}} As on
       <div class="col-md-4 d-flex align-items-end">
          <div class="w-100">
             <label>Select Month</label>
-            <select id="monthFilter" class="form-control">
+            <select id="monthFilter" class="select2 form-control form-select">
                @foreach($dateConfig as $date)
                <option value="{{ $date->for_the_month }}" {{ $month == $date->for_the_month ? 'selected' : '' }}>
                   {{ $date->for_the_month }}
@@ -37,7 +37,7 @@ Pension || District wise Pension Fund Requirement for the Month {{$month}} As on
       <div class="col-md-4 d-flex align-items-end">
          <div class="w-100">
             <label>District Approval Status</label>
-            <select id="districtApprovalStatus" class="form-control">
+            <select id="districtApprovalStatus" class="select2 form-control form-select">
                <option value="">-Select-</option>
                <option value="1">Approved</option>
                <option value="0">Pending for Approval</option>

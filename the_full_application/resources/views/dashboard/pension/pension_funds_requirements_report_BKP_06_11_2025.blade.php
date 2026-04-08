@@ -39,7 +39,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                   <h5 class="mb-2">📅 Filter by Month</h5>
                   <form method="GET" action="{{ route('admin.pension.report_without_ajax') }}" class="d-flex align-items-center">
                      <label class="me-2 fw-bold">Select Month:</label>
-                     <select name="for_the_month" class="form-select w-auto me-2" onchange="this.form.submit()">
+                     <select name="for_the_month" class="select2 form-control form-select w-auto me-2" onchange="this.form.submit()">
                         @foreach($dateConfig as $config)
                         <option value="{{ $config->for_the_month }}" {{ $month == $config->for_the_month ? 'selected' : '' }}>
                            {{ $config->for_the_month }}
@@ -299,7 +299,7 @@ Pension || MBPY Fund Requirements for the month - {{$forTheMonth}} || {{ \Carbon
                                 is_numeric($fundsRequirements->id)
                                 )
                                 @can('pension-show')
-                                <a class="dropdown-item" href="{{ route('admin.pension.show', $fundsRequirements->id) }}">Show</a>
+                                <a class="dropdown-item" href="{{ route('admin.pension.show', $fundsRequirements->id) }}">View</a>
                                 @endcan
 
                                 @can('pension-edit')

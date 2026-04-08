@@ -15,11 +15,12 @@ $fieldMap = [
     'mbpy_widow_due_to_covid' => ['label' => 'Widow (Covid)'],
     'mbpy_divorce_or_destitute' => ['label' => 'Divorce/Destitute'],
     'mbpy_transgender' => ['label' => 'Transgender'],
+    'death_reported' => ['label' => 'Death Reported'],
 ];
 @endphp
 
 @section('title') 
-Pension || Block/ULB wise Pension Fund Requirement for the Month {{$month}} As on {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || Block/ULB wise Daily Pension Disbursement <!-- for the Month {{$month}} --> As on {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection 
 
 @extends('dashboard.layouts.main')
@@ -179,7 +180,7 @@ $(function () {
     ],
 
     ajax:{
-        url:"{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
+        url:"{{ route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_block_ulb') }}",
         type:'POST',
         data:d=>{
             d.for_the_month=$('#monthFilter').val();

@@ -122,6 +122,8 @@ Pension || Daily Pension Disbursement vs Funds Requirements
                           <th class="text-center">Transgender Disbursement</th>
                           <th class="text-center">Transgender Difference</th>
 
+                          <th class="text-center">Death Reported</th>
+
                           <!-- Summary -->
                           <th class="text-center">Normal Pension Requirement</th>
                           <th class="text-center">Normal Pension Disbursement</th>
@@ -168,6 +170,8 @@ Pension || Daily Pension Disbursement vs Funds Requirements
 
                       $normalDiff = $normalRequirement - $normalDisbursement;
 
+                      $death_reported = $row['death_reported'];
+
                       $epRequirement = $row['oap_above_80_requirement'] +
                       $row['sdp_above_80_requirement'] +
                       $row['sdoap_requirement'];
@@ -201,6 +205,7 @@ Pension || Daily Pension Disbursement vs Funds Requirements
                      </td>
                      @endforeach
 
+                     <td class="border px-4 py-2 text-center font-semibold">{{ $death_reported }}</td>
                      {{-- Normal Pension Summary --}}
                      <td class="border px-4 py-2 text-center font-semibold">{{ $normalRequirement }}</td>
                      <td class="border px-4 py-2 text-center font-semibold">{{ $normalDisbursement }}</td>

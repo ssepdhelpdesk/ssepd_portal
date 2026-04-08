@@ -685,36 +685,6 @@ class PensionFundsRequirementsController extends Controller
     }
 
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $pensionFundsRequirement = PensionFundsRequirement::findOrFail($id);
-
-        $pensionFundsRequirementDates = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-        ->where('for_the_month', $pensionFundsRequirement->for_the_month)
-        ->first();
-
-        if (!$pensionFundsRequirementDates) {
-            return redirect()->back()->with('error', 'Date configuration not found for this month.');
-        }
-
-        $today = now()->toDateString();
-
-        if ($today >= $pensionFundsRequirementDates->start_date && $today <= $pensionFundsRequirementDates->end_date) {
-            return view('dashboard.pension.show', compact('pensionFundsRequirement'));
-        } else {
-            $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
-            $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');
-
-            return redirect()->back()->with(
-                'error',
-                "The date for Pension Funds Requirement submission or updation was between {$startFormatted} and {$endFormatted}."
-            );
-        }
-    }
-
     public function fund_requirement_approval(Request $request)
     {
         $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
@@ -785,7 +755,10 @@ class PensionFundsRequirementsController extends Controller
         ));
     }
 
-    public function fund_requirement_approval_process(string $id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
         $pensionFundsRequirement = PensionFundsRequirement::findOrFail($id);
 
@@ -800,12 +773,7 @@ class PensionFundsRequirementsController extends Controller
         $today = now()->toDateString();
 
         if ($today >= $pensionFundsRequirementDates->start_date && $today <= $pensionFundsRequirementDates->end_date) {
-            $pensionFundsRequirement->approve_status = 1;
-            $pensionFundsRequirement->approved_by = Auth::id() ?? null;
-            $pensionFundsRequirement->approved_date_time = Carbon::now('Asia/Kolkata');
-            $pensionFundsRequirement->save();
-            
-            return redirect()->route('admin.pension.fund_requirement_approval')->with('info', 'Fund Requirement Approved.');
+            return view('dashboard.pension.show', compact('pensionFundsRequirement'));
         } else {
             $startFormatted = Carbon::parse($pensionFundsRequirementDates->start_date)->format('d M Y');
             $endFormatted   = Carbon::parse($pensionFundsRequirementDates->end_date)->format('d M Y');
@@ -814,6 +782,190 @@ class PensionFundsRequirementsController extends Controller
                 'error',
                 "The date for Pension Funds Requirement submission or updation was between {$startFormatted} and {$endFormatted}."
             );
+        }
+    }
+
+    public function fund_requirement_approval_process(Request $request, string $id)
+    {
+        $validationRules = [
+            'mbpy_oap_below_80_years' => 'required|integer|min:0',
+            'mbpy_oap_above_80_years' => 'required|integer|min:0',
+            'mbpy_wp' => 'required|integer|min:0',
+            'mbpy_dp' => 'required|integer|min:0',
+            'mbpy_sdp_below_80_percent' => 'required|integer|min:0',
+            'mbpy_sdp_above_80_percent' => 'required|integer|min:0',
+            'mbpy_sdoap' => 'required|integer|min:0',
+            'mbpy_clp' => 'required|integer|min:0',
+            'mbpy_wp_aids' => 'required|integer|min:0',
+            'mbpy_dp_aids' => 'required|integer|min:0',
+            'mbpy_unmarried_women' => 'required|integer|min:0',
+            'mbpy_orphan_due_to_covide' => 'required|integer|min:0',
+            'mbpy_widow_due_to_covid' => 'required|integer|min:0',
+            'mbpy_divorce_or_destitute' => 'required|integer|min:0',
+            'mbpy_transgender' => 'required|integer|min:0',
+            'mbpy_bank_account_number' => 'required|string|regex:/^[0-9]{9,18}$/',
+            'mbpy_bank_ifsc_code' => 'required|string|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i',
+        ];
+
+        $customMessages = [
+            'required' => 'This field is required.',
+            'integer' => 'This field must be a valid number.',
+            'min' => 'This field must be at least 0.',
+
+            'mbpy_oap_below_80_years.required' => 'MBPOAP (Below 80 Years) is required.',
+            'mbpy_oap_above_80_years.required' => 'MBPOAP (Above 80 Years) is required.',
+            'mbpy_wp.required' => 'MBPWP (Widow Pension) is required.',
+            'mbpy_dp.required' => 'MBPDP (Disabled Pension) is required.',
+            'mbpy_sdp_below_80_percent.required' => 'MBPSDP (Below 80%) is required.',
+            'mbpy_sdp_above_80_percent.required' => 'MBPSDP (Above 80%) is required.',
+            'mbpy_sdoap.required' => 'MBPSDOAP (Disabled + Old Age) is required.',
+            'mbpy_clp.required' => 'MBPCLP (Leprosy) is required.',
+            'mbpy_wp_aids.required' => 'MBPWP AIDS Affected is required.',
+            'mbpy_dp_aids.required' => 'MBPDP AIDS Affected is required.',
+            'mbpy_unmarried_women.required' => 'MBP for Unmarried Women is required.',
+            'mbpy_orphan_due_to_covide.required' => 'Orphan due to COVID is required.',
+            'mbpy_widow_due_to_covid.required' => 'Widow due to COVID is required.',
+            'mbpy_divorce_or_destitute.required' => 'Divorced/Destitute Women is required.',
+            'mbpy_transgender.required' => 'Transgender pension count is required.',
+            'mbpy_bank_account_number.required' => 'Bank Account is Required.',
+            'mbpy_bank_account_number.regex' => 'Enter a valid Bank Account Number (9 to 18 digits).',
+            'mbpy_bank_ifsc_code.required' => 'Bank IFSC Code is required.',
+            'mbpy_bank_ifsc_code.regex' => 'Enter a valid IFSC code (e.g., SBIN0001234).',
+        ];
+
+        $validatedData = $request->validate($validationRules, $customMessages);
+
+        $user = auth()->user();
+
+        DB::beginTransaction();
+        try {
+            $pensionFundsRequirement = PensionFundsRequirement::find($id);
+
+            if (!$pensionFundsRequirement) {
+                return redirect()->back()->with('error', 'Record not found.');
+            }
+
+            $pensionFundsRequirement->mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'];
+            $pensionFundsRequirement->mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'];
+            $pensionFundsRequirement->mbpy_wp = $validatedData['mbpy_wp'];
+            $pensionFundsRequirement->mbpy_dp = $validatedData['mbpy_dp'];
+            $pensionFundsRequirement->mbpy_sdp_below_80_percent = $validatedData['mbpy_sdp_below_80_percent'];
+            $pensionFundsRequirement->mbpy_sdp_above_80_percent = $validatedData['mbpy_sdp_above_80_percent'];
+            $pensionFundsRequirement->mbpy_sdoap = $validatedData['mbpy_sdoap'];
+            $pensionFundsRequirement->mbpy_clp = $validatedData['mbpy_clp'];
+            $pensionFundsRequirement->mbpy_wp_aids = $validatedData['mbpy_wp_aids'];
+            $pensionFundsRequirement->mbpy_dp_aids = $validatedData['mbpy_dp_aids'];
+            $pensionFundsRequirement->mbpy_unmarried_women = $validatedData['mbpy_unmarried_women'];
+            $pensionFundsRequirement->mbpy_orphan_due_to_covide = $validatedData['mbpy_orphan_due_to_covide'];
+            $pensionFundsRequirement->mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'];
+            $pensionFundsRequirement->mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'];
+            $pensionFundsRequirement->mbpy_transgender = $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->funds_mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'] * 3500;
+            $pensionFundsRequirement->funds_mbpy_wp = $validatedData['mbpy_wp'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_dp = $validatedData['mbpy_dp'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_sdp_below_80_percent = $validatedData['mbpy_sdp_below_80_percent'] * 1200;
+            $pensionFundsRequirement->funds_mbpy_sdp_above_80_percent = $validatedData['mbpy_sdp_above_80_percent'] * 3500;
+            $pensionFundsRequirement->funds_mbpy_sdoap = $validatedData['mbpy_sdoap'] * 3500;
+            $pensionFundsRequirement->funds_mbpy_clp = $validatedData['mbpy_clp'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_wp_aids = $validatedData['mbpy_wp_aids'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_dp_aids = $validatedData['mbpy_dp_aids'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_unmarried_women = $validatedData['mbpy_unmarried_women'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_orphan_due_to_covide = $validatedData['mbpy_orphan_due_to_covide'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'] * 1000;
+            $pensionFundsRequirement->funds_mbpy_transgender = $validatedData['mbpy_transgender'] * 1000;
+            $pensionFundsRequirement->mbpy_total_beneficiaries = $validatedData['mbpy_oap_below_80_years'] + $validatedData['mbpy_oap_above_80_years'] + $validatedData['mbpy_wp'] + $validatedData['mbpy_dp'] + $validatedData['mbpy_sdp_below_80_percent'] + $validatedData['mbpy_sdp_above_80_percent'] + $validatedData['mbpy_sdoap'] + $validatedData['mbpy_clp'] + $validatedData['mbpy_wp_aids'] + $validatedData['mbpy_dp_aids'] + $validatedData['mbpy_unmarried_women'] + $validatedData['mbpy_orphan_due_to_covide'] + $validatedData['mbpy_widow_due_to_covid'] + $validatedData['mbpy_divorce_or_destitute'] + $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->funds_mbpy_total_beneficiaries = $validatedData['mbpy_oap_below_80_years'] * 1000 + $validatedData['mbpy_oap_above_80_years'] * 3500 + $validatedData['mbpy_wp'] * 1000 + $validatedData['mbpy_dp'] * 1000 + $validatedData['mbpy_sdp_below_80_percent'] * 1200 + $validatedData['mbpy_sdp_above_80_percent'] * 3500 + $validatedData['mbpy_sdoap'] * 3500 + $validatedData['mbpy_clp'] * 1000 + $validatedData['mbpy_wp_aids'] * 1000 + $validatedData['mbpy_dp_aids'] * 1000 + $validatedData['mbpy_unmarried_women'] * 1000 + $validatedData['mbpy_orphan_due_to_covide'] * 1000 + $validatedData['mbpy_widow_due_to_covid'] * 1000 + $validatedData['mbpy_divorce_or_destitute'] * 1000 + $validatedData['mbpy_transgender'] * 1000;
+            $pensionFundsRequirement->no_of_normal_pensioners = $validatedData['mbpy_oap_below_80_years'] + $validatedData['mbpy_wp'] + $validatedData['mbpy_dp'] + $validatedData['mbpy_sdp_below_80_percent'] + $validatedData['mbpy_clp'] + $validatedData['mbpy_wp_aids'] + $validatedData['mbpy_dp_aids'] + $validatedData['mbpy_unmarried_women'] + $validatedData['mbpy_orphan_due_to_covide'] + $validatedData['mbpy_widow_due_to_covid'] + $validatedData['mbpy_divorce_or_destitute'] + $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->no_of_ep_pensioners = $validatedData['mbpy_oap_above_80_years'] + $validatedData['mbpy_sdp_above_80_percent'] + $validatedData['mbpy_sdoap'];
+            $pensionFundsRequirement->mbpy_bank_account_number = $validatedData['mbpy_bank_account_number'];
+            $pensionFundsRequirement->mbpy_bank_ifsc_code = $validatedData['mbpy_bank_ifsc_code'];
+            $pensionFundsRequirement->mbpy_bank_account_number = $validatedData['mbpy_bank_account_number'];
+            $pensionFundsRequirement->mbpy_bank_ifsc_code = $validatedData['mbpy_bank_ifsc_code'];
+            $pensionFundsRequirement->address_type = $pensionFundsRequirement->address_type;
+            $pensionFundsRequirement->state_id = $pensionFundsRequirement->state_id;
+            $pensionFundsRequirement->district_id = $pensionFundsRequirement->district_id;
+            $pensionFundsRequirement->municipality_id = $pensionFundsRequirement->municipality_id;
+            $pensionFundsRequirement->block_id = $pensionFundsRequirement->block_id;
+            $pensionFundsRequirement->gp_id = $pensionFundsRequirement->gp_id;
+            $pensionFundsRequirement->village_id = $pensionFundsRequirement->village_id;
+            $pensionFundsRequirement->pin = $pensionFundsRequirement->pin;
+            $pensionFundsRequirement->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $pensionFundsRequirement->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $pensionFundsRequirement->updated_by = Auth::id() ?? null;
+            $pensionFundsRequirement->status = 1;
+            $pensionFundsRequirement->approve_status = 1;
+            $pensionFundsRequirement->approved_by = Auth::id() ?? null;
+            $pensionFundsRequirement->approved_date_time = Carbon::now('Asia/Kolkata');
+            $pensionFundsRequirement->save();
+
+            $applicationstagehistory = new ApplicationStageHistory();
+            /*department_scheme_id Special School = 2*/
+            $applicationstagehistory->department_scheme_id = 3;
+            $applicationstagehistory->model_name = 'PensionFundsRequirement';
+            $applicationstagehistory->model_table_id = $pensionFundsRequirement->id;
+            $applicationstagehistory->initial_model_table_id = $pensionFundsRequirement->id;
+            $applicationstagehistory->stage_id = 40;
+            $applicationstagehistory->stage_name = 'Pension Funds Requirement form Updated by DSSO';
+            $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $applicationstagehistory->created_by = Auth::id();
+            $applicationstagehistory->created_by_remarks = 'Pension Funds Requirement form Updated by DSSO Successfully';
+            $ipAddress = request()->ip();
+            $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
+            $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
+            $applicationstagehistory->save();
+
+            if($pensionFundsRequirement->block_id!= null)
+            {
+                $block_ulb_name = Block::where('block_id', $pensionFundsRequirement->block_id)->value('block_name');
+            } elseif($pensionFundsRequirement->municipality_id!= null) {
+                $block_ulb_name = Municipality::where('municipality_id', $pensionFundsRequirement->municipality_id)->value('municipality_name');
+            } else {
+                $block_ulb_name = 'Not Provided';
+            }
+
+            $ssepdnotification = new SsepdNotification();
+            $ssepdnotification->title = 'Pension Fund Requirement is Updated for the Month ' .$pensionFundsRequirement->for_the_month;
+            $ssepdnotification->message = 'The ' . $block_ulb_name . ' has updated the Pension Fund Requirement for the month ' . $pensionFundsRequirement->for_the_month . '.';
+            $ssepdnotification->type = 'Important';
+            $ssepdnotification->priority = 'urgent';
+            $ssepdnotification->start_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->start_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->end_date = Carbon::parse($pensionFundsRequirement->created_date)->addDay()->toDateString();
+            $ssepdnotification->end_time = '23:59:59';
+            $ssepdnotification->read_status = '0';
+            $ssepdnotification->state_id = $pensionFundsRequirement->state_id;
+            $ssepdnotification->district_id = $pensionFundsRequirement->district_id;
+            $ssepdnotification->block_id = $pensionFundsRequirement->block_id;
+            $ssepdnotification->gp_id = $pensionFundsRequirement->gp_id;
+            $ssepdnotification->village_id = $pensionFundsRequirement->village_id;
+            $ssepdnotification->municipality_id = $pensionFundsRequirement->municipality_id;
+            $ssepdnotification->ward_id = $pensionFundsRequirement->ward_id;
+            $ssepdnotification->is_active = 'active';
+            $ssepdnotification->status = '1';
+            $ssepdnotification->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->created_by = Auth::id() ?? null;
+            $ssepdnotification->updated_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $ssepdnotification->updated_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $ssepdnotification->updated_by = Auth::id() ?? null;
+            $ssepdnotification->save();
+
+            DB::commit();
+            return redirect()->route('admin.pension.fund_requirement_approval')->with('info', 'Updated Successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("🛑 Pension Funds Requirements form update failed", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
         }
     }
 
@@ -1066,7 +1218,8 @@ class PensionFundsRequirementsController extends Controller
             $applicationstagehistory->save();
 
             DB::commit();
-            return redirect()->route('admin.pension.report')->with('warning', 'Deleted Successfully.');
+            return redirect()->back()->with('warning', 'Deleted Successfully.');
+            /*return redirect()->route('admin.pension.report')->with('warning', 'Deleted Successfully.');*/
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("💸 Pension Funds Requirement deletion by DSSO failed", [

@@ -44,6 +44,7 @@ return new class extends Migration
             $table->bigInteger('funds_mbpy_divorce_or_destitute')->default(0);
             $table->integer('mbpy_transgender')->nullable();
             $table->bigInteger('funds_mbpy_transgender')->default(0);
+            $table->bigInteger('death_reported')->default(0)->nullable();
             $table->bigInteger('mbpy_total_beneficiaries')->default(0);
             $table->bigInteger('funds_mbpy_total_beneficiaries')->default(0);
             $table->bigInteger('no_of_normal_pensioners')->nullable();
@@ -64,6 +65,9 @@ return new class extends Migration
             $table->date('updated_date')->nullable();
             $table->time('updated_time')->nullable();
             $table->foreignId('updated_by')->nullable();
+            $table->tinyInteger('approve_status')->default(0);
+            $table->bigInteger('approved_by')->nullable();
+            $table->dateTime('approved_date_time')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

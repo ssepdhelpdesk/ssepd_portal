@@ -15,11 +15,12 @@ $fieldMap = [
 'mbpy_widow_due_to_covid' => ['label' => 'Widow (Covid)'],
 'mbpy_divorce_or_destitute' => ['label' => 'Divorce/Destitute'],
 'mbpy_transgender' => ['label' => 'Transgender'],
+'death_reported' => ['label' => 'Death Reported'],
 ];
 @endphp
 
 @section('title') 
-Pension || District wise Pension Fund Requirement for the Month {{$month}} As on {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
+Pension || District wise Daily Pension Disbursement <!-- for the Month {{$month}} --> As on {{ \Carbon\Carbon::now('Asia/Kolkata')->format('d-m-Y h:i A') }}
 @endsection
 @extends('dashboard.layouts.main')
 @section('content')
@@ -134,7 +135,6 @@ Pension || District wise Pension Fund Requirement for the Month {{$month}} As on
       columns.push({data:'total_fund',render:formatCurrency});
 
       let table = $('#example23').DataTable({
-
          processing:true,
          serverSide:true,
          scrollX:true,
@@ -150,7 +150,7 @@ Pension || District wise Pension Fund Requirement for the Month {{$month}} As on
             {extend:'print',footer:true}
          ],
          ajax:{
-            url:"{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district') }}",
+            url:"{{ route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_district') }}",
             type:'POST',
             data:function(d){
                d.for_the_month = $('#monthFilter').val();

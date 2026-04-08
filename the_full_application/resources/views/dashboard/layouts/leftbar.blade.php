@@ -182,25 +182,30 @@
                         <ul aria-expanded="false" class="collapse">
                            @can('pension-access')
                            <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Requirement</a>
+                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Requirement (PFR)</a>
                               <ul aria-expanded="false" class="collapse">
                                  @can('pension-fund-requirement-approval')
                                  <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension Funds Requirement Approval</a></li>
                                  @endcan
                                  <li><a href="{{route('admin.pension.pension_authority_report')}}">Block/ULB-wise Pension Disbursing Officer</a></li>
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise Pension Fund Requirement</a></li>
-                                 <li><a href="{{route('admin.pension.district_wise_monthly_fund_requirement_report')}}">District-wise Pension Fund Requirement 2</a></li>
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB-wise Pension Fund Requirement</a></li>
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise PFR</a></li>
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB-wise PFR</a></li>
+                                 <li><a href="{{route('admin.pension.report_without_ajax')}}">Block/ULB-wise PFR (All in One)</a></li>
                               </ul>
                            </li>
                            <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Disbursement</a>
+                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Disbursement (DPR)</a>
                               <ul aria-expanded="false" class="collapse">
-                                 <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_pension_disbursement_report')}}">District-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Date-wise Block/ULB-wise DPR</a></li>
+                                 @can('pension-fund-requirement-approval')
+                                 <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_approval')}}">Pension DPR Approval</a></li>
+                                 @endcan
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_district')}}">District-wise DPR</a></li>
+                                 <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_pension_disbursement_report')}}">District-wise DPR (All in One)</a></li>
+                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_block_ulb')}}">Block/ULB-wise DPR</a></li>
+                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB-wise DPR (All in One)</a></li>
+                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB-wise DPR (Date-wise)</a></li>
                                  <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">All GP/Ward-wise DPR</a></li>
+                                 <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward-wise DPR (All in One)</a></li>
                                  <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">GP/Ward-wise DPR – Not Submitted</a></li>
                               </ul>
                            </li>
