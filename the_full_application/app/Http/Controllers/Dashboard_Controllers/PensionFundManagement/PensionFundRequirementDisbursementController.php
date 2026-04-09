@@ -239,236 +239,253 @@ class PensionFundRequirementDisbursementController extends Controller
     }
 
     public function pension_fund_requirement_report_of_block_ulb(Request $request)
-    {
-        try {
+{
+    try {
 
-            \Log::info('Block/ULB Fund Report Request', $request->all());
+        \Log::info('Block/ULB Fund Report Request', $request->all());
 
-            $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-            ->where('is_active', 'active')
-            ->orderBy('id', 'desc')
-            ->get();
+        $dateConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('is_active', 'active')
+        ->orderBy('id', 'desc')
+        ->get();
 
-            $month = $request->for_the_month ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
+        $month = $request->for_the_month ?? ($dateConfig->first()->for_the_month ?? now()->format('F-Y'));
 
-            \Log::info('Selected Month: '.$month);
+        \Log::info('Selected Month: '.$month);
 
-            $activeConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
-            ->where('for_the_month', $month)
-            ->first();
+        $activeConfig = PensionFundRequirementDates::where('for_which_page', 'pension_funds_requirements')
+        ->where('for_the_month', $month)
+        ->first();
 
-            if (!$activeConfig) {
+        if (!$activeConfig) {
 
-                \Log::warning('Submission dates not configured for month: '.$month);
+            \Log::warning('Submission dates not configured for month: '.$month);
 
-                return redirect()->back()->with('error', 'Submission dates are not configured for the selected month.');
-            }
-
-            $approve_status = $request->approve_status;
-
-            \Log::info('Approve Status: '.$approve_status);
-
-            $user = auth()->user();
-            $userRole = $user->role_id;
-
-            \Log::info('User Role: '.$userRole);
-
-            $blockIds = collect();
-            $municipalityIds = collect();
-
-            if (in_array($userRole, [1,2,12,13,14,15,25])) {
-
-                $blockIds = Block::where('is_active','active')->pluck('block_id');
-                $municipalityIds = Municipality::where('is_active','active')->pluck('municipality_id');
-
-            } elseif (in_array($userRole, [4,6])) {
-
-                $blockIds = collect([$user->posted_block]);
-
-            } elseif ($userRole == 5) {
-
-                $municipalityIds = collect([$user->posted_municipality]);
-
-            } elseif (in_array($userRole, [8,10])) {
-
-                $blockIds = Block::where('subdivision_id',$user->posted_subdiv)->where('is_active','active')->pluck('block_id');
-                $municipalityIds = Municipality::where('subdivision_id',$user->posted_subdiv)->where('is_active','active')->pluck('municipality_id');
-
-            } elseif (in_array($userRole, [9,11])) {
-
-                $blockIds = Block::where('district_id',$user->posted_district)->where('is_active','active')->pluck('block_id');
-                $municipalityIds = Municipality::where('district_id',$user->posted_district)->where('is_active','active')->pluck('municipality_id');
-            }
-
-            \Log::info('Block Count: '.$blockIds->count());
-            \Log::info('Municipality Count: '.$municipalityIds->count());
-
-            $fields = [
-                'mbpy_oap_below_80_years' => 1000,
-                'mbpy_oap_above_80_years' => 3500,
-                'mbpy_wp' => 1000,
-                'mbpy_dp' => 1000,
-                'mbpy_sdp_below_80_percent' => 1200,
-                'mbpy_sdp_above_80_percent' => 3500,
-                'mbpy_sdoap' => 3500,
-                'mbpy_clp' => 1000,
-                'mbpy_wp_aids' => 1000,
-                'mbpy_dp_aids' => 1000,
-                'mbpy_unmarried_women' => 1000,
-                'mbpy_orphan_due_to_covide' => 1000,
-                'mbpy_widow_due_to_covid' => 1000,
-                'mbpy_divorce_or_destitute' => 1000,
-                'mbpy_transgender' => 1000,
-            ];
-
-            if ($request->ajax()) {
-
-                \Log::info('AJAX Request Detected');
-
-                if ($approve_status == 3) {
-
-                    \Log::info('Fetching Data Not Provided Block/ULB');
-
-                    $zeroFields = collect($fields)->keys()
-                    ->map(fn($f) => "0 as $f")
-                    ->implode(',');
-
-                    $blocksQuery = DB::table('blocks as b')
-                    ->selectRaw("d.district_name, b.block_name, NULL as municipality_name, $zeroFields")
-                    ->leftJoin('districts as d','b.district_id','=','d.district_id')
-                    ->leftJoin('pension_funds_requirements as pfr', function($join) use ($month){
-                        $join->on('b.block_id','=','pfr.block_id')
-                        ->where('pfr.for_the_month',$month);
-                    })
-                    ->whereNull('pfr.id')
-                    ->whereIn('b.block_id',$blockIds);
-
-                    $ulbQuery = DB::table('municipalities as m')
-                    ->selectRaw("d.district_name, NULL as block_name, m.municipality_name, $zeroFields")
-                    ->leftJoin('districts as d','m.district_id','=','d.district_id')
-                    ->leftJoin('pension_funds_requirements as pfr', function($join) use ($month){
-                        $join->on('m.municipality_id','=','pfr.municipality_id')
-                        ->where('pfr.for_the_month',$month);
-                    })
-                    ->whereNull('pfr.id')
-                    ->whereIn('m.municipality_id',$municipalityIds);
-
-                    $query = $blocksQuery->unionAll($ulbQuery);
-
-                    $totalsRaw = (object) array_fill_keys(array_keys($fields), 0);
-
-                } else {
-
-                    \Log::info('Fetching Approved/Pending Block/ULB Data');
-
-                    $sumFields = collect($fields)->keys()
-                    ->map(fn($f) => "COALESCE(SUM(pfr.$f),0) as $f")
-                    ->implode(',');
-
-                    $query = DB::table('pension_funds_requirements as pfr')
-                    ->selectRaw("d.district_name, b.block_name, m.municipality_name, $sumFields")
-                    ->leftJoin('districts as d','pfr.district_id','=','d.district_id')
-                    ->leftJoin('blocks as b','pfr.block_id','=','b.block_id')
-                    ->leftJoin('municipalities as m','pfr.municipality_id','=','m.municipality_id')
-                    ->where('pfr.for_the_month',$month)
-                    ->where('pfr.approve_status',$approve_status)
-                    ->where('pfr.status',1)
-                    ->where(function($q) use ($blockIds,$municipalityIds){
-                        $q->whereIn('pfr.block_id',$blockIds)
-                        ->orWhereIn('pfr.municipality_id',$municipalityIds);
-                    })
-                    ->groupBy('d.district_name','b.block_name','m.municipality_name');
-
-                    $totalsRaw = DB::table('pension_funds_requirements as pfr')
-                    ->selectRaw($sumFields)
-                    ->where('pfr.for_the_month',$month)
-                    ->where('pfr.approve_status',$approve_status)
-                    ->where('pfr.status',1)
-                    ->where(function($q) use ($blockIds,$municipalityIds){
-                        $q->whereIn('pfr.block_id',$blockIds)
-                        ->orWhereIn('pfr.municipality_id',$municipalityIds);
-                    })
-                    ->first();
-                }
-
-                \Log::info('Totals Raw', (array)$totalsRaw);
-
-                $totals = [];
-                $totalBeneficiaries = 0;
-                $totalFund = 0;
-
-                foreach ($fields as $field => $rate) {
-
-                    $value = $totalsRaw->$field ?? 0;
-
-                    $totals[$field] = $value;
-                    $totals["funds_$field"] = $value * $rate;
-
-                    $totalBeneficiaries += $value;
-                    $totalFund += ($value * $rate);
-                }
-
-                $totals['total_beneficiaries'] = $totalBeneficiaries;
-                $totals['total_fund'] = $totalFund;
-
-                \Log::info('Calculated Totals', $totals);
-
-                $dt = DataTables::of($query)
-
-                ->addIndexColumn()
-
-                ->addColumn('area_name', fn($row) => $row->block_name ?? $row->municipality_name)
-
-                ->filter(function ($query) use ($request) {
-
-                    if ($request->has('search') && $request->search['value']) {
-
-                        $keyword = $request->search['value'];
-
-                        \Log::info('Search Keyword: '.$keyword);
-
-                        $query->where(function ($q) use ($keyword) {
-                            $q->where('d.district_name', 'like', "%{$keyword}%")
-                            ->orWhere('b.block_name', 'like', "%{$keyword}%")
-                            ->orWhere('m.municipality_name', 'like', "%{$keyword}%");
-                        });
-                    }
-                });
-
-                foreach ($fields as $field => $rate) {
-                    $dt->addColumn("funds_$field", fn($row) => ($row->$field ?? 0) * $rate);
-                }
-
-                $dt->addColumn('total_beneficiaries', function($row) use ($fields){
-                    return collect($fields)->keys()->sum(fn($f) => $row->$f ?? 0);
-                });
-
-                $dt->addColumn('total_fund', function($row) use ($fields){
-                    return collect($fields)
-                    ->map(fn($rate, $field) => ($row->$field ?? 0) * $rate)
-                    ->sum();
-                });
-
-                \Log::info('Returning DataTables Response');
-
-                return $dt->with(['totals'=>$totals])->make(true);
-            }
-
-            return view(
-                'dashboard.pension.pension_fund_management.pension_fund_requirement_report_of_block_ulb',
-                compact('dateConfig','month','approve_status','fields')
-            );
-
-        } catch (\Exception $e) {
-
-            \Log::error('Block/ULB Fund Report Error: '.$e->getMessage());
-            \Log::error($e->getTraceAsString());
-
-            return response()->json([
-                'error' => $e->getMessage()
-            ],500);
+            return redirect()->back()->with('error', 'Submission dates are not configured for the selected month.');
         }
+
+        $approve_status = $request->approve_status;
+
+        \Log::info('Approve Status: '.$approve_status);
+
+        $user = auth()->user();
+        $userRole = $user->role_id;
+
+        \Log::info('User Role: '.$userRole);
+
+        $blockIds = collect();
+        $municipalityIds = collect();
+
+        if (in_array($userRole, [1,2,12,13,14,15,25])) {
+
+            $blockIds = Block::where('is_active','active')->pluck('block_id');
+            $municipalityIds = Municipality::where('is_active','active')->pluck('municipality_id');
+
+        } elseif (in_array($userRole, [4,6])) {
+
+            $blockIds = collect([$user->posted_block]);
+
+        } elseif ($userRole == 5) {
+
+            $municipalityIds = collect([$user->posted_municipality]);
+
+        } elseif (in_array($userRole, [8,10])) {
+
+            $blockIds = Block::where('subdivision_id',$user->posted_subdiv)->where('is_active','active')->pluck('block_id');
+            $municipalityIds = Municipality::where('subdivision_id',$user->posted_subdiv)->where('is_active','active')->pluck('municipality_id');
+
+        } elseif (in_array($userRole, [9,11])) {
+
+            $blockIds = Block::where('district_id',$user->posted_district)->where('is_active','active')->pluck('block_id');
+            $municipalityIds = Municipality::where('district_id',$user->posted_district)->where('is_active','active')->pluck('municipality_id');
+        }
+
+        \Log::info('Block Count: '.$blockIds->count());
+        \Log::info('Municipality Count: '.$municipalityIds->count());
+
+        $fields = [
+            'mbpy_oap_below_80_years' => 1000,
+            'mbpy_oap_above_80_years' => 3500,
+            'mbpy_wp' => 1000,
+            'mbpy_dp' => 1000,
+            'mbpy_sdp_below_80_percent' => 1200,
+            'mbpy_sdp_above_80_percent' => 3500,
+            'mbpy_sdoap' => 3500,
+            'mbpy_clp' => 1000,
+            'mbpy_wp_aids' => 1000,
+            'mbpy_dp_aids' => 1000,
+            'mbpy_unmarried_women' => 1000,
+            'mbpy_orphan_due_to_covide' => 1000,
+            'mbpy_widow_due_to_covid' => 1000,
+            'mbpy_divorce_or_destitute' => 1000,
+            'mbpy_transgender' => 1000,
+        ];
+
+        if ($request->ajax()) {
+
+            \Log::info('AJAX Request Detected');
+
+            if ($approve_status == 3) {
+
+                \Log::info('Fetching Data Not Provided Block/ULB');
+
+                $zeroFields = collect($fields)->keys()
+                ->map(fn($f) => "0 as $f")
+                ->implode(',');
+
+                $blocksQuery = DB::table('blocks as b')
+                ->selectRaw("d.district_name, b.block_name, NULL as municipality_name,
+                             NULL as mbpy_bank_account_number,
+                             NULL as mbpy_bank_ifsc_code,
+                             $zeroFields")
+                ->leftJoin('districts as d','b.district_id','=','d.district_id')
+                ->leftJoin('pension_funds_requirements as pfr', function($join) use ($month){
+                    $join->on('b.block_id','=','pfr.block_id')
+                    ->where('pfr.for_the_month',$month);
+                })
+                ->whereNull('pfr.id')
+                ->whereIn('b.block_id',$blockIds);
+
+                $ulbQuery = DB::table('municipalities as m')
+                ->selectRaw("d.district_name, NULL as block_name, m.municipality_name,
+                             NULL as mbpy_bank_account_number,
+                             NULL as mbpy_bank_ifsc_code,
+                             $zeroFields")
+                ->leftJoin('districts as d','m.district_id','=','d.district_id')
+                ->leftJoin('pension_funds_requirements as pfr', function($join) use ($month){
+                    $join->on('m.municipality_id','=','pfr.municipality_id')
+                    ->where('pfr.for_the_month',$month);
+                })
+                ->whereNull('pfr.id')
+                ->whereIn('m.municipality_id',$municipalityIds);
+
+                $query = $blocksQuery->unionAll($ulbQuery);
+
+                $totalsRaw = (object) array_fill_keys(array_keys($fields), 0);
+
+            } else {
+
+                \Log::info('Fetching Approved/Pending Block/ULB Data');
+
+                $sumFields = collect($fields)->keys()
+                ->map(fn($f) => "COALESCE(SUM(pfr.$f),0) as $f")
+                ->implode(',');
+
+                $query = DB::table('pension_funds_requirements as pfr')
+                ->selectRaw("d.district_name, b.block_name, m.municipality_name,
+                             pfr.mbpy_bank_account_number,
+                             pfr.mbpy_bank_ifsc_code,
+                             $sumFields")
+                ->leftJoin('districts as d','pfr.district_id','=','d.district_id')
+                ->leftJoin('blocks as b','pfr.block_id','=','b.block_id')
+                ->leftJoin('municipalities as m','pfr.municipality_id','=','m.municipality_id')
+                ->where('pfr.for_the_month',$month)
+                ->where('pfr.approve_status',$approve_status)
+                ->where('pfr.status',1)
+                ->where(function($q) use ($blockIds,$municipalityIds){
+                    $q->whereIn('pfr.block_id',$blockIds)
+                    ->orWhereIn('pfr.municipality_id',$municipalityIds);
+                })
+                ->groupBy(
+                    'd.district_name',
+                    'b.block_name',
+                    'm.municipality_name',
+                    'pfr.mbpy_bank_account_number',
+                    'pfr.mbpy_bank_ifsc_code'
+                );
+
+                $totalsRaw = DB::table('pension_funds_requirements as pfr')
+                ->selectRaw($sumFields)
+                ->where('pfr.for_the_month',$month)
+                ->where('pfr.approve_status',$approve_status)
+                ->where('pfr.status',1)
+                ->where(function($q) use ($blockIds,$municipalityIds){
+                    $q->whereIn('pfr.block_id',$blockIds)
+                    ->orWhereIn('pfr.municipality_id',$municipalityIds);
+                })
+                ->first();
+            }
+
+            $totals = [];
+            $totalBeneficiaries = 0;
+            $totalFund = 0;
+
+            foreach ($fields as $field => $rate) {
+
+                $value = $totalsRaw->$field ?? 0;
+
+                $totals[$field] = $value;
+                $totals["funds_$field"] = $value * $rate;
+
+                $totalBeneficiaries += $value;
+                $totalFund += ($value * $rate);
+            }
+
+            $totals['total_beneficiaries'] = $totalBeneficiaries;
+            $totals['total_fund'] = $totalFund;
+
+            $dt = DataTables::of($query)
+
+            ->addIndexColumn()
+
+            ->addColumn('area_name', fn($row) => $row->block_name ?? $row->municipality_name)
+
+            ->addColumn('mbpy_bank_account_number', function($row){
+                return $row->mbpy_bank_account_number ?? '-';
+            })
+
+            ->addColumn('mbpy_bank_ifsc_code', function($row){
+                return $row->mbpy_bank_ifsc_code ?? '-';
+            })
+
+            ->filter(function ($query) use ($request) {
+
+                if ($request->has('search') && $request->search['value']) {
+
+                    $keyword = $request->search['value'];
+
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('d.district_name', 'like', "%{$keyword}%")
+                        ->orWhere('b.block_name', 'like', "%{$keyword}%")
+                        ->orWhere('m.municipality_name', 'like', "%{$keyword}%")
+                        ->orWhere('pfr.mbpy_bank_account_number', 'like', "%{$keyword}%")
+                        ->orWhere('pfr.mbpy_bank_ifsc_code', 'like', "%{$keyword}%");
+                    });
+                }
+            });
+
+            foreach ($fields as $field => $rate) {
+                $dt->addColumn("funds_$field", fn($row) => ($row->$field ?? 0) * $rate);
+            }
+
+            $dt->addColumn('total_beneficiaries', function($row) use ($fields){
+                return collect($fields)->keys()->sum(fn($f) => $row->$f ?? 0);
+            });
+
+            $dt->addColumn('total_fund', function($row) use ($fields){
+                return collect($fields)
+                ->map(fn($rate, $field) => ($row->$field ?? 0) * $rate)
+                ->sum();
+            });
+
+            return $dt->with(['totals'=>$totals])->make(true);
+        }
+
+        return view(
+            'dashboard.pension.pension_fund_management.pension_fund_requirement_report_of_block_ulb',
+            compact('dateConfig','month','approve_status','fields')
+        );
+
+    } catch (\Exception $e) {
+
+        \Log::error('Block/ULB Fund Report Error: '.$e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        return response()->json([
+            'error' => $e->getMessage()
+        ],500);
     }
+}
 
     public function pension_dpr_report_of_district(Request $request)
     {

@@ -1,20 +1,20 @@
 @php
 $fieldMap = [
-    'mbpy_oap_below_80_years' => ['label' => 'OAP 60-79 Yrs'],
-    'mbpy_oap_above_80_years' => ['label' => 'OAP ≥ 80 Yrs'],
-    'mbpy_wp' => ['label' => 'Widow'],
-    'mbpy_dp' => ['label' => 'DP (40-59)%'],
-    'mbpy_sdp_below_80_percent' => ['label' => 'SDP (60-79)%'],
-    'mbpy_sdp_above_80_percent' => ['label' => 'SDP ≥ 80%'],
-    'mbpy_sdoap' => ['label' => 'SDOAP'],
-    'mbpy_clp' => ['label' => 'CLP'],
-    'mbpy_wp_aids' => ['label' => 'WP (AIDS)'],
-    'mbpy_dp_aids' => ['label' => 'DP (AIDS)'],
-    'mbpy_unmarried_women' => ['label' => 'Unmarried Women'],
-    'mbpy_orphan_due_to_covide' => ['label' => 'Orphan (Covid)'],
-    'mbpy_widow_due_to_covid' => ['label' => 'Widow (Covid)'],
-    'mbpy_divorce_or_destitute' => ['label' => 'Divorce/Destitute'],
-    'mbpy_transgender' => ['label' => 'Transgender'],
+'mbpy_oap_below_80_years' => ['label' => 'OAP 60-79 Yrs'],
+'mbpy_oap_above_80_years' => ['label' => 'OAP ≥ 80 Yrs'],
+'mbpy_wp' => ['label' => 'Widow'],
+'mbpy_dp' => ['label' => 'DP (40-59)%'],
+'mbpy_sdp_below_80_percent' => ['label' => 'SDP (60-79)%'],
+'mbpy_sdp_above_80_percent' => ['label' => 'SDP ≥ 80%'],
+'mbpy_sdoap' => ['label' => 'SDOAP'],
+'mbpy_clp' => ['label' => 'CLP'],
+'mbpy_wp_aids' => ['label' => 'WP (AIDS)'],
+'mbpy_dp_aids' => ['label' => 'DP (AIDS)'],
+'mbpy_unmarried_women' => ['label' => 'Unmarried Women'],
+'mbpy_orphan_due_to_covide' => ['label' => 'Orphan (Covid)'],
+'mbpy_widow_due_to_covid' => ['label' => 'Widow (Covid)'],
+'mbpy_divorce_or_destitute' => ['label' => 'Divorce/Destitute'],
+'mbpy_transgender' => ['label' => 'Transgender'],
 ];
 @endphp
 
@@ -85,35 +85,39 @@ Pension || Block/ULB wise Pension Fund Requirement for the Month {{$month}} As o
                <div class="table-responsive m-t-40">
                   <table id="example23" class="display nowrap table table-hover table-striped border" cellspacing="0" width="100%">
                      <thead>
-                  <tr>
-                     <th>Sl No</th>
-                     <th>District</th>
-                     <th>Area</th>
+                        <tr>
+                           <th>Sl No</th>
+                           <th>District</th>
+                           <th>Area</th>
+                           <th>Bank Account No</th>
+                           <th>IFSC Code</th>
 
-                     @foreach($fieldMap as $f)
-                        <th>{{ $f['label'] }}</th>
-                        <th>Fund</th>
-                     @endforeach
+                           @foreach($fieldMap as $f)
+                           <th>{{ $f['label'] }}</th>
+                           <th>Fund</th>
+                           @endforeach
 
-                     <th>Total Beneficiaries</th>
-                     <th>Total Fund</th>
-                  </tr>
-               </thead>
+                           <th>Total Beneficiaries</th>
+                           <th>Total Fund</th>
+                        </tr>
+                     </thead>
                      <tfoot>
-                  <tr>
-                     <th></th>
-                     <th>Total</th>
-                     <th></th>
+                        <tr>
+                           <th></th>
+                           <th>Total</th>
+                           <th></th>
+                           <th></th>
+                           <th></th>
 
-                     @foreach($fieldMap as $f)
-                        <th></th>
-                        <th></th>
-                     @endforeach
+                           @foreach($fieldMap as $f)
+                           <th></th>
+                           <th></th>
+                           @endforeach
 
-                     <th></th>
-                     <th></th>
-                  </tr>
-               </tfoot>
+                           <th></th>
+                           <th></th>
+                        </tr>
+                     </tfoot>
                   </table>
                </div>
             </div>
@@ -125,33 +129,35 @@ Pension || Block/ULB wise Pension Fund Requirement for the Month {{$month}} As o
 
 @section('script')
 <script>
-$(function () {
+   $(function () {
 
     // =============================
     // SINGLE SOURCE FROM BLADE
     // =============================
-    const fields = @json(array_keys($fieldMap));
+     const fields = @json(array_keys($fieldMap));
 
-    function formatCurrency(x) {
-        return '₹ ' + Number(x || 0).toLocaleString('en-IN');
+     function formatCurrency(x) {
+       return '₹ ' + Number(x || 0).toLocaleString('en-IN');
     }
 
     function formatNumber(x) {
-        return Number(x || 0).toLocaleString('en-IN');
+       return Number(x || 0).toLocaleString('en-IN');
     }
 
     // =============================
     // COLUMNS
     // =============================
     let columns = [
-        {data:'DT_RowIndex', orderable:false},
-        {data:'district_name'},
-        {data:'area_name'}
+       {data:'DT_RowIndex', orderable:false},
+       {data:'district_name'},
+       {data:'area_name'},
+       {data:'mbpy_bank_account_number', defaultContent:'-'},
+       {data:'mbpy_bank_ifsc_code', defaultContent:'-'}
     ];
 
     fields.forEach(f => {
-        columns.push({data:f, render:formatNumber});
-        columns.push({data:'funds_'+f, render:formatCurrency});
+       columns.push({data:f, render:formatNumber});
+       columns.push({data:'funds_'+f, render:formatCurrency});
     });
 
     columns.push({data:'total_beneficiaries', render:formatNumber});
@@ -161,59 +167,59 @@ $(function () {
     // DATATABLE
     // =============================
     let table = $('#example23').DataTable({
-    processing:true,
-    serverSide:true,
-    ordering:true,
-    scrollX:true,
-    pageLength:10,
-    lengthMenu:[[10,500,1000,-1],[10,500,1000,"All"]],
+     processing:true,
+     serverSide:true,
+     ordering:true,
+     scrollX:true,
+     pageLength:10,
+     lengthMenu:[[10,500,1000,-1],[10,500,1000,"All"]],
 
-    dom:'Blfrtip',
+     dom:'Blfrtip',
 
-    buttons:[
-        {extend:'copy',footer:true},
-        {extend:'csv',footer:true},
-        {extend:'excel',footer:true},
-        {extend:'pdf',footer:true},
-        {extend:'print',footer:true}
+     buttons:[
+       {extend:'copy',footer:true},
+       {extend:'csv',footer:true},
+       {extend:'excel',footer:true},
+       {extend:'pdf',footer:true},
+       {extend:'print',footer:true}
     ],
 
     ajax:{
-        url:"{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
-        type:'POST',
-        data:d=>{
-            d.for_the_month=$('#monthFilter').val();
-            d.approve_status=$('#districtApprovalStatus').val();
-        },
-        headers:{
-            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-        }
-    },
+       url:"{{ route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb') }}",
+       type:'POST',
+       data:d=>{
+         d.for_the_month=$('#monthFilter').val();
+         d.approve_status=$('#districtApprovalStatus').val();
+      },
+      headers:{
+         'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+      }
+   },
 
-    columns:columns,
+   columns:columns,
 
-    drawCallback:function(settings){
+   drawCallback:function(settings){
 
-        let t=settings.json?.totals;
-        if(!t) return;
+    let t=settings.json?.totals;
+    if(!t) return;
 
-        let api=this.api();
-        let col=3;
+    let api=this.api();
+    let col=5;
 
-        function set(val,isMoney=false){
-            $(api.column(col).footer())
-                .html(isMoney?formatCurrency(val):formatNumber(val));
-            col++;
-        }
+    function set(val,isMoney=false){
+      $(api.column(col).footer())
+      .html(isMoney?formatCurrency(val):formatNumber(val));
+      col++;
+   }
 
-        fields.forEach(f=>{
-            set(t[f]);
-            set(t['funds_'+f],true);
-        });
+   fields.forEach(f=>{
+      set(t[f]);
+      set(t['funds_'+f],true);
+   });
 
-        set(t.total_beneficiaries);
-        set(t.total_fund,true);
-    }
+   set(t.total_beneficiaries);
+   set(t.total_fund,true);
+}
 });
     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
 
@@ -222,12 +228,12 @@ $(function () {
     // =============================
     $('#filterBtn').click(function(){
 
-        if(!$('#monthFilter').val()) return alert('Select Month');
-        if($('#districtApprovalStatus').val()==='') return alert('Select Status');
+       if(!$('#monthFilter').val()) return alert('Select Month');
+       if($('#districtApprovalStatus').val()==='') return alert('Select Status');
 
-        table.ajax.reload();
+       table.ajax.reload();
     });
 
-});
+ });
 </script>
 @endsection
