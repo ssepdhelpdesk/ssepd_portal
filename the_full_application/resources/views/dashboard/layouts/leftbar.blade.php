@@ -101,7 +101,7 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                      <ul aria-expanded="false" class="collapse">
                         @can('pension-create')                        
-                        <li><a href="{{route('admin.pension.create')}}">Funds Requirements</a></li>
+                        <li><a href="{{route('admin.pension.create')}}">₹Funds Requirements</a></li>
                         <li><a href="{{route('admin.pension.pension_authority_index')}}">Pension Disbursing Officer</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.index')}}">Daily Pension Disbursement</a></li>
                         <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">Daily Pension Disbursement List</a></li>
@@ -178,14 +178,14 @@
                   <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Reports</span></a>
                   <ul aria-expanded="false" class="collapse in">
                      <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension Fund Management</a>
+                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension ₹Fund Management</a>
                         <ul aria-expanded="false" class="collapse">
                            @can('pension-access')
                            <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Requirement (PFR)</a>
+                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">₹Fund Requirement (PFR)</a>
                               <ul aria-expanded="false" class="collapse">
                                  @can('pension-fund-requirement-approval')
-                                 <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension Funds Requirement Approval</a></li>
+                                 <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension ₹Funds Requirement Approval</a></li>
                                  @endcan
                                  <li><a href="{{route('admin.pension.pension_authority_report')}}">Block/ULB-wise Pension Disbursing Officer</a></li>
                                  <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise PFR</a></li>
@@ -278,6 +278,7 @@
                         <ul aria-expanded="false" class="collapse">
                            <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
                            <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_districts')}}">District Wise</a></li>
+                           <li><a href="{{route('admin.specialschoolconstructions.special_school_list')}}">Special School</a></li>
                         </ul>
                      </li>
                      @endif

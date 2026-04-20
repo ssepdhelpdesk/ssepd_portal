@@ -532,36 +532,10 @@ public function school_wise_toilet_construction_report()
     return view('dashboard.special_school.report.school_wise_toilet_construction_report', compact('specialSchoolMapping'));
 }
 
-
-/**
-* Display the specified resource.
-*/
-public function show(string $id)
+public function special_school_list()
 {
-//
+    $special_schools = SpecialSchoolMapping::where('status', 1)->get();
+    return view ('dashboard.special_school.special_school_list', compact('special_schools'));
 }
 
-/**
-* Show the form for editing the specified resource.
-*/
-public function edit(string $id)
-{
-//
-}
-
-/**
-* Update the specified resource in storage.
-*/
-public function update(Request $request, string $id)
-{
-//
-}
-
-/**
-* Remove the specified resource from storage.
-*/
-public function destroy(string $id)
-{
-//
-}
 }

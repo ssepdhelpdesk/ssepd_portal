@@ -131,7 +131,7 @@ public function index()
     }
 
     /*If not role 22, execute the query normally*/
-    $specialSchool = $specialSchoolQuery->get();
+    $specialSchool = $specialSchoolQuery->leftJoin('districts', 'special_schools.district_id', '=', 'districts.district_id')->orderBy('districts.district_name', 'asc')->select('special_schools.*')->get();
 
     /*Generate full address for each school*/
     foreach ($specialSchool as $schoolDetails) {

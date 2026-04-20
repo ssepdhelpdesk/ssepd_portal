@@ -40,6 +40,7 @@ Special School || List
                         <tr>
                            <th>Sl No</th>
                            <th>District</th>
+                           <th>Grant from</th>
                            <th>School Name</th>
                            <th>Management Name</th>
                            <th>Establishment Date</th>
@@ -55,6 +56,7 @@ Special School || List
                         <tr>
                            <th>Sl No</th>
                            <th>District</th>
+                           <th>Grant from</th>
                            <th>School Name</th>
                            <th>Management Name</th>
                            <th>Establishment Date</th>
@@ -71,8 +73,9 @@ Special School || List
                         @if ($specialSchool->isNotEmpty())
                         @foreach($specialSchool as $key => $schoolDetails)
                         <tr>
-                           <td>{{ $i++ }}</td>
+                           <td>{{ $i++ }}</td>                           
                            <td>{{ $schoolDetails->district->district_name ?? 'N/A' }}</td>
+                           <td>{{ $schoolDetails->which_govt == 1 ? 'Govt of Odisha' : ($schoolDetails->which_govt == 2 ? 'Govt of India' : '') }}</td>
                            <td>{{ $schoolDetails->special_school_name }}</td>
                            <td>{{ $schoolDetails->special_school_management_name }}</td>
                            <td>{{ \Carbon\Carbon::parse($schoolDetails->school_establishment_date)->format('d F Y') }}</td>
@@ -132,17 +135,17 @@ Special School || List
 @section('script')
 <script>
    $(function () {
-    $('#example23').DataTable({
-     processing: true,
-     responsive: true,
-     ordering: true,
-     lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-     dom: 'Blfrtip',
-     buttons: [
-      'copy', 'csv', 'excel', 'pdf', 'print'
-   ]
-});
-    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
- });   
+     $('#example23').DataTable({
+       processing: true,
+       responsive: true,
+       ordering: true,
+       lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+       dom: 'Blfrtip',
+       buttons: [
+         'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+   });
+     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+  });   
 </script>
 @endsection

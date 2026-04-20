@@ -329,7 +329,7 @@ public function store(Request $request)
                     'created_time'           => now('Asia/Kolkata')->toTimeString(),
                     'created_by'             => $user->user_table_id,
                     'status'                 => 1,
-                    'approve_status'         => 0,
+                    'approve_status'         => 1,
                 ]);
 
                 $checkColumn = $user->role_name == 'BSSO' ? 'gp_id' : 'ward_id';
@@ -1072,7 +1072,7 @@ public function update(Request $request, string $id)
             'updated_date'           => now('Asia/Kolkata')->toDateString(),
             'updated_time'           => now('Asia/Kolkata')->toTimeString(),
             'updated_by'             => $user->user_table_id,
-            'approve_status'         => 0,
+            'approve_status'         => 1,
             'approved_by'            => null,
             'approved_date_time'     => null,
         ]);

@@ -339,6 +339,8 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('all_in_one_approval', 'all_in_one_approval')->name('all_in_one_approval');
 
         Route::get('school_wise_toilet_construction_report', 'school_wise_toilet_construction_report')->name('school_wise_toilet_construction_report');
+
+        Route::get('special_school_list', 'special_school_list')->name('special_school_list');
     });    
 
     Route::prefix('pensionforbeneficiaries')->name('pensionforbeneficiaries.')->controller(PensionController::class)->group(function () {
