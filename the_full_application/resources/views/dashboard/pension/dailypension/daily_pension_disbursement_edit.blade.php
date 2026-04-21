@@ -138,6 +138,7 @@ Pension || GP/Ward wise Pension Disburshed on {{ \Carbon\Carbon::parse($dailypen
 											<th>Widow due to Covid</th>
 											<th>Divorcee or Destitute</th>
 											<th>Transgender</th>
+											<th>Death Reported</th>
 											<th>No of Beneficiaries Received Normal Pension</th>
 											<th>No of Beneficiaries Received Enhanced Pension</th>
 										</tr>
@@ -159,6 +160,7 @@ Pension || GP/Ward wise Pension Disburshed on {{ \Carbon\Carbon::parse($dailypen
 									'mbpy_widow_due_to_covid',
 									'mbpy_divorce_or_destitute',
 									'mbpy_transgender',
+									'death_reported',
 									'no_of_normal_pensioners',
 									'no_of_ep_pensioners'
 									];

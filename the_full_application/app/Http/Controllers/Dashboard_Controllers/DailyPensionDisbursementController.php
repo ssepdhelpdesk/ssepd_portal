@@ -1025,6 +1025,7 @@ public function update(Request $request, string $id)
             'mbpy_widow_due_to_covid'      => $request->mbpy_widow_due_to_covid[0] ?? null,
             'mbpy_divorce_or_destitute'    => $request->mbpy_divorce_or_destitute[0] ?? null,
             'mbpy_transgender'             => $request->mbpy_transgender[0] ?? null,
+            'death_reported'               => $request->death_reported[0] ?? null,
             'no_of_normal_pensioners'      => $request->no_of_normal_pensioners[0] ?? null,
             'no_of_ep_pensioners'          => $request->no_of_ep_pensioners[0] ?? null,
         ];
@@ -1067,6 +1068,8 @@ public function update(Request $request, string $id)
 
         $rowFields['mbpy_total_beneficiaries'] = $totalBeneficiaries;
         $rowFields['funds_mbpy_total_beneficiaries'] = $totalFunds;
+
+        $rowFields['death_reported'] = $request->death_reported[0];
 
         $rowFields = array_merge($rowFields, [
             'updated_date'           => now('Asia/Kolkata')->toDateString(),
