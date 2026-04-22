@@ -69,26 +69,26 @@ public function index($id)
 
     if (!$specialSchool) {
         return redirect()
-            ->route('admin.specialschool.index')
-            ->with('danger', 'Something went wrong. Please reach out to your system administrator.');
+        ->route('admin.specialschool.index')
+        ->with('danger', 'Something went wrong. Please reach out to your system administrator.');
     }
 
     $specialSchoolConstruction = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
-        ->where('status', 1)
-        ->first();
+    ->where('status', 1)
+    ->first();
 
     $phaseNumbers = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
-        ->where('status', 1)
-        ->pluck('phase_no')
-        ->unique()
-        ->values();
+    ->where('status', 1)
+    ->pluck('phase_no')
+    ->unique()
+    ->values();
 
     $approve_status = null;
     if ($phaseNumbers->isNotEmpty()) {
         $latestPhase = $phaseNumbers->last(); // use last or change to first() if you prefer
         $approve_status = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
-            ->where('phase_no', $latestPhase)
-            ->value('approve_status');
+        ->where('phase_no', $latestPhase)
+        ->value('approve_status');
     }
 
     return view('dashboard.special_school.construction_timeline_for_state', compact(
@@ -534,8 +534,138 @@ public function school_wise_toilet_construction_report()
 
 public function special_school_list()
 {
-    $special_schools = SpecialSchoolMapping::where('status', 1)->get();
-    return view ('dashboard.special_school.special_school_list', compact('special_schools'));
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $specialSchoolMapping = null;
+
+    $query = SpecialSchoolMapping::where('special_school_mappings.status', 1)
+    ->leftJoin('special_schools', function ($join) {
+        $join->on('special_school_mappings.special_school_id', '=', 'special_schools.special_school_id')
+        ->where('special_schools.status', 1);
+    })
+    ->leftJoin('districts', 'special_school_mappings.district_id', '=', 'districts.district_id')
+
+    // ✅ NEW JOINS
+    ->leftJoin('villages', 'special_schools.village_id', '=', 'villages.village_id')
+    ->leftJoin('grampanchayats', 'special_schools.gp_id', '=', 'grampanchayats.gp_id')
+    ->leftJoin('blocks', 'special_schools.block_id', '=', 'blocks.block_id')
+    ->leftJoin('municipalities', 'special_schools.municipality_id', '=', 'municipalities.municipality_id')
+    ->select(
+        'special_school_mappings.id',
+        'special_school_mappings.management_name',
+        'special_school_mappings.special_school_id',
+        'special_school_mappings.special_school_name',
+        'special_school_mappings.which_govt',
+
+        'special_schools.school_establishment_date',
+        'special_schools.school_category',
+        'special_schools.school_type',
+        'special_schools.act_reg_no',
+        'special_schools.file_act_reg',
+
+        'districts.district_name',
+
+    // Construction Count
+        \DB::raw("
+            (
+            SELECT COUNT(*) 
+            FROM special_school_constructions ssc 
+            WHERE ssc.special_school_id = special_school_mappings.special_school_id 
+            AND ssc.status = 1
+            ) as construction_count
+            "),
+
+    // Staff Count ✅ NEW
+        \DB::raw("
+            (
+            SELECT COUNT(*) 
+            FROM special_school_staff ss 
+            WHERE ss.special_school_id = special_school_mappings.special_school_id 
+            AND ss.status = 1
+            ) as staff_count
+            "),
+
+    // Full Address
+        \DB::raw("
+            CONCAT(
+            IF(villages.village_name IS NOT NULL, CONCAT('Village: ', villages.village_name, ', '), ''),
+            IF(grampanchayats.gp_name IS NOT NULL, CONCAT('GP: ', grampanchayats.gp_name, ', '), ''),
+            IF(blocks.block_name IS NOT NULL, CONCAT('Block: ', blocks.block_name, ', '), ''),
+            IF(municipalities.municipality_name IS NOT NULL, CONCAT('Municipality: ', municipalities.municipality_name, ', '), ''),
+            IF(districts.district_name IS NOT NULL, CONCAT('District: ', districts.district_name), '')
+            ) as full_address
+            ")
+    )
+    ->distinct();
+
+
+    if (in_array($userRole, [4, 6])) {
+        $query->where('special_schools.block_id', $user->posted_block);
+    }
+
+    elseif ($userRole == 5) {
+        $query->where('special_schools.municipality_id', $user->posted_municipality);
+    }
+
+    elseif (in_array($userRole, [8, 10])) {
+
+        $blockIds = Block::where('subdivision_id', $user->posted_subdiv)
+        ->pluck('block_id');
+
+        $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)
+        ->pluck('municipality_id');
+
+        $query->where(function ($q) use ($blockIds, $municipalityIds) {
+            $q->whereIn('special_schools.block_id', $blockIds)
+            ->orWhereIn('special_schools.municipality_id', $municipalityIds);
+        });
+    }
+
+    elseif (in_array($userRole, [9, 11])) {
+        $query->where('special_school_mappings.district_id', $user->posted_district);
+    }
+
+    elseif ($userRole == 22) {
+
+        $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)
+        ->where('status', 1)
+        ->firstOrFail();
+
+        $specialSchool = SpecialSchoolMapping::where('special_school_mappings.status', 1)
+        ->leftJoin('special_schools', function ($join) {
+            $join->on('special_school_mappings.special_school_id', '=', 'special_schools.special_school_id')
+            ->where('special_schools.status', 1);
+        })
+        ->where('special_school_mappings.user_table_id', $user->user_table_id)
+        ->select(
+            'special_school_mappings.*',
+            'special_schools.special_school_management_name',
+            'special_schools.school_establishment_date',
+            'special_schools.school_category',
+            'special_schools.school_type',
+            'special_schools.act_reg_no',
+            'special_schools.file_act_reg'
+        )
+        ->distinct()
+        ->get();
+
+        if ($specialSchool->isEmpty()) {
+            return redirect()->route('admin.specialschool.create')
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+        }
+
+        return view('dashboard.special_school.index', compact('specialSchool', 'specialSchoolMapping'));
+    }
+
+    /* ================= FINAL ================= */
+
+    $specialSchool = $query
+    ->orderBy('districts.district_name', 'asc')
+    ->orderBy('special_school_mappings.which_govt', 'asc')
+    ->get();
+
+    return view('dashboard.special_school.special_school_list', compact('specialSchool', 'specialSchoolMapping'));
 }
 
 }
