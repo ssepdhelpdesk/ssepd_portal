@@ -171,6 +171,13 @@
                            @endcan
                         </ul>
                      </li>
+                     <li>
+                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">NGO</a>
+                        <ul aria-expanded="false" class="collapse">
+                           <li><a href="{{route('admin.ngo.index')}}">View NGOs</a></li>
+                           <li><a href="{{route('admin.ngo.create')}}">NGO Registration</a></li>
+                        </ul>
+                     </li>
                   </ul>
                </li>
                <li class="nav-small-cap">--- REPORTS</li>

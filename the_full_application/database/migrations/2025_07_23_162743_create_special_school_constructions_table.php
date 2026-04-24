@@ -54,6 +54,11 @@ return new class extends Migration
             $table->string('school_postal_address_district')->nullable();
             $table->string('school_postal_address_pin', 6)->nullable();
             $table->string('is_active')->default('active');
+            $table->tinyInteger('verifier_status')->default('0');
+            $table->bigInteger('verifier_user_id')->nullable();
+            $table->date('dsso_verification_date')->nullable();
+            $table->string('dsso_verification_report')->nullable();
+            $table->string('dsso_verification_remark')->nullable();
             $table->tinyInteger('approve_status')->default(0);
             $table->string('approver_remarks')->nullable();
             $table->date('approved_date')->nullable();

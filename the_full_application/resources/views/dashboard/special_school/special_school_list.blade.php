@@ -110,9 +110,7 @@ Special School || List
 											<i class="fas fa-users ms-1"></i>
 										</a>
 										@else
-										<span class="badge bg-danger" data-bs-toggle="tooltip" title="No Staff Data">
-											<i class="fas fa-times-circle"></i>
-										</span>
+										<i class="fas fa-times-circle text-danger" data-bs-toggle="tooltip" title="No Staff Data"></i>
 										@endif
 									</td>
 

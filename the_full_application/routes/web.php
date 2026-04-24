@@ -73,6 +73,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/ngo_registration', function () {
+    return view('frontend.ngo_registration');
+});
+
 Route::prefix('apis')->name('apis.')->controller(EpPensionersController::class)->group(function () {
     Route::get('/disability-pensioner-datas/{aadhar_no}', 'getDisabilityPensionerByAadharRequiredDatas');
     Route::get('/oldage-pensioner-datas1/{aadhar_no}', 'getOldAgePensionerByAadharRequiredDatas');
@@ -339,6 +343,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('all_in_one_approval', 'all_in_one_approval')->name('all_in_one_approval');
 
         Route::get('school_wise_toilet_construction_report', 'school_wise_toilet_construction_report')->name('school_wise_toilet_construction_report');
+        Route::post('{id}/approve_construction_status_by_dsso_store', 'approve_construction_status_by_dsso_store')->name('approve_construction_status_by_dsso_store');
 
         Route::get('special_school_list', 'special_school_list')->name('special_school_list');
     });    

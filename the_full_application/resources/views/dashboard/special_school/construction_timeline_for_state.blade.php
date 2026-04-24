@@ -167,7 +167,7 @@ Special School || Construction Progress Details
                                     {{-- Approval Form Section --}}
                                     @can('special-school-approve-form')
                                        @if(!is_null($approve_status) && $approve_status == 0)
-                                          <!-- <div class="sl-item">
+                                          <div class="sl-item">
                                              <div class="sl-left">
                                                 <img src="https://www.shutterstock.com/image-illustration/hand-car-logodisabled-care-logoillness-600nw-2301166719.jpg" alt="user" class="img-circle" />
                                              </div>
@@ -199,7 +199,7 @@ Special School || Construction Progress Details
                                                    </div>
                                                 </div>
                                              </div>
-                                          </div> -->
+                                          </div>
                                           <hr>
                                        @endif
                                     @endcan

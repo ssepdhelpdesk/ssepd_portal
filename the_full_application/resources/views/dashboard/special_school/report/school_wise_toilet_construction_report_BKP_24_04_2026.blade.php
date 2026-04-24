@@ -82,7 +82,7 @@ Special School || Toilet Construction Status
                                 <th>New/Existing</th>
                                 <th>Images</th>
                                 <th class="wrap-text">Construction Status</th>
-                                <th>Action</th>
+                                <th class="wrap-text">Completed Status</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -95,7 +95,7 @@ Special School || Toilet Construction Status
                                 <th>New/Existing</th>
                                 <th>Images</th>                                
                                 <th class="wrap-text">Construction Status</th>
-                                <th>Action</th>
+                                <th class="wrap-text">Completed Status</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -142,88 +142,23 @@ Special School || Toilet Construction Status
                                 </td>
 
                                 <td class="wrap-text">{{ $school->construction_status }}</td>
-                                <td>
-                                    <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div class="dropdown-menu" style="">
-                                            @if(auth()->user()->role_id == 9)
-                                            <a class="dropdown-item btn-dsso-verify"
-                                            href="javascript:void(0)"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#dssoModal"
-                                            data-id="{{ $school->id }}"
-                                            data-school="{{ $school->special_school_name }}"
-                                            data-management="{{ $school->management_name }}">
-                                            DSSO Verification
-                                        </a>
-                                        @endif
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div id="dssoModal" class="modal fade" tabindex="-1" aria-labelledby="dssoModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered"> 
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="dssoModalLabel">DSSO Verification</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="dssoForm" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" id="school_id" name="school_id">
-                                <div class="mb-3">
-                                    <label>Management Name</label>
-                                    <input type="text" id="school_management_name" class="form-control" readonly>
-                                </div>
-                                <div class="mb-3">
-                                    <label>School Name</label>
-                                    <input type="text" id="school_name" class="form-control" readonly>
-                                </div>
-                                <div class="row">    
-                                    <div class="col-md-4 mb-3">
-                                        <label>Status</label>
-                                        <select name="verifier_status" class="form-control select">
-                                            <option value="">Select</option>
-                                            <option value="1">Approve</option>
-                                            <option value="2">Reject</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Verification Date</label>
-                                        <input type="date" name="dsso_verification_date" class="form-control" max="{{ date('Y-m-d') }}">
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Upload Report (PDF)</label>
-                                        <input type="file" name="dsso_verification_report" class="form-control" accept="application/pdf">
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Remarks</label>
-                                    <textarea name="dsso_verification_remark" class="form-control"></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-info waves-effect text-white" data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" form="dssoForm" class="btn btn-primary">
-                                Submit
-                            </button>
-                        </div>
-                    </div>
+                                <td class="wrap-text">
+                                    @if($school->latest_construction_school_id)
+                                    <a href="{{ route('admin.specialschoolconstructions.index', $school->latest_construction_school_id) }}" target="_blank">
+                                        {{ $school->approve_status_text }}
+                                    </a>
+                                    @else
+                                    {{ $school->approve_status_text }}
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <!-- row -->
 <!-- ============================================================== -->
@@ -246,22 +181,6 @@ Special School || Toilet Construction Status
             ]
         });
         $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
-    });
-
-    $(document).on('click', '.btn-dsso-verify', function () {
-
-        let schoolId = $(this).data('id');
-        let schoolName = $(this).data('school');
-        let managementName = $(this).data('management');
-
-        $('#school_id').val(schoolId);
-        $('#school_name').val(schoolName);
-        $('#school_management_name').val(managementName);
-
-        let url = "{{ route('admin.specialschoolconstructions.approve_construction_status_by_dsso_store', ':id') }}";
-        url = url.replace(':id', schoolId);
-
-        $('#dssoForm').attr('action', url);
-    });
+    });   
 </script>
 @endsection

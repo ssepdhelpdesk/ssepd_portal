@@ -24,6 +24,7 @@ use App\Helpers\AadhaarVerifier;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Illuminate\Support\Facades\Log;
 
 /*Controller Requirements*/
 use App\Models\SpecialSchoolMapping;
@@ -36,11 +37,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+ }
 
 /**
 * Display a listing of the resource.
@@ -532,6 +533,112 @@ public function school_wise_toilet_construction_report()
     return view('dashboard.special_school.report.school_wise_toilet_construction_report', compact('specialSchoolMapping'));
 }
 
+public function approve_construction_status_by_dsso_store(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'verifier_status' => 'required|in:1,2',
+        'dsso_verification_date' => 'required|date|before_or_equal:today',
+        'dsso_verification_report' => 'required|file|mimes:pdf|max:2048',
+        'dsso_verification_remark'  => 'nullable|string|max:1000',
+    ]);
+
+    DB::beginTransaction();
+    try {
+
+        $special_school = SpecialSchoolConstruction::where('special_school_id', $id)->orderByDesc('phase_no')->first();
+
+        if (!$special_school) {
+            Log::warning('DSSO Verification Failed: Special school not found', [
+                'user_id' => auth()->id(),
+                'school_id' => $id,
+                'ip' => request()->ip(),
+            ]);
+            return redirect()->back()->with('info', 'Something went wrong, kindly contact your Administrator.');
+        }
+
+        if ($special_school->verifier_status == 1) {
+            Log::info('DSSO Verification Skipped: Already verified', [
+                'user_id' => auth()->id(),
+                'school_id' => $id,
+                'ip' => request()->ip(),
+            ]);
+            return redirect()->back()->with('info', 'You have already Verified this Toilet Construction.');
+        }
+
+        $schoolSystemGenRegNo = str_replace('/', '_', $special_school->school_system_gen_reg_no);
+
+        $folderPath = public_path("special_school_files/{$schoolSystemGenRegNo}");
+        /*A folder i.e. storage/special_school_files is created inside the root directory ssepd_ngo_working_portal/storage/special_school_files*/
+        $externalBasePath = dirname(base_path());
+        $externalPath = $externalBasePath . "/storage/special_school_files/{$schoolSystemGenRegNo}";
+
+        $constructionImagePath = $folderPath . '/construction_images';
+        $externalConstructionPath = $externalPath . '/construction_images';
+
+        if (!file_exists($constructionImagePath)) {
+            mkdir($constructionImagePath, 0755, true);
+        }
+        if (!file_exists($externalConstructionPath)) {
+            mkdir($externalConstructionPath, 0755, true);
+        }
+
+        if ($request->hasFile('dsso_verification_report')) {
+            $constructionFile_1 = $request->file('dsso_verification_report');
+            $constructionExtension_1 = $constructionFile_1->getClientOriginalExtension();
+            $constructionRandomName_1 = 'DSSO_VERIFICATION_REPORT_' . Str::random(40) . '.' . $constructionExtension_1;
+
+            $constructionStoredPath_1 = $constructionFile_1->storeAs("special_school_files/{$schoolSystemGenRegNo}/construction_images", $constructionRandomName_1, 'public');
+            copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$constructionImagePath}/{$constructionRandomName_1}");
+            copy(storage_path("app/public/{$constructionStoredPath_1}"), "{$externalConstructionPath}/{$constructionRandomName_1}");
+        }
+
+        $special_school->update([
+            'verifier_status'    => '1',
+            'dsso_verification_date'  => $validatedData['dsso_verification_date'],
+            'dsso_verification_report'  => $constructionStoredPath_1,
+            'verifier_user_id'  => Auth::id(),
+            'dsso_verification_remark'  => $validatedData['dsso_verification_remark'],
+        ]);
+
+        $applicationstagehistory = new ApplicationStageHistory();
+        /*department_scheme_id Special School = 2*/
+        $applicationstagehistory->department_scheme_id = 2;
+        $applicationstagehistory->model_name = 'SpecialSchoolConstruction';
+        $applicationstagehistory->model_table_id = $special_school->id;
+        $applicationstagehistory->initial_model_table_id = $special_school->id;
+        if ($special_school->verifier_status == 1) {
+            $applicationstagehistory->stage_id = 25;
+            $applicationstagehistory->stage_name = 'Approved';
+        } elseif ($special_school->verifier_status == 2) {
+            $applicationstagehistory->stage_id = 21;
+            $applicationstagehistory->stage_name = 'Rejected';
+        }      
+        $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+        $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+        $applicationstagehistory->created_by = Auth::id();
+        $applicationstagehistory->created_by_remarks = 'Special School Construction DSSO Verification form submission Successfully.';
+        $ipAddress = request()->ip();
+        $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
+        $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
+        $applicationstagehistory->save();
+
+        DB::commit();
+        return redirect()->back()->with('info', 'DSSO Verification Successful.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("🏫 Special School Construction DSSO Verification form submission failed", [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+            'trace'   => $e->getTraceAsString(),
+            'time'    => now()->toDateTimeString(),
+            'user_id' => auth()->id(),
+        ]);
+        return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+    }
+}
+
+/*Admin Level report Developed on 20-04-2026*/
 public function special_school_list()
 {
     $user = auth()->user();
@@ -545,8 +652,6 @@ public function special_school_list()
         ->where('special_schools.status', 1);
     })
     ->leftJoin('districts', 'special_school_mappings.district_id', '=', 'districts.district_id')
-
-    // ✅ NEW JOINS
     ->leftJoin('villages', 'special_schools.village_id', '=', 'villages.village_id')
     ->leftJoin('grampanchayats', 'special_schools.gp_id', '=', 'grampanchayats.gp_id')
     ->leftJoin('blocks', 'special_schools.block_id', '=', 'blocks.block_id')
@@ -565,8 +670,6 @@ public function special_school_list()
         'special_schools.file_act_reg',
 
         'districts.district_name',
-
-    // Construction Count
         \DB::raw("
             (
             SELECT COUNT(*) 
@@ -575,8 +678,6 @@ public function special_school_list()
             AND ssc.status = 1
             ) as construction_count
             "),
-
-    // Staff Count ✅ NEW
         \DB::raw("
             (
             SELECT COUNT(*) 
@@ -585,8 +686,6 @@ public function special_school_list()
             AND ss.status = 1
             ) as staff_count
             "),
-
-    // Full Address
         \DB::raw("
             CONCAT(
             IF(villages.village_name IS NOT NULL, CONCAT('Village: ', villages.village_name, ', '), ''),
@@ -596,8 +695,7 @@ public function special_school_list()
             IF(districts.district_name IS NOT NULL, CONCAT('District: ', districts.district_name), '')
             ) as full_address
             ")
-    )
-    ->distinct();
+    )->distinct();
 
 
     if (in_array($userRole, [4, 6])) {
@@ -628,9 +726,7 @@ public function special_school_list()
 
     elseif ($userRole == 22) {
 
-        $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)
-        ->where('status', 1)
-        ->firstOrFail();
+        $specialSchoolMapping = SpecialSchoolMapping::where('user_table_id', $user->user_table_id)->where('status', 1)->firstOrFail();
 
         $specialSchool = SpecialSchoolMapping::where('special_school_mappings.status', 1)
         ->leftJoin('special_schools', function ($join) {
@@ -646,9 +742,7 @@ public function special_school_list()
             'special_schools.school_type',
             'special_schools.act_reg_no',
             'special_schools.file_act_reg'
-        )
-        ->distinct()
-        ->get();
+        )->distinct()->get();
 
         if ($specialSchool->isEmpty()) {
             return redirect()->route('admin.specialschool.create')
@@ -658,12 +752,7 @@ public function special_school_list()
         return view('dashboard.special_school.index', compact('specialSchool', 'specialSchoolMapping'));
     }
 
-    /* ================= FINAL ================= */
-
-    $specialSchool = $query
-    ->orderBy('districts.district_name', 'asc')
-    ->orderBy('special_school_mappings.which_govt', 'asc')
-    ->get();
+    $specialSchool = $query->orderBy('districts.district_name', 'asc')->orderBy('special_school_mappings.which_govt', 'asc')->get();
 
     return view('dashboard.special_school.special_school_list', compact('specialSchool', 'specialSchoolMapping'));
 }
