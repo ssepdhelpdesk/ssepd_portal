@@ -48,7 +48,9 @@ Special School || List
 									<th data-priority="1">Sl No</th>
 									<th data-priority="2">District</th>
 									<th data-priority="3">School Name</th>
+									<th data-priority="3">School ID</th>
 									<th data-priority="4">Management Name</th>
+									<th data-priority="4">Management ID</th>
 									<th data-priority="2">Staff Details</th>
 									<th data-priority="2">Toilet Construction</th>
 									<th data-priority="6">Grant</th>
@@ -92,8 +94,24 @@ Special School || List
 									</td>
 
 									<td class="wrap-text">
+										@if($schoolDetails->special_school_id)
+										{{ $schoolDetails->special_school_id }}
+										@else
+										<i class="fas fa-times-circle text-danger" data-bs-toggle="tooltip" title="Not Provided"></i>
+										@endif
+									</td>
+
+									<td class="wrap-text">
 										@if($schoolDetails->management_name)
 										{{ $schoolDetails->management_name }}
+										@else
+										<i class="fas fa-times-circle text-danger" data-bs-toggle="tooltip" title="Not Provided"></i>
+										@endif
+									</td>
+
+									<td class="wrap-text">
+										@if($schoolDetails->management_id)
+										{{ $schoolDetails->management_id }}
 										@else
 										<i class="fas fa-times-circle text-danger" data-bs-toggle="tooltip" title="Not Provided"></i>
 										@endif

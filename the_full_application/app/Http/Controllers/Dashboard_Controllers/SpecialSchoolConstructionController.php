@@ -661,6 +661,7 @@ public function special_school_list()
     ->select(
         'special_school_mappings.id',
         'special_school_mappings.management_name',
+        'special_school_mappings.management_id',
         'special_school_mappings.special_school_id',
         'special_school_mappings.special_school_name',
         'special_school_mappings.which_govt',
