@@ -37,11 +37,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
- }
+       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+   }
 
 /**
 * Display a listing of the resource.
@@ -680,6 +680,58 @@ public function special_school_list()
             WHERE ssc.special_school_id = special_school_mappings.special_school_id 
             AND ssc.status = 1
             ) as construction_count
+            "),
+        \DB::raw("
+            (
+            SELECT GROUP_CONCAT(
+            CONCAT('Phase', ssc.no_of_phase_approved, ': ', DATE_FORMAT(ssc.approved_date, '%d %b %Y'))
+            ORDER BY ssc.no_of_phase_approved ASC
+            SEPARATOR ' || '
+            )
+            FROM special_school_constructions ssc
+            WHERE ssc.special_school_id = special_school_mappings.special_school_id
+            AND ssc.status = 1
+            ) as phase_approval_details
+            "),
+        \DB::raw("
+            (special_school_mappings.teaching_approved_staff_strength 
+            + special_school_mappings.non_teaching_approved_staff_strength) 
+            as approved_staff_total
+            "),
+        \DB::raw("
+            (
+            (special_school_mappings.teaching_approved_staff_strength 
+            + special_school_mappings.non_teaching_approved_staff_strength)
+            -
+            (
+            SELECT COUNT(*) 
+            FROM special_school_staff ss 
+            WHERE ss.special_school_id = special_school_mappings.special_school_id 
+            AND ss.status = 1
+            )
+            ) as staff_gap
+            "),
+        \DB::raw("
+            CASE 
+            WHEN 
+            (special_school_mappings.teaching_approved_staff_strength 
+            + special_school_mappings.non_teaching_approved_staff_strength) = 0 
+            THEN 0
+            ELSE ROUND(
+            (
+            (
+            SELECT COUNT(*) 
+            FROM special_school_staff ss 
+            WHERE ss.special_school_id = special_school_mappings.special_school_id 
+            AND ss.status = 1
+            ) * 100.0
+            ) /
+            (
+            special_school_mappings.teaching_approved_staff_strength 
+            + special_school_mappings.non_teaching_approved_staff_strength
+            ), 2
+            )
+            END as staff_utilization
             "),
         \DB::raw("
             (
