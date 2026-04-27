@@ -93,7 +93,7 @@ Special School || Toilet Construction Status
                                 <th class="wrap-text">Management Name</th>
                                 <th class="wrap-text">School Name</th>
                                 <th>New/Existing</th>
-                                <th>Images</th>                                
+                                <th>Images</th>
                                 <th class="wrap-text">Construction Status</th>
                                 <th>Action</th>
                             </tr>
@@ -147,8 +147,8 @@ Special School || Toilet Construction Status
                                         <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             Action
                                         </button>
-                                        <div class="dropdown-menu" style="">
-                                            @if(auth()->user()->role_id == 9)
+                                        <div class="dropdown-menu">
+                                            @if(auth()->check() && auth()->user()->role_id == 9 && $school->verifier_status === 0)
                                             <a class="dropdown-item btn-dsso-verify"
                                             href="javascript:void(0)"
                                             data-bs-toggle="modal"

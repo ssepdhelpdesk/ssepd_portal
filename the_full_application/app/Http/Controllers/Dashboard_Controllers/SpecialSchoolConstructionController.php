@@ -509,11 +509,13 @@ public function school_wise_toilet_construction_report()
             }
 
             if ($latestConstruction) {
+                $school->verifier_status = $latestConstruction->verifier_status;
                 $school->latest_construction_id = $latestConstruction->id;
                 $school->new_or_existing_text = $latestConstruction->new_or_existing == 1 ? 'New' :
                 ($latestConstruction->new_or_existing == 2 ? 'Existing' : 'Not Yet Uploaded');
                 $school->latest_construction_school_id = $latestConstruction->special_school_id;
             } else {
+                $school->verifier_status = null;
                 $school->latest_construction_id = null;
                 $school->new_or_existing_text = 'Not Yet Uploaded';
                 $school->latest_construction_school_id = null;

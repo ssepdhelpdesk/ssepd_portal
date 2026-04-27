@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "Added the Special School List Report in Admin Level"
+git commit -m "Added the DSSO Verification system under menu Reports → Special School → Toilet Construction"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
