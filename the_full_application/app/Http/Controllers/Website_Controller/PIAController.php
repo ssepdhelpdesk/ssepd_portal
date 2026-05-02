@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Http\Controllers\Website_Controller;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
+
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Helpers\AadhaarVerifier;
+use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use DB;
+
+use App\Models\{
+    Gender,
+    BankMaster,
+    District,
+    Block,
+    Subdivision,
+    Municipality,
+    Grampanchayat,
+    WardMaster,
+    Village,
+    VisitorCount,
+    User,
+    ApplicationStage,
+};
+
+use App\Models\Pension\{
+    PensionType,
+    SsepdPension
+};
+
+class PIAController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function home()
+    {
+        $pensionType = PensionType::where('db_status', 1)->get();
+    $district = District::where('is_active', 'active')->orderBy('district_name')->get();
+    $gender = Gender::where('status', 1)->get();
+    $bank = BankMaster::where('status', 1)->orderBy('bank_ifsc')->get();
+    VisitorCount::create([
+        'ip_address' => request()->ip(),
+        'visit_date' => now('Asia/Kolkata')->toDateString(),
+        'visit_time' => now('Asia/Kolkata')->toTimeString(),
+    ]);
+
+    $visitorCount = VisitorCount::count();
+    return view('website.pia.index', compact('pensionType', 'visitorCount', 'gender', 'district', 'bank'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

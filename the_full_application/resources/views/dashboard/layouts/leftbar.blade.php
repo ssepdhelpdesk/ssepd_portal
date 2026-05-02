@@ -97,6 +97,7 @@
             <li>
                <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-book-open-page-variant"></i><span class="hide-menu">Beneficiary Services</span></a>
                <ul aria-expanded="false" class="collapse in">
+                  @can('pension-access')
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
                      <ul aria-expanded="false" class="collapse">
@@ -141,89 +142,95 @@
                            <ul aria-expanded="false" class="collapse">
                               <!-- <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb')}}">OAP GP/Ward Correction</a></li>
                                  <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb')}}">DP GP/Ward Correction</a></li> -->
-                                 <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_gp_update')}}">OAP GP Correction</a></li>
-                                 <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_ward_update')}}">OAP Ward Correction</a></li>
-                                 <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_gp_update')}}">DP GP Correction</a></li>
-                                 <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
-                              </ul>
-                           </li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('special-school-access')
-                           <li><a href="{{route('admin.specialschool.index')}}">View Special Schools</a></li>
-                           @endcan
-                           @can('special-school-create')
-                           <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
-                           <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
-                           <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('DDRC-create')
-                           <li><a href="{{route('admin.ddrc.create')}}">DDRC Staff Details Entry</a></li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">NGO</a>
-                        <ul aria-expanded="false" class="collapse">
-                           <li><a href="{{route('admin.ngo.index')}}">View NGOs</a></li>
-                           <li><a href="{{route('admin.ngo.create')}}">NGO Registration</a></li>
-                        </ul>
-                     </li>
-                  </ul>
-               </li>
-               <li class="nav-small-cap">--- REPORTS</li>
-               <li>
-                  <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Reports</span></a>
-                  <ul aria-expanded="false" class="collapse in">
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension ₹Fund Management</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('pension-access')
-                           <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">₹Fund Requirement (PFR)</a>
-                              <ul aria-expanded="false" class="collapse">
-                                 @can('pension-fund-requirement-approval')
-                                 <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension ₹Funds Requirement Approval</a></li>
-                                 @endcan
-                                 <li><a href="{{route('admin.pension.pension_authority_report')}}">Block/ULB-wise Pension Disbursing Officer</a></li>
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise PFR</a></li>
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB-wise PFR</a></li>
-                                 <li><a href="{{route('admin.pension.report_without_ajax')}}">Block/ULB-wise PFR (All in One)</a></li>
-                              </ul>
-                           </li>
-                           <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Disbursement (DPR)</a>
-                              <ul aria-expanded="false" class="collapse">
-                                 @can('pension-fund-requirement-approval')
-                                 <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_approval')}}">Pension DPR Approval</a></li>
-                                 @endcan
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_district')}}">District-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_pension_disbursement_report')}}">District-wise DPR (All in One)</a></li>
-                                 <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_block_ulb')}}">Block/ULB-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB-wise DPR (All in One)</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB-wise DPR (Date-wise)</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward-wise DPR</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward-wise DPR (All in One)</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">GP/Ward-wise DPR – Not Submitted</a></li>
-                              </ul>
-                           </li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('pension-access')                           
-                           <!-- <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
+                              <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_gp_update')}}">OAP GP Correction</a></li>
+                              <li><a href="{{route('admin.oldage3500data.oldage_index_district_block_ulb_ward_update')}}">OAP Ward Correction</a></li>
+                              <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_gp_update')}}">DP GP Correction</a></li>
+                              <li><a href="{{route('admin.disability3500data.disability_index_district_block_ulb_ward_update')}}">DP Ward Correction</a></li>
+                           </ul>
+                        </li>
+                        @endcan
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('special-school-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('special-school-access')
+                        <li><a href="{{route('admin.specialschool.index')}}">View Special Schools</a></li>
+                        @endcan
+                        @can('special-school-create')
+                        <li><a href="{{route('admin.specialschool.view_staff_details')}}">View Staff Details</a></li>
+                        <li><a href="{{route('admin.specialschool.create')}}">Add New Staff</a></li>
+                        <li><a href="{{route('admin.specialschoolconstructions.construction_timeline')}}">Toilet Construction Update</a></li>
+                        @endcan
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('DDRC-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
+                     <ul aria-expanded="false" class="collapse">
+                        @can('DDRC-create')
+                        <li><a href="{{route('admin.ddrc.create')}}">DDRC Staff Details Entry</a></li>
+                        @endcan
+                     </ul>
+                  </li>
+                  @endcan
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">PIA/NGO Institutes</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <li><a href="{{route('admin.piainstitutes.pia_institute_basic_details')}}">Add New Beneficiaries</a></li>
+                        <!-- <li><a href="{{route('admin.ngo.index')}}">View PIAs</a></li>
+                        <li><a href="{{route('admin.ngo.create')}}">PIA Registration</a></li> -->
+                     </ul>
+                  </li>
+               </ul>
+            </li>
+            <li class="nav-small-cap">--- REPORTS</li>
+            <li>
+               <a class="has-arrow waves-effect waves-dark active" href="javascript:void(0)" aria-expanded="false"><i class="ti-layout-grid2"></i><span class="hide-menu">Reports</span></a>
+               <ul aria-expanded="false" class="collapse in">
+                  @can('pension-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension ₹Fund Management</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">₹Fund Requirement (PFR)</a>
+                           <ul aria-expanded="false" class="collapse">
+                              @can('pension-fund-requirement-approval')
+                              <li><a href="{{route('admin.pension.fund_requirement_approval')}}">Pension ₹Funds Requirement Approval</a></li>
+                              @endcan
+                              <li><a href="{{route('admin.pension.pension_authority_report')}}">Block/ULB-wise Pension Disbursing Officer</a></li>
+                              <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_district')}}">District-wise PFR</a></li>
+                              <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_block_ulb')}}">Block/ULB-wise PFR</a></li>
+                              <li><a href="{{route('admin.pension.report_without_ajax')}}">Block/ULB-wise PFR (All in One)</a></li>
+                           </ul>
+                        </li>
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Fund Disbursement (DPR)</a>
+                           <ul aria-expanded="false" class="collapse">
+                              @can('pension-fund-requirement-approval')
+                              <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_approval')}}">Pension DPR Approval</a></li>
+                              @endcan
+                              <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_district')}}">District-wise DPR</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.district_wise_monthly_pension_disbursement_report')}}">District-wise DPR (All in One)</a></li>
+                              <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_dpr_report_of_block_ulb')}}">Block/ULB-wise DPR</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_monthly_report')}}">Block/ULB-wise DPR (All in One)</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.block_ulb_wise_daily_pension_disbursement_report')}}">Block/ULB-wise DPR (Date-wise)</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.listing_report')}}">GP/Ward-wise DPR</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.combined_report')}}">GP/Ward-wise DPR (All in One)</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">GP/Ward-wise DPR – Not Submitted</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('pension-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Pension</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <!-- <li><a href="{{route('admin.pension.report_without_ajax')}}">Pension Funds Requirement</a></li>
                            <li><a href="{{route('admin.pension.pension_authority_report')}}">Pension Disbursing Officer</a></li>
                            <li><a href="{{route('admin.pension.district_wise_monthly_fund_requirement_report')}}">District wise Combined Fund Requirements</a></li>
                            <li>
@@ -237,63 +244,63 @@
                                  <li><a href="{{route('admin.dailypensiondisbursement.pension_disbursement_daily_not_submission')}}">Pension Disbursement – Not Submitted</a></li>
                               </ul>
                            </li> -->
-                           <li>
-                              <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Data Analysis</a>
-                              <ul aria-expanded="false" class="collapse">
-                                 <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries')}}">Block/ULB wise Funds Requirements vs Daily Disbursement</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_fund_vs_funds_requirements')}}">Block/ULB wise Funds Requirements vs Disbursed Funds</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')}}">Block/ULB wise Funds Requirements vs Daily Disbursement</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_district')}}">District wise Monthly Fund Comparison</a></li>
-                                 <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_block_ulb')}}">Block/ULB Monthly Fund Comparison</a></li>
-                              </ul>
-                           </li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('pension-3500-access')
-                           <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
-                           <li><a href="{{route('admin.reportof3500data.active_ineligible_with_scheme')}}">EP Scheme Wise Complete Report</a></li>
-                           <li><a href="{{route('admin.reportof3500data.sanction_report')}}">Sanction Report</a></li>
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('special-school-access')
-                           <!-- <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li> -->
-                           <li><a href="{{route('admin.specialschool.school_wise_staff_count_report')}}">Staff Details</a></li>
-                           <li><a href="{{route('admin.specialschoolconstructions.school_wise_toilet_construction_report')}}">Toilet Construction</a></li>
-                           <!-- <li><a href="{{route('admin.specialschoolconstructions.all_in_one_approval')}}">Toilet Construction</a></li> -->
-                           @endcan
-                        </ul>
-                     </li>
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
-                        <ul aria-expanded="false" class="collapse">
-                           @can('DDRC-access')
-                           <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Deatils</a></li>
-                           @endcan
-                        </ul>
-                     </li>
-                     @if(auth()->user()->is_full_access_to_portal == 1)
-                     <li>
-                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">SuperAdmin Level Report</a>
-                        <ul aria-expanded="false" class="collapse">
-                           <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
-                           <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_districts')}}">District Wise</a></li>
-                           <li><a href="{{route('admin.specialschoolconstructions.special_school_list')}}">Special School</a></li>
-                        </ul>
-                     </li>
-                     @endif
-                  </ul>
-               </li>
-            </ul>
-         </nav>
-         <!-- End Sidebar navigation -->
-      </div>
-      <!-- End Sidebar scroll-->
-   </aside>
+                        <li>
+                           <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Data Analysis</a>
+                           <ul aria-expanded="false" class="collapse">
+                              <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries')}}">Block/ULB wise Funds Requirements vs Daily Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_fund_vs_funds_requirements')}}">Block/ULB wise Funds Requirements vs Disbursed Funds</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.daily_pension_disbursement_vs_funds_requirements_beneficiaries_and_funds')}}">Block/ULB wise Funds Requirements vs Daily Disbursement</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_district')}}">District wise Monthly Fund Comparison</a></li>
+                              <li><a href="{{route('admin.dailypensiondisbursement.month_wise_fund_requirement_comparison_for_block_ulb')}}">Block/ULB Monthly Fund Comparison</a></li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('pension-3500-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Enhanced Pension</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <li><a href="{{route('admin.reportof3500data.active_ineligible')}}">Active Ineligible Report</a></li>
+                        <li><a href="{{route('admin.reportof3500data.active_ineligible_with_scheme')}}">EP Scheme Wise Complete Report</a></li>
+                        <li><a href="{{route('admin.reportof3500data.sanction_report')}}">Sanction Report</a></li>
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('special-school-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <!-- <li><a href="{{route('admin.specialschool.cumulative_report')}}">Special Schools</a></li> -->
+                        <li><a href="{{route('admin.specialschool.school_wise_staff_count_report')}}">Staff Details</a></li>
+                        <li><a href="{{route('admin.specialschoolconstructions.school_wise_toilet_construction_report')}}">Toilet Construction</a></li>
+                        <!-- <li><a href="{{route('admin.specialschoolconstructions.all_in_one_approval')}}">Toilet Construction</a></li> -->
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('DDRC-access')
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Deatils</a></li>
+                     </ul>
+                  </li>
+                  @endcan
+                  @if(auth()->user()->is_full_access_to_portal == 1)
+                  <li>
+                     <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">SuperAdmin Level Report</a>
+                     <ul aria-expanded="false" class="collapse">
+                        <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
+                        <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_districts')}}">District Wise</a></li>
+                        <li><a href="{{route('admin.specialschoolconstructions.special_school_list')}}">Special School</a></li>
+                     </ul>
+                  </li>
+                  @endif
+               </ul>
+            </li>
+         </ul>
+      </nav>
+      <!-- End Sidebar navigation -->
+   </div>
+   <!-- End Sidebar scroll-->
+</aside>

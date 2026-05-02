@@ -19,7 +19,8 @@ use App\Http\Controllers\Dashboard_Controllers\{
     PensionMonthlyDisbursementController,
     DailyPensionDisbursementController,
     SsepdNotificationController,
-    PensionController
+    PensionController,
+    PiaInstitutesController
 };
 
 use App\Http\Controllers\Dashboard_Controllers\Files3500Controllers\{
@@ -49,7 +50,8 @@ use App\Http\Controllers\Api\{
 use App\Http\Controllers\Website_Controller\{
     WebsiteFrontController,
     WebsiteNsapDumpCOntroller,
-    WebsitePensionController
+    WebsitePensionController,
+    PIAController
 };
 
 use App\Models\{
@@ -166,6 +168,11 @@ Route::prefix('website')->name('website.')->group(function () {
 
 
         Route::post('store', 'store')->name('store')->middleware(['throttle:10,1']);
+    });
+
+    Route::prefix('pia')->name('pia.')->controller(PIAController::class)->group(function () {
+        Route::get('home', 'home')->name('home');
+        
     });
 });
 
@@ -479,6 +486,20 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     });
 
     Route::prefix('SsepdNotification')->name('ssepdnotification.')->controller(SsepdNotificationController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+    });
+
+    /*Institutes Jobs 27-04-2026*/
+
+    Route::prefix('PiaInstitutes')->name('piainstitutes.')->controller(PiaInstitutesController::class)->group(function () {
+        Route::get('pia_institute_basic_details', 'pia_institute_basic_details')->name('pia_institute_basic_details');
+        Route::post('{id}/pia_institute_basic_details_update', 'pia_institute_basic_details_update')->name('pia_institute_basic_details_update');
+        Route::get('check_registration_no', 'check_registration_no')->name('check_registration_no');
+        Route::get('check_grantee_code', 'check_grantee_code')->name('check_grantee_code');
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');

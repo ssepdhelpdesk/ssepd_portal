@@ -69,7 +69,7 @@
       @enderror
    </div>
 </div>
-<h3 class="box-title">Postal Address</h3>
+<h3 class="box-title" id="postal_address_heading">Postal Address</h3>
 <hr class="m-t-0 m-b-10">
 <div class="col-md-2">
    <div class="form-group">
