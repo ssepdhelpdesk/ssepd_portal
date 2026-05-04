@@ -180,7 +180,7 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">PIA/NGO Institutes</a>
                      <ul aria-expanded="false" class="collapse">
-                        <li><a href="{{route('admin.piainstitutes.pia_institute_basic_details')}}">Add New Beneficiaries</a></li>
+                        <li><a href="{{route('admin.piainstitutes.pia_institute_basic_details')}}">Add Beneficiary Details</a></li>
                         <!-- <li><a href="{{route('admin.ngo.index')}}">View PIAs</a></li>
                         <li><a href="{{route('admin.ngo.create')}}">PIA Registration</a></li> -->
                      </ul>

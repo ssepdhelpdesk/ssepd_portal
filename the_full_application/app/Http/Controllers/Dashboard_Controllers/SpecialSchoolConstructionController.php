@@ -88,6 +88,7 @@ public function index($id)
     if ($phaseNumbers->isNotEmpty()) {
         $latestPhase = $phaseNumbers->last(); // use last or change to first() if you prefer
         $approve_status = SpecialSchoolConstruction::where('special_school_id', $specialSchool->special_school_id)
+        ->where('status', 1)
         ->where('phase_no', $latestPhase)
         ->value('approve_status');
     }
