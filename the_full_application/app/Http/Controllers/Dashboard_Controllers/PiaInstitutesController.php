@@ -389,6 +389,8 @@ class PiaInstitutesController extends Controller
         }
         $validatedData = $request->validate($validationRules, $messages);
 
+        DB::beginTransaction();
+        try {
         $user = auth()->user();
         $piainstitutemaster = PiaInstituteMaster::whereId($id)->firstOrFail();
         $user = auth()->user();
@@ -521,7 +523,20 @@ class PiaInstitutesController extends Controller
         $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
         $applicationstagehistory->save();
 
+        DB::commit();
         return redirect()->route('admin.piainstitutes.index')->with('success', 'Beneficiary Details have been submitted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error("🏫 The Beneficiary Details form of Pia/Institute has not been submitted..", [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+                'time'    => now()->toDateTimeString(),
+                'user_id' => auth()->id(),
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Something went wrong. Please try again.'])->withInput();
+        }
     }
 
     public function check_benf_aadhar(Request $request): JsonResponse
