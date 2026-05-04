@@ -293,6 +293,7 @@
                         <li><a href="{{route('admin.reportof3500data.bulk_aadhaar_verification_report')}}">EP Bulk Aadhaar Verification</a></li>
                         <li><a href="{{route('admin.pensionfundrequirementdisbursement.pension_fund_requirement_report_of_districts')}}">District Wise</a></li>
                         <li><a href="{{route('admin.specialschoolconstructions.special_school_list')}}">Special School</a></li>
+                        <li><a href="{{route('admin.piainstitutes.pia_institute_list')}}">PIA Institute Details</a></li>
                      </ul>
                   </li>
                   @endif

@@ -564,6 +564,12 @@ class PiaInstitutesController extends Controller
         }
     }
 
+    public function pia_institute_list()
+    {
+        $piainstitutemaster = PiaInstituteMaster::where('status', 'Active')->orderBy('excel_district_name', 'ASC')->get();
+        return view('dashboard.pia_institutes.pia_institute_list', compact('piainstitutemaster'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

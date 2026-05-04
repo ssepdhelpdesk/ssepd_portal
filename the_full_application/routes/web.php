@@ -505,6 +505,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/pia_institute_benf_details_store', 'pia_institute_benf_details_store')->name('pia_institute_benf_details_store');
         Route::get('check_benf_aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
         Route::get('check_benf_udid', 'check_benf_udid')->name('check_benf_udid');
+        Route::get('pia_institute_list', 'pia_institute_list')->name('pia_institute_list');
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');
