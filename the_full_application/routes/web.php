@@ -500,9 +500,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/pia_institute_basic_details_update', 'pia_institute_basic_details_update')->name('pia_institute_basic_details_update');
         Route::get('check_registration_no', 'check_registration_no')->name('check_registration_no');
         Route::get('check_grantee_code', 'check_grantee_code')->name('check_grantee_code');
+        Route::get('check_institute_email_id', 'check_institute_email_id')->name('check_institute_email_id');
         Route::get('pia_institute_benf_details', 'pia_institute_benf_details')->name('pia_institute_benf_details');
         Route::post('{id}/pia_institute_benf_details_store', 'pia_institute_benf_details_store')->name('pia_institute_benf_details_store');
         Route::get('check_benf_aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
+        Route::get('check_benf_udid', 'check_benf_udid')->name('check_benf_udid');
         Route::get('index', 'index')->name('index');
         Route::get('create', 'create')->name('create');
         Route::post('store', 'store')->name('store');

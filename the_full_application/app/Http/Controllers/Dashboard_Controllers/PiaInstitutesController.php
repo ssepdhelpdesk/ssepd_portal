@@ -156,13 +156,22 @@ class PiaInstitutesController extends Controller
                 copy(storage_path("app/public/{$regCertStoredPath}"), "{$externalPath}/{$regCertRandomName}");
             }
 
+            $instituteTypes = [
+                1 => 'Geriatric Center',
+                2 => 'Disha Center',
+                3 => 'Sahaya Center',
+                4 => 'Old Age Home',
+                5 => 'Half Way Home',
+                6 => 'Therapeutic Center',
+            ];
+            $selectedId = $validatedData['institute_type_id'] ?? null;
+
             $piainstitutemaster->institute_name = $validatedData['institute_name'];
-            $piainstitutemaster->institute_id = $piainstitutemaster->institute_id;
-            $piainstitutemaster->excel_institute_master_id = $piainstitutemaster->excel_institute_master_id;
-            $piainstitutemaster->institute_type = $piainstitutemaster->institute_type;
+            $piainstitutemaster->institute_id = $piainstitutemaster->excel_institute_id;
+            $piainstitutemaster->institute_master_id = $piainstitutemaster->excel_institute_master_id;
             $piainstitutemaster->institute_user_id = $user->user_table_id;
             $piainstitutemaster->institute_system_email_id = $user->email;
-            $piainstitutemaster->institute_type = $piainstitutemaster->institute_type;
+            $piainstitutemaster->institute_type = $instituteTypes[$selectedId] ?? null;
             $piainstitutemaster->institute_type_id = $validatedData['institute_type_id'];
             $piainstitutemaster->institute_email_id = $validatedData['institute_email_id'];
             $piainstitutemaster->date_of_registration = $validatedData['date_of_registration'];
@@ -173,7 +182,7 @@ class PiaInstitutesController extends Controller
             $piainstitutemaster->nodal_officer_name = $validatedData['nodal_officer_name'];
             $piainstitutemaster->nodal_officer_contact_number = $validatedData['nodal_officer_contact_number'];
             $piainstitutemaster->pia_name = $validatedData['pia_name'];
-            $piainstitutemaster->pia_id = $piainstitutemaster->pia_id;
+            $piainstitutemaster->pia_id = $piainstitutemaster->excel_pia_id;
             $piainstitutemaster->pia_nodal_officer_name = $validatedData['pia_nodal_officer_name'];
             $piainstitutemaster->pia_nodal_officer_contact_no = $validatedData['pia_nodal_officer_contact_no'];
             $piainstitutemaster->pia_system_gen_reg_no = $piaSystemGeneratedRegNo;
@@ -202,6 +211,15 @@ class PiaInstitutesController extends Controller
             $piainstitutemaster->status = 1;
             $piainstitutemaster->basic_details_completed = 1;
             $piainstitutemaster->save();
+
+            $user_table = User::where('user_table_id', $piainstitutemaster->user_table_id)->firstOrFail();
+            $user_table->email = $validatedData['institute_email_id'];
+            $user_table->mobile_no = $validatedData['nodal_officer_contact_number'];
+            $user_table->email_verified_at = Carbon::now('Asia/Kolkata');
+            $user_table->entry_dt = Carbon::now('Asia/Kolkata');
+            $user_table->posted_district = $validatedData['district'];
+            $user_table->last_req_time = Carbon::now('Asia/Kolkata');
+            $user_table->save();
 
             $applicationstagehistory = new ApplicationStageHistory();
             $applicationstagehistory->department_scheme_id = 4;
@@ -241,7 +259,7 @@ class PiaInstitutesController extends Controller
             return response()->json(1);
         }
 
-        $exists = PiaInstituteMaster::where('registration_no', $registration_no)->exists();
+        $exists = PiaInstituteMaster::where('status', 'Active')->where('registration_no', $registration_no)->exists();
         if ($exists) {
             return response()->json(1);
         } else {
@@ -256,7 +274,22 @@ class PiaInstitutesController extends Controller
             return response()->json(1);
         }
 
-        $exists = PiaInstituteMaster::where('grantee_code', $grantee_code)->exists();
+        $exists = PiaInstituteMaster::where('status', 'Active')->where('grantee_code', $grantee_code)->exists();
+        if ($exists) {
+            return response()->json(1);
+        } else {
+            return response()->json(0);
+        }
+    }
+
+    public function check_institute_email_id(Request $request)
+    {
+        $institute_email_id = trim($request->institute_email_id);
+        if (!$institute_email_id) {
+            return response()->json(1);
+        }
+
+        $exists = PiaInstituteMaster::where('institute_email_id', $institute_email_id)->where('status', 'Active')->exists();
         if ($exists) {
             return response()->json(1);
         } else {
@@ -462,7 +495,8 @@ class PiaInstitutesController extends Controller
         $pia_institute_benf_details->benf_postal_address_ps = $validatedData['ngo_postal_address_ps'] ?? null;
         $pia_institute_benf_details->benf_postal_address_district = $validatedData['ngo_postal_address_district'] ?? null;
         $pia_institute_benf_details->benf_postal_address_pin = $validatedData['ngo_postal_address_pin'] ?? null;
-        $pia_institute_benf_details->pia_institute_master_institute_id = $id;
+        $pia_institute_benf_details->pia_institute_master_institute_id = $piainstitutemaster->institute_master_id ?? null;
+        $pia_institute_benf_details->pia_institute_master_institute_type_id = $piainstitutemaster->institute_type_id ?? null;
         $pia_institute_benf_details->is_active = 'active';
         $pia_institute_benf_details->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
         $pia_institute_benf_details->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
@@ -498,6 +532,21 @@ class PiaInstitutesController extends Controller
         }
         $aadharExistsInNgo = PiaInstituteBenfDetails::where('status', 1)->where('aadhaar_no', $aadhaar_no)->exists();
         return response()->json($aadharExistsInNgo ? 1 : 0);
+    }
+
+    public function check_benf_udid(Request $request)
+    {
+        $udid_no = trim($request->udid_no);
+        if (!$udid_no) {
+            return response()->json(1);
+        }
+
+        $exists = PiaInstituteBenfDetails::where('status', 1)->where('udid_no', $udid_no)->exists();
+        if ($exists) {
+            return response()->json(1);
+        } else {
+            return response()->json(0);
+        }
     }
 
     /**

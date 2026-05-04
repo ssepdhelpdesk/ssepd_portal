@@ -243,6 +243,7 @@ PIA || Institute Beneficiary Details Form
                                  <label class="form-label">UDID No<span class="itsrequired"> *</span></label>
                                  <input type="text" id="udid_no" name="udid_no" value="{{old('udid_no')}}" class="form-control" placeholder="UDID no of Beneficiary" >
                                  <div id="udid_no_error"></div>
+                                 <div id="check_udid_no"></div>
                                  @error('udid_no')
                                  <label class="error">{{ $message }}</label>
                                  @enderror
@@ -423,6 +424,34 @@ PIA || Institute Beneficiary Details Form
             event.target.style.borderColor = 'red';
             event.target.value = '';
          }
+      });
+   });
+</script>
+<script type="text/javascript">
+   $(document).ready(function () {
+      $("#udid_no").blur(function () {
+         const udid_no = $(this).val().trim();
+   
+         $('#check_udid_no').html('');
+   
+         if (!udid_no) {
+            $('#check_udid_no').html('<span style="color:#FF0000">Please provide a UDID No.</span>');
+            return;
+         }
+   
+         $.get("{{ route('admin.piainstitutes.check_benf_udid') }}", 
+            { udid_no: udid_no }, 
+            function (data) {
+               if (data == 0) {
+                  $('#check_udid_no').html('<span style="color:#03713E">This UDID No is available.</span>');
+               } else if (data == 1) {
+                  $('#check_udid_no').html('<span style="color:#FF0000">This UDID No is already registered.</span>');
+                  $("#udid_no").val('');
+               }
+            }
+         ).fail(function () {
+            $('#check_udid_no').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+         });
       });
    });
 </script>

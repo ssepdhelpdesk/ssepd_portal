@@ -93,6 +93,7 @@ PIA || Institute Basic Details
                                  <label class="form-label">Institute Email ID<span class="itsrequired"> *</span></label>
                                  <input type="email" id="institute_email_id" name="institute_email_id" value="{{old('institute_email_id')}}" class="form-control" placeholder="Institute Email ID" >
                                  <div id="institute_email_id_error"></div>
+                                 <div id="check_institute_email_id"></div>
                                  @error('institute_email_id')
                                  <label class="error">{{ $message }}</label>
                                  @enderror
@@ -142,18 +143,7 @@ PIA || Institute Basic Details
                                  <label class="error">{{ $message }}</label>
                                  @enderror
                               </div>
-                           </div>
-                           <div class="col-md-3">
-                              <div class="form-group" id="grantee_code_div">
-                                 <label class="form-label">Institute Grantee code<span class="itsrequired"> *</span></label>
-                                 <input type="text" id="grantee_code" name="grantee_code" value="{{old('grantee_code')}}" class="form-control" placeholder="Institute Grantee code" >
-                                 <div id="grantee_code_error"></div>
-                                 <div id="check_grantee_code"></div>
-                                 @error('grantee_code')
-                                 <label class="error">{{ $message }}</label>
-                                 @enderror
-                              </div>
-                           </div>
+                           </div>                           
                            <div class="col-md-3">
                               <div class="form-group" id="nodal_officer_name_div">
                                  <label class="form-label">Nodal Officer Name of the Institute<span class="itsrequired"> *</span></label>
@@ -185,6 +175,17 @@ PIA || Institute Basic Details
                                  <div id="pia_name_error"></div>
                                  <div id="check_pia_name"></div>
                                  @error('pia_name')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="grantee_code_div">
+                                 <label class="form-label">PIA/NGO Grantee code<span class="itsrequired"> *</span></label>
+                                 <input type="text" id="grantee_code" name="grantee_code" value="{{old('grantee_code')}}" class="form-control" placeholder="PIA/NGO Grantee code" >
+                                 <div id="grantee_code_error"></div>
+                                 <div id="check_grantee_code"></div>
+                                 @error('grantee_code')
                                  <label class="error">{{ $message }}</label>
                                  @enderror
                               </div>
@@ -305,7 +306,7 @@ PIA || Institute Basic Details
       });
    });
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
    $(document).ready(function () {
       $("#grantee_code").blur(function () {
          const grantee_code = $(this).val().trim();
@@ -329,6 +330,34 @@ PIA || Institute Basic Details
             }
          ).fail(function () {
             $('#check_grantee_code').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
+         });
+      });
+   });
+</script> -->
+<script type="text/javascript">
+   $(document).ready(function () {
+      $("#institute_email_id").blur(function () {
+         const institute_email_id = $(this).val().trim();
+   
+         $('#check_institute_email_id').html('');
+   
+         if (!institute_email_id) {
+            $('#check_institute_email_id').html('<span style="color:#FF0000">Please provide a Institute Email Id.</span>');
+            return;
+         }
+   
+         $.get("{{ route('admin.piainstitutes.check_institute_email_id') }}", 
+            { institute_email_id: institute_email_id }, 
+            function (data) {
+               if (data == 0) {
+                  $('#check_institute_email_id').html('<span style="color:#03713E">This Institute Email Id is available.</span>');
+               } else if (data == 1) {
+                  $('#check_institute_email_id').html('<span style="color:#FF0000">This Institute Email Id is already registered.</span>');
+                  $("#institute_email_id").val('');
+               }
+            }
+         ).fail(function () {
+            $('#check_institute_email_id').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
          });
       });
    });
