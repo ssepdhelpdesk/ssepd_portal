@@ -123,14 +123,10 @@ class Disability3500Controller extends Controller
                 <div class="dropdown-menu animated slideInUp">';
 
                 $isActiveAndNotDiscontinued =
-    (
-        is_null($row->discontinued_date) &&
-        is_null($row->discontinued_system_gen_date) &&
-        is_null($row->discontinued_system_gen_time) &&
-        $row->status === 'Active'
-    )
-    ||
-    ($row->discontinued_reason === 'Ineligible');
+                is_null($row->discontinued_date) &&
+                is_null($row->discontinued_system_gen_date) &&
+                is_null($row->discontinued_system_gen_time) &&
+                $row->status === 'Active';
 
                 if ($isActiveAndNotDiscontinued) {
 
