@@ -125,10 +125,14 @@ public function index(Request $request)
             <div class="dropdown-menu animated slideInUp">';
 
             $isActiveAndNotDiscontinued =
-            is_null($row->discontinued_date) &&
-            is_null($row->discontinued_system_gen_date) &&
-            is_null($row->discontinued_system_gen_time) &&
-            $row->status === 'Active';
+    (
+        is_null($row->discontinued_date) &&
+        is_null($row->discontinued_system_gen_date) &&
+        is_null($row->discontinued_system_gen_time) &&
+        $row->status === 'Active'
+    )
+    ||
+    ($row->discontinued_reason === 'Ineligible');
 
             if ($isActiveAndNotDiscontinued) {
 

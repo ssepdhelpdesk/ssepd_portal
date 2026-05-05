@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "PIA/NGO Institutes -> Add Beneficiary Details"
+git commit -m "Added Special School Staff Details Cumulative"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
