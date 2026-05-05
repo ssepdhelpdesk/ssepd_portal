@@ -35,11 +35,11 @@ class SpecialSchoolController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline', 'view_staff_details', 'view_staff_details_by_state_office', 'cumulative_report']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store', 'store_school_basic_details', 'store_school_staff_details', 'check_staff_aadhar', 'check_staff_aadhar', 'check_staff_udidno']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy', 'delete']]);
+ }
 /**
 * Display a listing of the resource.
 */
@@ -749,6 +749,94 @@ public function school_wise_staff_count_report() {
     }
 
     return view('dashboard.special_school.report.school_wise_staff_count_report', compact('specialSchoolMapping'));
+}
+
+public function view_staff_details_cumulative(Request $request)
+{
+    $user = auth()->user();
+    $userRole = $user->role_id;
+
+    $query = SpecialSchoolStaff::with([
+        'district',
+        'block',
+        'grampanchayat',
+        'village',
+        'municipality'
+    ])
+    ->join('districts', 'districts.district_id', '=', 'special_school_staff.district_id')
+    ->where('special_school_staff.status', 1)
+    ->orderBy('districts.district_name', 'ASC')
+    ->select('special_school_staff.*');
+        
+
+    if (in_array($userRole, [1, 2, 12, 13, 14, 15])) {
+
+    } elseif (in_array($userRole, [4, 6])) {
+        $district_id = DB::table('blocks')
+            ->where('block_id', $user->posted_block)
+            ->value('district_id');
+
+        $query->where('district_id', $district_id);
+
+    } elseif ($userRole == 5) {
+        $district_id = DB::table('municipalities')
+            ->where('municipality_id', $user->posted_municipality)
+            ->value('district_id');
+
+        $query->where('district_id', $district_id);
+
+    } elseif (in_array($userRole, [8, 10])) {
+        $district_id = DB::table('subdivisions')
+            ->where('subdivision_id', $user->posted_subdiv)
+            ->value('district_id');
+
+        $query->where('district_id', $district_id);
+
+    } elseif (in_array($userRole, [9, 11])) {
+        $query->where('district_id', $user->posted_district);
+    }
+
+    if ($userRole == 22) {
+        $query->where('user_table_id', $user->user_table_id);
+    }
+
+    $SpecialSchoolStaffQuery = $query->get();
+
+    foreach ($SpecialSchoolStaffQuery as $staff) {
+        $addressParts = [];
+
+        if ($staff->village) {
+            $addressParts[] = 'Village: ' . $staff->village->village_name;
+        }
+
+        if ($staff->grampanchayat) {
+            $addressParts[] = 'GP: ' . $staff->grampanchayat->gp_name;
+        }
+
+        if ($staff->block) {
+            $addressParts[] = 'Block: ' . $staff->block->block_name;
+        }
+
+        if ($staff->municipality) {
+            $addressParts[] = 'Municipality: ' . $staff->municipality->municipality_name;
+        }
+
+        if ($staff->district) {
+            $addressParts[] = 'District: ' . $staff->district->district_name;
+        }
+
+        $staff->full_address = implode(', ', array_filter($addressParts));
+    }
+
+    if ($userRole == 22 && $SpecialSchoolStaffQuery->isEmpty()) {
+        return redirect()->route('admin.specialschool.create')
+            ->with('info', 'Kindly provide the basic information of the school to proceed further.');
+    }
+
+    return view(
+        'dashboard.special_school.report.view_staff_details_cumulative',
+        compact('SpecialSchoolStaffQuery')
+    );
 }
 
 }
