@@ -124,11 +124,22 @@ public function index(Request $request)
             </button>
             <div class="dropdown-menu animated slideInUp">';
 
-            $isActiveAndNotDiscontinued =
+            /*$isActiveAndNotDiscontinued =
             is_null($row->discontinued_date) &&
             is_null($row->discontinued_system_gen_date) &&
             is_null($row->discontinued_system_gen_time) &&
-            $row->status === 'Active';
+            $row->status === 'Active';*/
+
+            /*Created on 05-05-2026 as the Ineligible Beneficiaries are not showing Earlier*/
+            $isActiveAndNotDiscontinued =
+                (
+                    is_null($row->discontinued_date) &&
+                    is_null($row->discontinued_system_gen_date) &&
+                    is_null($row->discontinued_system_gen_time) &&
+                    $row->status === 'Active'
+                )
+                ||
+                ($row->discontinued_reason === 'Ineligible');
 
             if ($isActiveAndNotDiscontinued) {
 

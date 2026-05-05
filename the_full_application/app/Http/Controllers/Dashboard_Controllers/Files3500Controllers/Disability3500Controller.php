@@ -122,60 +122,72 @@ class Disability3500Controller extends Controller
                 </button>
                 <div class="dropdown-menu animated slideInUp">';
 
-                $isActiveAndNotDiscontinued =
+                /*$isActiveAndNotDiscontinued =
+            is_null($row->discontinued_date) &&
+            is_null($row->discontinued_system_gen_date) &&
+            is_null($row->discontinued_system_gen_time) &&
+            $row->status === 'Active';*/
+
+            /*Created on 05-05-2026 as the Ineligible Beneficiaries are not showing Earlier*/
+
+            $isActiveAndNotDiscontinued =
+            (
                 is_null($row->discontinued_date) &&
                 is_null($row->discontinued_system_gen_date) &&
                 is_null($row->discontinued_system_gen_time) &&
-                $row->status === 'Active';
+                $row->status === 'Active'
+            )
+            ||
+            ($row->discontinued_reason === 'Ineligible');
 
-                if ($isActiveAndNotDiscontinued) {
+            if ($isActiveAndNotDiscontinued) {
 
-                    if ((int)$row->verified_aadhar === 0) {
-                        $editUrl = route('admin.disability3500data.edit', $row->id);
+                if ((int)$row->verified_aadhar === 0) {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
 
-                        $buttons .= '
-                        <a class="dropdown-item text-danger" href="'.$editUrl.'">
-                        Verify Aadhaar to Proceed
-                        </a>';
-                    }
-
-                    if ((int)$row->verified_aadhar === 0) {
-                        $verifyUsingEpicUrl = route('admin.disability3500data.disability_verify_beneficiary_using_epic_number', $row->id);
-
-                        $buttons .= '
-                        <a class="dropdown-item text-danger" href="'.$verifyUsingEpicUrl.'">
-                        Verify Using EPIC Number
-                        </a>';
-                    }
-
-                    if ((int)$row->verified_aadhar === 1) {
-                        $editUrl = route('admin.disability3500data.edit', $row->id);
-
-                        $buttons .= '
-                        <a href="'.$editUrl.'" class="dropdown-item">
-                        Migration / Update Address
-                        </a>';
-                    }
-
-                    if (auth()->user()->can('pension-3500-edit')) {
-
-                        $verified = (int) $row->verified_aadhar;
-
-                        $buttons .= '
-                        <a class="dropdown-item" href="javascript:void(0)"
-                        data-bs-toggle="modal"
-                        data-bs-target="#actionModal"
-                        data-id="'.$row->id.'"
-                        data-verified="'.$verified.'">
-                        Discontinue
-                        </a>';
-                    }
+                    $buttons .= '
+                    <a class="dropdown-item text-danger" href="'.$editUrl.'">
+                    Verify Aadhaar to Proceed
+                    </a>';
                 }
 
-                $buttons .= '</div></div>';
+                if ((int)$row->verified_aadhar === 0) {
+                    $verifyUsingEpicUrl = route('admin.disability3500data.disability_verify_beneficiary_using_epic_number', $row->id);
 
-                return $buttons;
-            })
+                    $buttons .= '
+                    <a class="dropdown-item text-danger" href="'.$verifyUsingEpicUrl.'">
+                    Verify Using EPIC Number
+                    </a>';
+                }
+
+                if ((int)$row->verified_aadhar === 1) {
+                    $editUrl = route('admin.disability3500data.edit', $row->id);
+
+                    $buttons .= '
+                    <a href="'.$editUrl.'" class="dropdown-item">
+                    Migration / Update Address
+                    </a>';
+                }
+
+                if (auth()->user()->can('pension-3500-edit')) {
+
+                    $verified = (int) $row->verified_aadhar;
+
+                    $buttons .= '
+                    <a class="dropdown-item" href="javascript:void(0)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#actionModal"
+                    data-id="'.$row->id.'"
+                    data-verified="'.$verified.'">
+                    Discontinue
+                    </a>';
+                }
+            }
+
+            $buttons .= '</div></div>';
+
+            return $buttons;
+        })
 
             ->rawColumns(['action', 'aadhaar_verification_status'])
             ->make(true);
