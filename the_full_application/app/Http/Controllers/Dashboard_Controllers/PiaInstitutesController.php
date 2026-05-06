@@ -391,140 +391,140 @@ class PiaInstitutesController extends Controller
 
         DB::beginTransaction();
         try {
-        $user = auth()->user();
-        $piainstitutemaster = PiaInstituteMaster::whereId($id)->firstOrFail();
-        $user = auth()->user();
-        $piainstitutemaster = PiaInstituteMaster::where('user_table_id', $user->user_table_id)->firstOrFail();
-        $previousId = PiaInstituteBenfDetails::latest()->value('id') ?? 0;
-        $currentDate = now()->format('d/m/Y');
-        $randomNumber = mt_rand(1000, 9999);
+            $user = auth()->user();
+            $piainstitutemaster = PiaInstituteMaster::whereId($id)->firstOrFail();
+            $user = auth()->user();
+            $piainstitutemaster = PiaInstituteMaster::where('user_table_id', $user->user_table_id)->firstOrFail();
+            $previousId = PiaInstituteBenfDetails::latest()->value('id') ?? 0;
+            $currentDate = now()->format('d/m/Y');
+            $randomNumber = mt_rand(1000, 9999);
 
-        $piaSystemGenRegNo = str_replace('/', '_', $piainstitutemaster->pia_system_gen_reg_no);
-        $instituteSystemGenRegNo = str_replace('/', '_', $piainstitutemaster->institute_system_gen_reg_no);
+            $piaSystemGenRegNo = str_replace('/', '_', $piainstitutemaster->pia_system_gen_reg_no);
+            $instituteSystemGenRegNo = str_replace('/', '_', $piainstitutemaster->institute_system_gen_reg_no);
 
 
-        $benfSystemGeneratedRegNo = "SSEPD/INSTBENF/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
-        $benfSystemGenRegNo = str_replace('/', '_', $benfSystemGeneratedRegNo);
+            $benfSystemGeneratedRegNo = "SSEPD/INSTBENF/{$currentDate}/" . ($previousId + 1) . "{$randomNumber}";
+            $benfSystemGenRegNo = str_replace('/', '_', $benfSystemGeneratedRegNo);
 
-        $folderPath = public_path("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}");
-        /*A folder i.e. storage/pia_institute_files is created inside the root directory ssepd_ngo_working_portal/storage/pia_institute_files*/
-        $externalBasePath = dirname(base_path());
-        $externalPath = $externalBasePath . "/storage/pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}";
+            $folderPath = public_path("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}");
+            /*A folder i.e. storage/pia_institute_files is created inside the root directory ssepd_ngo_working_portal/storage/pia_institute_files*/
+            $externalBasePath = dirname(base_path());
+            $externalPath = $externalBasePath . "/storage/pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}";
 
-        if (!file_exists($folderPath)) {
-            mkdir($folderPath, 0755, true);
-        }
-        if (!file_exists($externalPath)) {
-            mkdir($externalPath, 0755, true);
-        }
+            if (!file_exists($folderPath)) {
+                mkdir($folderPath, 0755, true);
+            }
+            if (!file_exists($externalPath)) {
+                mkdir($externalPath, 0755, true);
+            }
 
-        if ($request->hasFile('aadhaar_file')) {
-            $aadhaarFile = $request->file('aadhaar_file');
-            $aadhaarExtension = $aadhaarFile->getClientOriginalExtension();
-            $aadhaarRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $aadhaarExtension;
+            if ($request->hasFile('aadhaar_file')) {
+                $aadhaarFile = $request->file('aadhaar_file');
+                $aadhaarExtension = $aadhaarFile->getClientOriginalExtension();
+                $aadhaarRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $aadhaarExtension;
 
-            $aadhaarStoredPath = $aadhaarFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $aadhaarRandomName, 'public');
-            copy(storage_path("app/public/{$aadhaarStoredPath}"), "{$folderPath}/{$aadhaarRandomName}");
-            copy(storage_path("app/public/{$aadhaarStoredPath}"), "{$externalPath}/{$aadhaarRandomName}");
-        }
+                $aadhaarStoredPath = $aadhaarFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $aadhaarRandomName, 'public');
+                copy(storage_path("app/public/{$aadhaarStoredPath}"), "{$folderPath}/{$aadhaarRandomName}");
+                copy(storage_path("app/public/{$aadhaarStoredPath}"), "{$externalPath}/{$aadhaarRandomName}");
+            }
 
-        if ($request->hasFile('beneficiary_file')) {
-            $benfImgFile = $request->file('beneficiary_file');
-            $benfImgExtension = $benfImgFile->getClientOriginalExtension();
-            $benfImgRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfImgExtension;
+            if ($request->hasFile('beneficiary_file')) {
+                $benfImgFile = $request->file('beneficiary_file');
+                $benfImgExtension = $benfImgFile->getClientOriginalExtension();
+                $benfImgRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfImgExtension;
 
-            $benfImgStoredPath = $benfImgFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfImgRandomName, 'public');
-            copy(storage_path("app/public/{$benfImgStoredPath}"), "{$folderPath}/{$benfImgRandomName}");
-            copy(storage_path("app/public/{$benfImgStoredPath}"), "{$externalPath}/{$benfImgRandomName}");
-        }
+                $benfImgStoredPath = $benfImgFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfImgRandomName, 'public');
+                copy(storage_path("app/public/{$benfImgStoredPath}"), "{$folderPath}/{$benfImgRandomName}");
+                copy(storage_path("app/public/{$benfImgStoredPath}"), "{$externalPath}/{$benfImgRandomName}");
+            }
 
-        if ($request->hasFile('beneficiary_bank_file')) {
-            $benfBankFile = $request->file('beneficiary_bank_file');
-            $benfBankExtension = $benfBankFile->getClientOriginalExtension();
-            $benfBankRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfBankExtension;
+            if ($request->hasFile('beneficiary_bank_file')) {
+                $benfBankFile = $request->file('beneficiary_bank_file');
+                $benfBankExtension = $benfBankFile->getClientOriginalExtension();
+                $benfBankRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfBankExtension;
 
-            $benfBankStoredPath = $benfBankFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfBankRandomName, 'public');
-            copy(storage_path("app/public/{$benfBankStoredPath}"), "{$folderPath}/{$benfBankRandomName}");
-            copy(storage_path("app/public/{$benfBankStoredPath}"), "{$externalPath}/{$benfBankRandomName}");
-        }
+                $benfBankStoredPath = $benfBankFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfBankRandomName, 'public');
+                copy(storage_path("app/public/{$benfBankStoredPath}"), "{$folderPath}/{$benfBankRandomName}");
+                copy(storage_path("app/public/{$benfBankStoredPath}"), "{$externalPath}/{$benfBankRandomName}");
+            }
 
-        if ($request->hasFile('beneficiary_udid_file')) {
-            $benfUdidFile = $request->file('beneficiary_udid_file');
-            $benfUdidExtension = $benfUdidFile->getClientOriginalExtension();
-            $benfUdidRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfUdidExtension;
+            if ($request->hasFile('beneficiary_udid_file')) {
+                $benfUdidFile = $request->file('beneficiary_udid_file');
+                $benfUdidExtension = $benfUdidFile->getClientOriginalExtension();
+                $benfUdidRandomName = 'PIA_INST_REG_CERT_' . Str::random(40) . '.' . $benfUdidExtension;
 
-            $benfUdidStoredPath = $benfUdidFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfUdidRandomName, 'public');
-            copy(storage_path("app/public/{$benfUdidStoredPath}"), "{$folderPath}/{$benfUdidRandomName}");
-            copy(storage_path("app/public/{$benfUdidStoredPath}"), "{$externalPath}/{$benfUdidRandomName}");
-        }
+                $benfUdidStoredPath = $benfUdidFile->storeAs("pia_institute_files/{$piaSystemGenRegNo}/{$instituteSystemGenRegNo}/{$benfSystemGenRegNo}", $benfUdidRandomName, 'public');
+                copy(storage_path("app/public/{$benfUdidStoredPath}"), "{$folderPath}/{$benfUdidRandomName}");
+                copy(storage_path("app/public/{$benfUdidStoredPath}"), "{$externalPath}/{$benfUdidRandomName}");
+            }
 
-        $pia_institute_benf_details = new PiaInstituteBenfDetails();
-        $pia_institute_benf_details->uuid = (string) Str::uuid();
-        $pia_institute_benf_details->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'] ?? null;
-        $pia_institute_benf_details->benf_system_gen_reg_no = $benfSystemGeneratedRegNo;
-        $pia_institute_benf_details->father_or_husband_name = $validatedData['father_or_husband_name'] ?? null;
-        $pia_institute_benf_details->date_of_birth = $validatedData['date_of_birth'] ?? null;
-        $pia_institute_benf_details->age = $validatedData['age'] ?? null;
-        $pia_institute_benf_details->beneficiary_mobile = $validatedData['beneficiary_mobile'] ?? null;
-        $pia_institute_benf_details->gender = $validatedData['gender'] ?? null;
-        $pia_institute_benf_details->aadhaar_no = $validatedData['aadhaar_no'] ?? null;
-        $pia_institute_benf_details->verified_aadhar = $validatedData['verified_aadhar'] ?? null;
-        $pia_institute_benf_details->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'] ?? null;
-        $pia_institute_benf_details->aadhaar_hash = isset($validatedData['aadhaar_no']) ? hash('sha256', $validatedData['aadhaar_no']) : null;
-        $pia_institute_benf_details->aadhaar_encrypted = isset($validatedData['aadhaar_no']) ? Crypt::encryptString($validatedData['aadhaar_no']) : null;
-        $pia_institute_benf_details->aadhaar_file = $aadhaarStoredPath ?? null;
-        $pia_institute_benf_details->beneficiary_file = $benfImgStoredPath ?? null;
-        $pia_institute_benf_details->date_of_joining = $validatedData['date_of_joining'] ?? null;
-        $pia_institute_benf_details->bank_ac_no = $validatedData['bank_ac_no'] ?? null;
-        $pia_institute_benf_details->bank_ifsc = $validatedData['bank_ifsc'] ?? null;
-        $pia_institute_benf_details->beneficiary_bank_file = $benfBankStoredPath ?? null;
-        $pia_institute_benf_details->is_disabled = $validatedData['is_disabled'] ?? null;
-        $pia_institute_benf_details->udid_no = $validatedData['udid_no'] ?? null;
-        $pia_institute_benf_details->beneficiary_udid_file = $benfUdidStoredPath ?? null;
-        $pia_institute_benf_details->disability_category = $validatedData['disability_category'] ?? null;
-        $pia_institute_benf_details->benf_address_type = $validatedData['ngo_address_type'] ?? null;
-        $pia_institute_benf_details->state_id = $validatedData['state'] ?? null;
-        $pia_institute_benf_details->district_id = $validatedData['district'] ?? null;
-        $pia_institute_benf_details->municipality_id = $request->input('municipality', null);
-        $pia_institute_benf_details->ward_id = $request->input('ward', null);
-        $pia_institute_benf_details->block_id = $request->input('block', null);
-        $pia_institute_benf_details->gp_id = $request->input('grampanchayat', null);
-        $pia_institute_benf_details->village_id = $request->input('village', null);
-        $pia_institute_benf_details->pin = $validatedData['pin'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_at = $validatedData['ngo_postal_address_at'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_post = $validatedData['ngo_postal_address_post'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_via = $validatedData['ngo_postal_address_via'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_ps = $validatedData['ngo_postal_address_ps'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_district = $validatedData['ngo_postal_address_district'] ?? null;
-        $pia_institute_benf_details->benf_postal_address_pin = $validatedData['ngo_postal_address_pin'] ?? null;
-        $pia_institute_benf_details->pia_institute_master_institute_id = $piainstitutemaster->institute_master_id ?? null;
-        $pia_institute_benf_details->pia_institute_master_institute_type_id = $piainstitutemaster->institute_type_id ?? null;
-        $pia_institute_benf_details->is_active = 'active';
-        $pia_institute_benf_details->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
-        $pia_institute_benf_details->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
-        $pia_institute_benf_details->created_by = Auth::id() ?? null;
-        $pia_institute_benf_details->user_table_id = $piainstitutemaster->user_table_id;
-        $pia_institute_benf_details->status = 1;
-        $pia_institute_benf_details->save();
+            $pia_institute_benf_details = new PiaInstituteBenfDetails();
+            $pia_institute_benf_details->uuid = (string) Str::uuid();
+            $pia_institute_benf_details->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'] ?? null;
+            $pia_institute_benf_details->benf_system_gen_reg_no = $benfSystemGeneratedRegNo;
+            $pia_institute_benf_details->father_or_husband_name = $validatedData['father_or_husband_name'] ?? null;
+            $pia_institute_benf_details->date_of_birth = $validatedData['date_of_birth'] ?? null;
+            $pia_institute_benf_details->age = $validatedData['age'] ?? null;
+            $pia_institute_benf_details->beneficiary_mobile = $validatedData['beneficiary_mobile'] ?? null;
+            $pia_institute_benf_details->gender = $validatedData['gender'] ?? null;
+            $pia_institute_benf_details->aadhaar_no = $validatedData['aadhaar_no'] ?? null;
+            $pia_institute_benf_details->verified_aadhar = $validatedData['verified_aadhar'] ?? null;
+            $pia_institute_benf_details->verified_aadhar_remarks = $validatedData['verified_aadhar_remarks'] ?? null;
+            $pia_institute_benf_details->aadhaar_hash = isset($validatedData['aadhaar_no']) ? hash('sha256', $validatedData['aadhaar_no']) : null;
+            $pia_institute_benf_details->aadhaar_encrypted = isset($validatedData['aadhaar_no']) ? Crypt::encryptString($validatedData['aadhaar_no']) : null;
+            $pia_institute_benf_details->aadhaar_file = $aadhaarStoredPath ?? null;
+            $pia_institute_benf_details->beneficiary_file = $benfImgStoredPath ?? null;
+            $pia_institute_benf_details->date_of_joining = $validatedData['date_of_joining'] ?? null;
+            $pia_institute_benf_details->bank_ac_no = $validatedData['bank_ac_no'] ?? null;
+            $pia_institute_benf_details->bank_ifsc = $validatedData['bank_ifsc'] ?? null;
+            $pia_institute_benf_details->beneficiary_bank_file = $benfBankStoredPath ?? null;
+            $pia_institute_benf_details->is_disabled = $validatedData['is_disabled'] ?? null;
+            $pia_institute_benf_details->udid_no = $validatedData['udid_no'] ?? null;
+            $pia_institute_benf_details->beneficiary_udid_file = $benfUdidStoredPath ?? null;
+            $pia_institute_benf_details->disability_category = $validatedData['disability_category'] ?? null;
+            $pia_institute_benf_details->benf_address_type = $validatedData['ngo_address_type'] ?? null;
+            $pia_institute_benf_details->state_id = $validatedData['state'] ?? null;
+            $pia_institute_benf_details->district_id = $validatedData['district'] ?? null;
+            $pia_institute_benf_details->municipality_id = $request->input('municipality', null);
+            $pia_institute_benf_details->ward_id = $request->input('ward', null);
+            $pia_institute_benf_details->block_id = $request->input('block', null);
+            $pia_institute_benf_details->gp_id = $request->input('grampanchayat', null);
+            $pia_institute_benf_details->village_id = $request->input('village', null);
+            $pia_institute_benf_details->pin = $validatedData['pin'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_at = $validatedData['ngo_postal_address_at'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_post = $validatedData['ngo_postal_address_post'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_via = $validatedData['ngo_postal_address_via'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_ps = $validatedData['ngo_postal_address_ps'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_district = $validatedData['ngo_postal_address_district'] ?? null;
+            $pia_institute_benf_details->benf_postal_address_pin = $validatedData['ngo_postal_address_pin'] ?? null;
+            $pia_institute_benf_details->pia_institute_master_institute_id = $piainstitutemaster->institute_master_id ?? null;
+            $pia_institute_benf_details->pia_institute_master_institute_type_id = $piainstitutemaster->institute_type_id ?? null;
+            $pia_institute_benf_details->is_active = 'active';
+            $pia_institute_benf_details->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $pia_institute_benf_details->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $pia_institute_benf_details->created_by = Auth::id() ?? null;
+            $pia_institute_benf_details->user_table_id = $piainstitutemaster->user_table_id;
+            $pia_institute_benf_details->status = 1;
+            $pia_institute_benf_details->save();
 
-        $applicationstagehistory = new ApplicationStageHistory();
-        $applicationstagehistory->department_scheme_id = 4;
-        $applicationstagehistory->model_name = 'PiaInstituteBenfDetails';
-        $applicationstagehistory->model_table_id = $pia_institute_benf_details->id;
-        $applicationstagehistory->initial_model_table_id = $pia_institute_benf_details->id;
-        $applicationstagehistory->stage_id = 37;
-        $applicationstagehistory->stage_name = 'Application updated by User';
-        $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
-        $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
-        $applicationstagehistory->created_by = Auth::id();
-        $applicationstagehistory->created_by_remarks = 'PIA Institute Beneficiary Basic Details have been submitted';
-        $ipAddress = request()->ip();
-        $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
-        $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
-        $applicationstagehistory->save();
+            $applicationstagehistory = new ApplicationStageHistory();
+            $applicationstagehistory->department_scheme_id = 4;
+            $applicationstagehistory->model_name = 'PiaInstituteBenfDetails';
+            $applicationstagehistory->model_table_id = $pia_institute_benf_details->id;
+            $applicationstagehistory->initial_model_table_id = $pia_institute_benf_details->id;
+            $applicationstagehistory->stage_id = 37;
+            $applicationstagehistory->stage_name = 'Application updated by User';
+            $applicationstagehistory->created_date = now()->setTimezone('Asia/Kolkata')->toDateString();
+            $applicationstagehistory->created_time = now()->setTimezone('Asia/Kolkata')->toTimeString();
+            $applicationstagehistory->created_by = Auth::id();
+            $applicationstagehistory->created_by_remarks = 'PIA Institute Beneficiary Basic Details have been submitted';
+            $ipAddress = request()->ip();
+            $applicationstagehistory->created_by_ip_v_four = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? $ipAddress : null;
+            $applicationstagehistory->created_by_ip_v_six = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? $ipAddress : null;
+            $applicationstagehistory->save();
 
-        DB::commit();
-        return redirect()->route('admin.piainstitutes.index')->with('success', 'Beneficiary Details have been submitted successfully.');
+            DB::commit();
+            return redirect()->route('admin.piainstitutes.index')->with('success', 'Beneficiary Details have been submitted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error("🏫 The Beneficiary Details form of Pia/Institute has not been submitted..", [
@@ -566,7 +566,10 @@ class PiaInstitutesController extends Controller
 
     public function pia_institute_list()
     {
-        $piainstitutemaster = PiaInstituteMaster::where('status', 'Active')->orderBy('excel_district_name', 'ASC')->get();
+        $piainstitutemaster = PiaInstituteMaster::where('status', 'Active')
+        ->withCount(['beneficiaries' => function ($q) {$q->where('status', 1);}])
+        ->orderBy('excel_district_name', 'ASC')
+        ->get();
         return view('dashboard.pia_institutes.pia_institute_list', compact('piainstitutemaster'));
     }
 

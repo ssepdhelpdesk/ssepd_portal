@@ -3,6 +3,7 @@ PIA || Institute List
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 @endsection 
 @section('content')
 <div class="container-fluid">
@@ -49,7 +50,7 @@ PIA || Institute List
                            <th>Password</th>
                            <th>Address</th>
                            <th>Basic Details Completed</th>
-                           
+                           <th>No of Inmates</th>
                         </tr>
                      </thead>
                      <tfoot>
@@ -58,14 +59,14 @@ PIA || Institute List
                            <th>District</th>
                            <th>PIA/NGO Name</th>
                            <th>Institute Name</th>
-                           <th>Institute Type</th
+                           <th>Institute Type</th>
                            <th>Nodal Officer</th>
                            <th>Nodal Officer Mob No</th>
                            <th>User ID</th>
                            <th>Password</th>
                            <th>Address</th>
                            <th>Basic Details Completed</th>
-                           
+                           <th>No of Inmates</th>
                         </tr>
                      </tfoot>
                      <tbody>
@@ -97,7 +98,20 @@ PIA || Institute List
                            <td class="wrap-text">{{ $piaInstituteDetails->excel_institute_address ? ucwords(strtolower($piaInstituteDetails->excel_institute_address)) : 'Address Not Provided' }}</td>
                            <td>
                              {{ $piaInstituteDetails->basic_details_completed == 1 ? '✅' : '❌' }}
-                          </td>                           
+                          </td>                          
+                           <td>
+                              @if($piaInstituteDetails->beneficiaries_count > 0)
+                              <span class="badge bg-info text-white"
+                              data-bs-toggle="tooltip"
+                              title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
+                              {{ $piaInstituteDetails->beneficiaries_count }}
+                           </span>
+                           @else
+                           <i class="fas fa-times-circle text-danger"
+                           data-bs-toggle="tooltip"
+                           title="Not Provided"></i>
+                           @endif
+                        </td>
                        </tr>
                        @endforeach
                        @endif

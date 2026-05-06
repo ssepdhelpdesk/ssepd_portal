@@ -55,6 +55,7 @@ return new class extends Migration
             $table->string('benf_postal_address_pin', 6)->nullable();
             $table->foreignId('pia_institute_master_institute_id')->nullable();
             $table->foreignId('pia_institute_master_institute_type_id')->nullable();
+            $table->tinyInteger('is_private')->default(0);
             $table->string('is_active')->default('active');
             $table->date('created_date');
             $table->time('created_time');

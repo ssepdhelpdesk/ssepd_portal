@@ -132,7 +132,7 @@ Special School || List
 									data-bs-toggle="tooltip"
 									title="No Approved Staff"></i>
 									@endif
-								</td>									
+								</td>
 
 								<td>
 									@if($hasStaff)
