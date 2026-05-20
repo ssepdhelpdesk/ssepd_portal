@@ -354,6 +354,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/approve_construction_status_by_dsso_store', 'approve_construction_status_by_dsso_store')->name('approve_construction_status_by_dsso_store');
 
         Route::get('special_school_list', 'special_school_list')->name('special_school_list');
+        Route::get('phase_wise_toilet_construction', 'phase_wise_toilet_construction')->name('phase_wise_toilet_construction');
     });    
 
     Route::prefix('pensionforbeneficiaries')->name('pensionforbeneficiaries.')->controller(PensionController::class)->group(function () {

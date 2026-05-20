@@ -49,11 +49,45 @@ class AppServiceProvider extends ServiceProvider
                     $timestamp = Carbon::now('Asia/Kolkata')->format('Y-m-d h:i:s A');
 
                     /*Interpolated SQL for readability*/
-                    try {
-                        $interpolatedSql = vsprintf(str_replace('?', "'%s'", $sql), $bindings);
-                    } catch (\Exception $e) {
-                        $interpolatedSql = $sql;
-                    }
+try {
+
+    $pdo = DB::getPdo();
+
+    $formattedBindings = array_map(function ($binding) use ($pdo) {
+
+        if (is_null($binding)) {
+            return 'NULL';
+        }
+
+        if (is_bool($binding)) {
+            return $binding ? '1' : '0';
+        }
+
+        if (is_array($binding) || is_object($binding)) {
+            return "'" . json_encode($binding) . "'";
+        }
+
+        return $pdo->quote($binding);
+
+    }, $bindings);
+
+    $segments = explode('?', $sql);
+
+    $interpolatedSql = '';
+
+    foreach ($segments as $index => $segment) {
+
+        $interpolatedSql .= $segment;
+
+        if (isset($formattedBindings[$index])) {
+            $interpolatedSql .= $formattedBindings[$index];
+        }
+    }
+
+} catch (\Throwable $e) {
+
+    $interpolatedSql = $sql;
+}
 
                     /*Beautify bindings*/
                     $bindingsPreview = json_encode($bindings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

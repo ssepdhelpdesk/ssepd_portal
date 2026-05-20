@@ -813,4 +813,149 @@ public function special_school_list()
     return view('dashboard.special_school.special_school_list', compact('specialSchool', 'specialSchoolMapping'));
 }
 
+public function phase_wise_toilet_construction(Request $request)
+{
+    $reports = SpecialSchoolConstruction::from('special_school_constructions as s')
+        ->join('districts as d', 's.district_id', '=', 'd.district_id')
+
+        ->select(
+
+            DB::raw("ROW_NUMBER() OVER (ORDER BY d.district_name, s.special_school_management_name, s.special_school_id) AS Sl_No"),
+
+            'd.district_name as District_Name',
+
+            DB::raw("CASE WHEN MAX(s.which_govt)=1 THEN 'Govt. of Odisha' WHEN MAX(s.which_govt)=2 THEN 'Govt. of India' ELSE 'Unknown' END AS Type"),
+
+            's.special_school_management_name as Management_Name',
+            's.special_school_name as School_Name',
+
+            DB::raw("CASE WHEN MAX(s.new_or_existing)=1 THEN 'New' WHEN MAX(s.new_or_existing)=2 THEN 'Existing' ELSE 'Unknown' END AS New_Existing"),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PHASE 1
+            |--------------------------------------------------------------------------
+            */
+
+            DB::raw("CASE WHEN MAX(CASE WHEN s.phase_no=1 THEN 1 ELSE 0 END)=1 THEN 'Uploaded' ELSE 'Not Uploaded' END AS phase_1_upload_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=1 THEN DATE_FORMAT(s.created_date,'%d-%M-%Y') END) AS phase_1_uploaded_on"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=1 AND s.approve_status=1 THEN DATE_FORMAT(s.approved_date,'%d-%M-%Y') END) AS phase_1_approved_on"),
+
+            DB::raw("CASE 
+                WHEN MAX(CASE WHEN s.phase_no=1 AND s.approve_status=1 THEN 1 ELSE 0 END)=1 THEN 'Approved'
+                WHEN MAX(CASE WHEN s.phase_no=1 AND s.approve_status=2 THEN 1 ELSE 0 END)=1 THEN 'Reject'
+                WHEN MAX(CASE WHEN s.phase_no=1 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
+                WHEN MAX(CASE WHEN s.phase_no=1 THEN 1 ELSE 0 END)=1 THEN 'Pending'
+                ELSE 'Not Uploaded'
+            END AS phase_1_approval_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=1 THEN s.approver_remarks END) AS phase_1_approver_remarks"),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PHASE 2
+            |--------------------------------------------------------------------------
+            */
+
+            DB::raw("CASE WHEN MAX(CASE WHEN s.phase_no=2 THEN 1 ELSE 0 END)=1 THEN 'Uploaded' ELSE 'Not Uploaded' END AS phase_2_upload_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=2 THEN DATE_FORMAT(s.created_date,'%d-%M-%Y') END) AS phase_2_uploaded_on"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=2 AND s.approve_status=1 THEN DATE_FORMAT(s.approved_date,'%d-%M-%Y') END) AS phase_2_approved_on"),
+
+            DB::raw("CASE 
+                WHEN MAX(CASE WHEN s.phase_no=2 AND s.approve_status=1 THEN 1 ELSE 0 END)=1 THEN 'Approved'
+                WHEN MAX(CASE WHEN s.phase_no=2 AND s.approve_status=2 THEN 1 ELSE 0 END)=1 THEN 'Reject'
+                WHEN MAX(CASE WHEN s.phase_no=2 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
+                WHEN MAX(CASE WHEN s.phase_no=2 THEN 1 ELSE 0 END)=1 THEN 'Pending'
+                ELSE 'Not Uploaded'
+            END AS phase_2_approval_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=2 THEN s.approver_remarks END) AS phase_2_approver_remarks"),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PHASE 3
+            |--------------------------------------------------------------------------
+            */
+
+            DB::raw("CASE WHEN MAX(CASE WHEN s.phase_no=3 THEN 1 ELSE 0 END)=1 THEN 'Uploaded' ELSE 'Not Uploaded' END AS phase_3_upload_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=3 THEN DATE_FORMAT(s.created_date,'%d-%M-%Y') END) AS phase_3_uploaded_on"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=3 AND s.approve_status=1 THEN DATE_FORMAT(s.approved_date,'%d-%M-%Y') END) AS phase_3_approved_on"),
+
+            DB::raw("CASE 
+                WHEN MAX(CASE WHEN s.phase_no=3 AND s.approve_status=1 THEN 1 ELSE 0 END)=1 THEN 'Approved'
+                WHEN MAX(CASE WHEN s.phase_no=3 AND s.approve_status=2 THEN 1 ELSE 0 END)=1 THEN 'Reject'
+                WHEN MAX(CASE WHEN s.phase_no=3 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
+                WHEN MAX(CASE WHEN s.phase_no=3 THEN 1 ELSE 0 END)=1 THEN 'Pending'
+                ELSE 'Not Uploaded'
+            END AS phase_3_approval_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=3 THEN s.approver_remarks END) AS phase_3_approver_remarks"),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PHASE 4
+            |--------------------------------------------------------------------------
+            */
+
+            DB::raw("CASE WHEN MAX(CASE WHEN s.phase_no=4 THEN 1 ELSE 0 END)=1 THEN 'Uploaded' ELSE 'Not Uploaded' END AS phase_4_upload_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=4 THEN DATE_FORMAT(s.created_date,'%d-%M-%Y') END) AS phase_4_uploaded_on"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=4 AND s.approve_status=1 THEN DATE_FORMAT(s.approved_date,'%d-%M-%Y') END) AS phase_4_approved_on"),
+
+            DB::raw("CASE 
+                WHEN MAX(CASE WHEN s.phase_no=4 AND s.approve_status=1 THEN 1 ELSE 0 END)=1 THEN 'Approved'
+                WHEN MAX(CASE WHEN s.phase_no=4 AND s.approve_status=2 THEN 1 ELSE 0 END)=1 THEN 'Reject'
+                WHEN MAX(CASE WHEN s.phase_no=4 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
+                WHEN MAX(CASE WHEN s.phase_no=4 THEN 1 ELSE 0 END)=1 THEN 'Pending'
+                ELSE 'Not Uploaded'
+            END AS phase_4_approval_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=4 THEN s.approver_remarks END) AS phase_4_approver_remarks"),
+
+            /*
+            |--------------------------------------------------------------------------
+            | PHASE 5
+            |--------------------------------------------------------------------------
+            */
+
+            DB::raw("CASE WHEN MAX(CASE WHEN s.phase_no=5 THEN 1 ELSE 0 END)=1 THEN 'Uploaded' ELSE 'Not Uploaded' END AS phase_5_upload_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=5 THEN DATE_FORMAT(s.created_date,'%d-%M-%Y') END) AS phase_5_uploaded_on"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=5 AND s.approve_status=1 THEN DATE_FORMAT(s.approved_date,'%d-%M-%Y') END) AS phase_5_approved_on"),
+
+            DB::raw("CASE 
+                WHEN MAX(CASE WHEN s.phase_no=5 AND s.approve_status=1 THEN 1 ELSE 0 END)=1 THEN 'Approved'
+                WHEN MAX(CASE WHEN s.phase_no=5 AND s.approve_status=2 THEN 1 ELSE 0 END)=1 THEN 'Reject'
+                WHEN MAX(CASE WHEN s.phase_no=5 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
+                WHEN MAX(CASE WHEN s.phase_no=5 THEN 1 ELSE 0 END)=1 THEN 'Pending'
+                ELSE 'Not Uploaded'
+            END AS phase_5_approval_status"),
+
+            DB::raw("MAX(CASE WHEN s.phase_no=5 THEN s.approver_remarks END) AS phase_5_approver_remarks")
+        )
+
+        ->where('s.status', 1)
+
+        ->groupBy(
+            'd.district_name',
+            's.special_school_management_name',
+            's.special_school_name',
+            's.special_school_id'
+        )
+
+        ->orderBy('d.district_name')
+        ->orderBy('s.special_school_management_name')
+        ->orderBy('s.special_school_id')
+        ->get();
+
+    return view('dashboard.special_school.report.phase_wise_toilet_construction', compact('reports'));
+}
 }
