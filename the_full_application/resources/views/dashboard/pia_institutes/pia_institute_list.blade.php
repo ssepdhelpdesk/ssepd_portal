@@ -97,51 +97,51 @@ PIA || Institute List
                            <td>123456</td>
                            <td class="wrap-text">{{ $piaInstituteDetails->excel_institute_address ? ucwords(strtolower($piaInstituteDetails->excel_institute_address)) : 'Address Not Provided' }}</td>
                            <td>
-                             {{ $piaInstituteDetails->basic_details_completed == 1 ? '✅' : '❌' }}
-                          </td>                          
+                              {{ $piaInstituteDetails->basic_details_completed == 1 ? '✅' : '❌' }}
+                           </td>
                            <td>
                               @if($piaInstituteDetails->beneficiaries_count > 0)
                               <span class="badge bg-info text-white"
-                              data-bs-toggle="tooltip"
-                              title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
+                                 data-bs-toggle="tooltip"
+                                 title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
                               {{ $piaInstituteDetails->beneficiaries_count }}
-                           </span>
-                           @else
-                           <i class="fas fa-times-circle text-danger"
-                           data-bs-toggle="tooltip"
-                           title="Not Provided"></i>
-                           @endif
-                        </td>
-                       </tr>
-                       @endforeach
-                       @endif
-                    </tbody>                     
-                 </table>
-              </div>
-           </div>
-        </div>
-     </div>
-  </div>
-<!-- row -->
-<!-- ============================================================== -->
-<!-- End Page Content -->
-<!-- ============================================================== -->
+                              </span>
+                              @else
+                              <i class="fas fa-times-circle text-danger"
+                                 data-bs-toggle="tooltip"
+                                 title="Not Provided"></i>
+                              @endif
+                           </td>
+                        </tr>
+                        @endforeach
+                        @endif
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- row -->
+   <!-- ============================================================== -->
+   <!-- End Page Content -->
+   <!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
 <script>
    $(function () {
-    $('#example23').DataTable({
-     processing: true,
-     responsive: true,
-     ordering: true,
-     lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
-     dom: 'Blfrtip',
-     buttons: [
-      'copy', 'csv', 'excel', 'pdf', 'print'
-   ]
-});
-    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
- });   
+     $('#example23').DataTable({
+       processing: true,
+       responsive: true,
+       ordering: true,
+       lengthMenu: [[10, 500, 1000, -1], [10, 500, 1000, "All"]],
+       dom: 'Blfrtip',
+       buttons: [
+         'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+   });
+     $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
+   });   
 </script>
 @endsection

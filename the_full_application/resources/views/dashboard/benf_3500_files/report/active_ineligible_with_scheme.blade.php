@@ -91,8 +91,8 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP (Z)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP (AA)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active (AB = AC + AD)</th>
-                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP (AC)</th>
-                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP (AD)</th>
+                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPSDP (AC)</th>
+                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNDP (AD)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction (AE = AF + AG)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY (AF)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP (AG)</th>
@@ -136,8 +136,8 @@ EP Pensiners || Scheme Wise Abstract (Age 80+ & ≥80% Disability) || {{ \Carbon
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued MBPOAP (Z)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Discontinued IGNOAP (AA)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Disability Active (AB = AC + AD)</th>
-                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPOAP (AC)</th>
-                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNOAP (AD)</th>
+                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active MBPSDP (AC)</th>
+                           <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Disability Active IGNDP (AD)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction (AE = AF + AG)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction MBPY (AF)</th>
                            <th style="white-space: normal; word-wrap: break-word; max-width:120px;">Total Sanction NSAP (AG)</th>
