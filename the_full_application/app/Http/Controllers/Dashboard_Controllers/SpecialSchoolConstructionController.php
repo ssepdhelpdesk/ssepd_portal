@@ -37,11 +37,11 @@ class SpecialSchoolConstructionController extends Controller
 
     function __construct()
     {
-       $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
-       $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
-       $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
-       $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
-   }
+     $this->middleware('permission:special-school-access|special-school-list|special-school-show|special-school-create|special-school-delete|special-school-approve-form', ['only' => ['index','construction_timeline']]);
+     $this->middleware('permission:special-school-create', ['only' => ['create','construction_timeline_store']]);
+     $this->middleware('permission:special-school-edit', ['only' => ['edit','update']]);
+     $this->middleware('permission:special-school-delete', ['only' => ['destroy']]);
+ }
 
 /**
 * Display a listing of the resource.
@@ -816,20 +816,20 @@ public function special_school_list()
 public function phase_wise_toilet_construction(Request $request)
 {
     $reports = SpecialSchoolConstruction::from('special_school_constructions as s')
-        ->join('districts as d', 's.district_id', '=', 'd.district_id')
+    ->join('districts as d', 's.district_id', '=', 'd.district_id')
 
-        ->select(
+    ->select(
 
-            DB::raw("ROW_NUMBER() OVER (ORDER BY d.district_name, s.special_school_management_name, s.special_school_id) AS Sl_No"),
+        DB::raw("ROW_NUMBER() OVER (ORDER BY d.district_name, s.special_school_management_name, s.special_school_id) AS Sl_No"),
 
-            'd.district_name as District_Name',
+        'd.district_name as District_Name',
 
-            DB::raw("CASE WHEN MAX(s.which_govt)=1 THEN 'Govt. of Odisha' WHEN MAX(s.which_govt)=2 THEN 'Govt. of India' ELSE 'Unknown' END AS Type"),
+        DB::raw("CASE WHEN MAX(s.which_govt)=1 THEN 'Govt. of Odisha' WHEN MAX(s.which_govt)=2 THEN 'Govt. of India' ELSE 'Unknown' END AS Type"),
 
-            's.special_school_management_name as Management_Name',
-            's.special_school_name as School_Name',
+        's.special_school_management_name as Management_Name',
+        's.special_school_name as School_Name',
 
-            DB::raw("CASE WHEN MAX(s.new_or_existing)=1 THEN 'New' WHEN MAX(s.new_or_existing)=2 THEN 'Existing' ELSE 'Unknown' END AS New_Existing"),
+        DB::raw("CASE WHEN MAX(s.new_or_existing)=1 THEN 'New' WHEN MAX(s.new_or_existing)=2 THEN 'Existing' ELSE 'Unknown' END AS New_Existing"),
 
             /*
             |--------------------------------------------------------------------------
@@ -849,7 +849,7 @@ public function phase_wise_toilet_construction(Request $request)
                 WHEN MAX(CASE WHEN s.phase_no=1 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
                 WHEN MAX(CASE WHEN s.phase_no=1 THEN 1 ELSE 0 END)=1 THEN 'Pending'
                 ELSE 'Not Uploaded'
-            END AS phase_1_approval_status"),
+                END AS phase_1_approval_status"),
 
             DB::raw("MAX(CASE WHEN s.phase_no=1 THEN s.approver_remarks END) AS phase_1_approver_remarks"),
 
@@ -871,7 +871,7 @@ public function phase_wise_toilet_construction(Request $request)
                 WHEN MAX(CASE WHEN s.phase_no=2 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
                 WHEN MAX(CASE WHEN s.phase_no=2 THEN 1 ELSE 0 END)=1 THEN 'Pending'
                 ELSE 'Not Uploaded'
-            END AS phase_2_approval_status"),
+                END AS phase_2_approval_status"),
 
             DB::raw("MAX(CASE WHEN s.phase_no=2 THEN s.approver_remarks END) AS phase_2_approver_remarks"),
 
@@ -893,7 +893,7 @@ public function phase_wise_toilet_construction(Request $request)
                 WHEN MAX(CASE WHEN s.phase_no=3 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
                 WHEN MAX(CASE WHEN s.phase_no=3 THEN 1 ELSE 0 END)=1 THEN 'Pending'
                 ELSE 'Not Uploaded'
-            END AS phase_3_approval_status"),
+                END AS phase_3_approval_status"),
 
             DB::raw("MAX(CASE WHEN s.phase_no=3 THEN s.approver_remarks END) AS phase_3_approver_remarks"),
 
@@ -915,7 +915,7 @@ public function phase_wise_toilet_construction(Request $request)
                 WHEN MAX(CASE WHEN s.phase_no=4 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
                 WHEN MAX(CASE WHEN s.phase_no=4 THEN 1 ELSE 0 END)=1 THEN 'Pending'
                 ELSE 'Not Uploaded'
-            END AS phase_4_approval_status"),
+                END AS phase_4_approval_status"),
 
             DB::raw("MAX(CASE WHEN s.phase_no=4 THEN s.approver_remarks END) AS phase_4_approver_remarks"),
 
@@ -937,25 +937,17 @@ public function phase_wise_toilet_construction(Request $request)
                 WHEN MAX(CASE WHEN s.phase_no=5 AND s.approve_status=3 THEN 1 ELSE 0 END)=1 THEN 'In Waiting'
                 WHEN MAX(CASE WHEN s.phase_no=5 THEN 1 ELSE 0 END)=1 THEN 'Pending'
                 ELSE 'Not Uploaded'
-            END AS phase_5_approval_status"),
+                END AS phase_5_approval_status"),
 
             DB::raw("MAX(CASE WHEN s.phase_no=5 THEN s.approver_remarks END) AS phase_5_approver_remarks")
         )
+->where('s.status', 1)
+->groupBy('d.district_name', 's.special_school_management_name', 's.special_school_name', 's.special_school_id')
+->orderBy('d.district_name')
+->orderBy('s.special_school_management_name')
+->orderBy('s.special_school_id')
+->get();
 
-        ->where('s.status', 1)
-
-        ->groupBy(
-            'd.district_name',
-            's.special_school_management_name',
-            's.special_school_name',
-            's.special_school_id'
-        )
-
-        ->orderBy('d.district_name')
-        ->orderBy('s.special_school_management_name')
-        ->orderBy('s.special_school_id')
-        ->get();
-
-    return view('dashboard.special_school.report.phase_wise_toilet_construction', compact('reports'));
+return view('dashboard.special_school.report.phase_wise_toilet_construction', compact('reports'));
 }
 }
