@@ -71,7 +71,7 @@ use Illuminate\Support\Str;
                                 <th rowspan="2">District Name</th>
                                 <th rowspan="2">Type</th>
                                 <th rowspan="2" class="wrap-text" style="min-width:180px;">Management Name</th>
-                                <th rowspan="2" class="wrap-text" style="min-width:220px;">Special School Name</th>
+                                <th rowspan="2" class="wrap-text" style="min-width:220px;">School Name</th>
                                 <th rowspan="2">New / Existing</th>
 
                                 <th colspan="5">Phase 1</th>
@@ -124,7 +124,7 @@ use Illuminate\Support\Str;
                                 <th rowspan="2">District Name</th>
                                 <th rowspan="2">Type</th>
                                 <th rowspan="2" class="wrap-text" style="min-width:180px;">Management Name</th>
-                                <th rowspan="2" style="white-space: normal; min-width: 220px;">Special School Name</th>
+                                <th rowspan="2" style="white-space: normal; min-width: 220px;">School Name</th>
                                 <th rowspan="2">New / Existing</th>
 
                                 <th colspan="5">Phase 1</th>
