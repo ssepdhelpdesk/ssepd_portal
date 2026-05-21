@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid" style="min-height: 100vh; background: url('https://images.pexels.com/photos/577585/pexels-photo-577585.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') no-repeat center center; background-size: cover; position: relative;">
+<div class="container-fluid" style="min-height: 100vh; background: url('https://ssepd.odisha.gov.in/sites/default/files/styles/theme_six_slider/public/2026-03/WhatsApp%20Image%202026-03-18%20at%2017.35.59.jpeg?itok=rvzNOM_k') no-repeat center center; background-size: cover; position: relative;">
    <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
       <div class="col-md-6 col-lg-4">
          <div class="card shadow-lg border-0 rounded-lg" style="background: rgba(255, 255, 255, 0.9);">
