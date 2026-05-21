@@ -61,9 +61,9 @@
                </div>
             </form>
          </div>
-         <div class="card-footer text-center bg-light rounded-bottom">
+         <!-- <div class="card-footer text-center bg-light rounded-bottom">
             <span class="text-muted">Don't have an account? <a href="{{ route('register') }}" class="text-primary fw-bold">Sign up</a></span>
-         </div>
+         </div> -->
       </div>
    </div>
 </div>
