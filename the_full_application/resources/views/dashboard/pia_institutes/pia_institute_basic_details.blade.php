@@ -131,6 +131,16 @@ PIA || Institute Basic Details
                               </div>
                            </div>
                            <div class="col-md-3">
+                              <div class="form-group" id="reg_cer_valid_upto_div">
+                                 <label class="form-label">Registration Certificate Valid Up To (DD-MM-YYYY)<span class="itsrequired"> *</span></label>
+                                 <input type="date" id="reg_cer_valid_upto" name="reg_cer_valid_upto" value="{{old('reg_cer_valid_upto')}}" class="form-control" placeholder="Date of Registration">
+                                 <div id="reg_cer_valid_upto_error"></div>
+                                 @error('reg_cer_valid_upto')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
                               <div class="form-group" id="which_govt_div">
                                  <label class="form-label">Grant-in-Aid<span class="itsrequired"> *</span></label>
                                  <select class="form-control show-tick ms select2" id="which_govt" name="which_govt">
@@ -391,6 +401,7 @@ PIA || Institute Basic Details
    { id: 'institute_email_id', message: 'Please enter Institute Email ID.' },
    { id: 'date_of_registration', message: 'Please select Date of Registration.' },
    { id: 'registration_no', message: 'Please enter Registration No.' },
+   { id: 'reg_cer_valid_upto', message: 'Please select Registration Certificate Validity Date.' },
    { id: 'grantee_code', message: 'Please enter Grantee Code.' },
    { id: 'nodal_officer_name', message: 'Please enter Nodal Officer Name.' },
    { id: 'nodal_officer_contact_number', message: 'Please enter Nodal Officer Mobile No.' },

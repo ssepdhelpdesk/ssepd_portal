@@ -44,7 +44,7 @@ return new class extends Migration
             $table->string('institute_name',250)->nullable()->index();
             $table->bigInteger('institute_id')->index();
             $table->bigInteger('institute_master_id')->nullable()->index();
-            $table->bigInteger('institute_type')->nullable()->index();
+            $table->string('institute_type')->nullable()->index();
             $table->bigInteger('institute_type_id')->nullable()->index();
             $table->string('institute_user_id')->nullable();
             $table->string('institute_system_email_id')->nullable();
@@ -59,6 +59,7 @@ return new class extends Migration
             $table->date('date_of_registration')->nullable()->index();
             $table->string('registration_no')->nullable()->index();
             $table->string('registration_certificate')->nullable();
+            $table->date('reg_cer_valid_upto')->nullable()->index();
             $table->string('grantee_code')->nullable();
 
             $table->integer('address_type')->index();

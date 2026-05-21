@@ -72,6 +72,8 @@ return new class extends Migration
             $table->bigInteger('no_of_image_uploaded');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('which_govt')->default(1)->comment('1 = State, 2 = National');
+            $table->tinyInteger('marked_for_payment')->default(0)->comment('1 = Yes, 0 = No');
+            $table->date('marked_for_payment_date')->nullable();
             $table->timestamps();
         });
     }
