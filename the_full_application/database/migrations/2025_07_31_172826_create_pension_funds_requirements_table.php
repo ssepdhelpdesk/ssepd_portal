@@ -42,8 +42,9 @@ return new class extends Migration
             $table->bigInteger('funds_mbpy_widow_due_to_covid')->default(0);
             $table->integer('mbpy_divorce_or_destitute')->nullable();
             $table->bigInteger('funds_mbpy_divorce_or_destitute')->default(0);
-            $table->integer('mbpy_transgender')->nullable();
+            $table->integer('mbpy_transgender')->nullable();            
             $table->bigInteger('funds_mbpy_transgender')->default(0);
+            $table->bigInteger('total_unspent_fund')->default(0)->nullable();
             $table->bigInteger('death_reported')->default(0)->nullable();
             $table->bigInteger('mbpy_total_beneficiaries')->default(0);
             $table->bigInteger('funds_mbpy_total_beneficiaries')->default(0);

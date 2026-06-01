@@ -100,6 +100,7 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_widow_due_to_covid' => 'required|integer|min:0',
             'mbpy_divorce_or_destitute' => 'required|integer|min:0',
             'mbpy_transgender' => 'required|integer|min:0',
+            'total_unspent_fund' => 'required|integer|min:0',
             'mbpy_bank_account_number' => 'required|string|regex:/^[0-9]{9,18}$/',
             'mbpy_bank_ifsc_code' => 'required|string|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/i',
         ];
@@ -124,6 +125,7 @@ class PensionFundsRequirementsController extends Controller
             'mbpy_widow_due_to_covid.required' => 'Widow due to COVID is required.',
             'mbpy_divorce_or_destitute.required' => 'Divorced/Destitute Women is required.',
             'mbpy_transgender.required' => 'Transgender pension count is required.',
+            'total_unspent_fund.required' => 'Total Unspent Funds (Till date) count is required.',
             'mbpy_bank_account_number.required' => 'Bank Account is Required.',
             'mbpy_bank_account_number.regex' => 'Enter a valid Bank Account Number (9 to 18 digits).',
             'mbpy_bank_ifsc_code.required' => 'Bank IFSC Code is required.',
@@ -185,6 +187,7 @@ class PensionFundsRequirementsController extends Controller
             $pensionFundsRequirement->mbpy_widow_due_to_covid = $validatedData['mbpy_widow_due_to_covid'];
             $pensionFundsRequirement->mbpy_divorce_or_destitute = $validatedData['mbpy_divorce_or_destitute'];
             $pensionFundsRequirement->mbpy_transgender = $validatedData['mbpy_transgender'];
+            $pensionFundsRequirement->total_unspent_fund = $validatedData['total_unspent_fund'];
             $pensionFundsRequirement->funds_mbpy_oap_below_80_years = $validatedData['mbpy_oap_below_80_years'] * 1000;
             $pensionFundsRequirement->funds_mbpy_oap_above_80_years = $validatedData['mbpy_oap_above_80_years'] * 3500;
             $pensionFundsRequirement->funds_mbpy_wp = $validatedData['mbpy_wp'] * 1000;

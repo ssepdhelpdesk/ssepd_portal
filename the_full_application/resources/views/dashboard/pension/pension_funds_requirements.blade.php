@@ -413,10 +413,21 @@ Pension || Funds Requiremt
                            </div>
                         </div>
                         <div class="col-md-2">
+                           <div class="form-group" id="total_unspent_fund_div">
+                              <label class="form-label">Total Unspent Funds (Till date)<span class="itsrequired"> *</span></label>
+                              <input 
+                              type="number" id="total_unspent_fund" name="total_unspent_fund" value="{{ old('total_unspent_fund') }}" class="form-control" placeholder="Enter Total Unspent Funds (Till date)" min="0" step="1">
+                              <div id="total_unspent_fund_error"></div>
+                              @error('total_unspent_fund')
+                              <label class="error">{{ $message }}</label>
+                              @enderror
+                           </div>
+                        </div>
+                        <div class="col-md-2">
                            <div class="form-group" id="mbpy_bank_account_number_div">
                               <label class="form-label">Bank Account Number<span class="itsrequired"> *</span></label>
                               <input 
-                              type="text" id="mbpy_bank_account_number" name="mbpy_bank_account_number" value="{{ old('mbpy_bank_account_number') }}" class="form-control" placeholder="Enter beneficiary count">
+                              type="number" id="mbpy_bank_account_number" name="mbpy_bank_account_number" value="{{ old('mbpy_bank_account_number') }}" class="form-control" placeholder="Enter beneficiary count">
                               <div id="mbpy_bank_account_number_error"></div>
                               @error('mbpy_bank_account_number')
                               <label class="error">{{ $message }}</label>
@@ -468,6 +479,24 @@ Pension || Funds Requiremt
 @endsection 
 @section('script')
 <script>
+$(document).ready(function () {
+    Swal.fire({
+        icon: 'warning',
+        title: 'Important Instructions',
+        html: `
+            <div style="text-align:left;">
+                <p><strong>Please provide the actual number of beneficiaries eligible to receive pension for the month.</strong></p>
+                <p>Do <strong>not</strong> calculate or reduce the beneficiary count based on any unspent balance available in your account.</p>
+                <p>The beneficiary count should include <strong>all eligible beneficiaries</strong> who are to receive pension, irrespective of the unspent funds currently available.</p>
+                <p>Providing incorrect beneficiary counts may result in inaccurate fund requirement calculations and delay pension disbursement.</p>
+            </div>
+        `,
+        confirmButtonText: 'I Understand',
+        allowOutsideClick: false
+    });
+});
+</script>
+<script>
    document.addEventListener("DOMContentLoaded", function () {
       const form = document.forms["vform"];
       const requiredFields = [
@@ -486,6 +515,7 @@ Pension || Funds Requiremt
          "mbpy_widow_due_to_covid",
          "mbpy_divorce_or_destitute",
          "mbpy_transgender",
+         "total_unspent_fund",
          "mbpy_bank_account_number",
          "mbpy_bank_ifsc_code"
       ];
@@ -590,6 +620,4 @@ document.addEventListener('DOMContentLoaded', function () {
     calculateTotals();
 });
 </script>
-
-
 @endsection
