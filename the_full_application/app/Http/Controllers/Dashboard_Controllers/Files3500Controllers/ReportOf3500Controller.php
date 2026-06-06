@@ -139,12 +139,6 @@ class ReportOf3500Controller extends Controller
 
     public function active_ineligible(Request $request)
     {
-        try {
-    DB::connection('pension_verification_app')->getPdo();
-    dd('Connected');
-} catch (\Exception $e) {
-    dd($e->getMessage());
-}
         $user = Auth::user();
         $userRole = $user->role_id;
 
