@@ -341,7 +341,10 @@ class SchemeMigrationEpController extends Controller
                     $oldage_pensioner->save();
                 }
 
+                \Log::info('Reached PensionVerificationApp query');
+
                 $disability_pensioner_verification_app = PensionVerificationAppBeneficiary::where('excel_data_type', 'OAPEP')->where('ssepd_id', $id)->where('sanction_number', $sanctionNo)->first();
+                \Log::info('Query executed');
                 if ($disability_pensioner_verification_app) {
                     if ($request->ngo_address_type === "1") {
                         $user_level_of_verification_app = 'block';

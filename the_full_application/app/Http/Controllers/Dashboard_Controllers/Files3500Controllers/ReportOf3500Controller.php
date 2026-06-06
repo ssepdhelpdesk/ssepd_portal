@@ -36,6 +36,15 @@ use App\Models\Village3500;
 use App\Models\WardMaster3500;
 use Yajra\DataTables\Facades\DataTables;
 
+use App\Models\PensionVerificationAppModels\{
+    PensionVerificationAppBeneficiary,
+    PensionVerificationAppDistrict,
+    PensionVerificationAppBlock,
+    PensionVerificationAppGramaPanchayat,
+    PensionVerificationAppVillage,
+    PensionVerificationAppWard
+};
+
 class ReportOf3500Controller extends Controller
 {
     /*public function active_ineligible(Request $request)
@@ -130,6 +139,12 @@ class ReportOf3500Controller extends Controller
 
     public function active_ineligible(Request $request)
     {
+        try {
+    DB::connection('pension_verification_app')->getPdo();
+    dd('Connected');
+} catch (\Exception $e) {
+    dd($e->getMessage());
+}
         $user = Auth::user();
         $userRole = $user->role_id;
 
