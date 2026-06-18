@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
         'track.session' => \App\Http\Middleware\TrackUserSession::class,
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
     ]);
 })
 ->withExceptions(function (Exceptions $exceptions) {

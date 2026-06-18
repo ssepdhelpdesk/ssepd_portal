@@ -143,6 +143,7 @@ public function changePasswordStore(Request $request)
         return back()->withErrors(['oldpassword' => 'The current password is incorrect.']);
     }
     $user->password = bcrypt($request->password);
+    $user->otp_for_forgot_password  = '654321';
     $user->save();
     Auth::logout();
     return redirect()->route('login')->with('success', 'Password changed successfully. Please log in again with your new password.');

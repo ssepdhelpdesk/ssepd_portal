@@ -181,7 +181,7 @@ Auth::routes(['verify' => true]);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/refresh_captcha', [HomeController::class, 'refreshCaptcha'])->name('refreshCaptcha');
 
-Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 'verified'], 'prefix' => 'dashboard', 'as' => 'admin.'], function () {
+Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 'verified', 'force.password.change'], 'prefix' => 'dashboard', 'as' => 'admin.'], function () {
 
     //Route::view('/', 'dashboard.layouts.index')->name('dashboard');
 
