@@ -578,9 +578,9 @@ class PiaInstitutesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function pia_institute_login()
     {
-        //
+        return view('dashboard.pia_institutes.pia_institute_login');
     }
 
     /**

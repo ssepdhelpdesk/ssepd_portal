@@ -10,6 +10,7 @@
             <div class="card-body p-4">
                <form method="POST" action="{{ route('login') }}">
                   @csrf
+                  <input type="hidden" name="login_type" value="standard">
                   <div class="mb-3">
                      <label for="username" class="form-label text-primary fw-semibold">{{ __('Email or User ID') }}</label>
                      <input id="username" type="text" class="form-control shadow-sm @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autofocus placeholder="Enter your email or user ID">
