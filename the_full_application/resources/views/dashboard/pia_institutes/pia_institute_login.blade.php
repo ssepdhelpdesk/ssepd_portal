@@ -1141,7 +1141,7 @@
     <div class="accessibility-bar" role="complementary" aria-label="Accessibility options">
         <div class="accessibility-left">
             <span class="helplines" aria-label="Emergency Helplines">
-                <span><i class="fa-solid fa-phone"></i> Helpline: 155335 / 1800-345-6770</span>
+                <span><i class="fa-solid fa-phone"></i> Helpline: 2919578</span>
             </span>
         </div>
         <div class="accessibility-right">
@@ -1261,15 +1261,15 @@
                         <span class="stat-label">Statewide Saturation</span>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon-wrapper"><i class="fa-solid fa-users-line"></i></div>
-                        <span class="stat-number" data-target="48" data-suffix="L+">0</span>
-                        <span class="stat-label">Welfare Beneficiaries</span>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-icon-wrapper"><i class="fa-solid fa-hands-holding-child"></i></div>
                         <span class="stat-number" data-target="15" data-suffix="+">0</span>
                         <span class="stat-label">Welfare Schemes Active</span>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrapper"><i class="fa-solid fa-users-line"></i></div>
+                        <span class="stat-number" data-target="56" data-suffix="L+">0</span>
+                        <span class="stat-label">Welfare Beneficiaries</span>
+                    </div>                    
                 </div>
             </section>
 
@@ -1417,7 +1417,7 @@
             </div>
 
             <div class="footer-bottom">
-                <span>&copy; 2026 Government of Odisha, Social Security & Empowerment of Persons with Disabilities Department. All Rights Reserved.</span>
+                <span>&copy; 2026 Social Security & Empowerment of Persons with Disabilities Department, Government of Odisha. All Rights Reserved.</span>
                 
                 <div class="footer-bottom-links">
                     <a href="#" onclick="simulateFooterLink('Privacy Policy', event)">Privacy Policy</a>
