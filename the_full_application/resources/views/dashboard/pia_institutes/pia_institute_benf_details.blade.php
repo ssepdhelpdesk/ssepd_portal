@@ -122,7 +122,7 @@ PIA || Institute Beneficiary List
 									<td>
 										<div class="btn-group">
 											<button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												Action1
+												Action
 											</button>
 											<div class="dropdown-menu">
 												<!-- @can('special-school-delete')
