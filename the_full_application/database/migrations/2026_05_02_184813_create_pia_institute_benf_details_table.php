@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('udid_no')->nullable()->index();
             $table->string('beneficiary_udid_file')->nullable();
             $table->string('disability_category')->nullable();
+            $table->tinyInteger('therapy_type')->nullable();
             $table->tinyInteger('benf_address_type')->nullable();
             $table->bigInteger('state_id')->nullable();
             $table->bigInteger('district_id')->nullable();

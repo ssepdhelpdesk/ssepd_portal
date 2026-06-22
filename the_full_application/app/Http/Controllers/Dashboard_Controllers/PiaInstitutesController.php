@@ -335,13 +335,14 @@ class PiaInstitutesController extends Controller
             'verified_aadhar_remarks'  => 'nullable|string',
             'aadhaar_file'             => 'required|file|mimes:pdf|max:2048',
             'beneficiary_file'         => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'bank_ac_no'               => 'required|digits_between:6,20',
-            'bank_ifsc'                => 'required|exists:bank_masters,bank_id',
-            'beneficiary_bank_file'    => 'required|file|mimes:pdf|max:2048',
+            'bank_ac_no'               => 'nullable|digits_between:6,20',
+            'bank_ifsc'                => 'nullable|required_with:bank_ac_no|exists:bank_masters,bank_id',
+            'beneficiary_bank_file'    => 'nullable|file|mimes:pdf|max:2048',
             'is_disabled'              => 'required|in:1,2',
             'udid_no'                  => 'required_if:is_disabled,1|nullable|string|max:50',
             'beneficiary_udid_file'    => 'required_if:is_disabled,1|nullable|file|mimes:pdf|max:2048',
             'disability_category'      => 'required_if:is_disabled,1|nullable|string|max:255',
+            'therapy_type'              => 'required|in:1,2',
             'ngo_address_type'         => 'required|in:1,2',
         ];
 
@@ -366,15 +367,13 @@ class PiaInstitutesController extends Controller
             'beneficiary_file.image'          => 'File must be an image.',
             'beneficiary_file.mimes'          => 'Only JPG, JPEG, PNG allowed.',
             'beneficiary_file.max'            => 'Image must be less than 2MB.',
-            'beneficiary_bank_file.required'  => 'Please upload Bank Passbook.',
             'beneficiary_bank_file.mimes'     => 'Only PDF allowed for Bank Passbook.',
-            'bank_ac_no.required'             => 'Please enter Bank Account Number.',
             'bank_ac_no.digits_between'       => 'Bank Account must be between 6 to 20 digits.',
-            'bank_ifsc.required'              => 'Please select IFSC Code.',
             'is_disabled.required'            => 'Please select disability status.',
             'udid_no.required_if'             => 'Please enter UDID Number.',
             'beneficiary_udid_file.required_if'=> 'Please upload UDID Certificate.',
             'disability_category.required_if' => 'Please enter Disability Category.',
+            'therapy_type.required'            => 'Please select Therapy type.',
             'ngo_address_type.required'       => 'Please select Address Type.',
         ];
 
@@ -493,6 +492,7 @@ class PiaInstitutesController extends Controller
             $pia_institute_benf_details->udid_no = $validatedData['udid_no'] ?? null;
             $pia_institute_benf_details->beneficiary_udid_file = $benfUdidStoredPath ?? null;
             $pia_institute_benf_details->disability_category = $validatedData['disability_category'] ?? null;
+            $pia_institute_benf_details->therapy_type = $validatedData['therapy_type'] ?? null;
             $pia_institute_benf_details->benf_address_type = $validatedData['ngo_address_type'] ?? null;
             $pia_institute_benf_details->state_id = $validatedData['state'] ?? null;
             $pia_institute_benf_details->district_id = $validatedData['district'] ?? null;

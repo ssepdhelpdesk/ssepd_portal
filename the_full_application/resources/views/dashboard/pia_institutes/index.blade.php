@@ -183,7 +183,7 @@ PIA || Institute Beneficiary Details Form
                            </div>                           
                            <div class="col-md-3">
                               <div class="form-group" id="bank_ac_no_div">
-                                 <label class="form-label">Bank Account No<span class="itsrequired"> *</span></label>
+                                 <label class="form-label">Bank Account No<span class="itsrequired"> </span></label>
                                  <input type="text" id="bank_ac_no" name="bank_ac_no" value="{{old('bank_ac_no')}}" class="form-control" placeholder="Bank Account No" >
                                  <div id="bank_ac_no_error"></div>
                                  <div id="check_bank_ac_no"></div>
@@ -194,7 +194,7 @@ PIA || Institute Beneficiary Details Form
                            </div>
                            <div class="col-md-3">
                               <div class="form-group" id="bank_ifsc_div">
-                                 <label class="form-label">IFSC Code<span class="itsrequired"> *</span></label>
+                                 <label class="form-label">IFSC Code<span class="itsrequired"> </span></label>
                                  <select class="form-control show-tick ms select2" id="bank_ifsc" name="bank_ifsc">
                                     <option value="">Please Select</option>
                                     @foreach($bankmaster as $bank_ifsc)
@@ -209,7 +209,7 @@ PIA || Institute Beneficiary Details Form
                            </div>
                            <div class="col-md-3">
                               <div class="form-group" id="beneficiary_bank_file_div">
-                                 <label class="form-label">Upload Beneficiary Bank Passbook<span class="itsrequired"> *</span></label>
+                                 <label class="form-label">Upload Beneficiary Bank Passbook<span class="itsrequired"> </span></label>
                                  <input type="file" id="beneficiary_bank_file" name="beneficiary_bank_file" value="{{old('beneficiary_bank_file')}}" class="form-control" placeholder="Registration No" accept="application/pdf">
                                  <div id="beneficiary_bank_file_error"></div>
                                  @error('beneficiary_bank_file')
@@ -265,6 +265,20 @@ PIA || Institute Beneficiary Details Form
                                  <input type="text" id="disability_category" name="disability_category" value="{{old('disability_category')}}" class="form-control" placeholder="Disability category of Beneficiary" >
                                  <div id="disability_category_error"></div>
                                  @error('disability_category')
+                                 <label class="error">{{ $message }}</label>
+                                 @enderror
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <div class="form-group" id="therapy_type_div">
+                                 <label class="form-label">Therapy Type<span class="itsrequired"> *</span></label>
+                                 <select class="form-control show-tick ms select2" id="therapy_type" name="therapy_type">
+                                    <option value="">Please Select</option>
+                                    <option value="1">Residential</option>
+                                    <option value="2">Non-Residential</option>
+                                 </select>
+                                 <div id="therapy_type_error"></div>
+                                 @error('therapy_type')
                                  <label class="error">{{ $message }}</label>
                                  @enderror
                               </div>
@@ -608,8 +622,8 @@ PIA || Institute Beneficiary Details Form
    { id: 'beneficiary_mobile', message: 'Please enter Mobile Number.' },
    { id: 'date_of_birth', message: 'Please select DOB.' },
    { id: 'date_of_joining', message: 'Please select Date of Joining.' },
-   { id: 'aadhaar_no', message: 'Please enter Aadhaar No.' },
-   { id: 'bank_ac_no', message: 'Please enter Bank Account No.' }
+   { id: 'aadhaar_no', message: 'Please enter Aadhaar No.' }
+   /*{ id: 'bank_ac_no', message: 'Please enter Bank Account No.' }*/
    ];
    
    requiredFields.forEach(field => {
@@ -626,7 +640,8 @@ PIA || Institute Beneficiary Details Form
     // ========================
    const selectFields = [
    { name: 'gender', message: 'Please select Gender.' },
-   { name: 'bank_ifsc', message: 'Please select IFSC Code.' }
+   { name: 'therapy_type', message: 'Please select Therapy Type.' }
+   /*{ name: 'bank_ifsc', message: 'Please select IFSC Code.' }*/
    ];
    
    selectFields.forEach(field => {
@@ -659,8 +674,8 @@ PIA || Institute Beneficiary Details Form
     // ========================
    const fileFields = [
    { id: 'aadhaar_file', message: 'Please upload Aadhaar file.' },
-   { id: 'beneficiary_file', message: 'Please upload Beneficiary Image.' },
-   { id: 'beneficiary_bank_file', message: 'Please upload Bank Passbook.' }
+   { id: 'beneficiary_file', message: 'Please upload Beneficiary Image.' }
+   /*{ id: 'beneficiary_bank_file', message: 'Please upload Bank Passbook.' }*/
    ];
    
    fileFields.forEach(field => {
