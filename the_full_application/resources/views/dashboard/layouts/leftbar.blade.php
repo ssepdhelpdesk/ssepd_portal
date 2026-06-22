@@ -181,7 +181,7 @@
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">PIA/NGO Institutes</a>
                      <ul aria-expanded="false" class="collapse">
-                        @can('Institute-create')
+                        @can('Institute-list')
                         <li><a href="{{route('admin.piainstitutes.pia_institute_basic_details')}}">Add Beneficiary Details</a></li>
                         @endcan
                         @can('Institute-list')
