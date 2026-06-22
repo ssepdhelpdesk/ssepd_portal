@@ -45,6 +45,15 @@ use App\Models\{
 
 class PiaInstitutesController extends Controller
 {
+
+    function __construct()
+    {
+        $this->middleware('permission:Institute-access|Institute-list|Institute-create|Institute-edit|Institute-delete', ['only' => ['index','store', 'pia_institute_basic_details', 'check_registration_no', 'check_grantee_code', 'check_institute_email_id', 'check_benf_aadhar', 'check_benf_udid', 'pia_institute_list', 'pia_institute_benf_details']]);
+        $this->middleware('permission:Institute-create', ['only' => ['create','store', 'pia_institute_benf_details_store']]);
+        $this->middleware('permission:Institute-edit', ['only' => ['edit','update', 'pia_institute_basic_details_update']]);
+        $this->middleware('permission:Institute-delete', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -581,6 +590,14 @@ class PiaInstitutesController extends Controller
     public function pia_institute_login()
     {
         return view('dashboard.pia_institutes.pia_institute_login');
+    }
+
+    public function pia_institute_benf_details()
+    {
+        $userId = Auth::user();
+        $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
+        $beneficiary_details = PiaInstituteBenfDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
+        return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
     }
 
     /**

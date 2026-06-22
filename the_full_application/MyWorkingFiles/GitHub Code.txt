@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "New Login Page For Institute"
+git commit -m "Commentout the registration_no duplicate checker"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git

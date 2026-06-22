@@ -177,14 +177,19 @@
                      </ul>
                   </li>
                   @endcan
+                  @can('Institute-access')
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">PIA/NGO Institutes</a>
                      <ul aria-expanded="false" class="collapse">
+                        @can('Institute-create')
                         <li><a href="{{route('admin.piainstitutes.pia_institute_basic_details')}}">Add Beneficiary Details</a></li>
-                        <!-- <li><a href="{{route('admin.ngo.index')}}">View PIAs</a></li>
-                        <li><a href="{{route('admin.ngo.create')}}">PIA Registration</a></li> -->
+                        @endcan
+                        @can('Institute-list')
+                        <li><a href="{{route('admin.piainstitutes.pia_institute_benf_details')}}">View Beneficiary Details</a></li>
+                        @endcan
                      </ul>
                   </li>
+                  @endcan
                </ul>
             </li>
             <li class="nav-small-cap">--- REPORTS</li>
