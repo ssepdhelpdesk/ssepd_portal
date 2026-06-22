@@ -288,7 +288,7 @@ PIA || Institute Basic Details
 </div>
 @endsection 
 @section('script')
-<script type="text/javascript">
+<!-- <script type="text/javascript">
    $(document).ready(function () {
       $("#registration_no").blur(function () {
          const registration_no = $(this).val().trim();
@@ -315,7 +315,7 @@ PIA || Institute Basic Details
          });
       });
    });
-</script>
+</script> -->
 <!-- <script type="text/javascript">
    $(document).ready(function () {
       $("#grantee_code").blur(function () {
