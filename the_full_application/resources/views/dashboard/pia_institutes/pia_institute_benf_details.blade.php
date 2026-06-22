@@ -101,17 +101,28 @@ PIA || Institute Beneficiary List
 									}}</td>
 									<td class="wrap-text">
 										@if($beneficiary->benf_address_type == 1)
-										At: {{ $beneficiary->village->village_name ?? 'Not Available' }}, GP: {{ $beneficiary->grampanchayat->gp_name ?? 'Not Available' }}, Block: {{ $beneficiary->block->block_name ?? 'Not Available' }}, District: {{ $beneficiary->district->district_name ?? 'Not Available' }}
+
+										At: {{ $beneficiary->village->village_name ?? 'Not Available' }},
+										GP: {{ $beneficiary->grampanchayat->gp_name ?? 'Not Available' }},
+										Block: {{ $beneficiary->block->block_name ?? 'Not Available' }},
+										District: {{ $beneficiary->district->district_name ?? 'Not Available' }}
+
 										@elseif($beneficiary->benf_address_type == 2)
-										Ward: {{ $beneficiary->ward->ward_name ?? 'Not Available' }}, ULB: {{ $beneficiary->municipality->municipality_name ?? 'Not Available' }}, District: {{ $beneficiary->district->district_name ?? 'Not Available' }}
+
+										Ward: {{ $beneficiary->ward->ward_name ?? 'Not Available' }},
+										Municipality: {{ $beneficiary->municipality->municipality_name ?? 'Not Available' }},
+										District: {{ $beneficiary->district->district_name ?? 'Not Available' }}
+
 										@else
+
 										Not Available
+
 										@endif
 									</td>
 									<td>
 										<div class="btn-group">
 											<button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												Action
+												Action here
 											</button>
 											<div class="dropdown-menu">
 												<!-- @can('special-school-delete')
