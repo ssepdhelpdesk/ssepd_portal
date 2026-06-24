@@ -1943,7 +1943,7 @@
                         <h3 class="service-title">SSEPD-IT Portal</h3>
                         <p class="service-desc">A unified platform for all internal operations and services.</p>
                     </div>
-                    <a href="ssepd_portal" target="_blank"><button class="btn-service-action" aria-label="Open SSEPD Portal">
+                    <a href="/SSEPD_REPO/ssepd_portal/" target="_blank"><button class="btn-service-action" aria-label="Open SSEPD Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1957,7 +1957,7 @@
                         <h3 class="service-title">Enhanced Pensioner Portal</h3>
                         <p class="service-desc">A dedicated platform for pensioners aged 80 and above, or with 80% or more disability.</p>
                     </div>
-                    <a href="old_age_and_disability_beneficiaries" target="_blank"><button class="btn-service-action" aria-label="Open Enhanced Pensioner Portal">
+                    <a href="/SSEPD_REPO/old_age_and_disability_beneficiaries" target="_blank"><button class="btn-service-action" aria-label="Open Enhanced Pensioner Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
