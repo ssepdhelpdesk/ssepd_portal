@@ -1840,7 +1840,7 @@
 
                     <div class="hero-ctas">
                         <a class="btn-cta btn-cta-primary"
-                        href="SSEPD_REPO/ssepd_portal"
+                        href="{{route('login')}}"
                         aria-label="Department Login">
 
                         <i class="fa-solid fa-building-flag"></i>
@@ -1849,7 +1849,7 @@
                     </a>
 
                     <a class="btn-cta btn-cta-secondary"
-                    href="SSEPD_REPO/ssepd_portal/pia_institute_login"
+                    href="{{route('pia_institute_login')}}"
                     aria-label="Institute Login">
 
                     <i class="fa-solid fa-graduation-cap"></i>
@@ -1985,7 +1985,7 @@
                         <h3 class="service-title">Institute Management Portal</h3>
                         <p class="service-desc">A unified platform for all institutions functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="SSEPD_REPO/ssepd_portal/pia_institute_login" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Institute Management Portal...')" aria-label="Open Institute Management Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Institute Management Portal...')" aria-label="Open Institute Management Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1999,7 +1999,7 @@
                         <h3 class="service-title">Special Schools Portal</h3>
                         <p class="service-desc">A unified platform for all Special School functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="SSEPD_REPO/ssepd_portal/pia_institute_login" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Special Schools Portal...')" aria-label="Open Special Schools Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Special Schools Portal...')" aria-label="Open Special Schools Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -2013,7 +2013,7 @@
                         <h3 class="service-title">Old Age Home Portal</h3>
                         <p class="service-desc">A unified platform for all Old Age Home functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="SSEPD_REPO/ssepd_portal/pia_institute_login" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Old Age Home Portal...')" aria-label="Open Old Age Home Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Old Age Home Portal...')" aria-label="Open Old Age Home Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -2027,7 +2027,7 @@
                         <h3 class="service-title">Therapeutic Centre Portal</h3>
                         <p class="service-desc">A unified platform for all Therapeutic Centre functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="SSEPD_REPO/ssepd_portal/pia_institute_login" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Therapeutic Centre Portal...')" aria-label="Open Therapeutic Centre Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Therapeutic Centre Portal...')" aria-label="Open Therapeutic Centre Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
