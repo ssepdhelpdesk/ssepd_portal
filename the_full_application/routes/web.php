@@ -76,7 +76,7 @@ Route::get('/', function () {
     return view('main_website.index');
 });
 
-Route::get('/pia_institute_login', [PiaInstitutesController::class, 'pia_institute_login']);
+Route::get('/pia_institute_login', [PiaInstitutesController::class, 'pia_institute_login'])->name('pia_institute_login');;
 
 Route::get('/ngo_registration', function () {
     return view('frontend.ngo_registration');
