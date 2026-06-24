@@ -1943,7 +1943,7 @@
                         <h3 class="service-title">SSEPD-IT Portal</h3>
                         <p class="service-desc">A unified platform for all internal operations and services.</p>
                     </div>
-                    <a href="SSEPD_REPO/ssepd_portal" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to SSEPD Portal...')" aria-label="Open SSEPD Portal">
+                    <a href="SSEPD_REPO/ssepd_portal" target="_blank"><button class="btn-service-action" aria-label="Open SSEPD Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1957,7 +1957,7 @@
                         <h3 class="service-title">Enhanced Pensioner Portal</h3>
                         <p class="service-desc">A dedicated platform for pensioners aged 80 and above, or with 80% or more disability.</p>
                     </div>
-                    <a href="SSEPD_REPO/old_age_and_disability_beneficiaries" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Pensioner Portal...')" aria-label="Open Enhanced Pensioner Portal">
+                    <a href="SSEPD_REPO/old_age_and_disability_beneficiaries" target="_blank"><button class="btn-service-action" aria-label="Open Enhanced Pensioner Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1971,7 +1971,7 @@
                         <h3 class="service-title">SIEP Portal</h3>
                         <p class="service-desc">Manodaya, aims for the overall development of PwDs in Odisha</p>
                     </div>
-                    <a href="https://siep.ssepdit.in" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to SIEP Portal...')" aria-label="Open SIEP Portal">
+                    <a href="https://siep.ssepdit.in" target="_blank"><button class="btn-service-action" aria-label="Open SIEP Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1985,7 +1985,7 @@
                         <h3 class="service-title">Institute Management Portal</h3>
                         <p class="service-desc">A unified platform for all institutions functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Institute Management Portal...')" aria-label="Open Institute Management Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" aria-label="Open Institute Management Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -1999,7 +1999,7 @@
                         <h3 class="service-title">Special Schools Portal</h3>
                         <p class="service-desc">A unified platform for all Special School functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Special Schools Portal...')" aria-label="Open Special Schools Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" aria-label="Open Special Schools Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -2013,7 +2013,7 @@
                         <h3 class="service-title">Old Age Home Portal</h3>
                         <p class="service-desc">A unified platform for all Old Age Home functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Old Age Home Portal...')" aria-label="Open Old Age Home Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" aria-label="Open Old Age Home Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -2027,7 +2027,7 @@
                         <h3 class="service-title">Therapeutic Centre Portal</h3>
                         <p class="service-desc">A unified platform for all Therapeutic Centre functioning under the SSEPD Department.</p>
                     </div>
-                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" onclick="alert('Redirecting to Therapeutic Centre Portal...')" aria-label="Open Therapeutic Centre Portal">
+                    <a href="{{route('pia_institute_login')}}" target="_blank"><button class="btn-service-action" aria-label="Open Therapeutic Centre Portal">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button></a>
                 </div>
@@ -2041,7 +2041,7 @@
                         <h3 class="service-title">Reports & Dashboard</h3>
                         <p class="service-desc">Aggregated statistics, visual metrics, performance monitoring system (PMS) targets, and district ranking dashboards.</p>
                     </div>
-                    <button class="btn-service-action" onclick="alert('Redirecting to Reports & Dashboard...')" aria-label="Open Reports & Dashboard">
+                    <button class="btn-service-action" aria-label="Open Reports & Dashboard">
                         Open Portal <i class="fa-solid fa-arrow-right-long"></i>
                     </button>
                 </div> -->
