@@ -72,7 +72,8 @@ Route::get('/', function () {
         'visit_date' => now('Asia/Kolkata')->toDateString(),
         'visit_time' => now('Asia/Kolkata')->toTimeString(),
     ]);
-    return view('auth.login');
+    /*return view('auth.login');*/
+    return view('main_website.index');
 });
 
 Route::get('/pia_institute_login', [PiaInstitutesController::class, 'pia_institute_login']);
