@@ -2048,99 +2048,99 @@
             </div>
         </section>
 
-    <!-- Bootstrap 5 JS Bundle (Includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap 5 JS Bundle (Includes Popper) -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Vanilla Javascript Logic -->
-    <script>
+        <!-- Vanilla Javascript Logic -->
+        <script>
         // ==========================================================================
         // Constants & Global State
         // ==========================================================================
-        let deptModalObj = null;
-        let instModalObj = null;
-        let generatedDeptCaptcha = "";
-        let generatedInstCaptchaAnswer = 0;
-        let generatedDeptOtp = "";
+            let deptModalObj = null;
+            let instModalObj = null;
+            let generatedDeptCaptcha = "";
+            let generatedInstCaptchaAnswer = 0;
+            let generatedDeptOtp = "";
 
         // ==========================================================================
         // Initializations on DOM Loaded
         // ==========================================================================
-        document.addEventListener("DOMContentLoaded", () => {
+            document.addEventListener("DOMContentLoaded", () => {
             // Initialize Bootstrap modal instances
-            const deptModalEl = document.getElementById('deptLoginModal');
-            if (deptModalEl) {
-                deptModalObj = new bootstrap.Modal(deptModalEl);
-            }
-            const instModalEl = document.getElementById('instLoginModal');
-            if (instModalEl) {
-                instModalObj = new bootstrap.Modal(instModalEl);
-            }
+                const deptModalEl = document.getElementById('deptLoginModal');
+                if (deptModalEl) {
+                    deptModalObj = new bootstrap.Modal(deptModalEl);
+                }
+                const instModalEl = document.getElementById('instLoginModal');
+                if (instModalEl) {
+                    instModalObj = new bootstrap.Modal(instModalEl);
+                }
 
             // Launch floating particle canvas
-            initParticles();
+                initParticles();
 
             // Set up scroll triggers for animations and stats
-            initScrollAnimations();
+                initScrollAnimations();
 
             // Insert random updates into Command Centre Monitor
-            initLiveMonitorFeed();
+                initLiveMonitorFeed();
 
             // Language translation listener helper
-            const langSelect = document.getElementById("langSelect");
-            if (langSelect) {
-                langSelect.addEventListener("change", (e) => {
-                    handleLanguageChange(e.target.value);
-                });
-            }
-        });
+                const langSelect = document.getElementById("langSelect");
+                if (langSelect) {
+                    langSelect.addEventListener("change", (e) => {
+                        handleLanguageChange(e.target.value);
+                    });
+                }
+            });
 
         // ==========================================================================
         // Dark Mode & Contrast Toggle Functions
         // ==========================================================================
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
+            function toggleDarkMode() {
+                document.body.classList.toggle('dark-mode');
             // Remove high contrast if enabled, as they conflict
-            document.body.classList.remove('high-contrast');
-            
-            const btn = document.getElementById('darkModeToggle');
-            if (document.body.classList.contains('dark-mode')) {
-                btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-                btn.setAttribute("aria-label", "Toggle Light Mode");
-                showToast("Dark Mode enabled successfully.");
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-                btn.setAttribute("aria-label", "Toggle Dark Mode");
-                showToast("Light Mode enabled successfully.");
+                document.body.classList.remove('high-contrast');
+                
+                const btn = document.getElementById('darkModeToggle');
+                if (document.body.classList.contains('dark-mode')) {
+                    btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                    btn.setAttribute("aria-label", "Toggle Light Mode");
+                    showToast("Dark Mode enabled successfully.");
+                } else {
+                    btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                    btn.setAttribute("aria-label", "Toggle Dark Mode");
+                    showToast("Light Mode enabled successfully.");
+                }
             }
-        }
 
-        function toggleContrast() {
-            document.body.classList.toggle('high-contrast');
+            function toggleContrast() {
+                document.body.classList.toggle('high-contrast');
             // Remove dark mode to prevent visual overlays
-            document.body.classList.remove('dark-mode');
-            
-            if (document.body.classList.contains('high-contrast')) {
-                showToast("High Contrast accessibility theme enabled.");
-            } else {
-                showToast("Standard contrast theme restored.");
+                document.body.classList.remove('dark-mode');
+                
+                if (document.body.classList.contains('high-contrast')) {
+                    showToast("High Contrast accessibility theme enabled.");
+                } else {
+                    showToast("Standard contrast theme restored.");
+                }
             }
-        }
 
         // ==========================================================================
         // Text Resizing Controls
         // ==========================================================================
-        function adjustTextSize(mode) {
-            document.body.classList.remove('text-scale-up', 'text-scale-down');
-            if (mode === 'increase') {
-                document.body.classList.add('text-scale-up');
-                showToast("Text size scaled up.");
-            } else if (mode === 'decrease') {
-                document.body.classList.add('text-scale-down');
-                showToast("Text size scaled down.");
-            } else {
-                showToast("Text size reset to default.");
+            function adjustTextSize(mode) {
+                document.body.classList.remove('text-scale-up', 'text-scale-down');
+                if (mode === 'increase') {
+                    document.body.classList.add('text-scale-up');
+                    showToast("Text size scaled up.");
+                } else if (mode === 'decrease') {
+                    document.body.classList.add('text-scale-down');
+                    showToast("Text size scaled down.");
+                } else {
+                    showToast("Text size reset to default.");
+                }
             }
-        }
 
         // ==========================================================================
         // Interactive Language Switcher Mock
@@ -2160,183 +2160,183 @@
         // ==========================================================================
         // Dynamic Quick Services Filter Logic
         // ==========================================================================
-        function filterServices() {
-            const query = document.getElementById("serviceSearch").value.toLowerCase();
-            const cards = document.querySelectorAll(".service-card");
-            
-            cards.forEach(card => {
-                const keywords = card.getAttribute("data-keywords").toLowerCase();
-                const title = card.querySelector(".service-title").innerText.toLowerCase();
-                const desc = card.querySelector(".service-desc").innerText.toLowerCase();
+            function filterServices() {
+                const query = document.getElementById("serviceSearch").value.toLowerCase();
+                const cards = document.querySelectorAll(".service-card");
                 
-                if (keywords.includes(query) || title.includes(query) || desc.includes(query)) {
-                    card.style.display = "flex";
-                } else {
-                    card.style.display = "none";
-                }
-            });
-        }
-
-        function focusSearch() {
-            const searchInput = document.getElementById("serviceSearch");
-            if (searchInput) {
-                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => {
-                    searchInput.focus();
-                }, 400);
+                cards.forEach(card => {
+                    const keywords = card.getAttribute("data-keywords").toLowerCase();
+                    const title = card.querySelector(".service-title").innerText.toLowerCase();
+                    const desc = card.querySelector(".service-desc").innerText.toLowerCase();
+                    
+                    if (keywords.includes(query) || title.includes(query) || desc.includes(query)) {
+                        card.style.display = "flex";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
             }
-        }
+
+            function focusSearch() {
+                const searchInput = document.getElementById("serviceSearch");
+                if (searchInput) {
+                    searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        searchInput.focus();
+                    }, 400);
+                }
+            }
 
         // ==========================================================================
         // Floating Background Particle Canvas Animation
         // ==========================================================================
-        function initParticles() {
-            const canvas = document.getElementById('particleCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            
-            function resizeCanvas() {
-                canvas.width = canvas.parentElement.offsetWidth;
-                canvas.height = canvas.parentElement.offsetHeight;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-            
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2 + 1;
-                    this.speedX = Math.random() * 0.4 - 0.2;
-                    this.speedY = Math.random() * 0.4 - 0.2;
-                    this.opacity = Math.random() * 0.5 + 0.1;
+            function initParticles() {
+                const canvas = document.getElementById('particleCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                
+                function resizeCanvas() {
+                    canvas.width = canvas.parentElement.offsetWidth;
+                    canvas.height = canvas.parentElement.offsetHeight;
                 }
-                update() {
-                    this.x += this.speedX;
-                    this.y += this.speedY;
-                    if (this.x > canvas.width) this.x = 0;
-                    if (this.x < 0) this.x = canvas.width;
-                    if (this.y > canvas.height) this.y = 0;
-                    if (this.y < 0) this.y = canvas.height;
-                }
-                draw() {
-                    ctx.fillStyle = `rgba(11, 61, 145, ${this.opacity})`;
-                    if (document.body.classList.contains('dark-mode')) {
-                        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.6})`;
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+                
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 1;
+                        this.speedX = Math.random() * 0.4 - 0.2;
+                        this.speedY = Math.random() * 0.4 - 0.2;
+                        this.opacity = Math.random() * 0.5 + 0.1;
                     }
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fill();
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.x > canvas.width) this.x = 0;
+                        if (this.x < 0) this.x = canvas.width;
+                        if (this.y > canvas.height) this.y = 0;
+                        if (this.y < 0) this.y = canvas.height;
+                    }
+                    draw() {
+                        ctx.fillStyle = `rgba(11, 61, 145, ${this.opacity})`;
+                        if (document.body.classList.contains('dark-mode')) {
+                            ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.6})`;
+                        }
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
+                
+                for (let i = 0; i < 40; i++) {
+                    particles.push(new Particle());
+                }
+                
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw();
+                    });
+                    requestAnimationFrame(animate);
+                }
+                animate();
             }
-            
-            for (let i = 0; i < 40; i++) {
-                particles.push(new Particle());
-            }
-            
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => {
-                    p.update();
-                    p.draw();
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
 
         // ==========================================================================
         // Live Activity Command Centre Monitor Feed Simulator
         // ==========================================================================
-        function initLiveMonitorFeed() {
-            const feed = document.getElementById("monitorActivityList");
-            if (!feed) return;
-            
-            const actions = [
-                { district: "Khordha", msg: "New Special School compliance certificate uploaded" },
-                { district: "Cuttack", msg: "Statewide pension distribution API synched" },
-                { district: "Ganjam", msg: "Applied aid: Tricycle requested by Beneficiary #4829" },
-                { district: "Balasore", msg: "Old Age Home inspect validation - Success" },
-                { district: "Sambalpur", msg: "ARC robot physiotherapy metric updated" },
-                { district: "Koraput", msg: "Therapy record generated by Center #08" },
-                { district: "Puri", msg: "New NGO partnership verified for OAH operational grants" }
-            ];
-
-            setInterval(() => {
-                const act = actions[Math.floor(Math.random() * actions.length)];
-                const item = document.createElement("div");
-                item.className = "monitor-activity-item";
-                item.style.opacity = "0";
-                item.style.transform = "translateX(-15px)";
-                item.style.transition = "all 0.5s ease";
+            function initLiveMonitorFeed() {
+                const feed = document.getElementById("monitorActivityList");
+                if (!feed) return;
                 
-                item.innerHTML = `
+                const actions = [
+                    { district: "Khordha", msg: "New Special School compliance certificate uploaded" },
+                    { district: "Cuttack", msg: "Statewide pension distribution API synched" },
+                    { district: "Ganjam", msg: "Applied aid: Tricycle requested by Beneficiary #4829" },
+                    { district: "Balasore", msg: "Old Age Home inspect validation - Success" },
+                    { district: "Sambalpur", msg: "ARC robot physiotherapy metric updated" },
+                    { district: "Koraput", msg: "Therapy record generated by Center #08" },
+                    { district: "Puri", msg: "New NGO partnership verified for OAH operational grants" }
+                ];
+
+                setInterval(() => {
+                    const act = actions[Math.floor(Math.random() * actions.length)];
+                    const item = document.createElement("div");
+                    item.className = "monitor-activity-item";
+                    item.style.opacity = "0";
+                    item.style.transform = "translateX(-15px)";
+                    item.style.transition = "all 0.5s ease";
+                    
+                    item.innerHTML = `
                     <div class="activity-meta">
                         <span>${act.district} District</span>
                         <span>Just Now</span>
                     </div>
                     <div class="activity-desc">${act.msg}</div>
-                `;
-                
-                feed.insertBefore(item, feed.firstChild);
-                
+                    `;
+                    
+                    feed.insertBefore(item, feed.firstChild);
+                    
                 // Maintain list container limits
-                if (feed.childNodes.length > 5) {
-                    feed.removeChild(feed.lastChild);
-                }
+                    if (feed.childNodes.length > 5) {
+                        feed.removeChild(feed.lastChild);
+                    }
 
-                setTimeout(() => {
-                    item.style.opacity = "1";
-                    item.style.transform = "translateX(0)";
-                }, 50);
-            }, 6000);
-        }
+                    setTimeout(() => {
+                        item.style.opacity = "1";
+                        item.style.transform = "translateX(0)";
+                    }, 50);
+                }, 6000);
+            }
 
         // ==========================================================================
         // Intersection Observer Scroll Animations & Statistics Counter
         // ==========================================================================
-        function initScrollAnimations() {
-            const revealElements = document.querySelectorAll(".reveal-element");
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("active");
-                        
+            function initScrollAnimations() {
+                const revealElements = document.querySelectorAll(".reveal-element");
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("active");
+                            
                         // If it is the impact stats grid, trigger numeric ticker
-                        if (entry.target.classList.contains("impact-section") || entry.target.querySelector(".impact-grid")) {
+                            if (entry.target.classList.contains("impact-section") || entry.target.querySelector(".impact-grid")) {
+                                triggerStatsCounters();
+                            }
+                        }
+                    });
+                }, { threshold: 0.15 });
+
+                revealElements.forEach(el => observer.observe(el));
+                
+            // Explicit check for elements that are already partially in viewport
+                const checkObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.target.id === "impactStatsGrid") {
                             triggerStatsCounters();
                         }
-                    }
-                });
-            }, { threshold: 0.15 });
+                    });
+                }, { threshold: 0.1 });
+                
+                const statsGrid = document.getElementById("impactStatsGrid");
+                if (statsGrid) checkObserver.observe(statsGrid);
+            }
 
-            revealElements.forEach(el => observer.observe(el));
-            
-            // Explicit check for elements that are already partially in viewport
-            const checkObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && entry.target.id === "impactStatsGrid") {
-                        triggerStatsCounters();
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            const statsGrid = document.getElementById("impactStatsGrid");
-            if (statsGrid) checkObserver.observe(statsGrid);
-        }
-
-        let countersAnimated = false;
-        function triggerStatsCounters() {
-            if (countersAnimated) return;
-            countersAnimated = true;
-            
-            const numbers = document.querySelectorAll(".impact-number");
-            numbers.forEach(num => {
-                const target = parseFloat(num.getAttribute("data-target"));
-                const suffix = num.getAttribute("data-suffix") || "";
-                let current = 0;
+            let countersAnimated = false;
+            function triggerStatsCounters() {
+                if (countersAnimated) return;
+                countersAnimated = true;
+                
+                const numbers = document.querySelectorAll(".impact-number");
+                numbers.forEach(num => {
+                    const target = parseFloat(num.getAttribute("data-target"));
+                    const suffix = num.getAttribute("data-suffix") || "";
+                    let current = 0;
                 const duration = 2000; // ms
                 const steps = 50;
                 const increment = target / steps;
@@ -2355,231 +2355,231 @@
                     }
                 }, stepTime);
             });
-        }
+            }
 
         // ==========================================================================
         // Dynamic Captcha Canvas Rendering
         // ==========================================================================
-        function drawCaptchaText(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            if (!canvas) return "";
-            const ctx = canvas.getContext('2d');
-            
-            // Generate clean random alphanumeric code
-            const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz';
-            let captcha = '';
-            for (let i = 0; i < 5; i++) {
-                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw background lines for security interference
-            ctx.fillStyle = '#EAF4FF';
-            if (document.body.classList.contains('dark-mode')) {
-                ctx.fillStyle = '#1A2332';
-            }
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Interference lines
-            for (let i = 0; i < 5; i++) {
-                ctx.strokeStyle = `rgba(21, 101, 192, 0.25)`;
-                ctx.beginPath();
-                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-                ctx.stroke();
-            }
-            
-            // Captcha text styles
-            ctx.font = "bold 20px 'Poppins', sans-serif";
-            ctx.fillStyle = '#0B3D91';
-            if (document.body.classList.contains('dark-mode')) {
-                ctx.fillStyle = '#3E8BFF';
-            }
-            ctx.textBaseline = 'middle';
-            
-            // Rotate and draw individual characters for verification complexity
-            for (let i = 0; i < captcha.length; i++) {
-                const char = captcha[i];
-                const x = 20 + i * 20;
-                const y = canvas.height / 2 + (Math.random() * 8 - 4);
-                const angle = (Math.random() * 30 - 15) * Math.PI / 180;
+            function drawCaptchaText(canvasId) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return "";
+                const ctx = canvas.getContext('2d');
                 
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(angle);
-                ctx.fillText(char, 0, 0);
-                ctx.restore();
+            // Generate clean random alphanumeric code
+                const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz';
+                let captcha = '';
+                for (let i = 0; i < 5; i++) {
+                    captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+            // Draw background lines for security interference
+                ctx.fillStyle = '#EAF4FF';
+                if (document.body.classList.contains('dark-mode')) {
+                    ctx.fillStyle = '#1A2332';
+                }
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+            // Interference lines
+                for (let i = 0; i < 5; i++) {
+                    ctx.strokeStyle = `rgba(21, 101, 192, 0.25)`;
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.stroke();
+                }
+                
+            // Captcha text styles
+                ctx.font = "bold 20px 'Poppins', sans-serif";
+                ctx.fillStyle = '#0B3D91';
+                if (document.body.classList.contains('dark-mode')) {
+                    ctx.fillStyle = '#3E8BFF';
+                }
+                ctx.textBaseline = 'middle';
+                
+            // Rotate and draw individual characters for verification complexity
+                for (let i = 0; i < captcha.length; i++) {
+                    const char = captcha[i];
+                    const x = 20 + i * 20;
+                    const y = canvas.height / 2 + (Math.random() * 8 - 4);
+                    const angle = (Math.random() * 30 - 15) * Math.PI / 180;
+                    
+                    ctx.save();
+                    ctx.translate(x, y);
+                    ctx.rotate(angle);
+                    ctx.fillText(char, 0, 0);
+                    ctx.restore();
+                }
+                
+                return captcha;
             }
-            
-            return captcha;
-        }
 
-        function refreshDeptCaptcha() {
-            generatedDeptCaptcha = drawCaptchaText('deptCaptchaCanvas');
-        }
+            function refreshDeptCaptcha() {
+                generatedDeptCaptcha = drawCaptchaText('deptCaptchaCanvas');
+            }
 
-        function refreshInstCaptcha() {
+            function refreshInstCaptcha() {
             // Generate a random math equation for the institute login CAPTCHA
-            const num1 = Math.floor(Math.random() * 9) + 1;
-            const num2 = Math.floor(Math.random() * 9) + 1;
-            generatedInstCaptchaAnswer = num1 + num2;
-            const eqEl = document.getElementById("instCaptchaEquation");
-            if (eqEl) {
-                eqEl.innerText = `${num1} + ${num2} = `;
+                const num1 = Math.floor(Math.random() * 9) + 1;
+                const num2 = Math.floor(Math.random() * 9) + 1;
+                generatedInstCaptchaAnswer = num1 + num2;
+                const eqEl = document.getElementById("instCaptchaEquation");
+                if (eqEl) {
+                    eqEl.innerText = `${num1} + ${num2} = `;
+                }
             }
-        }
 
-        function sendDeptOtp() {
-            const contactVal = document.getElementById("deptUserField").value.trim();
-            if (!contactVal) {
-                showToast("Please enter your registered Government Mobile / Email ID first.", true);
-                return;
-            }
-            
+            function sendDeptOtp() {
+                const contactVal = document.getElementById("deptUserField").value.trim();
+                if (!contactVal) {
+                    showToast("Please enter your registered Government Mobile / Email ID first.", true);
+                    return;
+                }
+                
             // Set mock OTP code
-            generatedDeptOtp = "123456";
-            showToast(`Simulated secure OTP sent successfully! Use OTP code "${generatedDeptOtp}" to verify.`);
-        }
+                generatedDeptOtp = "123456";
+                showToast(`Simulated secure OTP sent successfully! Use OTP code "${generatedDeptOtp}" to verify.`);
+            }
 
         // ==========================================================================
         // Interactive Modals Triggering & Validations
         // ==========================================================================
-        function openLoginModal(type) {
-            if (type === 'department') {
-                document.getElementById("deptUserField").value = "";
-                document.getElementById("deptOtpField").value = "";
-                document.getElementById("deptCaptchaInput").value = "";
-                if (deptModalObj) {
-                    deptModalObj.show();
-                    setTimeout(refreshDeptCaptcha, 300);
+            function openLoginModal(type) {
+                if (type === 'department') {
+                    document.getElementById("deptUserField").value = "";
+                    document.getElementById("deptOtpField").value = "";
+                    document.getElementById("deptCaptchaInput").value = "";
+                    if (deptModalObj) {
+                        deptModalObj.show();
+                        setTimeout(refreshDeptCaptcha, 300);
+                    }
+                } else {
+                    document.getElementById("instUserField").value = "";
+                    document.getElementById("instPasswordField").value = "";
+                    document.getElementById("instCaptchaInput").value = "";
+                    if (instModalObj) {
+                        instModalObj.show();
+                        setTimeout(refreshInstCaptcha, 300);
+                    }
                 }
-            } else {
-                document.getElementById("instUserField").value = "";
-                document.getElementById("instPasswordField").value = "";
-                document.getElementById("instCaptchaInput").value = "";
-                if (instModalObj) {
-                    instModalObj.show();
-                    setTimeout(refreshInstCaptcha, 300);
+            }
+
+            function toggleInstPasswordVisibility() {
+                const pass = document.getElementById("instPasswordField");
+                const btn = document.getElementById("instPassToggleBtn");
+                if (pass.type === "password") {
+                    pass.type = "text";
+                    btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+                } else {
+                    pass.type = "password";
+                    btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
                 }
             }
-        }
 
-        function toggleInstPasswordVisibility() {
-            const pass = document.getElementById("instPasswordField");
-            const btn = document.getElementById("instPassToggleBtn");
-            if (pass.type === "password") {
-                pass.type = "text";
-                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
-            } else {
-                pass.type = "password";
-                btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
-            }
-        }
-
-        function handleDeptLogin(event) {
-            event.preventDefault();
-            
-            const contactVal = document.getElementById("deptUserField").value.trim();
-            const otpVal = document.getElementById("deptOtpField").value.trim();
-            const captchaVal = document.getElementById("deptCaptchaInput").value.trim();
-            
-            if (!contactVal || !otpVal || !captchaVal) {
-                showToast("Error: Please fill all fields including Mobile/Email, OTP, and CAPTCHA.", true);
-                return;
-            }
-            
-            if (!generatedDeptOtp || otpVal !== generatedDeptOtp) {
-                showToast("Invalid OTP code. Please click 'Send OTP' and enter '123456'.", true);
-                return;
-            }
-            
-            if (captchaVal.toLowerCase() !== generatedDeptCaptcha.toLowerCase()) {
-                showToast("Verification code error: CAPTCHA text does not match. Please try again.", true);
-                refreshDeptCaptcha();
-                document.getElementById("deptCaptchaInput").value = "";
-                return;
-            }
-            
+            function handleDeptLogin(event) {
+                event.preventDefault();
+                
+                const contactVal = document.getElementById("deptUserField").value.trim();
+                const otpVal = document.getElementById("deptOtpField").value.trim();
+                const captchaVal = document.getElementById("deptCaptchaInput").value.trim();
+                
+                if (!contactVal || !otpVal || !captchaVal) {
+                    showToast("Error: Please fill all fields including Mobile/Email, OTP, and CAPTCHA.", true);
+                    return;
+                }
+                
+                if (!generatedDeptOtp || otpVal !== generatedDeptOtp) {
+                    showToast("Invalid OTP code. Please click 'Send OTP' and enter '123456'.", true);
+                    return;
+                }
+                
+                if (captchaVal.toLowerCase() !== generatedDeptCaptcha.toLowerCase()) {
+                    showToast("Verification code error: CAPTCHA text does not match. Please try again.", true);
+                    refreshDeptCaptcha();
+                    document.getElementById("deptCaptchaInput").value = "";
+                    return;
+                }
+                
             // Successful validation simulation
-            showToast("Departmental Authentication Success! Redirecting to Command Center Dashboard...");
-            setTimeout(() => {
-                if (deptModalObj) {
-                    deptModalObj.hide();
-                }
-            }, 1500);
-        }
+                showToast("Departmental Authentication Success! Redirecting to Command Center Dashboard...");
+                setTimeout(() => {
+                    if (deptModalObj) {
+                        deptModalObj.hide();
+                    }
+                }, 1500);
+            }
 
-        function handleInstLogin(event) {
-            event.preventDefault();
-            
-            const userVal = document.getElementById("instUserField").value.trim();
-            const passVal = document.getElementById("instPasswordField").value.trim();
-            const captchaVal = parseInt(document.getElementById("instCaptchaInput").value.trim());
-            
-            if (!userVal || !passVal || isNaN(captchaVal)) {
-                showToast("Error: Please fill all fields including User ID, Password, and CAPTCHA answer.", true);
-                return;
-            }
-            
-            if (captchaVal !== generatedInstCaptchaAnswer) {
-                showToast("Arithmetic verification error: CAPTCHA answer is incorrect. Please try again.", true);
-                refreshInstCaptcha();
-                document.getElementById("instCaptchaInput").value = "";
-                return;
-            }
-            
-            // Successful validation simulation
-            showToast("Institute Authentication Success! Redirecting to Management Panel...");
-            setTimeout(() => {
-                if (instModalObj) {
-                    instModalObj.hide();
+            function handleInstLogin(event) {
+                event.preventDefault();
+                
+                const userVal = document.getElementById("instUserField").value.trim();
+                const passVal = document.getElementById("instPasswordField").value.trim();
+                const captchaVal = parseInt(document.getElementById("instCaptchaInput").value.trim());
+                
+                if (!userVal || !passVal || isNaN(captchaVal)) {
+                    showToast("Error: Please fill all fields including User ID, Password, and CAPTCHA answer.", true);
+                    return;
                 }
-            }, 1500);
-        }
+                
+                if (captchaVal !== generatedInstCaptchaAnswer) {
+                    showToast("Arithmetic verification error: CAPTCHA answer is incorrect. Please try again.", true);
+                    refreshInstCaptcha();
+                    document.getElementById("instCaptchaInput").value = "";
+                    return;
+                }
+                
+            // Successful validation simulation
+                showToast("Institute Authentication Success! Redirecting to Management Panel...");
+                setTimeout(() => {
+                    if (instModalObj) {
+                        instModalObj.hide();
+                    }
+                }, 1500);
+            }
 
         // ==========================================================================
         // Custom Toast Notifications Framework
         // ==========================================================================
-        function showToast(message, isError = false) {
-            const container = document.getElementById("toastContainer");
-            if (!container) return;
-            
-            const toast = document.createElement("div");
-            toast.className = `custom-toast ${isError ? 'error' : ''}`;
-            toast.innerHTML = `
+            function showToast(message, isError = false) {
+                const container = document.getElementById("toastContainer");
+                if (!container) return;
+                
+                const toast = document.createElement("div");
+                toast.className = `custom-toast ${isError ? 'error' : ''}`;
+                toast.innerHTML = `
                 <i class="fa-solid ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i>
                 <span>${message}</span>
-            `;
-            
-            container.appendChild(toast);
-            
+                `;
+                
+                container.appendChild(toast);
+                
             // Trigger browser animation
-            setTimeout(() => {
-                toast.classList.add("show");
-            }, 50);
-            
-            // Remove after duration completes
-            setTimeout(() => {
-                toast.classList.remove("show");
                 setTimeout(() => {
-                    container.removeChild(toast);
-                }, 300);
-            }, 3500);
-        }
+                    toast.classList.add("show");
+                }, 50);
+                
+            // Remove after duration completes
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                    setTimeout(() => {
+                        container.removeChild(toast);
+                    }, 300);
+                }, 3500);
+            }
 
         // Mobile navbar helper
-        function toggleMobileMenu() {
-            const nav = document.getElementById("navLinks");
-            nav.classList.toggle("show");
-            
-            const btn = document.getElementById("mobileMenuToggle");
-            if (nav.classList.contains("show")) {
-                btn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            function toggleMobileMenu() {
+                const nav = document.getElementById("navLinks");
+                nav.classList.toggle("show");
+                
+                const btn = document.getElementById("mobileMenuToggle");
+                if (nav.classList.contains("show")) {
+                    btn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                } else {
+                    btn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
             }
-        }
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
