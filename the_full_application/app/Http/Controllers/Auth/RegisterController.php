@@ -67,6 +67,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        return redirect()->route('login')->with('success', 'Password changed successfully. Please log in again with your new password.');
         /*return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

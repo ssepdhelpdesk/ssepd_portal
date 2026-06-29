@@ -1286,9 +1286,9 @@
                         <input type="hidden" name="login_type" value="institute">
                         <!-- Username Field -->
                         <div class="form-group">
-                            <label for="username" class="form-label">Username / Email ID / User ID</label>
+                            <label for="username" class="form-label">User ID</label>
                             <div class="input-wrapper">
-                                <input type="text" id="username" class="form-input @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" placeholder="Enter username or email" required aria-required="true" autofocus>
+                                <input type="text" id="username" class="form-input @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" placeholder="Enter User ID" required aria-required="true" autofocus>
                                 <i class="fa-solid fa-user input-icon"></i>
                             </div>
                             @error('username')
@@ -1302,7 +1302,7 @@
                         <div class="form-group">
                             <label for="password" class="form-label">Password</label>
                             <div class="input-wrapper">
-                                <input type="password" id="password" class="form-input @error('password') is-invalid @enderror" name="password" placeholder="Enter security password" required aria-required="true">
+                                <input type="password" id="password" class="form-input @error('password') is-invalid @enderror" name="password" placeholder="Enter password" required aria-required="true">
                                 <i class="fa-solid fa-lock input-icon"></i>
                                 <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" aria-label="Show password" id="passwordToggleBtn">
                                     <i class="fa-solid fa-eye"></i>
