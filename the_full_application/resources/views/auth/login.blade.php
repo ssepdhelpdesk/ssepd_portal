@@ -2143,11 +2143,11 @@
                                 <input type="checkbox" name="remember" id="rememberMe" {{ old('remember') ? 'checked' : '' }}>
                                 <span>Remember Me</span>
                             </label>
-                            <!-- @if (Route::has('password.request'))
+                            @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="forgot-link">Forgot Password?</a>
                             @else
                             <a href="#" class="forgot-link" onclick="handleForgotPassword(event)">Forgot Password?</a>
-                            @endif -->
+                            @endif
                         </div>
 
                         <!-- Submit Button -->
