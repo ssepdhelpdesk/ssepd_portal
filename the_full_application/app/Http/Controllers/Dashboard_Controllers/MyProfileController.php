@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Stevebauman\Location\Facades\Location;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\PiaInstituteMaster;
 use Auth;
