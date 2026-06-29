@@ -1,5 +1,5 @@
 @section('title') 
-Users || Change Default Email ID & Password
+Users || Change Password
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
@@ -53,7 +53,6 @@ Users || Change Default Email ID & Password
                               <label for="exampleInputEmail1" class="form-label">Email ID</label>
                               <input type="email" name="oldemail" value="{{ old('oldemail') }}" class="form-control textInput" id="oldemail" placeholder="Enter Email ID">
                               <div id="oldemail_error"></div>
-                              <div id="check_oldemail"></div>
                               @error('oldemail')
                               <label class="error">{{ $message }}</label>
                               @enderror
@@ -62,7 +61,7 @@ Users || Change Default Email ID & Password
                         <div class="col-lg-3" id="oldpassword_div">
                            <div class="form-group">
                               <label for="exampleInputEmail1" class="form-label">Old Password</label>
-                              <input type="text" name="oldpassword" value="{{ old('oldpassword') }}" class="form-control textInput" id="oldpassword" placeholder="Enter Old Password">
+                              <input type="password" name="oldpassword" value="{{ old('oldpassword') }}" class="form-control textInput" id="oldpassword" placeholder="Enter Old Password">
                               <div id="oldpassword_error"></div>
                               @error('oldpassword')
                               <label class="error">{{ $message }}</label>
@@ -72,7 +71,7 @@ Users || Change Default Email ID & Password
                         <div class="col-lg-3" id="password_div">
                            <div class="form-group">
                               <label for="exampleInputEmail1" class="form-label">Password</label>
-                              <input type="text" name="password" value="{{ old('password') }}" class="form-control textInput" id="password" placeholder="Enter Password">
+                              <input type="password" name="password" value="{{ old('password') }}" class="form-control textInput" id="password" placeholder="Enter Password">
                               <div id="password_error"></div>
                               @error('password')
                               <label class="error">{{ $message }}</label>
@@ -82,7 +81,7 @@ Users || Change Default Email ID & Password
                         <div class="col-lg-3" id="password_confirm_div">
                            <div class="form-group">
                               <label for="exampleInputEmail1" class="form-label">Confirm Password</label>
-                              <input type="text" name="password_confirm" value="{{ old('password_confirm') }}" class="form-control textInput" id="password_confirm" placeholder="Enter Password">
+                              <input type="password" name="password_confirm" value="{{ old('password_confirm') }}" class="form-control textInput" id="password_confirm" placeholder="Enter Password">
                               <div id="password_confirm_error"></div>
                               @error('password_confirm')
                               <label class="error">{{ $message }}</label>
@@ -106,47 +105,6 @@ Users || Change Default Email ID & Password
 </div>
 @endsection 
 @section('script')
-<script type="text/javascript">
-$(document).ready(function () {
-
-    $("#oldemail").blur(function () {
-
-        const oldemail = $(this).val().trim();
-
-        $('#check_oldemail').html('');
-
-        if (!oldemail) {
-            $('#check_oldemail').html('<span style="color:#FF0000">Please provide an Email ID.</span>');
-            return;
-        }
-
-        $.get("{{ route('admin.myprofile.check_oldemail') }}",
-        {
-            oldemail: oldemail
-        },
-        function (data) {
-
-            if (data == 0) {
-                $('#check_oldemail').html('<span style="color:#FF0000">Please provide an Email ID.</span>');
-
-            } else if (data == 1) {
-                $('#check_oldemail').html('<span style="color:#FF0000">Email ID is already registered.</span>');
-                $("#oldemail").val('').focus();
-
-            } else if (data == 2) {
-                $('#check_oldemail').html('<span style="color:#03713E">Email ID is available.</span>');
-            }
-
-        }).fail(function () {
-
-            $('#check_oldemail').html('<span style="color:#FF0000">An error occurred. Please try again.</span>');
-
-        });
-
-    });
-
-});
-</script>
 <script type="text/javascript">
    // SELECTING ALL TEXT ELEMENTS
    var oldemail = document.forms['vform']['oldemail'];

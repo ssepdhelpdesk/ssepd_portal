@@ -231,6 +231,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/delete', 'destroy')->name('destroy');
         Route::get('change-password', 'changePassword')->name('changePassword');
         Route::post('change-password', 'changePasswordStore')->name('changePasswordStore');
+        Route::get('check_oldemail', 'check_oldemail')->name('check_oldemail');
     });
 
     Route::prefix('locations')->name('locations.')->controller(LocationController::class)->group(function () {

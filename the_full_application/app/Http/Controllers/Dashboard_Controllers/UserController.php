@@ -210,6 +210,7 @@ public function reset_password($id)
 
     $newPassword = '123456';
     $user->password = Hash::make($newPassword);
+    $user->otp_for_forgot_password = '123456';
     $user->save();
 
     Log::info("Password reset for user: {$user->name} (ID: {$user->id}) by admin.");

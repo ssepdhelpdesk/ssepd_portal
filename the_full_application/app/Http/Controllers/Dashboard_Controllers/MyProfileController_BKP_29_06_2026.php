@@ -160,47 +160,20 @@ public function check_oldemail(Request $request)
 public function changePasswordStore(Request $request)
 {
     $user = Auth::user();
-
     $request->validate([
-        'oldemail' => [
-            'required',
-            'email',
-            Rule::unique('users', 'email')->ignore(auth()->id()),
-        ],
         'oldpassword' => 'required',
         'password' => 'required|min:8',
         'password_confirm' => 'required|same:password',
     ], [
-        'oldemail.required' => 'Please provide an Email ID.',
-        'oldemail.email' => 'Please provide a valid Email ID.',
-        'oldemail.unique' => 'Email ID is already registered.',
         'password_confirm.same' => 'New password and confirmation do not match.',
     ]);
-
-    $existsPiaInstitute = PiaInstituteMaster::where('institute_email_id', $request->oldemail)
-        ->where('status', 'Active')
-        ->exists();
-
-    if ($existsPiaInstitute) {
-        return back()
-            ->withErrors(['oldemail' => 'Email ID is already registered.'])
-            ->withInput();
-    }
-
     if (!Hash::check($request->oldpassword, $user->password)) {
-        return back()->withErrors([
-            'oldpassword' => 'The current password is incorrect.'
-        ]);
+        return back()->withErrors(['oldpassword' => 'The current password is incorrect.']);
     }
-
-    $user->email = $request->oldemail;
     $user->password = bcrypt($request->password);
-    $user->otp_for_forgot_password = '654321';
+    $user->otp_for_forgot_password  = '654321';
     $user->save();
-
     Auth::logout();
-
-    return redirect()->route('login')
-        ->with('success', 'Password changed successfully. Please log in again with your new password.');
+    return redirect()->route('login')->with('success', 'Password changed successfully. Please log in again with your new password.');
 }
 }

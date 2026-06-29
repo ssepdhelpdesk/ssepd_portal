@@ -24,6 +24,7 @@ class ForcePasswordChange
                 // Exclude the password change GET and POST routes, and logout route to prevent redirect loops.
                 if (!$request->routeIs('admin.myprofile.changePassword') && 
                     !$request->routeIs('admin.myprofile.changePasswordStore') && 
+                    !$request->routeIs('admin.myprofile.check_oldemail') &&
                     !$request->routeIs('logout') && 
                     !$request->is('logout')) {
                     
