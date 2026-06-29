@@ -279,3 +279,13 @@ role like 22 can should use below this
 
 
 //////////////////////////////////////////////////////////////////////////////////////
+My OLD MAIL data in .env file
+
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=warispc12334@gmail.com
+MAIL_PASSWORD=qxsuvcuxgjgjridd lejtarcgbserkvyw
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="warispc12334@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
