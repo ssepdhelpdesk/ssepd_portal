@@ -302,7 +302,7 @@ class PiaInstitutesController extends Controller
 
         $exists = PiaInstituteMaster::where('institute_email_id', $institute_email_id)->where('status', 'Active')->exists();
 
-        $existUser = User::where('email', $institute_email_id)->where('status', '1')->exists();
+        $existUser = User::where('email', $institute_email_id)->where('id', '!=', auth()->id())->where('status', '1')->exists();
         if ($exists || $existUser) {
             return response()->json(1);
         } else {
