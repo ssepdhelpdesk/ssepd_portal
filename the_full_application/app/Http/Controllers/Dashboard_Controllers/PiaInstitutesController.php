@@ -78,7 +78,7 @@ class PiaInstitutesController extends Controller
             'date_of_registration' => 'required|date|before_or_equal:today',
             'registration_no' => 'required|string|max:100',
             'registration_certificate' => 'required|file|mimes:pdf|max:2048',
-            'reg_cer_valid_upto' => 'required|date|after:date_of_registration',
+            /*'reg_cer_valid_upto' => 'required|date|after:date_of_registration',*/
             'which_govt' => 'required|in:1,2',
             'grantee_code' => 'required|string|max:100',
             'nodal_officer_name' => 'required|string|max:255',
@@ -88,6 +88,12 @@ class PiaInstitutesController extends Controller
             'pia_nodal_officer_contact_no' => 'required|digits:10',
             'ngo_address_type' => 'required|in:1,2',
         ];
+
+        if (in_array($request->institute_type_id, [1, 2, 3, 4])) {
+            $validationRules['reg_cer_valid_upto'] = 'nullable|date';
+        } else {
+            $validationRules['reg_cer_valid_upto'] = 'required|date|after:date_of_registration';
+        }
 
         $messages = [
             'registration_certificate.required' => 'Please upload Registration Certificate.',
@@ -187,7 +193,12 @@ class PiaInstitutesController extends Controller
             $piainstitutemaster->date_of_registration = $validatedData['date_of_registration'];
             $piainstitutemaster->registration_no = $validatedData['registration_no'];
             $piainstitutemaster->registration_certificate = $regCertStoredPath;
-            $piainstitutemaster->reg_cer_valid_upto = $validatedData['reg_cer_valid_upto'];
+            /*$piainstitutemaster->reg_cer_valid_upto = $validatedData['reg_cer_valid_upto'];*/
+            if (in_array($request->institute_type_id, [1, 2, 3, 4])) {
+                $piainstitutemaster->reg_cer_valid_upto = null;
+            } else {
+                $piainstitutemaster->reg_cer_valid_upto = $validatedData['reg_cer_valid_upto'];
+            }
             $piainstitutemaster->which_govt = $validatedData['which_govt'];
             $piainstitutemaster->grantee_code = $validatedData['grantee_code'];
             $piainstitutemaster->nodal_officer_name = $validatedData['nodal_officer_name'];
