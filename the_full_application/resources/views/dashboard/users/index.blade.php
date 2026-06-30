@@ -13,6 +13,14 @@ Users || View
     table.dataTable {
         white-space: nowrap;
     }
+    table.dataTable td.text-wrap-name,
+table.dataTable th.text-wrap-name {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    min-width: 180px;
+    max-width: 250px;
+}
 </style>
 @endsection 
 
@@ -56,6 +64,7 @@ Users || View
                            <th>Mobile No</th>
                            <th>Roles</th>
                            <th>Created At</th>
+                           <th>Login Status</th>
                            <th>Action</th>
                         </tr>
                      </thead>
@@ -68,6 +77,7 @@ Users || View
                            <th>Mobile No</th>
                            <th>Roles</th>
                            <th>Created At</th>
+                           <th>Login Status</th>
                            <th>Action</th>
                         </tr>
                      </tfoot>
@@ -92,12 +102,13 @@ Users || View
          ajax: "{{ route('admin.users.index') }}",
          columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'name', name: 'name' },
+            { data: 'name', name: 'name', className: 'text-wrap-name' },
             { data: 'user_id', name: 'user_id' },
             { data: 'email', name: 'email' },
             { data: 'mobile_no', name: 'mobile_no' },
             { data: 'roles', name: 'roles'},
             { data: 'created_at', name: 'created_at' },
+            { data: 'login_status', name: 'login_status'},
             { data: 'action', name: 'action', orderable: false, searchable: false }
          ],
          dom: 'Blfrtip',

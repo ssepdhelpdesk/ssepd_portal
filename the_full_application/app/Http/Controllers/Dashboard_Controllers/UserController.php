@@ -13,6 +13,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use DataTables;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -46,6 +47,15 @@ public function index(Request $request)
                 return "<label class='badge bg-success'>$role</label>";
             })->implode(' ');
         })
+        ->editColumn('created_at', function ($user) {
+            return Carbon::parse($user->created_at)
+            ->format('d F Y, h:i A');
+        })
+        ->addColumn('login_status', function ($user) {
+            return $user->is_logged_in
+            ? "<span class='badge bg-success'><i class='fas fa-circle me-1'></i> Online</span>"
+            : "<span class='badge bg-danger'><i class='fas fa-circle me-1'></i> Offline</span>";
+        })
         ->addColumn('action', function ($user) {
             $actions = '';
             if (auth()->user()->can('user-show')) {
@@ -60,7 +70,7 @@ public function index(Request $request)
             }
             return $actions;
         })
-        ->rawColumns(['roles', 'action'])
+        ->rawColumns(['roles', 'login_status', 'action'])
         ->make(true);
     }
     return view('dashboard.users.index');
