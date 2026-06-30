@@ -51,7 +51,7 @@ Users || Change Default Email ID & Password
                         <div class="col-lg-3" id="oldemail_div">
                            <div class="form-group">
                               <label for="exampleInputEmail1" class="form-label">Email ID</label>
-                              <input type="email" name="oldemail" value="{{ old('oldemail') }}" class="form-control textInput" id="oldemail" placeholder="Enter Email ID">
+                              <input type="email" name="oldemail" value="{{ old('oldemail') }}" class="form-control textInput" id="oldemail" placeholder="Enter Official Email ID">
                               <div id="oldemail_error"></div>
                               <div id="check_oldemail"></div>
                               @error('oldemail')
