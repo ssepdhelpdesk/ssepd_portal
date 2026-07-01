@@ -615,11 +615,19 @@ class PiaInstitutesController extends Controller
         return view('dashboard.pia_institutes.pia_institute_login');
     }
 
-    public function pia_institute_benf_details()
+    /*public function pia_institute_benf_details()
     {
         $userId = Auth::user();
         $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
         $beneficiary_details = PiaInstituteBenficiaryDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
+        return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
+    }*/
+
+    public function pia_institute_benf_details()
+    {
+        $userId = Auth::user();
+        $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
+        $beneficiary_details = PiaInstituteBenficiaryDetails::where('institute_id', $piainstitute->institute_id)->where('status', 1)->get();
         return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
     }
 

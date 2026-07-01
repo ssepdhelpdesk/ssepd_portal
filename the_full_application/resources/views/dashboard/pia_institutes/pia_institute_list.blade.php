@@ -79,14 +79,14 @@ PIA || Institute List
                            <td class="wrap-text">
                               @if($piaInstituteDetails->basic_details_completed == 1)
                               {{ ucwords(strtolower($piaInstituteDetails->pia_name ?? 'Not Available')) }}
-                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              @elseif($piaInstituteDetails->basic_details_completed == 0)
                               {{ ucwords(strtolower($piaInstituteDetails->excel_pia_name ?? 'Not Available')) }}
                               @endif
                            </td>
                            <td class="wrap-text">
                               @if($piaInstituteDetails->basic_details_completed == 1)
                               {{ ucwords(strtolower($piaInstituteDetails->institute_name ?? 'Not Available')) }}
-                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              @elseif($piaInstituteDetails->basic_details_completed == 0)
                               {{ ucwords(strtolower($piaInstituteDetails->excel_institute_name ?? 'Not Available')) }}
                               @endif
                            </td>
@@ -119,49 +119,64 @@ PIA || Institute List
                            <td>
                               @if($piaInstituteDetails->basic_details_completed == 1)
                               {{ ucwords(strtolower($piaInstituteDetails->nodal_officer_name ?? 'Not Available')) }}
-                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              @elseif($piaInstituteDetails->basic_details_completed == 0)
                               {{ ucwords(strtolower($piaInstituteDetails->excel_nodal_officer_name ?? 'Not Available')) }}
                               @endif
                            </td>
                            <td>
                               @if($piaInstituteDetails->basic_details_completed == 1)
                               {{ $piaInstituteDetails->nodal_officer_contact_number ?? 'Not Available' }}
-                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              @elseif($piaInstituteDetails->basic_details_completed == 0)
                               {{ $piaInstituteDetails->excel_nodal_officer_contact_number ?? 'Not Available' }}
                               @endif
                            </td>
                            <td>{{ $piaInstituteDetails->excel_institute_user_id ?? 'Not Available' }}</td>
-                           <td class="wrap-text">{{ $piaInstituteDetails->excel_institute_address ? ucwords(strtolower($piaInstituteDetails->excel_institute_address)) : 'Address Not Provided' }}</td>
+                           <td class="wrap-text">
+                              @if($piaInstituteDetails->basic_details_completed == 1)
+                                 @if($piaInstituteDetails->address_type ==1)
+                                    AT: {{ $piaInstituteDetails->village->village_name ?? 'Not Available' }}, 
+                                    GP: {{ $piaInstituteDetails->grampanchayat->gp_name ?? 'Not Available' }}, 
+                                    Block: {{ $piaInstituteDetails->block->block_name ?? 'Not Available' }}, 
+                                    District: {{ $piaInstituteDetails->district->district_name ?? 'Not Available' }}
+                                 @elseif($piaInstituteDetails->address_type ==2)
+                                    WARD: {{ $piaInstituteDetails->ward->ward_name ?? 'Not Available' }}, 
+                                    ULB: {{ $piaInstituteDetails->municipality->municipality_name ?? 'Not Available' }}, 
+                                    District: {{ $piaInstituteDetails->district->district_name ?? 'Not Available' }}
+                                 @endif
+                              @elseif($piaInstituteDetails->basic_details_completed == 0)
+                              {{ $piaInstituteDetails->excel_institute_address ? ucwords(strtolower($piaInstituteDetails->excel_institute_address)) : 'Address Not Provided' }}
+                              @endif                              
+                           </td>
                            <td>
                               {{ $piaInstituteDetails->basic_details_completed == 1 ? '✅' : '❌' }}
                            </td>
                            <td>
                               @if($piaInstituteDetails->beneficiaries_count > 0)
                               <span class="badge bg-info text-white"
-                                 data-bs-toggle="tooltip"
-                                 title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
+                              data-bs-toggle="tooltip"
+                              title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
                               {{ $piaInstituteDetails->beneficiaries_count }}
-                              </span>
-                              @else
-                              <i class="fas fa-times-circle text-danger"
-                                 data-bs-toggle="tooltip"
-                                 title="Not Provided"></i>
-                              @endif
-                           </td>
-                        </tr>
-                        @endforeach
-                        @endif
-                     </tbody>
-                  </table>
-               </div>
+                           </span>
+                           @else
+                           <i class="fas fa-times-circle text-danger"
+                           data-bs-toggle="tooltip"
+                           title="Not Provided"></i>
+                           @endif
+                        </td>
+                     </tr>
+                     @endforeach
+                     @endif
+                  </tbody>
+               </table>
             </div>
          </div>
       </div>
    </div>
-   <!-- row -->
-   <!-- ============================================================== -->
-   <!-- End Page Content -->
-   <!-- ============================================================== -->
+</div>
+<!-- row -->
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
 </div>
 @endsection 
 @section('script')
@@ -178,6 +193,6 @@ PIA || Institute List
       ]
    });
      $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-primary me-1');
-   });   
+  });   
 </script>
 @endsection

@@ -45,8 +45,13 @@ class PiaInstituteBenficiaryDetails extends Model implements Auditable
         return $this->belongsTo(WardMaster::class, 'ward_id', 'ward_code');
     }
 
-    public function institute()
+    /*public function institute()
     {
         return $this->belongsTo(PiaInstituteMaster::class,'pia_institute_master_institute_id', 'institute_master_id');
+    }*/
+
+    public function institute()
+    {
+        return $this->belongsTo(PiaInstituteMaster::class,'institute_id', 'institute_id');
     }
 }
