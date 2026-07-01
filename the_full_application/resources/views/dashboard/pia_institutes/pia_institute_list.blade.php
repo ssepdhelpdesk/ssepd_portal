@@ -48,7 +48,6 @@ PIA || Institute List
                            <th>Nodal Officer</th>
                            <th>Nodal Officer Mob No</th>
                            <th>User ID</th>
-                           <th>Password</th>
                            <th>Address</th>
                            <th>Basic Details Completed</th>
                            <th>No of Inmates</th>
@@ -65,7 +64,6 @@ PIA || Institute List
                            <th>Nodal Officer</th>
                            <th>Nodal Officer Mob No</th>
                            <th>User ID</th>
-                           <th>Password</th>
                            <th>Address</th>
                            <th>Basic Details Completed</th>
                            <th>No of Inmates</th>
@@ -78,8 +76,20 @@ PIA || Institute List
                         <tr>
                            <td>{{ $i++ }}</td>
                            <td>{{ $piaInstituteDetails->district->district_name ?? 'Not Available' }}</td>
-                           <td class="wrap-text">{{ ucwords(strtolower($piaInstituteDetails->excel_pia_name ?? 'Not Available')) }}</td>
-                           <td class="wrap-text">{{ ucwords(strtolower($piaInstituteDetails->excel_institute_name ?? 'Not Available')) }}</td>
+                           <td class="wrap-text">
+                              @if($piaInstituteDetails->basic_details_completed == 1)
+                              {{ ucwords(strtolower($piaInstituteDetails->pia_name ?? 'Not Available')) }}
+                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              {{ ucwords(strtolower($piaInstituteDetails->excel_pia_name ?? 'Not Available')) }}
+                              @endif
+                           </td>
+                           <td class="wrap-text">
+                              @if($piaInstituteDetails->basic_details_completed == 1)
+                              {{ ucwords(strtolower($piaInstituteDetails->institute_name ?? 'Not Available')) }}
+                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              {{ ucwords(strtolower($piaInstituteDetails->excel_institute_name ?? 'Not Available')) }}
+                              @endif
+                           </td>
                            <td>
                               @php
                               $categories = [
@@ -106,10 +116,21 @@ PIA || Institute List
                               @endphp
                               {{ $categories[$piaInstituteDetails->institute_type_id] ?? 'Not Specified' }}
                            </td>
-                           <td>{{ ucwords(strtolower($piaInstituteDetails->excel_nodal_officer_name ?? 'Not Available')) }}</td>
-                           <td>{{ $piaInstituteDetails->excel_nodal_officer_contact_number ?? 'Not Available' }}</td>
+                           <td>
+                              @if($piaInstituteDetails->basic_details_completed == 1)
+                              {{ ucwords(strtolower($piaInstituteDetails->nodal_officer_name ?? 'Not Available')) }}
+                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              {{ ucwords(strtolower($piaInstituteDetails->excel_nodal_officer_name ?? 'Not Available')) }}
+                              @endif
+                           </td>
+                           <td>
+                              @if($piaInstituteDetails->basic_details_completed == 1)
+                              {{ $piaInstituteDetails->nodal_officer_contact_number ?? 'Not Available' }}
+                              @else($piaInstituteDetails->basic_details_completed == 0)
+                              {{ $piaInstituteDetails->excel_nodal_officer_contact_number ?? 'Not Available' }}
+                              @endif
+                           </td>
                            <td>{{ $piaInstituteDetails->excel_institute_user_id ?? 'Not Available' }}</td>
-                           <td>123456</td>
                            <td class="wrap-text">{{ $piaInstituteDetails->excel_institute_address ? ucwords(strtolower($piaInstituteDetails->excel_institute_address)) : 'Address Not Provided' }}</td>
                            <td>
                               {{ $piaInstituteDetails->basic_details_completed == 1 ? '✅' : '❌' }}
