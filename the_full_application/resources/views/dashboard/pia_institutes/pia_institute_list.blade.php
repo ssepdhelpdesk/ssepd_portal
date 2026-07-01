@@ -44,6 +44,7 @@ PIA || Institute List
                            <th>PIA/NGO Name</th>
                            <th>Institute Name</th>
                            <th>Institute Type</th>
+                           <th>Institute Type (Updated By Center)</th>
                            <th>Nodal Officer</th>
                            <th>Nodal Officer Mob No</th>
                            <th>User ID</th>
