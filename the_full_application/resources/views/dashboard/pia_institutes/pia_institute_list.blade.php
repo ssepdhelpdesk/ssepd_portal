@@ -60,6 +60,7 @@ PIA || Institute List
                            <th>PIA/NGO Name</th>
                            <th>Institute Name</th>
                            <th>Institute Type</th>
+                           <th>Institute Type (Updated By Center)</th>
                            <th>Nodal Officer</th>
                            <th>Nodal Officer Mob No</th>
                            <th>User ID</th>
@@ -90,6 +91,19 @@ PIA || Institute List
                               ];
                               @endphp
                               {{ $categories[$piaInstituteDetails->excel_institute_type_id] ?? 'Not Specified' }}
+                           </td>
+                           <td>
+                              @php
+                              $categories = [
+                              1 => 'Geriatric Center',
+                              2 => 'Disha Center',
+                              3 => 'Sahaya Center',
+                              4 => 'Old Age Home',
+                              5 => 'Half Way Home',
+                              6 => 'Therapeutic Center'
+                              ];
+                              @endphp
+                              {{ $categories[$piaInstituteDetails->institute_type_id] ?? 'Not Specified' }}
                            </td>
                            <td>{{ ucwords(strtolower($piaInstituteDetails->excel_nodal_officer_name ?? 'Not Available')) }}</td>
                            <td>{{ $piaInstituteDetails->excel_nodal_officer_contact_number ?? 'Not Available' }}</td>
