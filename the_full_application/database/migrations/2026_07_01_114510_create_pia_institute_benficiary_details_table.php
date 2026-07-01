@@ -60,6 +60,7 @@ return new class extends Migration
             $table->string('benf_postal_address_ps')->nullable();
             $table->string('benf_postal_address_district')->nullable();
             $table->string('benf_postal_address_pin', 6)->nullable();
+            $table->foreignId('institute_id')->nullable();
             $table->foreignId('pia_institute_master_institute_id')->nullable();
             $table->foreignId('pia_institute_master_institute_type_id')->nullable();
             $table->tinyInteger('is_private')->default(0);

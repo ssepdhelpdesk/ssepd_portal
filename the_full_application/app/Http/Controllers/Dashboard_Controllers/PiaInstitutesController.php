@@ -530,6 +530,7 @@ class PiaInstitutesController extends Controller
             $pia_institute_benf_details->benf_postal_address_ps = $validatedData['ngo_postal_address_ps'] ?? null;
             $pia_institute_benf_details->benf_postal_address_district = $validatedData['ngo_postal_address_district'] ?? null;
             $pia_institute_benf_details->benf_postal_address_pin = $validatedData['ngo_postal_address_pin'] ?? null;
+            $pia_institute_benf_details->institute_id = $piainstitutemaster->excel_institute_id ?? null;
             $pia_institute_benf_details->pia_institute_master_institute_id = $piainstitutemaster->institute_master_id ?? null;
             $pia_institute_benf_details->pia_institute_master_institute_type_id = $piainstitutemaster->institute_type_id ?? null;
             $pia_institute_benf_details->is_active = 'active';
@@ -618,7 +619,7 @@ class PiaInstitutesController extends Controller
     {
         $userId = Auth::user();
         $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
-        $beneficiary_details = PiaInstituteBenficiaryDetails::where('created_by', $userId->id)->where('status', 1)->get();
+        $beneficiary_details = PiaInstituteBenficiaryDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
         return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
     }
 
@@ -843,6 +844,7 @@ class PiaInstitutesController extends Controller
             $pia_institute_benf_details->benf_postal_address_ps = $validatedData['ngo_postal_address_ps'] ?? null;
             $pia_institute_benf_details->benf_postal_address_district = $validatedData['ngo_postal_address_district'] ?? null;
             $pia_institute_benf_details->benf_postal_address_pin = $validatedData['ngo_postal_address_pin'] ?? null;
+            $pia_institute_benf_details->institute_id = $piainstitutemaster->excel_institute_id ?? null;
             $pia_institute_benf_details->pia_institute_master_institute_id = $piainstitutemaster->institute_master_id ?? null;
             $pia_institute_benf_details->pia_institute_master_institute_type_id = $piainstitutemaster->institute_type_id ?? null;
             $pia_institute_benf_details->is_active = 'active';
