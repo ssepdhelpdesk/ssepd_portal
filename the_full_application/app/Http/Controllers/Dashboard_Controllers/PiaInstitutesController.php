@@ -50,7 +50,7 @@ class PiaInstitutesController extends Controller
     function __construct()
     {
         $this->middleware('permission:Institute-access|Institute-list|Institute-create|Institute-edit|Institute-delete', ['only' => ['index','store', 'pia_institute_basic_details', 'check_registration_no', 'check_grantee_code', 'check_institute_email_id', 'check_benf_aadhar', 'check_benf_udid', 'pia_institute_list', 'pia_institute_benf_details']]);
-        $this->middleware('permission:Institute-create', ['only' => ['create','store', 'pia_institute_benf_details_store']]);
+        $this->middleware('permission:Institute-create', ['only' => ['create','store', 'pia_institute_benf_details_store', 'hwh_oah_input_form_benf_details_store']]);
         $this->middleware('permission:Institute-edit', ['only' => ['edit','update', 'pia_institute_basic_details_update']]);
         $this->middleware('permission:Institute-delete', ['only' => ['destroy']]);
     }

@@ -47,6 +47,6 @@ class PiaInstituteMaster extends Model implements Auditable
 
     public function beneficiaries()
     {
-        return $this->hasMany(PiaInstituteBenfDetails::class, 'pia_institute_master_institute_id', 'institute_master_id');
+        return $this->hasMany(PiaInstituteBenficiaryDetails::class, 'pia_institute_master_institute_id', 'institute_master_id');
     }
 }
