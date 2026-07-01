@@ -40,11 +40,16 @@ table.dataTable th.text-wrap-name {
             <i class="fas fa-arrow-alt-circle-left"></i> Go Back
          </button>
          @can('user-create')
+         <a href="{{ route('admin.users.reset_all_password') }}">
+            <button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-danger">
+               <i class="fas fa-plus-square"></i> Reset All Users Password to 123456
+            </button>
+         </a>
          <a href="{{ route('admin.users.create') }}">
             <button class="btn waves-effect waves-light btn-rounded m-l-15 text-white btn-xs btn-success">
                <i class="fas fa-plus-square"></i> Add New
             </button>
-         </a>
+         </a>         
          @endcan
       </div>
    </div>

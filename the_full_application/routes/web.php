@@ -219,6 +219,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/view', 'show')->name('show');
         Route::get('{id}/delete', 'destroy')->name('destroy');
         Route::get('{id}/reset_password', 'reset_password')->name('reset_password');
+        Route::get('reset_all_password', 'reset_all_password')->name('reset_all_password');
     });
 
     Route::prefix('my-profile')->name('myprofile.')->controller(MyProfileController::class)->group(function () {

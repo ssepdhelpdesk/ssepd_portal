@@ -228,4 +228,27 @@ public function reset_password($id)
     return redirect()->back()->with('success', "Password for {$user->name} has been reset to \"{$newPassword}\".");
 }
 
+public function reset_all_password()
+{
+    $newPassword = '123456';
+
+    $updated = User::where('otp_for_forgot_password', '123456')
+    ->update([
+        'password' => Hash::make($newPassword),
+        'is_logged_in' => '0',
+    ]);
+
+    Log::info("Password reset by admin for {$updated} users.");
+
+    if ($updated == 0) {
+        return redirect()->back()->with('warning', 'No users found whose password needed to be reset.');
+    }
+
+    return redirect()->route('admin.users.index')
+    ->with(
+        'success',
+        "{$updated} user(s) password has been reset successfully to \"{$newPassword}\"."
+    );
+}
+
 }
