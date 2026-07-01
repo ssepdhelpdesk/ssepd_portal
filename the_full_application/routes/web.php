@@ -509,6 +509,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('check_institute_email_id', 'check_institute_email_id')->name('check_institute_email_id');
         Route::get('pia_institute_benf_details', 'pia_institute_benf_details')->name('pia_institute_benf_details');
         Route::post('{id}/pia_institute_benf_details_store', 'pia_institute_benf_details_store')->name('pia_institute_benf_details_store');
+        Route::post('{id}/hwh_oah_input_form_benf_details_store', 'hwh_oah_input_form_benf_details_store')->name('hwh_oah_input_form_benf_details_store');
         Route::get('check_benf_aadhar', 'check_benf_aadhar')->name('check_benf_aadhar');
         Route::get('check_benf_udid', 'check_benf_udid')->name('check_benf_udid');
         Route::get('pia_institute_list', 'pia_institute_list')->name('pia_institute_list');
