@@ -427,7 +427,7 @@ class PiaInstitutesController extends Controller
             $piainstitutemaster = PiaInstituteMaster::whereId($id)->firstOrFail();
             $user = auth()->user();
             $piainstitutemaster = PiaInstituteMaster::where('user_table_id', $user->user_table_id)->firstOrFail();
-            $previousId = PiaInstituteBenficiaryDetails::latest()->value('id') ?? 0;
+            $previousId = PiaInstituteBenfDetails::latest()->value('id') ?? 0;
             $currentDate = now()->format('d/m/Y');
             $randomNumber = mt_rand(1000, 9999);
 
@@ -490,7 +490,7 @@ class PiaInstitutesController extends Controller
                 copy(storage_path("app/public/{$benfUdidStoredPath}"), "{$externalPath}/{$benfUdidRandomName}");
             }
 
-            $pia_institute_benf_details = new PiaInstituteBenficiaryDetails();
+            $pia_institute_benf_details = new PiaInstituteBenfDetails();
             $pia_institute_benf_details->uuid = (string) Str::uuid();
             $pia_institute_benf_details->name_of_the_beneficiary = $validatedData['name_of_the_beneficiary'] ?? null;
             $pia_institute_benf_details->benf_system_gen_reg_no = $benfSystemGeneratedRegNo;
@@ -542,7 +542,7 @@ class PiaInstitutesController extends Controller
 
             $applicationstagehistory = new ApplicationStageHistory();
             $applicationstagehistory->department_scheme_id = 4;
-            $applicationstagehistory->model_name = 'PiaInstituteBenficiaryDetails';
+            $applicationstagehistory->model_name = 'PiaInstituteBenfDetails';
             $applicationstagehistory->model_table_id = $pia_institute_benf_details->id;
             $applicationstagehistory->initial_model_table_id = $pia_institute_benf_details->id;
             $applicationstagehistory->stage_id = 37;
@@ -578,7 +578,7 @@ class PiaInstitutesController extends Controller
         if (empty($aadhaar_no)) {
             return response()->json(2);
         }
-        $aadharExistsInNgo = PiaInstituteBenficiaryDetails::where('status', 1)->where('aadhaar_no', $aadhaar_no)->exists();
+        $aadharExistsInNgo = PiaInstituteBenfDetails::where('status', 1)->where('aadhaar_no', $aadhaar_no)->exists();
         return response()->json($aadharExistsInNgo ? 1 : 0);
     }
 
@@ -589,7 +589,7 @@ class PiaInstitutesController extends Controller
             return response()->json(1);
         }
 
-        $exists = PiaInstituteBenficiaryDetails::where('status', 1)->where('udid_no', $udid_no)->exists();
+        $exists = PiaInstituteBenfDetails::where('status', 1)->where('udid_no', $udid_no)->exists();
         if ($exists) {
             return response()->json(1);
         } else {
@@ -618,7 +618,7 @@ class PiaInstitutesController extends Controller
     {
         $userId = Auth::user();
         $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
-        $beneficiary_details = PiaInstituteBenficiaryDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
+        $beneficiary_details = PiaInstituteBenfDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
         return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
     }
 
