@@ -618,7 +618,7 @@ class PiaInstitutesController extends Controller
     {
         $userId = Auth::user();
         $piainstitute = PiaInstituteMaster::where('user_table_id', $userId->user_table_id)->where('status', 'Active')->firstOrFail();
-        $beneficiary_details = PiaInstituteBenficiaryDetails::where('pia_institute_master_institute_id', $piainstitute->institute_master_id)->where('status', 1)->get();
+        $beneficiary_details = PiaInstituteBenficiaryDetails::where('created_by', $userId->id)->where('status', 1)->get();
         return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
     }
 
