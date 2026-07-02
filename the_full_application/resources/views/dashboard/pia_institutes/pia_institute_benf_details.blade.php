@@ -95,8 +95,8 @@ PIA || Institute Beneficiary List
 									}}</td>
 									<td>{{ $beneficiary->age ?? 'Not Available' }}</td>
 									<td>{{ $beneficiary->disability_category ?? 'Not Available' }}</td>
-									<td>{{ $beneficiary->date_of_birth 
-										? \Carbon\Carbon::parse($beneficiary->date_of_birth)->format('d M Y') 
+									<td>{{ $beneficiary->date_of_joining 
+										? \Carbon\Carbon::parse($beneficiary->date_of_joining)->format('d M Y') 
 										: 'Not Available' 
 									}}</td>
 									<td class="wrap-text">
