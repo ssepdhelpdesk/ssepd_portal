@@ -3,6 +3,16 @@ SSEPD PORTAL
 @endsection 
 @extends('dashboard.layouts.main')
 @section('style')
+<style>
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+</style>
 @endsection 
 @section('content')
 <div class="container-fluid">
@@ -35,6 +45,7 @@ SSEPD PORTAL
 <!-- Over Visitor, Our income , slaes different and  sales prediction -->
 <!-- ============================================================== -->
 <div class="row">
+   @if(Auth::user()->role_id != 17)
    <div class="col-md-4">
       <div class="card">
          <div class="card-body">
@@ -140,6 +151,18 @@ SSEPD PORTAL
          </div>
       </div>
    </div>
+   @endif
+   @if(Auth::user()->role_id == 17)
+   <div class="row mb-3">
+    <div class="col-12">
+        <div style="background:#dc3545;color:#fff;padding:12px 0;border-radius:6px;overflow:hidden;white-space:nowrap;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+            <div style="display:inline-block;padding-left:100%;animation: marquee 20s linear infinite;">
+                📢 Welcome to the SSEPD-IT Portal. | This Institute Portal is under UAT.
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 </div>
 
 <!-- ============================================================== -->
