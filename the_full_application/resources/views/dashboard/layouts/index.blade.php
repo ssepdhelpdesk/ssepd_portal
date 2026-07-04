@@ -157,7 +157,7 @@ SSEPD PORTAL
     <div class="col-12">
         <div style="background:#dc3545;color:#fff;padding:12px 0;border-radius:6px;overflow:hidden;white-space:nowrap;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.15);">
             <div style="display:inline-block;padding-left:100%;animation: marquee 20s linear infinite;">
-                📢 Welcome to the SSEPD-IT Portal. | This Institute Portal is under UAT.
+                📢 Welcome to the SSEPD-IT Portal. | This Institute Portal is under Testing.
             </div>
         </div>
     </div>
