@@ -598,13 +598,53 @@ class PiaInstitutesController extends Controller
         }
     }
 
-    public function pia_institute_list()
+    public function pia_institute_list(Request $request)
     {
-        $piainstitutemaster = PiaInstituteMaster::where('status', 'Active')
+        /*$piainstitutemaster = PiaInstituteMaster::where('status', 'Active')
         ->withCount(['beneficiaries' => function ($q) {$q->where('status', 1);}])
         ->orderBy('excel_district_name', 'ASC')
         ->get();
-        return view('dashboard.pia_institutes.pia_institute_list', compact('piainstitutemaster'));
+        return view('dashboard.pia_institutes.pia_institute_list', compact('piainstitutemaster'));*/
+
+        $query = PiaInstituteMaster::where('status', 'Active')
+        ->withCount([
+            'beneficiaries' => function ($q) {
+                $q->where('status', 1);
+            }
+        ]);
+
+        if ($request->filled('district_id')) {
+    $query->where('district_id', $request->district_id);
+}
+
+if ($request->filled('basic_details_completed')) {
+    $query->where(
+        'basic_details_completed',
+        $request->basic_details_completed
+    );
+}
+
+if ($request->filled('institute_type_id')) {
+    $query->where(function ($q) use ($request) {
+        $q->where(function ($sub) use ($request) {
+            $sub->where('basic_details_completed', 0)
+                ->where('excel_institute_type_id', $request->institute_type_id);
+        })
+        ->orWhere(function ($sub) use ($request) {
+            $sub->where('basic_details_completed', 1)
+                ->where('institute_type_id', $request->institute_type_id);
+        });
+    });
+}
+
+        $piainstitutemaster = $query->orderBy('excel_district_name', 'ASC')->get();
+
+        $districts = District::orderBy('district_name', 'ASC')->get();
+
+        return view(
+            'dashboard.pia_institutes.pia_institute_list',
+            compact('piainstitutemaster', 'districts')
+        );
     }
 
     /**
