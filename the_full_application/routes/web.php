@@ -520,7 +520,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/edit', 'edit')->name('edit');
         Route::post('{id}/update', 'update')->name('update');
 
-        Route::get('pia_institute_benf_details', 'pia_institute_benf_details')->name('pia_institute_benf_details');
+        Route::get('{id}/pia_institute_benf_details_admin', 'pia_institute_benf_details_admin')->name('pia_institute_benf_details_admin');
     });
 
     Route::get('/get-address-type-content/{type}', function ($type) {

@@ -935,6 +935,13 @@ if ($request->filled('institute_type_id')) {
         }
     }
 
+    public function pia_institute_benf_details_admin($id)
+    {
+        $piainstitute = PiaInstituteMaster::where('institute_id', $id)->where('status', 'Active')->firstOrFail();
+        $beneficiary_details = PiaInstituteBenficiaryDetails::where('institute_id', $piainstitute->institute_id)->where('status', 1)->get();
+        return view('dashboard.pia_institutes.pia_institute_benf_details', compact('beneficiary_details'));
+    }
+
     /**
      * Store a newly created resource in storage.
      */

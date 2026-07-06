@@ -251,11 +251,11 @@ PIA || Institute List
                   </td>
                   <td>
                      @if($piaInstituteDetails->beneficiaries_count > 0)
-                     <span class="badge bg-info text-white"
+                     <a href="{{ route('admin.piainstitutes.pia_institute_benf_details_admin', $piaInstituteDetails->institute_id) }}"><span class="badge bg-info text-white"
                      data-bs-toggle="tooltip"
                      title="Inmates: {{ $piaInstituteDetails->beneficiaries_count }}">
                      {{ $piaInstituteDetails->beneficiaries_count }}
-                  </span>
+                  </span></a>
                   @else
                   <i class="fas fa-times-circle text-danger"
                   data-bs-toggle="tooltip"
