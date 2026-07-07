@@ -641,7 +641,7 @@ public function update_the_data_using_nsap_api_testing()
  */
 private function getNsapBearerToken(): string
 {
-    $response = Http::timeout(60)->connectTimeout(15)->withHeaders([
+    $response = Http::withoutVerifying()->timeout(60)->connectTimeout(15)->withHeaders([
         'Content-Type' => 'application/json',
         'Accept'       => 'application/json',
     ])->withBody(
@@ -727,7 +727,7 @@ private function buildNsapPayload($beneficiaries): array
  */
 private function callNsapBeneficiaryApi(string $token, array $payload): string
 {
-    $response = Http::timeout(60)->connectTimeout(15)->withHeaders([
+    $response = Http::withoutVerifying()->timeout(60)->connectTimeout(15)->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Content-Type'  => 'application/json',
         'Accept'        => 'application/json',
