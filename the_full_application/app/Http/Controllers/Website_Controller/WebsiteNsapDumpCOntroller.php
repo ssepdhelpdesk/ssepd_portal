@@ -812,10 +812,10 @@ private function decryptNsapResponse(string $encryptedResponse): array
     }
 
     if ($json['status'] != "1") {
-        throw new \Exception(
-            $json['message'] ?? 'NSAP returned failed status.'
-        );
-    }
+
+    return $json;
+
+}
 
     if (!isset($json['list']) || !is_array($json['list'])) {
         throw new \Exception('Beneficiary list not found in NSAP response.');
