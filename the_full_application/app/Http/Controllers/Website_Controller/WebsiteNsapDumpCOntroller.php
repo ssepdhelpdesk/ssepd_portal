@@ -587,4 +587,49 @@ public function consent_aadhar_verification_process(Request $request)
     }
 }
 
+use Illuminate\Support\Facades\Route;
+
+public function update_the_data_using_nsap_api()
+{
+    try {
+
+        $encryptedResponse = "EiLErFKtRbOEM59SN6ssy4vWZPryYqs0wHwtRl/9HtPElKEscKHDruIHMrXdzvXv";
+
+        // Base64 encoded key from NIC
+        $base64Key = "TQAjADEATQBSAEkARwBTAEAAIwBTAHAAJQAxADIAcAA=";
+
+        // Decode the key
+        $key = base64_decode($base64Key);
+
+        // Same IV used in Java
+        $iv = pack(
+            'C*',
+            1,2,3,4,
+            5,6,6,5,
+            4,3,2,1,
+            7,7,7,7
+        );
+
+        // Decrypt
+        $decrypted = openssl_decrypt(
+            base64_decode($encryptedResponse),
+            'AES-256-CBC',
+            $key,
+            OPENSSL_RAW_DATA,
+            $iv
+        );
+
+        dd([
+            'Encrypted' => $encryptedResponse,
+            'Decrypted' => $decrypted,
+            'JSON'       => json_decode($decrypted, true),
+        ]);
+
+    } catch (\Exception $e) {
+
+        dd($e->getMessage());
+
+    }
+}
+
 }

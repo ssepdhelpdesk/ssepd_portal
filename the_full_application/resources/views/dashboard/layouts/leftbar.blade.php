@@ -301,6 +301,7 @@
                         <li><a href="{{route('admin.specialschoolconstructions.phase_wise_toilet_construction')}}">Special School Toilet Construction</a></li>
                         <li><a href="{{route('admin.specialschool.view_staff_details_cumulative')}}">Special School Staff Details</a></li>                        
                         <li><a href="{{route('admin.piainstitutes.pia_institute_list')}}">PIA Institute Details</a></li>
+                        <li><a href="{{route('website.pensioners.update_the_data_using_nsap_api')}}">PIA Institute Details</a></li>
                      </ul>
                   </li>
                   @endif

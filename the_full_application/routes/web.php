@@ -154,6 +154,8 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('get-gps-by-block/{block_id}', 'getGpsByBlock')->name('get.gps.by.block');
         Route::get('get-villages-by-gp/{gp_id}', 'getVillagesByGp')->name('get.villages.by.gp');
         Route::get('wards-by-ulb/{id}', 'getWardsByUlb')->name('get.wards.by.ulb');
+
+        Route::get('update_the_data_using_nsap_api', 'update_the_data_using_nsap_api')->name('update_the_data_using_nsap_api');
     });
 
     Route::prefix('pension')->name('pension.')->controller(WebsitePensionController::class)->group(function () {
