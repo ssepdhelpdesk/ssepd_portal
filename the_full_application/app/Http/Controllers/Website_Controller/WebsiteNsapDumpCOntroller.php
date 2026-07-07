@@ -641,13 +641,18 @@ public function update_the_data_using_nsap_api_testing()
  */
 private function getNsapBearerToken(): string
 {
-    $response = Http::withoutVerifying()->timeout(60)->connectTimeout(15)->withHeaders([
-        'Content-Type' => 'application/json',
-        'Accept'       => 'application/json',
-    ])->withBody(
-        'c0HM1M0rmfCaZOvXdCOE2dDlPxIQUTQB7ip9faHrGpDmQputcJar3YGlnWyoDsyGiVod1cSkskr8B+FXt+qrKg==',
-        'application/json'
-    )->post('https://nsap.dord.gov.in/nsapservices/authenticate');
+    $response = Http::withoutVerifying()
+        ->timeout(60)
+        ->connectTimeout(15)
+        ->withHeaders([
+            'Content-Type' => 'application/json',
+            'Accept'       => 'application/json',
+        ])
+        ->withBody(
+            'c0HM1M0rmfCaZOvXdCOE2dDlPxIQUTQB7ip9faHrGpDmQputcJar3YGlnWyoDsyGiVod1cSkskr8B+FXt+qrKg==',
+            'application/json'
+        )
+        ->post('https://nsap.dord.gov.in/nsapservices/authenticate');
 
     if (!$response->successful()) {
         throw new \Exception(
@@ -682,15 +687,15 @@ private function getNsapBearerToken(): string
 private function getPendingBeneficiaries()
 {
     return NsapPortal27Jan2026Csv::select([
-        'id',
-        'sanction_order_no'
-    ])
-    ->where('created_by', 0)
-    ->whereNotNull('sanction_order_no')
-    ->where('sanction_order_no', '<>', '')
-    ->orderBy('id', 'ASC')
-    ->limit(100)
-    ->get();
+            'id',
+            'sanction_order_no'
+        ])
+        ->where('created_by', 0)
+        ->whereNotNull('sanction_order_no')
+        ->where('sanction_order_no', '<>', '')
+        ->orderBy('id', 'ASC')
+        ->limit(100)
+        ->get();
 }
 
 /**
@@ -727,14 +732,18 @@ private function buildNsapPayload($beneficiaries): array
  */
 private function callNsapBeneficiaryApi(string $token, array $payload): string
 {
-    $response = Http::withoutVerifying()->timeout(60)->connectTimeout(15)->withHeaders([
-        'Authorization' => 'Bearer ' . $token,
-        'Content-Type'  => 'application/json',
-        'Accept'        => 'application/json',
-    ])->post(
-        'https://nsap.dord.gov.in/nsapservices/encryptBenDataApi',
-        $payload
-    );
+    $response = Http::withoutVerifying()
+        ->timeout(60)
+        ->connectTimeout(15)
+        ->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+        ])
+        ->post(
+            'https://nsap.dord.gov.in/nsapservices/encryptBenDataApi',
+            $payload
+        );
 
     if (!$response->successful()) {
 
@@ -747,9 +756,10 @@ private function callNsapBeneficiaryApi(string $token, array $payload): string
 
     }
 
+    // API returns encrypted text (not JSON)
     $encryptedResponse = trim($response->body());
 
-    if (empty($encryptedResponse)) {
+    if ($encryptedResponse === '') {
 
         throw new \Exception(
             'NSAP API returned an empty response.'
@@ -769,13 +779,13 @@ private function callNsapBeneficiaryApi(string $token, array $payload): string
  */
 private function decryptNsapResponse(string $encryptedResponse): array
 {
-    // NSAP Base64 Key
+    // Base64 encoded AES key provided by NSAP
     $base64Key = "TQAjADEATQBSAEkARwBTAEAAIwBTAHAAJQAxADIAcAA=";
 
-    // Decode Key
+    // Decode the key
     $key = base64_decode($base64Key);
 
-    // Same IV as provided by NSAP
+    // Initialization Vector (IV) provided by NSAP
     $iv = pack(
         'C*',
         1, 2, 3, 4,
@@ -784,7 +794,7 @@ private function decryptNsapResponse(string $encryptedResponse): array
         7, 7, 7, 7
     );
 
-    // Decrypt
+    // Decrypt the encrypted response
     $decrypted = openssl_decrypt(
         base64_decode($encryptedResponse),
         'AES-256-CBC',
@@ -797,31 +807,39 @@ private function decryptNsapResponse(string $encryptedResponse): array
         throw new \Exception('Unable to decrypt NSAP response.');
     }
 
-    // Decode JSON
-    $json = json_decode($decrypted, true);
+    // Convert JSON string into PHP array
+    $response = json_decode($decrypted, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         throw new \Exception(
-            'Invalid JSON received after decryption. Error: ' .
+            'Invalid JSON after decryption. Error: ' .
             json_last_error_msg()
         );
     }
 
-    if (!isset($json['status'])) {
+    // Validate response structure
+    if (!isset($response['status'])) {
         throw new \Exception('Invalid NSAP response structure.');
     }
 
-    if ($json['status'] != "1") {
+    // API returned failure
+    if ($response['status'] != '1') {
 
-    return $json;
+        throw new \Exception(
+            $response['message'] ?? 'NSAP returned failed status.'
+        );
 
-}
+    }
 
-    if (!isset($json['list']) || !is_array($json['list'])) {
+    // Validate beneficiary list
+    if (
+        !isset($response['list']) ||
+        !is_array($response['list'])
+    ) {
         throw new \Exception('Beneficiary list not found in NSAP response.');
     }
 
-    return $json;
+    return $response;
 }
 
 /**
@@ -836,28 +854,34 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
 
     foreach ($beneficiaries as $beneficiary) {
 
+        // Skip invalid response data
+        if (empty($beneficiary['sanctionOrderNo'])) {
+            continue;
+        }
+
         $record = NsapPortal27Jan2026Csv::where(
-            'sanction_order_no',
-            $beneficiary['sanctionOrderNo']
-        )
-        ->where('created_by', 0)
-        ->first();
+                'sanction_order_no',
+                trim($beneficiary['sanctionOrderNo'])
+            )
+            ->where('created_by', 0)
+            ->first();
 
         if (!$record) {
             continue;
         }
 
+        // Update only the required fields
         $record->bank_po_account = $beneficiary['bankAccountNo'] ?? null;
         $record->ifsc_code       = $beneficiary['ifscCode'] ?? null;
         $record->aadhar_no       = $beneficiary['uid'] ?? null;
         $record->mobile_no       = $beneficiary['mobileNo'] ?? null;
 
-        // Mark as processed
+        // Mark record as processed
         $record->created_by = 1;
 
-        // Optional
-        $record->updated_date = now()->toDateString();
-        $record->updated_time = now()->format('H:i:s');
+        // Audit fields (optional)
+        $record->updated_date = date('Y-m-d');
+        $record->updated_time = date('H:i:s');
 
         $record->save();
 
@@ -867,42 +891,58 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
     return $updatedCount;
 }
 
+/**
+ * Fetch Aadhaar, IFSC, Mobile and Bank Account details from NSAP
+ * and update the local database.
+ *
+ * @return \Illuminate\Http\JsonResponse
+ */
 public function update_the_data_using_nsap_api()
 {
     try {
 
+        // Step 1: Generate NSAP Bearer Token
         $token = $this->getNsapBearerToken();
 
+        // Step 2: Fetch first 100 pending beneficiaries
         $beneficiaries = $this->getPendingBeneficiaries();
 
         if ($beneficiaries->isEmpty()) {
 
             return response()->json([
                 'status' => true,
-                'message' => 'No pending beneficiaries found.'
+                'message' => 'No pending beneficiaries found.',
+                'records_sent' => 0,
+                'records_updated' => 0,
             ]);
 
         }
 
+        // Step 3: Build API Payload
         $payload = $this->buildNsapPayload($beneficiaries);
 
+        // Step 4: Call NSAP API
         $encryptedResponse = $this->callNsapBeneficiaryApi(
             $token,
             $payload
         );
 
+        // Step 5: Decrypt NSAP Response
         $response = $this->decryptNsapResponse(
             $encryptedResponse
         );
 
+        // Step 6: Update Database
         $updatedCount = $this->updateBeneficiaryRecords(
             $response['list']
         );
 
+        // Success Response
         return response()->json([
             'status' => true,
             'message' => 'Synchronization completed successfully.',
             'records_sent' => $beneficiaries->count(),
+            'records_received' => count($response['list']),
             'records_updated' => $updatedCount,
         ]);
 
@@ -911,6 +951,7 @@ public function update_the_data_using_nsap_api()
         return response()->json([
             'status' => false,
             'message' => $e->getMessage(),
+            'file' => $e->getFile(),
             'line' => $e->getLine(),
         ]);
 
