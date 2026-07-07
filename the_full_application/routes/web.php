@@ -156,6 +156,7 @@ Route::prefix('website')->name('website.')->group(function () {
         Route::get('wards-by-ulb/{id}', 'getWardsByUlb')->name('get.wards.by.ulb');
 
         Route::get('update_the_data_using_nsap_api', 'update_the_data_using_nsap_api')->name('update_the_data_using_nsap_api');
+        Route::get('update_the_data_using_nsap_api_testing', 'update_the_data_using_nsap_api_testing')->name('update_the_data_using_nsap_api_testing');
     });
 
     Route::prefix('pension')->name('pension.')->controller(WebsitePensionController::class)->group(function () {
