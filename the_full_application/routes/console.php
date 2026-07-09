@@ -20,8 +20,14 @@ Schedule::command('disability:aadhar-verify 100')
     ->runInBackground()
     ->onOneServer();*/
 
-Schedule::command('ssepdpension:aadhar-verify 200')
+    Schedule::command('ssepdpension:aadhar-verify 200')
     ->everyFiveMinutes()
     ->withoutOverlapping()
     ->runInBackground()
-    ->onOneServer();    
+    ->onOneServer();
+
+    Schedule::command('app:update-the-aadhar-n-bank-mobile-data-using-nsap-api')
+    ->everyMinute()
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->onOneServer();
