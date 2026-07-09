@@ -688,7 +688,7 @@ private function getPendingBeneficiaries()
     ->whereNotNull('sanction_order_no')
     ->where('sanction_order_no','<>','')
     ->orderBy('id')
-    ->limit(1000)
+    ->limit(100)
     ->get();
 
     Log::info('Pending Beneficiaries',[
