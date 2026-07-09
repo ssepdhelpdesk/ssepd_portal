@@ -644,17 +644,17 @@ private function getNsapBearerToken(): string
     Log::info('========== NSAP AUTH START ==========');
 
     $response = Http::withoutVerifying()
-        ->timeout(60)
-        ->connectTimeout(15)
-        ->withHeaders([
-            'Content-Type' => 'application/json',
-            'Accept'       => 'application/json',
-        ])
-        ->withBody(
-            'c0HM1M0rmfCaZOvXdCOE2dDlPxIQUTQB7ip9faHrGpDmQputcJar3YGlnWyoDsyGiVod1cSkskr8B+FXt+qrKg==',
-            'application/json'
-        )
-        ->post('https://nsap.dord.gov.in/nsapservices/authenticate');
+    ->timeout(60)
+    ->connectTimeout(15)
+    ->withHeaders([
+        'Content-Type' => 'application/json',
+        'Accept'       => 'application/json',
+    ])
+    ->withBody(
+        'c0HM1M0rmfCaZOvXdCOE2dDlPxIQUTQB7ip9faHrGpDmQputcJar3YGlnWyoDsyGiVod1cSkskr8B+FXt+qrKg==',
+        'application/json'
+    )
+    ->post('https://nsap.dord.gov.in/nsapservices/authenticate');
 
     Log::info('Auth HTTP Status', [
         'status' => $response->status()
@@ -681,15 +681,15 @@ private function getNsapBearerToken(): string
 private function getPendingBeneficiaries()
 {
     $beneficiaries = NsapPortal27Jan2026Csv::select([
-            'id',
-            'sanction_order_no'
-        ])
-        ->where('created_by',0)
-        ->whereNotNull('sanction_order_no')
-        ->where('sanction_order_no','<>','')
-        ->orderBy('id')
-        ->limit(100)
-        ->get();
+        'id',
+        'sanction_order_no'
+    ])
+    ->where('created_by',0)
+    ->whereNotNull('sanction_order_no')
+    ->where('sanction_order_no','<>','')
+    ->orderBy('id')
+    ->limit(100)
+    ->get();
 
     Log::info('Pending Beneficiaries',[
         'count'=>$beneficiaries->count(),
@@ -759,17 +759,17 @@ private function callNsapBeneficiaryApi(string $token, array $payload): string
     try {
 
         $response = Http::withoutVerifying()
-            ->timeout(60)
-            ->connectTimeout(15)
-            ->withHeaders([
-                'Authorization' => 'Bearer ' . $token,
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
-            ])
-            ->post(
-                'https://nsap.dord.gov.in/nsapservices/encryptBenDataApi',
-                $payload
-            );
+        ->timeout(60)
+        ->connectTimeout(15)
+        ->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type'  => 'application/json',
+            'Accept'        => 'application/json',
+        ])
+        ->post(
+            'https://nsap.dord.gov.in/nsapservices/encryptBenDataApi',
+            $payload
+        );
 
         Log::info('NSAP API HTTP Response', [
             'status' => $response->status(),
@@ -1016,11 +1016,11 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
             ]);
 
             $record = NsapPortal27Jan2026Csv::where(
-                    'sanction_order_no',
-                    $sanctionOrderNo
-                )
-                ->where('created_by', 0)
-                ->first();
+                'sanction_order_no',
+                $sanctionOrderNo
+            )
+            ->where('created_by', 0)
+            ->first();
 
             if (!$record) {
 
@@ -1109,7 +1109,16 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
  */
 public function update_the_data_using_nsap_api()
 {
-    Log::info('================ NSAP Synchronization Started ================');
+    // Record start time
+    $startTime = microtime(true);
+
+    $startDateTime = now()
+        ->timezone('Asia/Kolkata')
+        ->format('Y-m-d H:i:s');
+
+    Log::info('================ NSAP Synchronization Started ================', [
+        'started_at' => $startDateTime
+    ]);
 
     try {
 
@@ -1152,6 +1161,10 @@ public function update_the_data_using_nsap_api()
                 'records_sent' => 0,
                 'records_received' => 0,
                 'records_updated' => 0,
+                'started_at' => $startDateTime,
+                'completed_at' => now()->timezone('Asia/Kolkata')->format('Y-m-d H:i:s'),
+                'execution_time_seconds' => round(microtime(true) - $startTime, 3),
+                'execution_time_milliseconds' => round((microtime(true) - $startTime) * 1000, 2),
             ]);
 
         }
@@ -1228,11 +1241,32 @@ public function update_the_data_using_nsap_api()
 
         /*
         |--------------------------------------------------------------------------
+        | Calculate Execution Time
+        |--------------------------------------------------------------------------
+        */
+
+        $endTime = microtime(true);
+
+        $endDateTime = now()
+            ->timezone('Asia/Kolkata')
+            ->format('Y-m-d H:i:s');
+
+        $executionSeconds = round($endTime - $startTime, 3);
+
+        $executionMilliseconds = round(($endTime - $startTime) * 1000, 2);
+
+
+        /*
+        |--------------------------------------------------------------------------
         | Synchronization Completed
         |--------------------------------------------------------------------------
         */
 
         Log::info('================ NSAP Synchronization Completed Successfully ================', [
+            'started_at' => $startDateTime,
+            'completed_at' => $endDateTime,
+            'execution_time_seconds' => $executionSeconds,
+            'execution_time_milliseconds' => $executionMilliseconds,
             'records_sent' => $beneficiaries->count(),
             'records_received' => count($response['list']),
             'records_updated' => $updatedCount,
@@ -1241,25 +1275,52 @@ public function update_the_data_using_nsap_api()
         return response()->json([
             'status' => true,
             'message' => 'Synchronization completed successfully.',
+
             'records_sent' => $beneficiaries->count(),
             'records_received' => count($response['list']),
             'records_updated' => $updatedCount,
+
+            'started_at' => $startDateTime,
+            'completed_at' => $endDateTime,
+
+            'execution_time_seconds' => $executionSeconds,
+            'execution_time_milliseconds' => $executionMilliseconds,
         ]);
 
     } catch (\Throwable $e) {
 
+        $endTime = microtime(true);
+
+        $endDateTime = now()
+            ->timezone('Asia/Kolkata')
+            ->format('Y-m-d H:i:s');
+
+        $executionSeconds = round($endTime - $startTime, 3);
+
+        $executionMilliseconds = round(($endTime - $startTime) * 1000, 2);
+
         Log::error('================ NSAP Synchronization Failed ================', [
+            'started_at' => $startDateTime,
+            'completed_at' => $endDateTime,
+            'execution_time_seconds' => $executionSeconds,
+            'execution_time_milliseconds' => $executionMilliseconds,
             'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
-            'trace'   => $e->getTraceAsString(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
         ]);
 
         return response()->json([
             'status' => false,
             'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+
+            'started_at' => $startDateTime,
+            'completed_at' => $endDateTime,
+
+            'execution_time_seconds' => $executionSeconds,
+            'execution_time_milliseconds' => $executionMilliseconds,
         ]);
 
     }
