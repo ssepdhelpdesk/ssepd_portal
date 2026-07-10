@@ -39,7 +39,8 @@ return new class extends Migration
             $table->string('ifsc_code')->nullable();
             $table->string('status')->nullable();
             $table->string('uid_ref_value')->nullable();
-            
+
+            $table->string('state')->nullable();            
             $table->bigInteger('state_id')->nullable()->index();
             $table->string('district')->nullable();
             $table->bigInteger('district_id')->nullable()->index();
