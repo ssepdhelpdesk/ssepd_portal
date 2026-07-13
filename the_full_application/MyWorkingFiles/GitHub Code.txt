@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "update_the_data_using_nsap_api"
+git commit -m "nsap_dump18_june2026_data"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -289,3 +289,49 @@ MAIL_PASSWORD=qxsuvcuxgjgjridd lejtarcgbserkvyw
 MAIL_ENCRYPTION=tls
 MAIL_FROM_ADDRESS="warispc12334@gmail.com"
 MAIL_FROM_NAME="${APP_NAME}"
+
+
+
+/////////////////////////////Load CSV file into the MySql In CentOs7 Easily//////////////////////////////////////////
+cp /root/Downloads/OR_ALL-CENTER_SCHEME_BEN_MASTER.csv /var/lib/mysql-files/
+ls -lh /var/lib/mysql-files/OR_ALL-CENTER_SCHEME_BEN_MASTER.csv
+
+cp /root/Downloads/OR_ALL-STATE_SCHEME_BEN_MASTER.csv /var/lib/mysql-files/
+ls -lh /var/lib/mysql-files/OR_ALL-STATE_SCHEME_BEN_MASTER.csv
+
+LOAD DATA INFILE '/var/lib/mysql-files/OR_ALL-CENTER_SCHEME_BEN_MASTER.csv'
+INTO TABLE nsap_dump18_june2026_data
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(
+    state_code,
+    district_code,
+    sub_district_municipal_area_code,
+    gram_panchayat_ward_code,
+    village_code,
+    scheme_code,
+    sanction_order_no,
+    applicant_name,
+    contact_person_mobile,
+    gender,
+    age,
+    category_code,
+    state_name,
+    district_name,
+    sub_district_municipal_area_name,
+    rural_urban_area,
+    gram_panchayat_ward_name,
+    village_name,
+    full_add,
+    creation_date,
+    sanction_date,
+    bank_po_account_no,
+    ifsc_code,
+    status,
+    uid_ref_value
+)
+SET
+    uuid = UUID();

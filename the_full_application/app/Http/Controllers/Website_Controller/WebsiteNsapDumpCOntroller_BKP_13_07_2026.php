@@ -681,7 +681,7 @@ private function getNsapBearerToken(): string
  */
 private function getPendingBeneficiaries()
 {
-    $beneficiaries = NsapDump18June2026Data::select([
+    $beneficiaries = NsapPortal27Jan2026Csv::select([
         'id',
         'sanction_order_no'
     ])
@@ -1016,7 +1016,7 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
                 'sanction_order_no' => $sanctionOrderNo
             ]);
 
-            $record = NsapDump18June2026Data::where(
+            $record = NsapPortal27Jan2026Csv::where(
                 'sanction_order_no',
                 $sanctionOrderNo
             )
@@ -1038,7 +1038,7 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
             ]);
 
             Log::info('Existing Database Values', [
-                'bank_po_account_no' => $record->bank_po_account_no,
+                'bank_po_account' => $record->bank_po_account,
                 'ifsc_code'       => $record->ifsc_code,
                 'aadhar_no'       => $record->aadhar_no,
                 'mobile_no'       => $record->mobile_no,
@@ -1046,14 +1046,14 @@ private function updateBeneficiaryRecords(array $beneficiaries): int
             ]);
 
             Log::info('NSAP Values To Update', [
-                'bank_po_account_no' => $beneficiary['bankAccountNo'] ?? null,
+                'bank_po_account' => $beneficiary['bankAccountNo'] ?? null,
                 'ifsc_code'       => $beneficiary['ifscCode'] ?? null,
                 'aadhar_no'       => $beneficiary['uid'] ?? null,
                 'mobile_no'       => $beneficiary['mobileNo'] ?? null,
             ]);
 
             // Update database
-            $record->bank_po_account_no = $beneficiary['bankAccountNo'] ?? null;
+            $record->bank_po_account = $beneficiary['bankAccountNo'] ?? null;
             $record->ifsc_code       = $beneficiary['ifscCode'] ?? null;
             $record->aadhar_no       = $beneficiary['uid'] ?? null;
             $record->mobile_no       = $beneficiary['mobileNo'] ?? null;
