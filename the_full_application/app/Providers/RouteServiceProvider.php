@@ -9,13 +9,11 @@ class RouteServiceProvider extends ServiceProvider
 {
     /**
      * This namespace is applied to your controller routes.
-     *
-     * In addition, it is set as the root namespace for URL generation.
      */
     protected $namespace = 'App\\Http\\Controllers';
 
     /**
-     * Define your route model bindings, pattern filters, etc.
+     * Register route model bindings.
      */
     public function boot(): void
     {
@@ -23,16 +21,17 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the routes for the application.
+     * Register the application's route files.
      */
     public function map(): void
     {
         $this->mapApiRoutes();
         $this->mapWebRoutes();
+        $this->mapNewDashboardRoutes();
     }
 
     /**
-     * Define the "web" routes for the application.
+     * Main Website + Admin Routes
      */
     protected function mapWebRoutes(): void
     {
@@ -42,7 +41,7 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the "api" routes for the application.
+     * API Routes
      */
     protected function mapApiRoutes(): void
     {
@@ -50,5 +49,15 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+    }
+
+    /**
+     * New Dashboard Routes
+     */
+    protected function mapNewDashboardRoutes(): void
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/new_dashboard_web.php'));
     }
 }
