@@ -4,6 +4,17 @@ namespace App\Http\Controllers\New_Dashboard_Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use DB;
+use Hash;
+use Illuminate\Support\Arr;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use DataTables;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class NewDashboardController extends Controller
 {
@@ -12,6 +23,19 @@ class NewDashboardController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+
+        $dashboards = [
+            'INSTITUTE' => 'new_dashboard.institutes.index',
+            'SuperAdmin'     => 'new_dashboard.index',
+            'DISTRICT'  => 'new_dashboard.district.index',
+        ];
+
+        foreach ($dashboards as $role => $view) {
+            if ($user->hasRole($role)) {
+                return view($view);
+            }
+        }
         return view('new_dashboard.index');
     }
 

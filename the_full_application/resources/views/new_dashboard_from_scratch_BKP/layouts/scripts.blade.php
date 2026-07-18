@@ -34,6 +34,4 @@
 <script src="{{ asset('new_dashboard_assets/assets/js/script1.js') }}"></script>
 <script src="{{ asset('new_dashboard_assets/assets/js/theme-customizer/customizer.js') }}"></script>
 
-@yield('scripts')
-
 @stack('scripts')

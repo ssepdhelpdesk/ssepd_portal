@@ -3,7 +3,7 @@
                   <div class="page-title">
                      <div class="row">
                         <div class="col-sm-6">
-                           <h3>SSEPD-IT Dashboard</h3>
+                           <h3>Projects Dashboard</h3>
                         </div>
                         <div class="col-sm-6">
                            <ol class="breadcrumb">
@@ -15,7 +15,7 @@
                                  </a>
                               </li>
                               <li class="breadcrumb-item">Dashboard</li>
-                              <li class="breadcrumb-item active">SSEPD-IT Dashboard</li>
+                              <li class="breadcrumb-item active">Projects Dashboard</li>
                            </ol>
                         </div>
                      </div>

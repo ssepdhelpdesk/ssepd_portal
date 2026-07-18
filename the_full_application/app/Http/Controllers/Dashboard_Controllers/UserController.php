@@ -128,7 +128,7 @@ public function store(Request $request): RedirectResponse
 * @return \Illuminate\Http\Response
 */
 public function show($id): View
-{
+{    
     $user = User::find($id);
     return view('dashboard.users.show',compact('user'));
 }

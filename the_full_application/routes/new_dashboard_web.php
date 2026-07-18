@@ -19,6 +19,6 @@ Route::middleware([
 ->group(function () {
 
     Route::get('/', [NewDashboardController::class, 'index'])
-        ->name('dashboard');
+        ->name('new-dashboard');
 
 });
