@@ -37,6 +37,10 @@ use App\Http\Controllers\Dashboard_Controllers\PensionFundManagement\{
     PensionFundRequirementDisbursementController
 };
 
+use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitTypeController;
+use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitController;
+use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitInstituteController;
+
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
     LocationFrontendController,
@@ -545,6 +549,44 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
             'content' => $content,
             'buttons' => $buttons,
         ]);
+    });
+
+    /* Field Visit Management - Visit Type Master */
+    Route::prefix('field-visit-types')->name('field_visit_types.')->controller(FieldVisitTypeController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/view', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::match(['get', 'delete'], '{id}/delete', 'destroy')->name('destroy');
+    });
+
+    /* Field Visit Management - Field Visits */
+    Route::prefix('field-visits')->name('field_visits.')->controller(FieldVisitController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/view', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::match(['get', 'delete'], '{id}/delete', 'destroy')->name('destroy');
+        Route::get('evidence/{id}/view', 'viewEvidence')->name('view_evidence');
+        Route::get('document/{id}/download', 'downloadDocument')->name('download_document');
+        Route::get('export', 'export')->name('export');
+        Route::get('ajax/institutions', 'getInstitutions')->name('ajax.institutions');
+    });
+
+    /* Field Visit Management - Institute Master */
+    Route::prefix('field-visit-institutes')->name('field_visit_institutes.')->controller(FieldVisitInstituteController::class)->group(function () {
+        Route::get('index', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('{id}/view', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::match(['get', 'delete'], '{id}/delete', 'destroy')->name('destroy');
+        Route::get('ajax/locations', 'getLocations')->name('ajax.locations');
     });
 
     Route::resource('products', ProductController::class)->names('products');

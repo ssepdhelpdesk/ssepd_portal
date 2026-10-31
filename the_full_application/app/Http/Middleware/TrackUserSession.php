@@ -29,10 +29,11 @@ class TrackUserSession
                 $loginHistory = new LoginHistory();
                 $loginHistory->user_id = $user->id;
                 $loginHistory->ipv4_address = $request->ip();
-                $loginHistory->ipv6_address = $_SERVER['REMOTE_ADDR'];
+                $loginHistory->ipv6_address = $_SERVER['REMOTE_ADDR'] ?? $request->ip();
                 $ip = $request->ip();
                 $ipApiUrl = "http://ip-api.com/json/{117.211.75.216}";
-                $locationData = @json_decode(file_get_contents($ipApiUrl), true);
+                $ctx = stream_context_create(['http' => ['timeout' => 0.5]]);
+                $locationData = app()->runningUnitTests() ? null : @json_decode(@file_get_contents($ipApiUrl, false, $ctx), true);
                 if($locationData && $locationData['status'] === 'success')
                 {
                     $location = [
