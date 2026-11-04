@@ -29,5 +29,17 @@ return Application::configure(basePath: dirname(__DIR__))
     ]);
 })
 ->withExceptions(function (Exceptions $exceptions) {
-        //
+    $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, \Illuminate\Http\Request $request) {
+        $maxPostSize = ini_get('post_max_size') ?: '64M';
+        $message = "The total upload size exceeds the server limit of {$maxPostSize}. Please reduce the number or file size of your uploaded photos and documents.";
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+            ], 413);
+        }
+
+        return redirect()->back()->with('error', $message);
+    });
 })->create();

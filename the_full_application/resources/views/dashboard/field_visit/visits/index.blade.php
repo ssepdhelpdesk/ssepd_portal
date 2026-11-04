@@ -207,8 +207,18 @@ Field Visit Management || Visit Records
                               @endif
                            </td>
                            <td class="small">
-                              <i class="fas fa-user-check text-success me-1"></i>
-                              <strong>{{ $visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id) }}</strong>
+                              <div class="fw-semibold text-dark">
+                                 <i class="fas fa-user-tie text-primary me-1"></i>
+                                 {{ $visit->visiting_officer_name ?: ($visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id)) }}
+                              </div>
+                              @php
+                                 $desig = $visit->visiting_officer_designation === 'Other' && !empty($visit->other_designation)
+                                    ? $visit->other_designation
+                                    : $visit->visiting_officer_designation;
+                              @endphp
+                              @if(!empty($desig))
+                              <span class="badge bg-secondary font-monospace" style="font-size: 0.68rem;">{{ $desig }}</span>
+                              @endif
                            </td>
                            <td class="text-center">
                               @php $photoCount = $visit->evidences->count(); @endphp

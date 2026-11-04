@@ -63,6 +63,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Illuminate\Http\Exceptions\PostTooLargeException) {
+            $maxPostSize = ini_get('post_max_size') ?: '64M';
+            $message = "The total upload size exceeds the server limit of {$maxPostSize}. Please reduce the number or file size of your uploaded photos and documents.";
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 413);
+            }
+
+            return redirect()->back()->with('error', $message);
+        }
+
         return parent::render($request, $exception);
     }
 }

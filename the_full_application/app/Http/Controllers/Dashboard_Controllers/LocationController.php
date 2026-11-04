@@ -58,28 +58,35 @@ public function municipalityIndex(): View
 public function fetchDistrict(Request $request): JsonResponse
 {
     $user = auth()->user();
-    $userRole = $user->role_id;
+    $userRole = $user ? $user->role_id : null;
 
     $query = District::query()
     ->where("state_id", $request->state_id)
     ->orderBy("district_name", "asc");
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
-        
-    } elseif (in_array($userRole, [4, 6])) {
-        $district_id = Block::where('block_id', $user->posted_block)->value('district_id');
-        $query->where('district_id', $district_id);
+    // Allow callers (such as Field Visit Create/Edit forms) to request all districts for the state without user-specific scope
+    $skipUserScope = $request->boolean('all_districts') 
+        || $request->input('source') === 'field_visit' 
+        || $request->boolean('skip_user_scope');
 
-    } elseif ($userRole == 5) {
-        $district_id = Municipality::where('municipality_id', $user->posted_municipality)->value('district_id');
-        $query->where('district_id', $district_id);
+    if (!$skipUserScope) {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
+            
+        } elseif (in_array($userRole, [4, 6])) {
+            $district_id = Block::where('block_id', $user->posted_block)->value('district_id');
+            $query->where('district_id', $district_id);
 
-    } elseif (in_array($userRole, [8, 10])) {
-        $district_id = Subdivision::where('subdivision_id', $user->posted_subdiv)->value('district_id');
-        $query->where('district_id', $district_id);
+        } elseif ($userRole == 5) {
+            $district_id = Municipality::where('municipality_id', $user->posted_municipality)->value('district_id');
+            $query->where('district_id', $district_id);
 
-    } elseif (in_array($userRole, [9, 11])) {
-        $query->where('district_id', $user->posted_district);
+        } elseif (in_array($userRole, [8, 10])) {
+            $district_id = Subdivision::where('subdivision_id', $user->posted_subdiv)->value('district_id');
+            $query->where('district_id', $district_id);
+
+        } elseif (in_array($userRole, [9, 11])) {
+            $query->where('district_id', $user->posted_district);
+        }
     }
 
     $data['districts'] = $query->get(["district_name", "district_id"]);
@@ -91,26 +98,34 @@ public function fetchDistrict(Request $request): JsonResponse
 public function fetchMunicipality(Request $request): JsonResponse
 {
     $user = auth()->user();
-    $userRole = $user->role_id;
+    $userRole = $user ? $user->role_id : null;
 
     $query = Municipality::query()->orderBy("municipality_name", "asc");
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
+    $skipUserScope = $request->boolean('all_municipalities') 
+        || $request->input('source') === 'field_visit' 
+        || $request->boolean('skip_user_scope');
+
+    if ($skipUserScope) {
         $query->where("district_id", $request->district_id);
+    } else {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
+            $query->where("district_id", $request->district_id);
 
-    } elseif (in_array($userRole, [4, 6])) {
-        $query->where("district_id", $request->district_id);
+        } elseif (in_array($userRole, [4, 6])) {
+            $query->where("district_id", $request->district_id);
 
-    } elseif ($userRole == 5) {
-        $query->where("district_id", $request->district_id)
-        ->where('municipality_id', $user->posted_municipality);
+        } elseif ($userRole == 5) {
+            $query->where("district_id", $request->district_id)
+            ->where('municipality_id', $user->posted_municipality);
 
-    } elseif (in_array($userRole, [8, 10])) {
-        $query->where("district_id", $request->district_id)
-        ->where('subdivision_id', $user->posted_subdiv);
+        } elseif (in_array($userRole, [8, 10])) {
+            $query->where("district_id", $request->district_id)
+            ->where('subdivision_id', $user->posted_subdiv);
 
-    } elseif (in_array($userRole, [9, 11])) {
-        $query->where('district_id', $user->posted_district);
+        } elseif (in_array($userRole, [9, 11])) {
+            $query->where('district_id', $user->posted_district);
+        }
     }
 
     $data['municipalities'] = $query->get(["municipality_name", "municipality_id"]);
@@ -121,26 +136,34 @@ public function fetchMunicipality(Request $request): JsonResponse
 public function fetchBlock(Request $request): JsonResponse
 {
     $user = auth()->user();
-    $userRole = $user->role_id;
+    $userRole = $user ? $user->role_id : null;
 
     $query = Block::query()->orderBy("block_name", "asc");
 
-    if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
+    $skipUserScope = $request->boolean('all_blocks') 
+        || $request->input('source') === 'field_visit' 
+        || $request->boolean('skip_user_scope');
+
+    if ($skipUserScope) {
         $query->where("district_id", $request->district_id);
+    } else {
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])) {
+            $query->where("district_id", $request->district_id);
 
-    } elseif (in_array($userRole, [4, 6])) {
-        $query->where("district_id", $request->district_id)
-        ->where('block_id', $user->posted_block);
+        } elseif (in_array($userRole, [4, 6])) {
+            $query->where("district_id", $request->district_id)
+            ->where('block_id', $user->posted_block);
 
-    } elseif ($userRole == 5) {
-        $query->where("district_id", $request->district_id);
+        } elseif ($userRole == 5) {
+            $query->where("district_id", $request->district_id);
 
-    } elseif (in_array($userRole, [8, 10])) {
-        $query->where("district_id", $request->district_id)
-        ->where('subdivision_id', $user->posted_subdiv);
+        } elseif (in_array($userRole, [8, 10])) {
+            $query->where("district_id", $request->district_id)
+            ->where('subdivision_id', $user->posted_subdiv);
 
-    } elseif (in_array($userRole, [9, 11])) {
-        $query->where('district_id', $user->posted_district);
+        } elseif (in_array($userRole, [9, 11])) {
+            $query->where('district_id', $user->posted_district);
+        }
     }
 
     $data['blocks'] = $query->get(["block_name", "block_id"]);

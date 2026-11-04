@@ -69,6 +69,9 @@ class FieldVisitController extends Controller
             $query = FieldVisit::with(['visitType', 'district', 'block', 'visitingOfficer', 'evidences'])
                 ->select('field_visits.*');
 
+            // Apply geographical role-based restrictions
+            $this->applyGeographicalScope($query, Auth::user());
+
             if ($request->filled('field_visit_type_id')) {
                 $query->where('field_visit_type_id', $request->input('field_visit_type_id'));
             }
@@ -111,7 +114,15 @@ class FieldVisitController extends Controller
                     return $row->district ? e($row->district->district_name) : '—';
                 })
                 ->editColumn('visiting_officer', function ($row) {
-                    return $row->visitingOfficer ? e($row->visitingOfficer->name) : 'Officer #' . $row->visiting_officer_id;
+                    $officerName = $row->visiting_officer_name ?: ($row->visitingOfficer ? $row->visitingOfficer->name : 'Officer #' . $row->visiting_officer_id);
+                    $desig = $row->visiting_officer_designation === 'Other' && !empty($row->other_designation)
+                        ? $row->other_designation
+                        : $row->visiting_officer_designation;
+                    $html = '<span class="fw-semibold">' . e($officerName) . '</span>';
+                    if (!empty($desig)) {
+                        $html .= '<br><span class="badge bg-secondary font-monospace" style="font-size:0.65rem;">' . e($desig) . '</span>';
+                    }
+                    return $html;
                 })
                 ->editColumn('photos_count', function ($row) {
                     $count = $row->evidences->count();
@@ -140,7 +151,7 @@ class FieldVisitController extends Controller
                     $actions .= '</div></div>';
                     return $actions;
                 })
-                ->rawColumns(['visit_reference_no', 'visit_type', 'institution_name', 'photos_count', 'status', 'action'])
+                ->rawColumns(['visit_reference_no', 'visit_type', 'institution_name', 'visiting_officer', 'photos_count', 'status', 'action'])
                 ->make(true);
         }
 
@@ -148,6 +159,9 @@ class FieldVisitController extends Controller
         $query = FieldVisit::with(['visitType', 'district', 'block', 'visitingOfficer', 'evidences'])
             ->orderBy('visit_date', 'desc')
             ->orderBy('id', 'desc');
+
+        // Apply geographical role-based restrictions
+        $this->applyGeographicalScope($query, Auth::user());
 
         if ($request->filled('search')) {
             $query->search(trim($request->input('search')));
@@ -176,7 +190,25 @@ class FieldVisitController extends Controller
 
         $visits = $query->paginate(15)->withQueryString();
         $visitTypes = FieldVisitType::where('is_active', true)->orderBy('sort_order')->get();
-        $districts = District::orderBy('district_name')->get();
+
+        // Scope districts dropdown based on user's posting if applicable
+        $user = Auth::user();
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+        if (in_array($userRole, [9, 11]) && !empty($user->posted_district)) {
+            $districts = District::where('district_id', $user->posted_district)->orderBy('district_name')->get();
+        } elseif (in_array($userRole, [4, 6]) && !empty($user->posted_block)) {
+            $blockDistId = Block::where('block_id', $user->posted_block)->value('district_id');
+            $districts = $blockDistId ? District::where('district_id', $blockDistId)->get() : District::orderBy('district_name')->get();
+        } elseif ($userRole === 5 && !empty($user->posted_municipality)) {
+            $muniDistId = Municipality::where('municipality_id', $user->posted_municipality)->value('district_id');
+            $districts = $muniDistId ? District::where('district_id', $muniDistId)->get() : District::orderBy('district_name')->get();
+        } elseif (in_array($userRole, [8, 10]) && !empty($user->posted_subdiv)) {
+            $subdivDistId = Block::where('subdivision_id', $user->posted_subdiv)->value('district_id')
+                ?: Municipality::where('subdivision_id', $user->posted_subdiv)->value('district_id');
+            $districts = $subdivDistId ? District::where('district_id', $subdivDistId)->get() : District::orderBy('district_name')->get();
+        } else {
+            $districts = District::orderBy('district_name')->get();
+        }
 
         return view('dashboard.field_visit.visits.index', compact('visits', 'visitTypes', 'districts'));
     }
@@ -187,6 +219,10 @@ class FieldVisitController extends Controller
     public function create(): View
     {
         $visitTypes = FieldVisitType::where('is_active', true)->orderBy('sort_order')->get();
+        
+        // Distribute all districts to the view without user-specific district restriction
+        $user = Auth::user();
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
         $districts = District::orderBy('district_name')->get();
 
         // Preview reference number for display
@@ -213,7 +249,9 @@ class FieldVisitController extends Controller
             ->unique('category_name')
             ->values();
 
-        return view('dashboard.field_visit.visits.create', compact('visitTypes', 'districts', 'categories', 'previewReferenceNo'));
+        $designations = FieldVisit::getDesignations();
+
+        return view('dashboard.field_visit.visits.create', compact('visitTypes', 'districts', 'categories', 'previewReferenceNo', 'designations', 'userRole', 'user'));
     }
 
     /**
@@ -254,47 +292,54 @@ class FieldVisitController extends Controller
         $isManualName = in_array($categoryId, [2, 3]) || in_array($categoryName, ['SSEPD Field Office', 'Other']);
 
         $rules = [
-            'visit_date'            => 'required|date',
-            'start_time'            => 'nullable|string',
-            'end_time'              => 'nullable|string',
-            'field_visit_type_id'   => 'required|exists:field_visit_types,id',
-            'status'                => 'required|in:draft,submitted,reviewed,closed',
-            'visit_purpose'         => 'required|string|max:255',
-            'institution_type'      => 'nullable|string|max:100',
-            'category_id'           => 'required|integer',
-            'contact_person'        => 'nullable|string|max:150',
-            'contact_number'        => ['required', 'string', 'regex:/^[0-9]{10}$/'],
-            'address_type'          => 'required|in:1,2',
-            'state'                 => 'nullable|integer',
-            'district'              => 'nullable|integer',
-            'district_id'           => 'nullable|integer',
-            'block'                 => 'nullable|integer',
-            'block_id'              => 'nullable|integer',
-            'municipality'          => 'nullable|integer',
-            'municipality_id'       => 'nullable|integer',
-            'grampanchayat'         => 'nullable|integer',
-            'gp_id'                 => 'nullable|integer',
-            'village'               => 'nullable|integer',
-            'village_id'            => 'nullable|integer',
-            'ward'                  => 'nullable',
-            'ward_id'               => 'nullable',
-            'pin'                   => 'nullable|string|max:10',
-            'institution_address'   => 'nullable|string|max:1000',
-            'areas_inspected'       => 'nullable|string|max:2000',
-            'key_observations'      => 'nullable|string',
-            'findings'              => 'nullable|string',
-            'issues_identified'     => 'nullable|string',
-            'recommendations'       => 'nullable|string',
-            'corrective_actions'    => 'nullable|string',
-            'is_follow_up_required' => 'nullable|boolean',
-            'follow_up_date'        => 'nullable|required_if:is_follow_up_required,1|date',
-            'overall_remarks'       => 'nullable|string',
-            'latitude'              => 'nullable|numeric|between:-90,90',
-            'longitude'             => 'nullable|numeric|between:-180,180',
-            'gps_accuracy'          => 'nullable|numeric|min:0',
-            'location_address'      => 'nullable|string|max:500',
-            'documents.*'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
-            'document_names.*'      => 'nullable|string|max:255',
+            'visit_date'                   => 'required|date',
+            'start_time'                   => 'nullable|string',
+            'end_time'                     => 'nullable|string',
+            'field_visit_type_id'          => 'required|exists:field_visit_types,id',
+            'status'                       => 'required|in:draft,submitted,reviewed,closed',
+            'visit_purpose'                => 'required|string|max:255',
+            'visiting_officer_name'        => 'required|string|max:255',
+            'visiting_officer_designation' => 'required|string|max:255',
+            'other_designation'            => 'nullable|required_if:visiting_officer_designation,Other|string|max:255',
+            'institution_type'             => 'nullable|string|max:100',
+            'category_id'                  => 'required|integer',
+            'contact_person'               => 'nullable|string|max:150',
+            'contact_number'               => ['required', 'string', 'regex:/^[0-9]{10}$/'],
+            'address_type'                 => 'required|in:1,2',
+            'state'                        => 'nullable|integer',
+            'district'                     => 'nullable|integer',
+            'district_id'                  => 'nullable|integer',
+            'block'                        => 'nullable|integer',
+            'block_id'                     => 'nullable|integer',
+            'municipality'                 => 'nullable|integer',
+            'municipality_id'              => 'nullable|integer',
+            'grampanchayat'                => 'nullable|integer',
+            'gp_id'                        => 'nullable|integer',
+            'village'                      => 'nullable|integer',
+            'village_id'                   => 'nullable|integer',
+            'ward'                         => 'nullable',
+            'ward_id'                      => 'nullable',
+            'pin'                          => 'nullable|string|max:10',
+            'institution_address'          => 'nullable|string|max:1000',
+            'areas_inspected'              => 'nullable|string|max:2000',
+            'key_observations'             => 'nullable|string|max:500',
+            'findings'                     => 'nullable|string',
+            'issues_identified'            => 'nullable|string',
+            'recommendations'              => 'nullable|string',
+            'corrective_actions'           => 'nullable|string',
+            'is_follow_up_required'        => 'nullable|boolean',
+            'follow_up_date'               => 'nullable|required_if:is_follow_up_required,1|date',
+            'overall_remarks'              => 'nullable|string',
+            'latitude'                     => 'nullable|numeric|between:-90,90',
+            'longitude'                    => 'nullable|numeric|between:-180,180',
+            'gps_accuracy'                 => 'nullable|numeric|min:0',
+            'location_address'             => 'nullable|string|max:500',
+            'photos'                       => 'nullable|array|max:10',
+            'photos.*.image_data'          => 'required|string',
+            'photos.*.caption'             => 'nullable|string|max:255',
+            'documents'                    => 'nullable|array|max:5',
+            'documents.*'                  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:1024',
+            'document_names.*'             => 'nullable|string|max:255',
         ];
 
         if ($isManualName) {
@@ -308,19 +353,65 @@ class FieldVisitController extends Controller
         $addressType = (int)$request->input('address_type');
 
         $messages = [
-            'category_id.required'      => 'Please select an Office/Institution.',
-            'institution_id.required'   => 'Please select an Office / Institution Name.',
-            'institution_name.required' => 'The Office / Institution Name is required.',
-            'contact_number.required'   => 'The Contact Number is required.',
-            'contact_number.regex'      => 'The Contact Number must contain exactly 10 numeric digits.',
-            'address_type.required'     => 'Please select Address Type.',
-            'state.required'            => 'The State is required.',
-            'district.required'         => 'The District is required.',
-            'block.required'            => 'The Block is required.',
-            'municipality.required'     => 'The Municipality is required.',
+            'category_id.required'                  => 'Please select an Office/Institution.',
+            'institution_id.required'               => 'Please select an Office / Institution Name.',
+            'institution_name.required'             => 'The Office / Institution Name is required.',
+            'visiting_officer_name.required'        => 'The Visiting Officer Name is required.',
+            'visiting_officer_designation.required' => 'Please select a Visiting Officer Designation.',
+            'other_designation.required_if'         => 'The Other Designation is required when Other is selected.',
+            'key_observations.max'                  => 'Key Observations, Recommendations & Suggestions must not exceed 500 characters.',
+            'contact_number.required'               => 'The Contact Number is required.',
+            'contact_number.regex'                  => 'The Contact Number must contain exactly 10 numeric digits.',
+            'address_type.required'                 => 'Please select Address Type.',
+            'state.required'                        => 'The State is required.',
+            'district.required'                     => 'The District is required.',
+            'block.required'                        => 'The Block is required.',
+            'municipality.required'                 => 'The Municipality is required.',
+            'photos.max'                            => 'A maximum of 10 photographs can be uploaded per field visit.',
+            'documents.max'                         => 'A maximum of 5 reference documents can be uploaded per field visit.',
+            'documents.*.max'                       => 'Each reference document must not exceed 1 MB (1024 KB) in size.',
         ];
 
         $validated = $request->validate($rules, $messages);
+
+        // Validate photograph payload size (max 1MB per individual photo, max 30MB combined)
+        if ($request->has('photos') && is_array($request->input('photos'))) {
+            $totalPhotosSize = 0;
+            foreach ($request->input('photos') as $idx => $photoData) {
+                if (!empty($photoData['image_data'])) {
+                    $rawImage = $photoData['image_data'];
+                    // Approximate binary size: base64 is ~4/3 of binary
+                    $approxBytes = (int)(strlen($rawImage) * 0.75);
+                    $totalPhotosSize += $approxBytes;
+
+                    if ($approxBytes > 1048576) {
+                        return redirect()->back()->withInput()->withErrors([
+                            'photos' => 'Individual photograph #' . ($idx + 1) . ' exceeds the maximum allowed size of 1 MB.'
+                        ]);
+                    }
+                }
+            }
+            if ($totalPhotosSize > 30 * 1024 * 1024) {
+                return redirect()->back()->withInput()->withErrors([
+                    'photos' => 'The combined size of all uploaded photographs (' . round($totalPhotosSize / 1048576, 1) . 'MB) exceeds the supported limit of 30MB. Please reduce or compress your images before uploading.'
+                ]);
+            }
+        }
+
+        // Validate cumulative reference documents payload size (max 30MB combined)
+        if ($request->hasFile('documents')) {
+            $totalDocsSize = 0;
+            foreach ($request->file('documents') as $docFile) {
+                if ($docFile && $docFile->isValid()) {
+                    $totalDocsSize += $docFile->getSize();
+                }
+            }
+            if ($totalDocsSize > 30 * 1024 * 1024) {
+                return redirect()->back()->withInput()->withErrors([
+                    'documents' => 'The combined size of all reference documents (' . round($totalDocsSize / 1048576, 1) . 'MB) exceeds the supported limit of 30MB.'
+                ]);
+            }
+        }
 
         $institute       = null;
         $institutionId   = null;
@@ -375,6 +466,65 @@ class FieldVisitController extends Controller
             }
         }
 
+        // Resolve geographical hierarchy
+        $districtId  = $request->input('district') ?: $request->input('district_id') ?: ($institute ? $institute->district_id : null);
+        $blockId     = null;
+        $gpId        = null;
+        $villageId   = null;
+        $muniId      = null;
+        $wardId      = null;
+
+        if ($addressType === 1) {
+            $blockId   = $request->input('block') ?: $request->input('block_id') ?: ($institute ? $institute->block_id : null);
+            $gpId      = $request->input('grampanchayat') ?: $request->input('gp_id') ?: ($institute ? $institute->gp_id : null);
+            $villageId = $request->input('village_id') ?: $request->input('village') ?: ($institute ? $institute->village_id : null);
+        } elseif ($addressType === 2) {
+            $muniId = $request->input('municipality') ?: $request->input('municipality_id') ?: ($institute ? $institute->municipality_id : null);
+            $wardId = $request->input('ward') ?: $request->input('ward_id') ?: ($institute ? $institute->ward_id : null);
+        }
+
+        // Geographical jurisdiction authorization validation
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+        if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+            if (in_array($userRole, [4, 6])) {
+                if ($addressType !== 1 || empty($blockId) || (int)$blockId !== (int)$user->posted_block) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'block' => 'You are only authorized to record field visits within your assigned block jurisdiction.'
+                        ]);
+                }
+            } elseif ($userRole === 5) {
+                if ($addressType !== 2 || empty($muniId) || (int)$muniId !== (int)$user->posted_municipality) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'municipality' => 'You are only authorized to record field visits within your assigned municipality jurisdiction.'
+                        ]);
+                }
+            } elseif (in_array($userRole, [8, 10])) {
+                $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+                $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+                $isValidSubdiv = ($addressType === 1 && !empty($blockId) && in_array((int)$blockId, $blockIds))
+                    || ($addressType === 2 && !empty($muniId) && in_array((int)$muniId, $municipalityIds));
+                if (!$isValidSubdiv) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'address_type' => 'You are only authorized to record field visits within your assigned subdivision jurisdiction.'
+                        ]);
+                }
+            } elseif (in_array($userRole, [9, 11])) {
+                if (empty($districtId) || (int)$districtId !== (int)$user->posted_district) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'district' => 'You are only authorized to record field visits within your assigned district jurisdiction.'
+                        ]);
+                }
+            }
+        }
+
         try {
             DB::beginTransaction();
 
@@ -393,68 +543,55 @@ class FieldVisitController extends Controller
             }
             $referenceNo = $todayPrefix . str_pad($sequence, 4, '0', STR_PAD_LEFT);
 
-            // Resolve geographical hierarchy
-            $districtId  = $request->input('district') ?: $request->input('district_id') ?: ($institute ? $institute->district_id : null);
-            $blockId     = null;
-            $gpId        = null;
-            $villageId   = null;
-            $muniId      = null;
-            $wardId      = null;
-
-            if ($addressType === 1) {
-                $blockId   = $request->input('block') ?: $request->input('block_id') ?: ($institute ? $institute->block_id : null);
-                $gpId      = $request->input('grampanchayat') ?: $request->input('gp_id') ?: ($institute ? $institute->gp_id : null);
-                $villageId = $request->input('village_id') ?: $request->input('village') ?: ($institute ? $institute->village_id : null);
-            } elseif ($addressType === 2) {
-                $muniId = $request->input('municipality') ?: $request->input('municipality_id') ?: ($institute ? $institute->municipality_id : null);
-                $wardId = $request->input('ward') ?: $request->input('ward_id') ?: ($institute ? $institute->ward_id : null);
-            }
-
             // Instantiate and save FieldVisit
             $visit = new FieldVisit();
-            $visit->visit_reference_no    = $referenceNo;
-            $visit->field_visit_type_id   = $validated['field_visit_type_id'];
-            $visit->visit_date            = $validated['visit_date'];
-            $visit->start_time            = $validated['start_time'] ?? null;
-            $visit->end_time              = $validated['end_time'] ?? null;
-            $visit->status                = $validated['status'];
-            $visit->visit_purpose         = trim($validated['visit_purpose']);
-            $visit->institution_type      = $request->input('institution_type') ?: $categoryName;
-            $visit->category_id           = $categoryId;
-            $visit->institution_id        = $institutionId;
-            $visit->institution_name      = $institutionName;
-            $visit->organization_code     = $request->input('organization_code') ?: $orgCode;
-            $visit->district_id           = !empty($districtId) ? (int)$districtId : null;
-            $visit->block_id              = !empty($blockId) ? (int)$blockId : null;
-            $visit->municipality_id       = !empty($muniId) ? (int)$muniId : null;
-            $visit->gp_id                 = !empty($gpId) ? (int)$gpId : null;
-            $visit->village_id            = !empty($villageId) ? (int)$villageId : null;
-            $visit->ward_id               = !empty($wardId) ? (int)$wardId : null;
-            $visit->address_type          = $addressType;
-            $visit->institution_address   = !empty($validated['institution_address']) ? trim($validated['institution_address']) : ($institute ? $institute->address : null);
-            $visit->contact_person        = !empty($validated['contact_person']) ? trim($validated['contact_person']) : ($institute ? $institute->contact_person : null);
-            $visit->contact_number        = $validated['contact_number'];
-            $visit->areas_inspected       = !empty($validated['areas_inspected']) ? trim($validated['areas_inspected']) : null;
-            $visit->key_observations      = !empty($validated['key_observations']) ? trim($validated['key_observations']) : null;
-            $visit->findings              = !empty($validated['findings']) ? trim($validated['findings']) : null;
-            $visit->issues_identified     = !empty($validated['issues_identified']) ? trim($validated['issues_identified']) : null;
-            $visit->recommendations       = !empty($validated['recommendations']) ? trim($validated['recommendations']) : null;
-            $visit->corrective_actions    = !empty($validated['corrective_actions']) ? trim($validated['corrective_actions']) : null;
-            $visit->is_follow_up_required = $request->boolean('is_follow_up_required');
-            $visit->follow_up_date        = $visit->is_follow_up_required ? ($validated['follow_up_date'] ?? null) : null;
-            $visit->overall_remarks       = !empty($validated['overall_remarks']) ? trim($validated['overall_remarks']) : null;
+            $visit->visit_reference_no          = $referenceNo;
+            $visit->field_visit_type_id         = $validated['field_visit_type_id'];
+            $visit->visit_date                  = $validated['visit_date'];
+            $visit->start_time                  = !empty($validated['start_time']) ? $validated['start_time'] : now()->format('H:i:s');
+            $visit->end_time                    = !empty($validated['end_time']) ? $validated['end_time'] : now()->format('H:i:s');
+            $visit->status                      = $validated['status'];
+            $visit->visit_purpose               = trim($validated['visit_purpose']);
+            $visit->visiting_officer_name       = trim($validated['visiting_officer_name']);
+            $desig = trim($validated['visiting_officer_designation']);
+            $visit->visiting_officer_designation = $desig;
+            $visit->other_designation           = ($desig === 'Other' && !empty($validated['other_designation'])) ? trim($validated['other_designation']) : null;
+            $visit->institution_type            = $request->input('institution_type') ?: $categoryName;
+            $visit->category_id                 = $categoryId;
+            $visit->institution_id              = $institutionId;
+            $visit->institution_name            = $institutionName;
+            $visit->organization_code           = $request->input('organization_code') ?: $orgCode;
+            $visit->district_id                 = !empty($districtId) ? (int)$districtId : null;
+            $visit->block_id                    = !empty($blockId) ? (int)$blockId : null;
+            $visit->municipality_id             = !empty($muniId) ? (int)$muniId : null;
+            $visit->gp_id                       = !empty($gpId) ? (int)$gpId : null;
+            $visit->village_id                  = !empty($villageId) ? (int)$villageId : null;
+            $visit->ward_id                     = !empty($wardId) ? (int)$wardId : null;
+            $visit->address_type                = $addressType;
+            $visit->institution_address         = !empty($validated['institution_address']) ? trim($validated['institution_address']) : ($institute ? $institute->address : null);
+            $visit->contact_person              = !empty($validated['contact_person']) ? trim($validated['contact_person']) : ($institute ? $institute->contact_person : null);
+            $visit->contact_number              = $validated['contact_number'];
+            $visit->areas_inspected             = !empty($validated['areas_inspected']) ? trim($validated['areas_inspected']) : null;
+            $visit->key_observations            = !empty($validated['key_observations']) ? trim($validated['key_observations']) : null;
+            $visit->findings                    = !empty($validated['findings']) ? trim($validated['findings']) : null;
+            $visit->issues_identified           = !empty($validated['issues_identified']) ? trim($validated['issues_identified']) : null;
+            $visit->recommendations             = !empty($validated['recommendations']) ? trim($validated['recommendations']) : null;
+            $visit->corrective_actions          = !empty($validated['corrective_actions']) ? trim($validated['corrective_actions']) : null;
+            $visit->is_follow_up_required       = $request->boolean('is_follow_up_required');
+            $visit->follow_up_date              = $visit->is_follow_up_required ? ($validated['follow_up_date'] ?? null) : null;
+            $visit->overall_remarks             = !empty($validated['overall_remarks']) ? trim($validated['overall_remarks']) : null;
             
             // Site Geolocation
-            $visit->latitude              = $validated['latitude'] ?? null;
-            $visit->longitude             = $validated['longitude'] ?? null;
-            $visit->gps_accuracy          = $validated['gps_accuracy'] ?? null;
-            $visit->location_captured_at  = (!empty($visit->latitude) && !empty($visit->longitude)) ? now() : null;
-            $visit->location_address      = !empty($validated['location_address']) ? trim($validated['location_address']) : null;
+            $visit->latitude                    = $validated['latitude'] ?? null;
+            $visit->longitude                   = $validated['longitude'] ?? null;
+            $visit->gps_accuracy                = $validated['gps_accuracy'] ?? null;
+            $visit->location_captured_at        = (!empty($visit->latitude) && !empty($visit->longitude)) ? now() : null;
+            $visit->location_address            = !empty($validated['location_address']) ? trim($validated['location_address']) : null;
 
-            // Mandatory Audit Rule: store user_table_id
-            $visit->visiting_officer_id   = $userTableId;
-            $visit->created_by            = $userTableId;
-            $visit->updated_by            = null;
+            // Mandatory Audit Rule: store user_table_id in visiting_officer_id (represents logged-in officer)
+            $visit->visiting_officer_id         = $userTableId;
+            $visit->created_by                  = $userTableId;
+            $visit->updated_by                  = null;
             $visit->save();
 
             // Process Geo-Tagged Evidence Photographs
@@ -497,7 +634,12 @@ class FieldVisitController extends Controller
             'updater',
             'evidences.creator',
             'documents.creator',
+            'institute',
         ])->findOrFail($id);
+
+        if (!$this->userCanAccessVisit($visit, Auth::user())) {
+            abort(403, 'Unauthorized access: You do not have permission to view field visits outside your assigned geographical jurisdiction.');
+        }
 
         return view('dashboard.field_visit.visits.show', compact('visit'));
     }
@@ -507,9 +649,18 @@ class FieldVisitController extends Controller
      */
     public function edit($id): View
     {
+        $user = Auth::user();
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+
         $visit = FieldVisit::with(['evidences', 'documents', 'institute'])->findOrFail($id);
+
+        if (!$this->userCanAccessVisit($visit, $user)) {
+            abort(403, 'Unauthorized access: You do not have permission to edit field visits outside your assigned geographical jurisdiction.');
+        }
+
         $visitTypes = FieldVisitType::where('is_active', true)->orderBy('sort_order')->get();
         $districts = District::orderBy('district_name')->get();
+        $designations = FieldVisit::getDesignations();
 
         $categories = FieldVisitInstitute::query()
             ->select('category_id', 'category_name')
@@ -551,6 +702,9 @@ class FieldVisitController extends Controller
         }
 
         $savedDistrictId     = $visit->district_id ?? ($visit->institute ? $visit->institute->district_id : null);
+        $savedStateId        = $visit->institute && $visit->institute->state_id
+            ? $visit->institute->state_id
+            : ($savedDistrictId ? (District::where('district_id', $savedDistrictId)->value('state_id') ?: 228) : 228);
         $savedBlockId        = $visit->block_id ?? ($visit->institute ? $visit->institute->block_id : null);
         $savedGpId           = $visit->gp_id ?? ($visit->institute ? $visit->institute->gp_id : null);
         $savedVillageId      = $visit->village_id ?? ($visit->institute ? $visit->institute->village_id : null);
@@ -574,6 +728,7 @@ class FieldVisitController extends Controller
             'savedCategoryName',
             'isSavedManual',
             'savedAddressType',
+            'savedStateId',
             'savedDistrictId',
             'savedBlockId',
             'savedGpId',
@@ -581,7 +736,10 @@ class FieldVisitController extends Controller
             'savedMunicipalityId',
             'savedWardId',
             'blocks',
-            'municipalities'
+            'municipalities',
+            'designations',
+            'userRole',
+            'user'
         ));
     }
 
@@ -607,6 +765,10 @@ class FieldVisitController extends Controller
 
         $visit = FieldVisit::findOrFail($id);
 
+        if (!$this->userCanAccessVisit($visit, $user)) {
+            abort(403, 'Unauthorized access: You do not have permission to modify field visits outside your assigned geographical jurisdiction.');
+        }
+
         // Resolve category record from field_visit_institutes
         $catInput = $request->input('category_id');
         $categoryRecord = FieldVisitInstitute::where('category_id', $catInput)->first();
@@ -625,49 +787,56 @@ class FieldVisitController extends Controller
         $isManualName = in_array($categoryId, [2, 3]) || in_array($categoryName, ['SSEPD Field Office', 'Other']);
 
         $rules = [
-            'visit_date'            => 'required|date',
-            'start_time'            => 'nullable|string',
-            'end_time'              => 'nullable|string',
-            'field_visit_type_id'   => 'required|exists:field_visit_types,id',
-            'status'                => 'required|in:draft,submitted,reviewed,closed',
-            'visit_purpose'         => 'required|string|max:255',
-            'institution_type'      => 'nullable|string|max:100',
-            'category_id'           => 'required|integer',
-            'contact_person'        => 'nullable|string|max:150',
-            'contact_number'        => ['required', 'string', 'regex:/^[0-9]{10}$/'],
-            'address_type'          => 'required|in:1,2',
-            'state'                 => 'nullable|integer',
-            'district'              => 'nullable|integer',
-            'district_id'           => 'nullable|integer',
-            'block'                 => 'nullable|integer',
-            'block_id'              => 'nullable|integer',
-            'municipality'          => 'nullable|integer',
-            'municipality_id'       => 'nullable|integer',
-            'grampanchayat'         => 'nullable|integer',
-            'gp_id'                 => 'nullable|integer',
-            'village'               => 'nullable|integer',
-            'village_id'            => 'nullable|integer',
-            'ward'                  => 'nullable',
-            'ward_id'               => 'nullable',
-            'pin'                   => 'nullable|string|max:10',
-            'institution_address'   => 'nullable|string|max:1000',
-            'areas_inspected'       => 'nullable|string|max:2000',
-            'key_observations'      => 'nullable|string',
-            'findings'              => 'nullable|string',
-            'issues_identified'     => 'nullable|string',
-            'recommendations'       => 'nullable|string',
-            'corrective_actions'    => 'nullable|string',
-            'is_follow_up_required' => 'nullable|boolean',
-            'follow_up_date'        => 'nullable|required_if:is_follow_up_required,1|date',
-            'overall_remarks'       => 'nullable|string',
-            'latitude'              => 'nullable|numeric|between:-90,90',
-            'longitude'             => 'nullable|numeric|between:-180,180',
-            'gps_accuracy'          => 'nullable|numeric|min:0',
-            'location_address'      => 'nullable|string|max:500',
-            'remove_evidence_ids'   => 'nullable|array',
-            'remove_document_ids'   => 'nullable|array',
-            'documents.*'           => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:10240',
-            'document_names.*'      => 'nullable|string|max:255',
+            'visit_date'                   => 'required|date',
+            'start_time'                   => 'nullable|string',
+            'end_time'                     => 'nullable|string',
+            'field_visit_type_id'          => 'required|exists:field_visit_types,id',
+            'status'                       => 'required|in:draft,submitted,reviewed,closed',
+            'visit_purpose'                => 'required|string|max:255',
+            'visiting_officer_name'        => 'required|string|max:255',
+            'visiting_officer_designation' => 'required|string|max:255',
+            'other_designation'            => 'nullable|required_if:visiting_officer_designation,Other|string|max:255',
+            'institution_type'             => 'nullable|string|max:100',
+            'category_id'                  => 'required|integer',
+            'contact_person'               => 'nullable|string|max:150',
+            'contact_number'               => ['required', 'string', 'regex:/^[0-9]{10}$/'],
+            'address_type'                 => 'required|in:1,2',
+            'state'                        => 'nullable|integer',
+            'district'                     => 'nullable|integer',
+            'district_id'                  => 'nullable|integer',
+            'block'                        => 'nullable|integer',
+            'block_id'                     => 'nullable|integer',
+            'municipality'                 => 'nullable|integer',
+            'municipality_id'              => 'nullable|integer',
+            'grampanchayat'                => 'nullable|integer',
+            'gp_id'                        => 'nullable|integer',
+            'village'                      => 'nullable|integer',
+            'village_id'                   => 'nullable|integer',
+            'ward'                         => 'nullable',
+            'ward_id'                      => 'nullable',
+            'pin'                          => 'nullable|string|max:10',
+            'institution_address'          => 'nullable|string|max:1000',
+            'areas_inspected'              => 'nullable|string|max:2000',
+            'key_observations'             => 'nullable|string|max:500',
+            'findings'                     => 'nullable|string',
+            'issues_identified'            => 'nullable|string',
+            'recommendations'              => 'nullable|string',
+            'corrective_actions'           => 'nullable|string',
+            'is_follow_up_required'        => 'nullable|boolean',
+            'follow_up_date'               => 'nullable|required_if:is_follow_up_required,1|date',
+            'overall_remarks'              => 'nullable|string',
+            'latitude'                     => 'nullable|numeric|between:-90,90',
+            'longitude'                    => 'nullable|numeric|between:-180,180',
+            'gps_accuracy'                 => 'nullable|numeric|min:0',
+            'location_address'             => 'nullable|string|max:500',
+            'remove_evidence_ids'          => 'nullable|array',
+            'remove_document_ids'          => 'nullable|array',
+            'photos'                       => 'nullable|array|max:10',
+            'photos.*.image_data'          => 'required|string',
+            'photos.*.caption'             => 'nullable|string|max:255',
+            'documents'                    => 'nullable|array|max:5',
+            'documents.*'                  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:1024',
+            'document_names.*'             => 'nullable|string|max:255',
         ];
 
         if ($isManualName) {
@@ -681,19 +850,65 @@ class FieldVisitController extends Controller
         $addressType = (int)$request->input('address_type');
 
         $messages = [
-            'category_id.required'      => 'Please select an Office/Institution.',
-            'institution_id.required'   => 'Please select an Office / Institution Name.',
-            'institution_name.required' => 'The Office / Institution Name is required.',
-            'contact_number.required'   => 'The Contact Number is required.',
-            'contact_number.regex'      => 'The Contact Number must contain exactly 10 numeric digits.',
-            'address_type.required'     => 'Please select Address Type.',
-            'state.required'            => 'The State is required.',
-            'district.required'         => 'The District is required.',
-            'block.required'            => 'The Block is required.',
-            'municipality.required'     => 'The Municipality is required.',
+            'category_id.required'                  => 'Please select an Office/Institution.',
+            'institution_id.required'               => 'Please select an Office / Institution Name.',
+            'institution_name.required'             => 'The Office / Institution Name is required.',
+            'visiting_officer_name.required'        => 'The Visiting Officer Name is required.',
+            'visiting_officer_designation.required' => 'Please select a Visiting Officer Designation.',
+            'other_designation.required_if'         => 'The Other Designation is required when Other is selected.',
+            'key_observations.max'                  => 'Key Observations, Recommendations & Suggestions must not exceed 500 characters.',
+            'contact_number.required'               => 'The Contact Number is required.',
+            'contact_number.regex'                  => 'The Contact Number must contain exactly 10 numeric digits.',
+            'address_type.required'                 => 'Please select Address Type.',
+            'state.required'                        => 'The State is required.',
+            'district.required'                     => 'The District is required.',
+            'block.required'                        => 'The Block is required.',
+            'municipality.required'                 => 'The Municipality is required.',
+            'photos.max'                            => 'A maximum of 10 photographs can be uploaded per field visit.',
+            'documents.max'                         => 'A maximum of 5 reference documents can be uploaded per field visit.',
+            'documents.*.max'                       => 'Each reference document must not exceed 1 MB (1024 KB) in size.',
         ];
 
         $validated = $request->validate($rules, $messages);
+
+        // Validate photograph payload size (max 1MB per individual photo, max 30MB combined)
+        if ($request->has('photos') && is_array($request->input('photos'))) {
+            $totalPhotosSize = 0;
+            foreach ($request->input('photos') as $idx => $photoData) {
+                if (!empty($photoData['image_data'])) {
+                    $rawImage = $photoData['image_data'];
+                    // Approximate binary size: base64 is ~4/3 of binary
+                    $approxBytes = (int)(strlen($rawImage) * 0.75);
+                    $totalPhotosSize += $approxBytes;
+
+                    if ($approxBytes > 1048576) {
+                        return redirect()->back()->withInput()->withErrors([
+                            'photos' => 'Individual photograph #' . ($idx + 1) . ' exceeds the maximum allowed size of 1 MB.'
+                        ]);
+                    }
+                }
+            }
+            if ($totalPhotosSize > 30 * 1024 * 1024) {
+                return redirect()->back()->withInput()->withErrors([
+                    'photos' => 'The combined size of all uploaded photographs (' . round($totalPhotosSize / 1048576, 1) . 'MB) exceeds the supported limit of 30MB. Please reduce or compress your images before uploading.'
+                ]);
+            }
+        }
+
+        // Validate cumulative reference documents payload size (max 30MB combined)
+        if ($request->hasFile('documents')) {
+            $totalDocsSize = 0;
+            foreach ($request->file('documents') as $docFile) {
+                if ($docFile && $docFile->isValid()) {
+                    $totalDocsSize += $docFile->getSize();
+                }
+            }
+            if ($totalDocsSize > 30 * 1024 * 1024) {
+                return redirect()->back()->withInput()->withErrors([
+                    'documents' => 'The combined size of all reference documents (' . round($totalDocsSize / 1048576, 1) . 'MB) exceeds the supported limit of 30MB.'
+                ]);
+            }
+        }
 
         $institute       = null;
         $institutionId   = null;
@@ -748,32 +963,90 @@ class FieldVisitController extends Controller
             }
         }
 
+        // Resolve geographical hierarchy
+        $districtId  = $request->input('district') ?: $request->input('district_id') ?: ($institute ? $institute->district_id : null);
+        $blockId     = null;
+        $gpId        = null;
+        $villageId   = null;
+        $muniId      = null;
+        $wardId      = null;
+
+        if ($addressType === 1) {
+            $blockId   = $request->input('block') ?: $request->input('block_id') ?: ($institute ? $institute->block_id : null);
+            $gpId      = $request->input('grampanchayat') ?: $request->input('gp_id') ?: ($institute ? $institute->gp_id : null);
+            $villageId = $request->input('village_id') ?: $request->input('village') ?: ($institute ? $institute->village_id : null);
+        } elseif ($addressType === 2) {
+            $muniId = $request->input('municipality') ?: $request->input('municipality_id') ?: ($institute ? $institute->municipality_id : null);
+            $wardId = $request->input('ward') ?: $request->input('ward_id') ?: ($institute ? $institute->ward_id : null);
+        }
+
+        // Geographical jurisdiction authorization validation
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+        if (!in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+            if (in_array($userRole, [4, 6])) {
+                if ($addressType !== 1 || empty($blockId) || (int)$blockId !== (int)$user->posted_block) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'block' => 'You are only authorized to record field visits within your assigned block jurisdiction.'
+                        ]);
+                }
+            } elseif ($userRole === 5) {
+                if ($addressType !== 2 || empty($muniId) || (int)$muniId !== (int)$user->posted_municipality) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'municipality' => 'You are only authorized to record field visits within your assigned municipality jurisdiction.'
+                        ]);
+                }
+            } elseif (in_array($userRole, [8, 10])) {
+                $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+                $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+                $isValidSubdiv = ($addressType === 1 && !empty($blockId) && in_array((int)$blockId, $blockIds))
+                    || ($addressType === 2 && !empty($muniId) && in_array((int)$muniId, $municipalityIds));
+                if (!$isValidSubdiv) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'address_type' => 'You are only authorized to record field visits within your assigned subdivision jurisdiction.'
+                        ]);
+                }
+            } elseif (in_array($userRole, [9, 11])) {
+                if (empty($districtId) || (int)$districtId !== (int)$user->posted_district) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->withErrors([
+                            'district' => 'You are only authorized to record field visits within your assigned district jurisdiction.'
+                        ]);
+                }
+            }
+        }
+
         try {
             DB::beginTransaction();
 
-            // Resolve geographical hierarchy
-            $districtId  = $request->input('district') ?: $request->input('district_id') ?: ($institute ? $institute->district_id : null);
-            $blockId     = null;
-            $gpId        = null;
-            $villageId   = null;
-            $muniId      = null;
-            $wardId      = null;
-
-            if ($addressType === 1) {
-                $blockId   = $request->input('block') ?: $request->input('block_id') ?: ($institute ? $institute->block_id : null);
-                $gpId      = $request->input('grampanchayat') ?: $request->input('gp_id') ?: ($institute ? $institute->gp_id : null);
-                $villageId = $request->input('village_id') ?: $request->input('village') ?: ($institute ? $institute->village_id : null);
-            } elseif ($addressType === 2) {
-                $muniId = $request->input('municipality') ?: $request->input('municipality_id') ?: ($institute ? $institute->municipality_id : null);
-                $wardId = $request->input('ward') ?: $request->input('ward_id') ?: ($institute ? $institute->ward_id : null);
-            }
-
             $visit->field_visit_type_id   = $validated['field_visit_type_id'];
             $visit->visit_date            = $validated['visit_date'];
-            $visit->start_time            = $validated['start_time'] ?? null;
-            $visit->end_time              = $validated['end_time'] ?? null;
+
+            // Preserve historical timestamps if start_time / end_time are omitted or empty
+            if ($request->filled('start_time')) {
+                $visit->start_time = $request->input('start_time');
+            } elseif (empty($visit->start_time)) {
+                $visit->start_time = now()->format('H:i:s');
+            }
+
+            if ($request->filled('end_time')) {
+                $visit->end_time = $request->input('end_time');
+            } elseif (empty($visit->end_time)) {
+                $visit->end_time = now()->format('H:i:s');
+            }
+
             $visit->status                = $validated['status'];
             $visit->visit_purpose         = trim($validated['visit_purpose']);
+            $visit->visiting_officer_name = trim($validated['visiting_officer_name']);
+            $desig = trim($validated['visiting_officer_designation']);
+            $visit->visiting_officer_designation = $desig;
+            $visit->other_designation     = ($desig === 'Other' && !empty($validated['other_designation'])) ? trim($validated['other_designation']) : null;
             $visit->institution_type      = $request->input('institution_type') ?: $categoryName;
             $visit->category_id           = $categoryId;
             $visit->institution_id        = $institutionId;
@@ -789,15 +1062,29 @@ class FieldVisitController extends Controller
             $visit->institution_address   = !empty($validated['institution_address']) ? trim($validated['institution_address']) : ($institute ? $institute->address : null);
             $visit->contact_person        = !empty($validated['contact_person']) ? trim($validated['contact_person']) : ($institute ? $institute->contact_person : null);
             $visit->contact_number        = $validated['contact_number'];
-            $visit->areas_inspected       = !empty($validated['areas_inspected']) ? trim($validated['areas_inspected']) : null;
+
+            // Preserve the 6 hidden fields if not sent or empty
+            if ($request->has('areas_inspected') && $request->input('areas_inspected') !== null) {
+                $visit->areas_inspected = trim($request->input('areas_inspected'));
+            }
             $visit->key_observations      = !empty($validated['key_observations']) ? trim($validated['key_observations']) : null;
-            $visit->findings              = !empty($validated['findings']) ? trim($validated['findings']) : null;
-            $visit->issues_identified     = !empty($validated['issues_identified']) ? trim($validated['issues_identified']) : null;
-            $visit->recommendations       = !empty($validated['recommendations']) ? trim($validated['recommendations']) : null;
-            $visit->corrective_actions    = !empty($validated['corrective_actions']) ? trim($validated['corrective_actions']) : null;
+            if ($request->has('findings') && $request->input('findings') !== null) {
+                $visit->findings = trim($request->input('findings'));
+            }
+            if ($request->has('issues_identified') && $request->input('issues_identified') !== null) {
+                $visit->issues_identified = trim($request->input('issues_identified'));
+            }
+            if ($request->has('recommendations') && $request->input('recommendations') !== null) {
+                $visit->recommendations = trim($request->input('recommendations'));
+            }
+            if ($request->has('corrective_actions') && $request->input('corrective_actions') !== null) {
+                $visit->corrective_actions = trim($request->input('corrective_actions'));
+            }
             $visit->is_follow_up_required = $request->boolean('is_follow_up_required');
             $visit->follow_up_date        = $visit->is_follow_up_required ? ($validated['follow_up_date'] ?? null) : null;
-            $visit->overall_remarks       = !empty($validated['overall_remarks']) ? trim($validated['overall_remarks']) : null;
+            if ($request->has('overall_remarks') && $request->input('overall_remarks') !== null) {
+                $visit->overall_remarks = trim($request->input('overall_remarks'));
+            }
 
             if ($request->filled('latitude') && $request->filled('longitude')) {
                 $visit->latitude             = $validated['latitude'];
@@ -865,6 +1152,11 @@ class FieldVisitController extends Controller
         $userTableId = $user ? $user->user_table_id : null;
 
         $visit = FieldVisit::findOrFail($id);
+
+        if (!$this->userCanAccessVisit($visit, $user)) {
+            abort(403, 'Unauthorized access: You do not have permission to delete field visits outside your assigned geographical jurisdiction.');
+        }
+
         $visit->deleted_by = $userTableId;
         $visit->save();
         $visit->delete();
@@ -878,7 +1170,12 @@ class FieldVisitController extends Controller
      */
     public function viewEvidence($id): BinaryFileResponse
     {
-        $evidence = FieldVisitEvidence::findOrFail($id);
+        $evidence = FieldVisitEvidence::with('fieldVisit')->findOrFail($id);
+
+        if ($evidence->fieldVisit && !$this->userCanAccessVisit($evidence->fieldVisit, Auth::user())) {
+            abort(403, 'Unauthorized access: You do not have permission to view evidence files outside your assigned geographical jurisdiction.');
+        }
+
         $fullPath = storage_path('app/' . $evidence->photo_path);
 
         if (!file_exists($fullPath)) {
@@ -897,7 +1194,12 @@ class FieldVisitController extends Controller
      */
     public function downloadDocument($id): BinaryFileResponse
     {
-        $document = FieldVisitDocument::findOrFail($id);
+        $document = FieldVisitDocument::with('fieldVisit')->findOrFail($id);
+
+        if ($document->fieldVisit && !$this->userCanAccessVisit($document->fieldVisit, Auth::user())) {
+            abort(403, 'Unauthorized access: You do not have permission to download documents outside your assigned geographical jurisdiction.');
+        }
+
         $fullPath = storage_path('app/' . $document->file_path);
 
         if (!file_exists($fullPath)) {
@@ -917,6 +1219,9 @@ class FieldVisitController extends Controller
     {
         $query = FieldVisit::with(['visitType', 'district', 'block', 'visitingOfficer'])
             ->orderBy('visit_date', 'desc');
+
+        // Apply geographical role-based restrictions
+        $this->applyGeographicalScope($query, Auth::user());
 
         if ($request->filled('search')) {
             $query->search(trim($request->input('search')));
@@ -957,7 +1262,9 @@ class FieldVisitController extends Controller
                 'Visit Date',
                 'Visit Type',
                 'Status',
-                'Visiting Officer',
+                'Loggedin Officer',
+                'Visiting Officer Name',
+                'Visiting Officer Designation',
                 'Institution Type',
                 'Institution Name',
                 'District',
@@ -971,12 +1278,18 @@ class FieldVisitController extends Controller
             ]);
 
             foreach ($visits as $v) {
+                $desig = $v->visiting_officer_designation === 'Other' && !empty($v->other_designation)
+                    ? $v->other_designation
+                    : $v->visiting_officer_designation;
+
                 fputcsv($handle, [
                     $v->visit_reference_no,
                     $v->visit_date ? $v->visit_date->format('Y-m-d') : '',
                     $v->visitType ? $v->visitType->name : '',
                     strtoupper($v->status),
                     $v->visitingOfficer ? $v->visitingOfficer->name : ('ID #' . $v->visiting_officer_id),
+                    $v->visiting_officer_name ?: '',
+                    $desig ?: '',
                     $v->institution_type,
                     $v->institution_name,
                     $v->district ? $v->district->district_name : '',
@@ -1216,5 +1529,152 @@ class FieldVisitController extends Controller
         if (!empty($relativePath) && Storage::disk('local')->exists($relativePath)) {
             Storage::disk('local')->delete($relativePath);
         }
+    }
+
+    /**
+     * Apply role-based geographical restrictions to a query.
+     */
+    protected function applyGeographicalScope($query, $user): void
+    {
+        if (!$user) {
+            $query->whereRaw('1 = 0');
+            return;
+        }
+
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+
+        // Unrestricted roles: 1, 2, 12, 13, 14, 15, 25
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+            return;
+        }
+
+        // Roles 4, 6: Only user's posted_block (Rural Block jurisdiction)
+        if (in_array($userRole, [4, 6])) {
+            if (!empty($user->posted_block)) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('field_visits.block_id', $user->posted_block)
+                      ->orWhereHas('institute', function ($iq) use ($user) {
+                          $iq->where('block_id', $user->posted_block);
+                      });
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+        // Role 5: Only user's posted_municipality (Urban ULB jurisdiction)
+        elseif ($userRole === 5) {
+            if (!empty($user->posted_municipality)) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('field_visits.municipality_id', $user->posted_municipality)
+                      ->orWhereHas('institute', function ($iq) use ($user) {
+                          $iq->where('municipality_id', $user->posted_municipality);
+                      });
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+        // Roles 8, 10: Blocks & municipalities under user's posted_subdiv
+        elseif (in_array($userRole, [8, 10])) {
+            if (!empty($user->posted_subdiv)) {
+                $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+                $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+                $query->where(function ($q) use ($blockIds, $municipalityIds) {
+                    $q->whereIn('field_visits.block_id', $blockIds)
+                      ->orWhereIn('field_visits.municipality_id', $municipalityIds)
+                      ->orWhereHas('institute', function ($iq) use ($blockIds, $municipalityIds) {
+                          $iq->whereIn('block_id', $blockIds)
+                             ->orWhereIn('municipality_id', $municipalityIds);
+                      });
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+        // Roles 9, 11: Only user's posted_district
+        elseif (in_array($userRole, [9, 11])) {
+            if (!empty($user->posted_district)) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('field_visits.district_id', $user->posted_district)
+                      ->orWhereHas('institute', function ($iq) use ($user) {
+                          $iq->where('district_id', $user->posted_district);
+                      });
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+        // Fallback for any other restricted role: view only self-created or visiting officer visits
+        else {
+            $userTableId = $user->user_table_id;
+            if (!empty($userTableId)) {
+                $query->where(function ($q) use ($userTableId) {
+                    $q->where('field_visits.visiting_officer_id', $userTableId)
+                      ->orWhere('field_visits.created_by', $userTableId);
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+    }
+
+    /**
+     * Check if authenticated user has geographical permission to access a specific field visit.
+     */
+    protected function userCanAccessVisit(FieldVisit $visit, $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        $userRole = (int)($user->role_id ?? ($user->roles()->exists() ? $user->roles()->first()->id : 0));
+
+        // Unrestricted roles: 1, 2, 12, 13, 14, 15, 25
+        if (in_array($userRole, [1, 2, 12, 13, 14, 15, 25])) {
+            return true;
+        }
+
+        // Resolve effective location hierarchy: direct field visit column takes precedence,
+        // with fallback to the linked institute's geographical values.
+        $effectiveBlockId = $visit->block_id ?: ($visit->institute ? $visit->institute->block_id : null);
+        $effectiveMunicipalityId = $visit->municipality_id ?: ($visit->institute ? $visit->institute->municipality_id : null);
+        $effectiveDistrictId = $visit->district_id ?: ($visit->institute ? $visit->institute->district_id : null);
+
+        // Roles 4, 6: Only user's posted_block (Rural)
+        if (in_array($userRole, [4, 6])) {
+            return !empty($user->posted_block) && !empty($effectiveBlockId) && (int)$effectiveBlockId === (int)$user->posted_block;
+        }
+
+        // Role 5: Only user's posted_municipality (Urban)
+        if ($userRole === 5) {
+            return !empty($user->posted_municipality) && !empty($effectiveMunicipalityId) && (int)$effectiveMunicipalityId === (int)$user->posted_municipality;
+        }
+
+        // Roles 8, 10: Blocks & municipalities under user's posted_subdiv
+        if (in_array($userRole, [8, 10])) {
+            if (empty($user->posted_subdiv)) {
+                return false;
+            }
+            $blockIds = Block::where('subdivision_id', $user->posted_subdiv)->pluck('block_id')->toArray();
+            $municipalityIds = Municipality::where('subdivision_id', $user->posted_subdiv)->pluck('municipality_id')->toArray();
+
+            $matchBlock = !empty($effectiveBlockId) && in_array((int)$effectiveBlockId, $blockIds);
+            $matchMuni  = !empty($effectiveMunicipalityId) && in_array((int)$effectiveMunicipalityId, $municipalityIds);
+
+            return $matchBlock || $matchMuni;
+        }
+
+        // Roles 9, 11: Only user's posted_district
+        if (in_array($userRole, [9, 11])) {
+            return !empty($user->posted_district) && !empty($effectiveDistrictId) && (int)$effectiveDistrictId === (int)$user->posted_district;
+        }
+
+        // Fallback for any other restricted role: check if visiting officer or creator
+        $userTableId = $user->user_table_id;
+        if (!empty($userTableId)) {
+            return (int)$visit->visiting_officer_id === (int)$userTableId || (int)$visit->created_by === (int)$userTableId;
+        }
+
+        return false;
     }
 }

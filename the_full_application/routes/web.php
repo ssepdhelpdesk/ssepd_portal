@@ -40,6 +40,7 @@ use App\Http\Controllers\Dashboard_Controllers\PensionFundManagement\{
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitTypeController;
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitController;
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitInstituteController;
+use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitReportController;
 
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
@@ -587,6 +588,31 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/update', 'update')->name('update');
         Route::match(['get', 'delete'], '{id}/delete', 'destroy')->name('destroy');
         Route::get('ajax/locations', 'getLocations')->name('ajax.locations');
+    });
+
+    /* Field Visit Reports Module */
+    Route::prefix('field-visit-reports')->name('field_visit_reports.')->middleware('permission:field-visit-report-access')->controller(FieldVisitReportController::class)->group(function () {
+        Route::get('summary', 'summary')->name('summary');
+        Route::get('summary/export', 'exportSummary')->name('summary.export');
+
+        Route::get('geographical', 'geographical')->name('geographical');
+        Route::get('geographical/export', 'exportGeographical')->name('geographical.export');
+
+        Route::get('detailed', 'detailed')->name('detailed');
+        Route::get('detailed/export', 'exportDetailed')->name('detailed.export');
+
+        Route::get('coverage', 'coverage')->name('coverage');
+        Route::get('coverage/export', 'exportCoverage')->name('coverage.export');
+
+        Route::get('datewise', 'datewise')->name('datewise');
+        Route::get('datewise/export', 'exportDatewise')->name('datewise.export');
+
+        /* AJAX Endpoints for Cascading Filters */
+        Route::get('ajax/subdivisions', 'ajaxSubdivisions')->name('ajax.subdivisions');
+        Route::get('ajax/blocks', 'ajaxBlocks')->name('ajax.blocks');
+        Route::get('ajax/municipalities', 'ajaxMunicipalities')->name('ajax.municipalities');
+        Route::get('ajax/gps', 'ajaxGps')->name('ajax.gps');
+        Route::get('ajax/wards', 'ajaxWards')->name('ajax.wards');
     });
 
     Route::resource('products', ProductController::class)->names('products');

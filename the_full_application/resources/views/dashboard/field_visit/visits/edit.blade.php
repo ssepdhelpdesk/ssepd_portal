@@ -135,6 +135,11 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
             <div class="section-title text-warning">
                <i class="fas fa-calendar-check"></i> 1. Visit Identification & Scheduling
             </div>
+
+            {{-- Hidden Start & End Time (Part A) --}}
+            <input type="hidden" name="start_time" id="start_time" value="{{ old('start_time', $visit->start_time) }}">
+            <input type="hidden" name="end_time" id="end_time" value="{{ old('end_time', $visit->end_time) }}">
+
             <div class="row">
                <div class="col-md-4 mb-3">
                   <label class="form-label">Visit Reference No</label>
@@ -160,33 +165,52 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
 
             <div class="row">
                <div class="col-md-4 mb-3">
-                  <label for="start_time" class="form-label">Visit Start Time</label>
-                  <input type="time" name="start_time" id="start_time" class="form-control" value="{{ old('start_time', $visit->start_time) }}">
-               </div>
-               <div class="col-md-4 mb-3">
-                  <label for="end_time" class="form-label">Visit End Time</label>
-                  <input type="time" name="end_time" id="end_time" class="form-control" value="{{ old('end_time', $visit->end_time) }}">
-               </div>
-               <div class="col-md-4 mb-3">
                   <label for="status" class="form-label">Visit Status <span class="required-star">*</span></label>
-                  <select name="status" id="status" class="form-select" required>
+                  <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
                      <option value="submitted" {{ old('status', $visit->status) === 'submitted' ? 'selected' : '' }}>Submitted (Completed Visit)</option>
                      <option value="draft" {{ old('status', $visit->status) === 'draft' ? 'selected' : '' }}>Draft (In Progress)</option>
                      <option value="reviewed" {{ old('status', $visit->status) === 'reviewed' ? 'selected' : '' }}>Reviewed</option>
                      <option value="closed" {{ old('status', $visit->status) === 'closed' ? 'selected' : '' }}>Closed</option>
                   </select>
+                  @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                </div>
-            </div>
-
-            <div class="row">
                <div class="col-md-8 mb-3">
                   <label for="visit_purpose" class="form-label">Visit Purpose / Objective <span class="required-star">*</span></label>
                   <input type="text" name="visit_purpose" id="visit_purpose" class="form-control @error('visit_purpose') is-invalid @enderror" value="{{ old('visit_purpose', $visit->visit_purpose) }}" required maxlength="255">
                   @error('visit_purpose') <div class="invalid-feedback">{{ $message }}</div> @enderror
                </div>
+            </div>
+
+            <!-- Visiting Officer & Loggedin Officer Details (Part B) -->
+            <div class="row">
                <div class="col-md-4 mb-3">
-                  <label class="form-label">Visiting Officer</label>
+                  <label class="form-label">Loggedin Officer</label>
                   <input type="text" class="form-control bg-light" value="{{ $visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id) }}" readonly>
+                  <div class="form-hint">System attribution: User #{{ $visit->visiting_officer_id }}</div>
+               </div>
+               <div class="col-md-4 mb-3">
+                  <label for="visiting_officer_name" class="form-label">Visiting Officer Name <span class="required-star">*</span></label>
+                  <input type="text" name="visiting_officer_name" id="visiting_officer_name" class="form-control @error('visiting_officer_name') is-invalid @enderror" value="{{ old('visiting_officer_name', $visit->visiting_officer_name ?? ($visit->visitingOfficer ? $visit->visitingOfficer->name : '')) }}" placeholder="Enter visiting officer full name" required maxlength="255">
+                  @error('visiting_officer_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+               </div>
+               <div class="col-md-4 mb-3">
+                  <label for="visiting_officer_designation" class="form-label">Visiting Officer Designation <span class="required-star">*</span></label>
+                  <select name="visiting_officer_designation" id="visiting_officer_designation" class="select2 form-control form-select @error('visiting_officer_designation') is-invalid @enderror" required style="width: 100%;">
+                     <option value="">-- Select Designation --</option>
+                     @foreach($designations as $desig)
+                     <option value="{{ $desig }}" {{ old('visiting_officer_designation', $visit->visiting_officer_designation) === $desig ? 'selected' : '' }}>{{ $desig }}</option>
+                     @endforeach
+                  </select>
+                  @error('visiting_officer_designation') <div class="invalid-feedback">{{ $message }}</div> @enderror
+               </div>
+            </div>
+
+            <!-- Dynamic Other Designation Row -->
+            <div class="row {{ old('visiting_officer_designation', $visit->visiting_officer_designation) === 'Other' ? '' : 'd-none' }}" id="other_designation_container">
+               <div class="col-md-4 offset-md-8 mb-3">
+                  <label for="other_designation" class="form-label">Other Designation <span class="required-star">*</span></label>
+                  <input type="text" name="other_designation" id="other_designation" class="form-control @error('other_designation') is-invalid @enderror" value="{{ old('other_designation', $visit->other_designation) }}" placeholder="Enter designation title" maxlength="255" {{ old('visiting_officer_designation', $visit->visiting_officer_designation) === 'Other' ? 'required' : '' }}>
+                  @error('other_designation') <div class="invalid-feedback">{{ $message }}</div> @enderror
                </div>
             </div>
          </div>
@@ -268,15 +292,23 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
                </div>
 
                <!-- Field 5: Address Type * (Rural / Urban) -->
+               @php
+                  $isRuralRole = in_array($userRole ?? 0, [4, 6]);
+                  $isUrbanRole = ($userRole ?? 0) === 5;
+               @endphp
                <div class="col-md-8 mb-3">
                   <label class="form-label fw-semibold">Address Type <span class="required-star">*</span></label>
                   <div class="d-flex align-items-center pt-1 gap-4">
                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="address_type" id="address_type_rural" value="1" {{ old('address_type', $savedAddressType) == '1' ? 'checked' : '' }}>
+                        <input class="form-check-input" type="radio" name="address_type" id="address_type_rural" value="1" 
+                               {{ old('address_type', $savedAddressType) == '1' ? 'checked' : '' }}
+                               {{ $isUrbanRole ? 'disabled' : '' }}>
                         <label class="form-check-label fw-semibold" for="address_type_rural">Rural (Block)</label>
                      </div>
                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="address_type" id="address_type_urban" value="2" {{ old('address_type', $savedAddressType) == '2' ? 'checked' : '' }}>
+                        <input class="form-check-input" type="radio" name="address_type" id="address_type_urban" value="2" 
+                               {{ old('address_type', $savedAddressType) == '2' ? 'checked' : '' }}
+                               {{ $isRuralRole ? 'disabled' : '' }}>
                         <label class="form-check-label fw-semibold" for="address_type_urban">Urban (ULB / Municipality)</label>
                      </div>
                   </div>
@@ -386,6 +418,7 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
             <!-- Upload Fallback Box -->
             <div class="p-3 bg-light rounded border mb-3 d-none" id="uploadFallbackBlock">
                <h6 class="small fw-bold text-dark"><i class="fas fa-file-image me-1"></i> File Upload Evidence (Fallback)</h6>
+               <p class="small text-muted mb-2">If device camera is not accessible, select an image file (max 1 MB). Active GPS coordinates will be associated.</p>
                <div class="row align-items-end g-2">
                   <div class="col-md-5">
                      <input type="file" id="fallbackImageInput" class="form-control form-control-sm" accept="image/*">
@@ -412,42 +445,34 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
       <div class="card shadow-sm section-card" style="border-left-color: #fd7e14;">
          <div class="card-body">
             <div class="section-title text-warning">
-               <i class="fas fa-clipboard-list"></i> 5. Inspection Observations & Findings
+               <i class="fas fa-clipboard-list"></i> 5. Key Observations, Recommendations & Suggestions
+            </div>
+
+            {{-- Hidden Inspection Fields Preserved in DOM (Part C) --}}
+            <div class="d-none">
+               <textarea name="areas_inspected" id="areas_inspected">{{ old('areas_inspected', $visit->areas_inspected) }}</textarea>
+               <textarea name="findings" id="findings">{{ old('findings', $visit->findings) }}</textarea>
+               <textarea name="issues_identified" id="issues_identified">{{ old('issues_identified', $visit->issues_identified) }}</textarea>
+               <textarea name="recommendations" id="recommendations">{{ old('recommendations', $visit->recommendations) }}</textarea>
+               <textarea name="corrective_actions" id="corrective_actions">{{ old('corrective_actions', $visit->corrective_actions) }}</textarea>
+               <textarea name="overall_remarks" id="overall_remarks">{{ old('overall_remarks', $visit->overall_remarks) }}</textarea>
             </div>
 
             <div class="mb-3">
-               <label for="areas_inspected" class="form-label">Areas / Activities Inspected</label>
-               <textarea name="areas_inspected" id="areas_inspected" rows="2" class="form-control">{{ old('areas_inspected', $visit->areas_inspected) }}</textarea>
+               <div class="d-flex justify-content-between align-items-center mb-1">
+                  <label for="key_observations" class="form-label mb-0 fw-semibold">
+                     Key Observations, Recommendations & Suggestions <span class="text-muted small">(Max 500 characters)</span>
+                  </label>
+                  <span class="badge bg-light text-muted border font-monospace" id="key_observations_counter">
+                     {{ strlen(old('key_observations', $visit->key_observations ?? '')) }} / 500 characters
+                  </span>
+               </div>
+               <textarea name="key_observations" id="key_observations" rows="5" class="form-control @error('key_observations') is-invalid @enderror" placeholder="Enter noteworthy factual observations, recommendations and constructive suggestions (max 500 characters)..." maxlength="500">{{ old('key_observations', $visit->key_observations) }}</textarea>
+               @error('key_observations') <div class="invalid-feedback">{{ $message }}</div> @enderror
+               <div class="form-hint">Strict maximum 500 characters allowed.</div>
             </div>
 
-            <div class="row">
-               <div class="col-md-6 mb-3">
-                  <label for="key_observations" class="form-label">Key Observations</label>
-                  <textarea name="key_observations" id="key_observations" rows="3" class="form-control">{{ old('key_observations', $visit->key_observations) }}</textarea>
-               </div>
-               <div class="col-md-6 mb-3">
-                  <label for="findings" class="form-label">Inspection Findings</label>
-                  <textarea name="findings" id="findings" rows="3" class="form-control">{{ old('findings', $visit->findings) }}</textarea>
-               </div>
-            </div>
-
-            <div class="row">
-               <div class="col-md-6 mb-3">
-                  <label for="issues_identified" class="form-label">Deficiencies / Issues Identified</label>
-                  <textarea name="issues_identified" id="issues_identified" rows="3" class="form-control">{{ old('issues_identified', $visit->issues_identified) }}</textarea>
-               </div>
-               <div class="col-md-6 mb-3">
-                  <label for="recommendations" class="form-label">Recommendations & Suggestions</label>
-                  <textarea name="recommendations" id="recommendations" rows="3" class="form-control">{{ old('recommendations', $visit->recommendations) }}</textarea>
-               </div>
-            </div>
-
-            <div class="mb-3">
-               <label for="corrective_actions" class="form-label">Corrective Actions Required</label>
-               <textarea name="corrective_actions" id="corrective_actions" rows="2" class="form-control">{{ old('corrective_actions', $visit->corrective_actions) }}</textarea>
-            </div>
-
-            <div class="row align-items-center bg-light p-3 rounded mb-3 border">
+            <div class="row align-items-center bg-light p-3 rounded mb-2 border">
                <div class="col-md-6">
                   <label class="form-label fw-bold d-block mb-1">Is Follow-Up Inspection Required?</label>
                   <div class="form-check form-check-inline">
@@ -463,11 +488,6 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
                   <label for="follow_up_date" class="form-label fw-bold">Follow-Up Due Date</label>
                   <input type="date" name="follow_up_date" id="follow_up_date" class="form-control" value="{{ old('follow_up_date', $visit->follow_up_date ? $visit->follow_up_date->format('Y-m-d') : '') }}">
                </div>
-            </div>
-
-            <div class="mb-2">
-               <label for="overall_remarks" class="form-label">Overall Visit Remarks</label>
-               <textarea name="overall_remarks" id="overall_remarks" rows="2" class="form-control">{{ old('overall_remarks', $visit->overall_remarks) }}</textarea>
             </div>
          </div>
       </div>
@@ -520,6 +540,7 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
 
             <!-- Add New Documents -->
             <h6 class="small fw-bold text-success mt-2 mb-2"><i class="fas fa-plus-circle me-1"></i> Upload Additional Documents</h6>
+            <p class="text-muted small mb-3">Attach official inspection letters, notices, or supporting PDFs (max 1 MB each).</p>
             <div id="documentsContainer">
                <div class="row g-2 align-items-center mb-2 document-row">
                   <div class="col-md-5">
@@ -554,13 +575,27 @@ Field Visit Management || Edit {{ $visit->visit_reference_no }}
 
       <!-- ACTION BUTTONS -->
       <div class="card shadow-sm border-0 mb-4">
-         <div class="card-body d-flex justify-content-between align-items-center">
-            <a href="{{ route('admin.field_visits.show', $visit->id) }}" class="btn btn-secondary">
-               <i class="fas fa-times me-1"></i> Cancel
-            </a>
-            <button type="submit" class="btn btn-warning text-dark fw-bold px-4 py-2 from-prevent-multiple-submits">
-               <i class="fas fa-check-circle me-1"></i> Update Field Visit
-            </button>
+         <div class="card-body">
+            <div id="payloadSizeWarning" class="alert alert-danger d-none mb-3 py-2 px-3 small">
+               <i class="fas fa-exclamation-triangle me-1"></i>
+               <strong>Upload payload too large:</strong> <span id="payloadWarningText"></span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+               <div class="d-flex align-items-center gap-3">
+                  <a href="{{ route('admin.field_visits.show', $visit->id) }}" class="btn btn-secondary">
+                     <i class="fas fa-times me-1"></i> Cancel
+                  </a>
+                  <div class="small text-muted" id="payloadIndicatorBox">
+                     <i class="fas fa-cloud-upload-alt me-1 text-primary"></i>
+                     <span>Estimated Payload: </span>
+                     <strong id="payloadSizeText">0.0 MB</strong>
+                     <span class="text-muted">/ 50 MB safe limit</span>
+                  </div>
+               </div>
+               <button type="submit" id="btnSubmitForm" class="btn btn-warning text-dark fw-bold px-4 py-2 from-prevent-multiple-submits">
+                  <i class="fas fa-check-circle me-1"></i> Update Field Visit
+               </button>
+            </div>
          </div>
       </div>
 
@@ -660,10 +695,48 @@ document.addEventListener('DOMContentLoaded', function () {
    let isRestoringHierarchy = false;
    let isInitialLoad = true;
 
-   // Initialize Select2 on Section 2 primary dropdowns
+   // Initialize Select2 on Section 1 & Section 2 primary dropdowns
    if (typeof $.fn.select2 !== 'undefined') {
       $('#category_id').select2({ width: '100%' });
       $('#institution_id').select2({ width: '100%' });
+      $('#visiting_officer_designation').select2({ width: '100%' });
+   }
+
+   // Visiting officer designation "Other" handler (Part B)
+   $('#visiting_officer_designation').on('change', function () {
+      const val = $(this).val();
+      const otherContainer = document.getElementById('other_designation_container');
+      const otherInput = document.getElementById('other_designation');
+      if (val === 'Other') {
+         if (otherContainer) otherContainer.classList.remove('d-none');
+         if (otherInput) otherInput.setAttribute('required', 'required');
+      } else {
+         if (otherContainer) otherContainer.classList.add('d-none');
+         if (otherInput) {
+            otherInput.removeAttribute('required');
+            otherInput.value = '';
+         }
+      }
+   });
+
+   // Key Observations live character counter (Part C)
+   const keyObs = document.getElementById('key_observations');
+   const keyObsCounter = document.getElementById('key_observations_counter');
+   if (keyObs && keyObsCounter) {
+      function updateObsCounter() {
+         const len = keyObs.value.length;
+         keyObsCounter.textContent = `${len} / 500 characters`;
+         if (len >= 500) {
+            keyObsCounter.classList.add('bg-danger', 'text-white');
+            keyObsCounter.classList.remove('bg-light', 'text-muted');
+         } else {
+            keyObsCounter.classList.remove('bg-danger', 'text-white');
+            keyObsCounter.classList.add('bg-light', 'text-muted');
+         }
+      }
+      keyObs.addEventListener('input', updateObsCounter);
+      keyObs.addEventListener('keyup', updateObsCounter);
+      updateObsCounter();
    }
 
    // Enforce strict 10 digits on contact number input
@@ -765,7 +838,7 @@ document.addEventListener('DOMContentLoaded', function () {
          $.ajax({
             url: "{{ url('dashboard/locations/fetch-districts') }}",
             type: "POST",
-            data: { state_id: idState, _token: '{{ csrf_token() }}' },
+            data: { state_id: idState, source: 'field_visit', skip_user_scope: 1, all_districts: 1, _token: '{{ csrf_token() }}' },
             dataType: 'json',
             success: function (result) {
                $('#district-dropdown').html('<option value="">-- Select District --</option>');
@@ -792,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $.ajax({
                url: "{{ url('dashboard/locations/fetch-block') }}",
                type: "POST",
-               data: { district_id: idDistrict, _token: '{{ csrf_token() }}' },
+               data: { district_id: idDistrict, source: 'field_visit', skip_user_scope: 1, all_blocks: 1, _token: '{{ csrf_token() }}' },
                dataType: 'json',
                success: function (res) {
                   $('#block-dropdown').html('<option value="">-- Select Block --</option>');
@@ -810,7 +883,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $.ajax({
                url: "{{ url('dashboard/locations/fetch-municipality') }}",
                type: "POST",
-               data: { district_id: idDistrict, _token: '{{ csrf_token() }}' },
+               data: { district_id: idDistrict, source: 'field_visit', skip_user_scope: 1, all_municipalities: 1, _token: '{{ csrf_token() }}' },
                dataType: 'json',
                success: function (res) {
                   $('#municipality-dropdown').html('<option value="">-- Select Municipality --</option>');
@@ -910,7 +983,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const distRes = await $.ajax({
                url: "{{ url('dashboard/locations/fetch-districts') }}",
                type: "POST",
-               data: { state_id: stateId, _token: '{{ csrf_token() }}' },
+               data: { state_id: stateId, source: 'field_visit', skip_user_scope: 1, all_districts: 1, _token: '{{ csrf_token() }}' },
                dataType: 'json'
             });
             $('#district-dropdown').html('<option value="">-- Select District --</option>');
@@ -925,7 +998,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   const blockRes = await $.ajax({
                      url: "{{ url('dashboard/locations/fetch-block') }}",
                      type: "POST",
-                     data: { district_id: cfg.district_id, _token: '{{ csrf_token() }}' },
+                     data: { district_id: cfg.district_id, source: 'field_visit', skip_user_scope: 1, all_blocks: 1, _token: '{{ csrf_token() }}' },
                      dataType: 'json'
                   });
                   $('#block-dropdown').html('<option value="">-- Select Block --</option>');
@@ -969,7 +1042,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   const muniRes = await $.ajax({
                      url: "{{ url('dashboard/locations/fetch-municipality') }}",
                      type: "POST",
-                     data: { district_id: cfg.district_id, _token: '{{ csrf_token() }}' },
+                     data: { district_id: cfg.district_id, source: 'field_visit', skip_user_scope: 1, all_municipalities: 1, _token: '{{ csrf_token() }}' },
                      dataType: 'json'
                   });
                   $('#municipality-dropdown').html('<option value="">-- Select Municipality --</option>');
@@ -1191,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', function () {
    // Initial restore on Edit page
    const editSavedConfig = {
       address_type: '{{ old("address_type", $savedAddressType) }}',
-      state_id: '{{ old("state", $visit->institute ? $visit->institute->state_id : 228) }}',
+      state_id: '{{ old("state", $savedStateId ?? ($visit->institute ? $visit->institute->state_id : 228)) }}',
       district_id: '{{ old("district", old("district_id", $savedDistrictId)) }}',
       block_id: '{{ old("block", old("block_id", $savedBlockId)) }}',
       gp_id: '{{ old("grampanchayat", old("gp_id", $savedGpId)) }}',
@@ -1389,46 +1462,331 @@ document.addEventListener('DOMContentLoaded', function () {
       });
    }
 
+   const MAX_PHOTOS = 10;
+   const MAX_DOCUMENTS = 5;
+   const MAX_FILE_SIZE_BYTES = 1048576; // 1 MB (1,048,576 bytes)
+   const MAX_DOC_SIZE_BYTES = 1048576;  // 1 MB
+   const SAFE_PAYLOAD_LIMIT_BYTES = 30 * 1024 * 1024; // 30MB
+   const WARN_PAYLOAD_THRESHOLD_BYTES = 25 * 1024 * 1024; // 25MB
+
+   function showFileSizeErrorAlert(input) {
+      if (input) {
+         input.value = '';
+      }
+      if (typeof Swal !== 'undefined') {
+         Swal.fire({
+            icon: 'warning',
+            title: 'File Size Limit Exceeded',
+            text: 'File size must not exceed 1 MB. Please select a smaller file.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6'
+         });
+      } else {
+         alert('File size must not exceed 1 MB. Please select a smaller file.');
+      }
+   }
+
+   function updatePayloadIndicator() {
+      let totalBytes = 0;
+      // Staged photos
+      const photoInputs = document.querySelectorAll('#stagedPhotosContainer input[name$="[image_data]"]');
+      photoInputs.forEach(input => {
+         if (input.value) {
+            totalBytes += input.value.length; // Base64 payload in POST
+         }
+      });
+      // Selected documents
+      const docInputs = document.querySelectorAll('input[name="documents[]"]');
+      docInputs.forEach(input => {
+         if (input.files && input.files[0]) {
+            totalBytes += input.files[0].size;
+         }
+      });
+
+      const totalMB = (totalBytes / (1024 * 1024)).toFixed(1);
+      const payloadSizeText = document.getElementById('payloadSizeText');
+      const payloadSizeWarning = document.getElementById('payloadSizeWarning');
+      const payloadWarningText = document.getElementById('payloadWarningText');
+      const payloadIndicatorBox = document.getElementById('payloadIndicatorBox');
+
+      if (payloadSizeText) {
+         payloadSizeText.textContent = totalMB + ' MB';
+      }
+
+      if (totalBytes > SAFE_PAYLOAD_LIMIT_BYTES) {
+         if (payloadSizeWarning && payloadWarningText) {
+            payloadWarningText.textContent = `Total new upload is ${totalMB} MB, exceeding the 50 MB limit. Please remove or compress some attachments before updating.`;
+            payloadSizeWarning.classList.remove('d-none');
+         }
+         if (payloadIndicatorBox) {
+            payloadIndicatorBox.classList.remove('text-muted');
+            payloadIndicatorBox.classList.add('text-danger', 'fw-bold');
+         }
+      } else if (totalBytes > WARN_PAYLOAD_THRESHOLD_BYTES) {
+         if (payloadSizeWarning && payloadWarningText) {
+            payloadWarningText.textContent = `Upload payload is large (${totalMB} MB). Ensure attachments are essential to avoid upload timeouts.`;
+            payloadSizeWarning.classList.remove('d-none');
+         }
+         if (payloadIndicatorBox) {
+            payloadIndicatorBox.classList.remove('text-muted');
+            payloadIndicatorBox.classList.add('text-warning', 'fw-bold');
+         }
+      } else {
+         if (payloadSizeWarning) {
+            payloadSizeWarning.classList.add('d-none');
+         }
+         if (payloadIndicatorBox) {
+            payloadIndicatorBox.classList.remove('text-danger', 'text-warning', 'fw-bold');
+            payloadIndicatorBox.classList.add('text-muted');
+         }
+      }
+
+      return totalBytes;
+   }
+
+   // Fallback photo optimizer using canvas
+   function processFallbackPhoto(file, caption, callback) {
+      const MAX_DIMENSION = 1920;
+      const COMPRESSION_THRESHOLD = 2 * 1024 * 1024; // 2MB
+      const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+         const img = new Image();
+         img.onload = function () {
+            let width = img.naturalWidth || img.width;
+            let height = img.naturalHeight || img.height;
+            const needsResize = (file.size > COMPRESSION_THRESHOLD) || (width > MAX_DIMENSION || height > MAX_DIMENSION);
+
+            if (!needsResize) {
+               callback({
+                  imageData: e.target.result,
+                  caption: caption || file.name,
+                  optimizationNote: null
+               });
+               return;
+            }
+
+            // Downscale proportionally to maximum 1920px while preserving high resolution
+            if (width > height) {
+               if (width > MAX_DIMENSION) {
+                  height = Math.round((height * MAX_DIMENSION) / width);
+                  width = MAX_DIMENSION;
+               }
+            } else {
+               if (height > MAX_DIMENSION) {
+                  width = Math.round((width * MAX_DIMENSION) / height);
+                  height = MAX_DIMENSION;
+               }
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const optimizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            const approxBytes = Math.round((optimizedDataUrl.length - 23) * 0.75);
+            const newSizeMB = (approxBytes / (1024 * 1024)).toFixed(2);
+            const note = `Optimized from ${originalSizeMB} MB to ${newSizeMB} MB (${width}×${height} HD)`;
+
+            callback({
+               imageData: optimizedDataUrl,
+               caption: caption || file.name,
+               optimizationNote: note
+            });
+         };
+         img.onerror = function () {
+            alert('Unable to load image file. Please choose a valid image (JPEG, PNG, WebP).');
+         };
+         img.src = e.target.result;
+      };
+      reader.onerror = function () {
+         alert('Failed to read the selected file.');
+      };
+      reader.readAsDataURL(file);
+   }
+
    if (btnRetakePhoto) btnRetakePhoto.addEventListener('click', startCamera);
 
    if (btnConfirmPhoto) {
       btnConfirmPhoto.addEventListener('click', function () {
          if (!tempCapturedDataUrl) return;
-         photoIndex++;
-         if (emptyPhotosMsg) emptyPhotosMsg.classList.add('d-none');
 
-         const col = document.createElement('div');
-         col.className = 'col-md-4 col-sm-6';
-         col.innerHTML = `
-            <div class="photo-card">
-               <span class="badge bg-success existing-photo-badge">New Photo</span>
-               <img src="${tempCapturedDataUrl}">
-               <div class="photo-card-body">
-                  <strong>${cameraCaptionInput.value.trim() || 'New Evidence Photo'}</strong>
-                  <div class="geo-badge">
-                     <i class="fas fa-map-marker-alt text-danger"></i> ${activeLocation.latitude || 'N/A'}°N, ${activeLocation.longitude || 'N/A'}°E
-                  </div>
-                  <input type="hidden" name="photos[${photoIndex}][image_data]" value="${tempCapturedDataUrl}">
-                  <input type="hidden" name="photos[${photoIndex}][caption]" value="${cameraCaptionInput.value.trim()}">
-                  <input type="hidden" name="photos[${photoIndex}][latitude]" value="${activeLocation.latitude}">
-                  <input type="hidden" name="photos[${photoIndex}][longitude]" value="${activeLocation.longitude}">
-                  <input type="hidden" name="photos[${photoIndex}][gps_accuracy]" value="${activeLocation.accuracy}">
-                  <input type="hidden" name="photos[${photoIndex}][capture_time]" value="${new Date().toISOString()}">
-                  <input type="hidden" name="photos[${photoIndex}][capture_source]" value="DEVICE_CAMERA">
-               </div>
-            </div>
-         `;
-         stagedPhotosContainer.appendChild(col);
+         const currentCount = stagedPhotosContainer.querySelectorAll('.photo-card').length;
+         if (currentCount >= MAX_PHOTOS) {
+            alert(`Maximum limit of ${MAX_PHOTOS} new photographs reached.`);
+            stopCamera();
+            if (cameraModal) cameraModal.hide();
+            return;
+         }
+
+         const caption = cameraCaptionInput.value.trim() || 'New Evidence Photo';
+         addStagedPhoto({
+            imageData: tempCapturedDataUrl,
+            caption: caption,
+            latitude: activeLocation.latitude || '',
+            longitude: activeLocation.longitude || '',
+            accuracy: activeLocation.accuracy || '',
+            captureTime: new Date().toISOString(),
+            source: 'DEVICE_CAMERA',
+            optimizationNote: null
+         });
+
          stopCamera();
          if (cameraModal) cameraModal.hide();
+      });
+   }
+
+   // Fallback file upload toggle
+   const btnToggleUploadFallback = document.getElementById('btnToggleUploadFallback');
+   const uploadFallbackBlock = document.getElementById('uploadFallbackBlock');
+   if (btnToggleUploadFallback && uploadFallbackBlock) {
+      btnToggleUploadFallback.addEventListener('click', function () {
+         uploadFallbackBlock.classList.toggle('d-none');
+      });
+   }
+
+   const btnAddFallbackPhoto = document.getElementById('btnAddFallbackPhoto');
+   const fallbackImageInput = document.getElementById('fallbackImageInput');
+   const fallbackCaptionInput = document.getElementById('fallbackCaptionInput');
+
+   if (fallbackImageInput) {
+      fallbackImageInput.addEventListener('change', function () {
+         if (this.files && this.files[0]) {
+            const file = this.files[0];
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+               showFileSizeErrorAlert(this);
+               return false;
+            }
+         }
+      });
+   }
+
+   if (btnAddFallbackPhoto) {
+      btnAddFallbackPhoto.addEventListener('click', function () {
+         if (!fallbackImageInput.files || !fallbackImageInput.files[0]) {
+            alert('Please select an image file first.');
+            return;
+         }
+
+         const file = fallbackImageInput.files[0];
+         if (file.size > MAX_FILE_SIZE_BYTES) {
+            showFileSizeErrorAlert(fallbackImageInput);
+            return;
+         }
+
+         const currentCount = stagedPhotosContainer.querySelectorAll('.photo-card').length;
+         if (currentCount >= MAX_PHOTOS) {
+            alert(`Maximum limit of ${MAX_PHOTOS} new photographs reached.`);
+            return;
+         }
+         if (!file.type.match(/^image\//)) {
+            alert('Please select a valid image file (JPG, PNG, WebP).');
+            return;
+         }
+
+         const caption = fallbackCaptionInput.value.trim() || file.name;
+         btnAddFallbackPhoto.disabled = true;
+         btnAddFallbackPhoto.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Processing...';
+
+         processFallbackPhoto(file, caption, function (result) {
+            addStagedPhoto({
+               imageData: result.imageData,
+               caption: result.caption,
+               latitude: activeLocation.latitude || '',
+               longitude: activeLocation.longitude || '',
+               accuracy: activeLocation.accuracy || '',
+               captureTime: new Date().toISOString(),
+               source: 'MANUAL_UPLOAD',
+               optimizationNote: result.optimizationNote
+            });
+            fallbackImageInput.value = '';
+            fallbackCaptionInput.value = '';
+            uploadFallbackBlock.classList.add('d-none');
+            btnAddFallbackPhoto.disabled = false;
+            btnAddFallbackPhoto.innerHTML = '<i class="fas fa-plus me-1"></i> Add Photo';
+         });
+      });
+   }
+
+   function addStagedPhoto(photo) {
+      photoIndex++;
+      if (emptyPhotosMsg) emptyPhotosMsg.classList.add('d-none');
+
+      const col = document.createElement('div');
+      col.className = 'col-md-4 col-sm-6';
+      col.id = 'photoCard_' + photoIndex;
+
+      col.innerHTML = `
+         <div class="photo-card">
+            <span class="badge bg-success existing-photo-badge">New Photo</span>
+            <img src="${photo.imageData}" alt="${photo.caption}">
+            <div class="photo-card-body">
+               <div class="d-flex justify-content-between align-items-start">
+                  <strong>${photo.caption}</strong>
+                  <button type="button" class="btn btn-outline-danger btn-xs btn-remove-photo" data-card-id="photoCard_${photoIndex}" title="Remove photo">
+                     <i class="fas fa-trash"></i>
+                  </button>
+               </div>
+               <div class="geo-badge">
+                  <i class="fas fa-map-marker-alt text-danger me-1"></i> ${photo.latitude ? photo.latitude + '°N, ' + photo.longitude + '°E' : 'No GPS'} (±${photo.accuracy || 'N/A'}m)
+               </div>
+               <div class="small text-muted mt-1">
+                  <span class="badge ${photo.source === 'DEVICE_CAMERA' ? 'bg-success' : 'bg-secondary'}">${photo.source}</span>
+                  <span class="ms-1">${new Date().toLocaleTimeString()}</span>
+               </div>
+               ${photo.optimizationNote ? `<div class="small mt-1"><span class="badge bg-info text-dark text-wrap"><i class="fas fa-compress-arrows-alt me-1"></i> ${photo.optimizationNote}</span></div>` : ''}
+               <!-- Hidden form inputs -->
+               <input type="hidden" name="photos[${photoIndex}][image_data]" value="${photo.imageData}">
+               <input type="hidden" name="photos[${photoIndex}][caption]" value="${photo.caption}">
+               <input type="hidden" name="photos[${photoIndex}][latitude]" value="${photo.latitude}">
+               <input type="hidden" name="photos[${photoIndex}][longitude]" value="${photo.longitude}">
+               <input type="hidden" name="photos[${photoIndex}][gps_accuracy]" value="${photo.accuracy}">
+               <input type="hidden" name="photos[${photoIndex}][capture_time]" value="${photo.captureTime}">
+               <input type="hidden" name="photos[${photoIndex}][capture_source]" value="${photo.source}">
+            </div>
+         </div>
+      `;
+
+      stagedPhotosContainer.appendChild(col);
+      updatePayloadIndicator();
+
+      col.querySelector('.btn-remove-photo').addEventListener('click', function () {
+         col.remove();
+         if (stagedPhotosContainer.children.length === 0 && emptyPhotosMsg) {
+            emptyPhotosMsg.classList.remove('d-none');
+         }
+         updatePayloadIndicator();
       });
    }
 
    // Dynamic document rows
    const btnAddDoc = document.getElementById('btnAddDocumentRow');
    const docsContainer = document.getElementById('documentsContainer');
+
+   function bindDocumentFileInput(input) {
+      if (!input) return;
+      input.addEventListener('change', function () {
+         if (input.files && input.files[0]) {
+            const file = input.files[0];
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+               showFileSizeErrorAlert(input);
+            }
+         }
+         updatePayloadIndicator();
+      });
+   }
+
    if (btnAddDoc && docsContainer) {
       btnAddDoc.addEventListener('click', function () {
+         const currentRows = docsContainer.querySelectorAll('.document-row').length;
+         if (currentRows >= MAX_DOCUMENTS) {
+            alert(`Maximum limit of ${MAX_DOCUMENTS} additional reference documents reached.`);
+            return;
+         }
+
          const row = document.createElement('div');
          row.className = 'row g-2 align-items-center mb-2 document-row';
          row.innerHTML = `
@@ -1437,10 +1795,54 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="col-md-1 text-center"><button type="button" class="btn btn-outline-danger btn-sm btn-remove-doc"><i class="fas fa-times"></i></button></div>
          `;
          docsContainer.appendChild(row);
-         row.querySelector('.btn-remove-doc').addEventListener('click', () => row.remove());
+         row.querySelector('.btn-remove-doc').addEventListener('click', function () {
+            row.remove();
+            updatePayloadIndicator();
+         });
+         bindDocumentFileInput(row.querySelector('input[type="file"]'));
+         updatePayloadIndicator();
       });
    }
-   document.querySelectorAll('.btn-remove-doc').forEach(b => b.addEventListener('click', e => e.target.closest('.document-row').remove()));
+
+   document.querySelectorAll('.btn-remove-doc').forEach(b => {
+      b.addEventListener('click', function (e) {
+         const row = e.target.closest('.document-row');
+         if (row) {
+            row.remove();
+            updatePayloadIndicator();
+         }
+      });
+   });
+
+   document.querySelectorAll('input[name="documents[]"]').forEach(bindDocumentFileInput);
+
+   // Prevent form submission if any file exceeds limit or total payload exceeds safe limit
+   const mainForm = document.getElementById('fieldVisitForm') || document.querySelector('form');
+   if (mainForm) {
+      mainForm.addEventListener('submit', function (e) {
+         // Final client-side check: ensure no oversized document input is submitted
+         const docInputs = document.querySelectorAll('input[name="documents[]"]');
+         for (let i = 0; i < docInputs.length; i++) {
+            if (docInputs[i].files && docInputs[i].files[0] && docInputs[i].files[0].size > MAX_FILE_SIZE_BYTES) {
+               e.preventDefault();
+               showFileSizeErrorAlert(docInputs[i]);
+               return false;
+            }
+         }
+
+         const total = updatePayloadIndicator();
+         if (total > SAFE_PAYLOAD_LIMIT_BYTES) {
+            e.preventDefault();
+            const totalMB = (total / (1024 * 1024)).toFixed(1);
+            alert(`Cannot submit: Total upload payload (${totalMB} MB) exceeds the safe limit. Please remove or compress some photographs or documents.`);
+            const warningEl = document.getElementById('payloadSizeWarning');
+            if (warningEl) {
+               warningEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return false;
+         }
+      });
+   }
 });
 </script>
 @endsection

@@ -35,6 +35,39 @@ class FieldVisit extends Model implements Auditable
     ];
 
     /**
+     * Standard Visiting Officer Designations list.
+     */
+    public static function getDesignations(): array
+    {
+        return [
+            'Secretary',
+            'Director',
+            'Special Secreatry',
+            'Addl. Secretary',
+            'Jt. Secretary',
+            'FA',
+            'AFA',
+            'OSD',
+            'Deputy Secretary',
+            'Under Secretary',
+            'Assistant Director (Law)',
+            'Desk Officer',
+            'Section Officer (SO)',
+            'Auditor',
+            'Assistant Section Officer (ASO)',
+            'Collector',
+            'Sub-Collector',
+            'DSSO',
+            'BSSO',
+            'Jr. Clerk',
+            'Social Welfare Officer',
+            'Child Development Project Officer (CDPO)',
+            'Additional Child Development Project Officer (ACDPO)',
+            'Other',
+        ];
+    }
+
+    /**
      * Relationship to Visit Type Master.
      */
     public function visitType(): BelongsTo

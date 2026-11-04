@@ -25,7 +25,7 @@
                <div id="google_translate_element"></div>
             </li>
             @if(auth()->user()->is_full_access_to_portal == 1)
-            @can('user-access')
+            @if(auth()->user()->can('user-access') || auth()->user()->can('user-list') || auth()->user()->can('user-create'))
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-user-circle"></i><span class="hide-menu">Users</span></a>
                <ul aria-expanded="false" class="collapse">
@@ -37,8 +37,8 @@
                   @endcan
                </ul>
             </li>
-            @endcan
-            @if(auth()->user()->can('role-access') || auth()->user()->can('permission-access'))
+            @endif
+            @if(auth()->user()->can('role-access') || auth()->user()->can('permission-access') || auth()->user()->can('role-list') || auth()->user()->can('role-create') || auth()->user()->can('permission-list') || auth()->user()->can('permission-create'))
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fab fa-keycdn"></i><span class="hide-menu">Roles & permissions</span></a>
                <ul aria-expanded="false" class="collapse">
@@ -57,7 +57,7 @@
                </ul>
             </li>
             @endif
-            @can('location-access')
+            @if(auth()->user()->can('location-access') || auth()->user()->can('location-list') || auth()->user()->can('location-create'))
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-location-arrow"></i><span class="hide-menu">Locations</span></a>
                <ul aria-expanded="false" class="collapse">
@@ -73,6 +73,8 @@
                   @endcan
                </ul>
             </li>
+            @endif
+            @can('location-list')
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-bell"></i><span class="hide-menu">Notification</span></a>
                <ul aria-expanded="false" class="collapse">
@@ -81,6 +83,8 @@
                   @endcan
                </ul>
             </li>
+            @endcan
+            @can('location-list')
             <li>
                <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-barcode-scan"></i><span class="hide-menu">Aadhar Verification</span></a>
                <ul aria-expanded="false" class="collapse">
@@ -91,7 +95,7 @@
                   @endcan
                </ul>
             </li>
-            @endif
+            @endcan
             @endif
             <li class="nav-small-cap">--- BENEFICIARY SERVICES</li>
             <li>
@@ -152,7 +156,7 @@
                      </ul>
                   </li>
                   @endcan -->
-                  @can('special-school-access')
+                  @if(auth()->user()->can('special-school-access') || auth()->user()->can('special-school-create'))
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Special School</a>
                      <ul aria-expanded="false" class="collapse">
@@ -166,8 +170,8 @@
                         @endcan
                      </ul>
                   </li>
-                  @endcan
-                  @can('DDRC-access')
+                  @endif
+                  @if(auth()->user()->can('DDRC-access') || auth()->user()->can('DDRC-create'))
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
                      <ul aria-expanded="false" class="collapse">
@@ -176,8 +180,8 @@
                         @endcan
                      </ul>
                   </li>
-                  @endcan
-                  @can('Institute-access')
+                  @endif
+                  @if(auth()->user()->can('Institute-access') || auth()->user()->can('Institute-create') || auth()->user()->can('Institute-list'))
                   <li>
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">PIA/NGO Institutes</a>
                      <ul aria-expanded="false" class="collapse">
@@ -189,10 +193,10 @@
                         @endcan
                      </ul>
                   </li>
-                  @endcan
+                  @endif
                </ul>
             </li>
-            @if(auth()->user()->can('field-visit-type-access') || auth()->user()->can('field-visit-type-list') || auth()->user()->can('field-visit-institute-access') || auth()->user()->can('field-visit-institute-list') || auth()->user()->can('field-visit-access') || auth()->user()->can('field-visit-list'))
+            @if(auth()->user()->can('field-visit-type-access') || auth()->user()->can('field-visit-type-list') || auth()->user()->can('field-visit-type-create') || auth()->user()->can('field-visit-institute-access') || auth()->user()->can('field-visit-institute-list') || auth()->user()->can('field-visit-institute-create') || auth()->user()->can('field-visit-access') || auth()->user()->can('field-visit-list') || auth()->user()->can('field-visit-create'))
             <li class="nav-small-cap">--- FIELD VISIT</li>
             <li class="{{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'active' : '' }}">
                <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'true' : 'false' }}">
@@ -329,6 +333,18 @@
                      <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">DDRC</a>
                      <ul aria-expanded="false" class="collapse">
                         <li><a href="{{route('admin.ddrc.index')}}">DDRC Staff Deatils</a></li>
+                     </ul>
+                  </li>
+                  @endcan
+                  @can('field-visit-report-access')
+                  <li class="{{ request()->routeIs('admin.field_visit_reports.*') ? 'active' : '' }}">
+                     <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.field_visit_reports.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.field_visit_reports.*') ? 'true' : 'false' }}"><i class="fas fa-clipboard-list text-info"></i><span class="hide-menu ms-1">Field Visit Reports</span></a>
+                     <ul aria-expanded="{{ request()->routeIs('admin.field_visit_reports.*') ? 'true' : 'false' }}" class="collapse {{ request()->routeIs('admin.field_visit_reports.*') ? 'in' : '' }}">
+                        <li class="{{ request()->routeIs('admin.field_visit_reports.summary*') ? 'active' : '' }}"><a href="{{ route('admin.field_visit_reports.summary') }}" class="{{ request()->routeIs('admin.field_visit_reports.summary*') ? 'active' : '' }}">Field Visit Summary</a></li>
+                        <li class="{{ request()->routeIs('admin.field_visit_reports.geographical*') ? 'active' : '' }}"><a href="{{ route('admin.field_visit_reports.geographical') }}" class="{{ request()->routeIs('admin.field_visit_reports.geographical*') ? 'active' : '' }}">Geographical Analysis</a></li>
+                        <li class="{{ request()->routeIs('admin.field_visit_reports.detailed*') ? 'active' : '' }}"><a href="{{ route('admin.field_visit_reports.detailed') }}" class="{{ request()->routeIs('admin.field_visit_reports.detailed*') ? 'active' : '' }}">Detailed Visit Report</a></li>
+                        <li class="{{ request()->routeIs('admin.field_visit_reports.coverage*') ? 'active' : '' }}"><a href="{{ route('admin.field_visit_reports.coverage') }}" class="{{ request()->routeIs('admin.field_visit_reports.coverage*') ? 'active' : '' }}">Institution Coverage Report</a></li>
+                        <li class="{{ request()->routeIs('admin.field_visit_reports.datewise*') ? 'active' : '' }}"><a href="{{ route('admin.field_visit_reports.datewise') }}" class="{{ request()->routeIs('admin.field_visit_reports.datewise*') ? 'active' : '' }}">Date-wise Visit Report</a></li>
                      </ul>
                   </li>
                   @endcan

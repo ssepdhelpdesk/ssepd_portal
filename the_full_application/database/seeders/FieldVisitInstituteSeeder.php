@@ -7,6 +7,7 @@ use App\Models\FieldVisitInstitute;
 use App\Models\User;
 use App\Models\District;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -78,7 +79,7 @@ class FieldVisitInstituteSeeder extends Seeder
         $dbDistricts = District::all()->keyBy('district_id');
 
         // Pre-check: If any manually created record (source_institute_id IS NULL) collides with Excel codes (INST-0001 to INST-0440),
-        // safely reassign its code to INST-{id} so it preserves uniqueness.
+        // safely reassign its code to INST-{id} so it preserves uniqueness without data loss.
         $conflictingManuals = FieldVisitInstitute::whereNull('source_institute_id')->get();
         foreach ($conflictingManuals as $manualRecord) {
             if (preg_match('/^INST-(\d+)$/', $manualRecord->institute_code, $matches)) {
@@ -100,41 +101,116 @@ class FieldVisitInstituteSeeder extends Seeder
 
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+
+        // Dynamic Header-to-Column Mapping
+        // In the Excel Sheet1:
+        // Col A (1): id
+        // Col B (2): institute_master_id (1st occurrence = category_id, 1-13)
+        // Col C (3): institute_master_name (1st occurrence = category_name)
+        // Col D (4): management_id
+        // Col E (5): management_name
+        // Col F (6): institute_master_id (2nd occurrence = source_institute_id, 1-440)
+        // Col G (7): institute_master_name (2nd occurrence = institute_name)
+        // Col H (8): district_id
+        // Col I (9): district_name
+        // Col J (10): status
+        // Col K (11): which_govt
+        $headerOccurrences = [];
+        $colMap = [
+            'id'                  => 1,
+            'category_id'         => 2,
+            'category_name'       => 3,
+            'management_id'       => 4,
+            'management_name'     => 5,
+            'source_institute_id' => 6,
+            'institute_name'      => 7,
+            'district_id'         => 8,
+            'district_name'       => 9,
+            'status'              => 10,
+            'which_govt'          => 11,
+        ];
+
+        for ($col = 1; $col <= $highestColumnIndex; $col++) {
+            $headerText = strtolower(trim((string)$sheet->getCell([$col, 1])->getValue()));
+            if ($headerText === '') continue;
+
+            $headerOccurrences[$headerText] = ($headerOccurrences[$headerText] ?? 0) + 1;
+            $occ = $headerOccurrences[$headerText];
+
+            if ($headerText === 'id') {
+                $colMap['id'] = $col;
+            } elseif ($headerText === 'category_id') {
+                $colMap['category_id'] = $col;
+            } elseif ($headerText === 'category_name') {
+                $colMap['category_name'] = $col;
+            } elseif ($headerText === 'institute_master_id') {
+                if ($occ === 1) {
+                    $colMap['category_id'] = $col;
+                } else {
+                    $colMap['source_institute_id'] = $col;
+                }
+            } elseif ($headerText === 'institute_master_name') {
+                if ($occ === 1) {
+                    $colMap['category_name'] = $col;
+                } else {
+                    $colMap['institute_name'] = $col;
+                }
+            } elseif ($headerText === 'management_id') {
+                $colMap['management_id'] = $col;
+            } elseif ($headerText === 'management_name') {
+                $colMap['management_name'] = $col;
+            } elseif ($headerText === 'district_id') {
+                $colMap['district_id'] = $col;
+            } elseif ($headerText === 'district_name') {
+                $colMap['district_name'] = $col;
+            } elseif ($headerText === 'status') {
+                $colMap['status'] = $col;
+            } elseif ($headerText === 'which_govt') {
+                $colMap['which_govt'] = $col;
+            }
+        }
 
         $insertedCount = 0;
         $updatedCount  = 0;
+        $unchangedCount = 0;
         $skippedCount  = 0;
         $failedCount   = 0;
         $totalProcessed = 0;
+        $duplicateSourceIdsCount = 0;
+        $missingDistrictMappingCount = 0;
         $importedSourceIds = [];
+        $seenSourceIdsInExcel = [];
 
         // Process inside transaction for database integrity
         DB::beginTransaction();
 
         try {
             for ($row = 2; $row <= $highestRow; $row++) {
-                $c1  = trim((string)$sheet->getCell([1, $row])->getFormattedValue());
-                $c2  = trim((string)$sheet->getCell([2, $row])->getFormattedValue());
-                $c3  = trim((string)$sheet->getCell([3, $row])->getFormattedValue());
-                $c4  = trim((string)$sheet->getCell([4, $row])->getFormattedValue());
-                $c5  = trim((string)$sheet->getCell([5, $row])->getFormattedValue());
-                $c6  = trim((string)$sheet->getCell([6, $row])->getFormattedValue());
-                $c7  = trim((string)$sheet->getCell([7, $row])->getFormattedValue());
-                $c8  = trim((string)$sheet->getCell([8, $row])->getFormattedValue());
-                $c9  = trim((string)$sheet->getCell([9, $row])->getFormattedValue());
-                $c10 = trim((string)$sheet->getCell([10, $row])->getFormattedValue());
-                $c11 = trim((string)$sheet->getCell([11, $row])->getFormattedValue());
+                // Read row cells using mapped columns
+                $rawId       = trim((string)$sheet->getCell([$colMap['id'], $row])->getFormattedValue());
+                $rawCatId    = trim((string)$sheet->getCell([$colMap['category_id'], $row])->getFormattedValue());
+                $rawCatName  = trim((string)$sheet->getCell([$colMap['category_name'], $row])->getFormattedValue());
+                $rawMgmtId   = trim((string)$sheet->getCell([$colMap['management_id'], $row])->getFormattedValue());
+                $rawMgmtName = trim((string)$sheet->getCell([$colMap['management_name'], $row])->getFormattedValue());
+                $rawSrcId    = trim((string)$sheet->getCell([$colMap['source_institute_id'], $row])->getFormattedValue());
+                $rawInstName = trim((string)$sheet->getCell([$colMap['institute_name'], $row])->getFormattedValue());
+                $rawDistId   = trim((string)$sheet->getCell([$colMap['district_id'], $row])->getFormattedValue());
+                $rawDistName = trim((string)$sheet->getCell([$colMap['district_name'], $row])->getFormattedValue());
+                $rawStatus   = trim((string)$sheet->getCell([$colMap['status'], $row])->getFormattedValue());
+                $rawGovt     = trim((string)$sheet->getCell([$colMap['which_govt'], $row])->getFormattedValue());
 
-                // Skip remnant / completely empty rows
-                if ($c7 === '' && $c2 === '') {
+                // Check for completely blank row
+                if ($rawInstName === '' && $rawCatName === '' && $rawCatId === '' && $rawSrcId === '') {
                     $skippedCount++;
                     if ($this->command) {
-                        $this->command->warn("Row $row skipped: empty institute name and category (cell A: '$c1').");
+                        $this->command->warn("Row $row skipped: empty row.");
                     }
                     continue;
                 }
 
-                if ($c7 === '') {
+                // Validation 1: Institute Name is required
+                if ($rawInstName === '') {
                     $failedCount++;
                     if ($this->command) {
                         $this->command->error("Row $row failed: missing institute name.");
@@ -142,62 +218,110 @@ class FieldVisitInstituteSeeder extends Seeder
                     continue;
                 }
 
-                // Determine Source ID & Sub ID from Excel Column F (institute_master_id) or Column A (id)
-                if ($c6 !== '') {
-                    $sourceId = (int)$c6;
-                    $subId    = $c1 !== '' ? (int)$c1 : $sourceId;
-                } elseif ($c1 !== '') {
-                    $sourceId = (int)$c1;
-                    $subId    = $sourceId;
-                } else {
-                    $sourceId = 440 + $row;
-                    $subId    = $sourceId;
+                // Validation 2: Category ID and Name
+                $categoryId = (int)$rawCatId;
+                if ($categoryId <= 0) {
+                    $failedCount++;
+                    if ($this->command) {
+                        $this->command->error("Row $row failed: invalid category_id ('$rawCatId').");
+                    }
+                    continue;
+                }
+                $categoryName = $rawCatName;
+
+                // Validation 3: Source ID & Sub ID
+                $sourceId = $rawSrcId !== '' ? (int)$rawSrcId : ($rawId !== '' ? (int)$rawId : null);
+                if (!$sourceId || $sourceId <= 0) {
+                    $failedCount++;
+                    if ($this->command) {
+                        $this->command->error("Row $row failed: invalid source_institute_id.");
+                    }
+                    continue;
                 }
 
-                $instituteCode = 'INST-' . str_pad($sourceId, 4, '0', STR_PAD_LEFT);
+                // Validation 4: Duplicate Source ID check within Excel
+                if (isset($seenSourceIdsInExcel[$sourceId])) {
+                    $duplicateSourceIdsCount++;
+                    $failedCount++;
+                    if ($this->command) {
+                        $this->command->error("Row $row failed: duplicate source_institute_id $sourceId (first seen in Row {$seenSourceIdsInExcel[$sourceId]}).");
+                    }
+                    continue;
+                }
+                $seenSourceIdsInExcel[$sourceId] = $row;
                 $importedSourceIds[] = $sourceId;
 
-                $categoryId   = (int)$c2;
-                $categoryName = $c3;
-                $mgmtId       = $c4 !== '' ? (int)$c4 : null;
-                $mgmtName     = $c5;
-                $instName     = $c7;
-                $districtId   = (int)$c8;
-                $districtName = $c9;
-                if (isset($dbDistricts[$districtId])) {
-                    $districtName = $dbDistricts[$districtId]->district_name ?? $districtName;
-                }
+                $subId = $rawId !== '' ? (int)$rawId : $sourceId;
+                $instituteCode = 'INST-' . str_pad($sourceId, 4, '0', STR_PAD_LEFT);
 
-                $status    = ($c10 === '0') ? 0 : 1;
+                // Validation 5: District ID in District master
+                $districtId = (int)$rawDistId;
+                if (!isset($dbDistricts[$districtId])) {
+                    $missingDistrictMappingCount++;
+                    $failedCount++;
+                    if ($this->command) {
+                        $this->command->error("Row $row failed: district_id $districtId not found in districts table.");
+                    }
+                    continue;
+                }
+                $districtName = $dbDistricts[$districtId]->district_name ?? $rawDistName;
+
+                // Management details
+                $mgmtId   = $rawMgmtId !== '' ? (int)$rawMgmtId : null;
+                $mgmtName = $rawMgmtName !== '' ? $rawMgmtName : null;
+
+                // Operational Status and Scheme Funding
+                $status    = ($rawStatus === '0') ? 0 : 1;
                 $isActive  = ($status === 1);
-                $whichGovt = ($c11 === '2') ? 2 : 1;
+                $whichGovt = ($rawGovt === '2') ? 2 : 1;
 
                 // Lookup existing record by source_institute_id or institute_code
                 $existing = FieldVisitInstitute::where('source_institute_id', $sourceId)->first()
                     ?: FieldVisitInstitute::where('institute_code', $instituteCode)->first();
 
                 if ($existing) {
-                    $existing->update([
-                        'institute_name'      => $instName,
-                        'institute_code'      => $instituteCode,
-                        'category_id'         => $categoryId,
-                        'category_name'       => $categoryName,
-                        'management_id'       => $mgmtId,
-                        'management_name'     => $mgmtName,
-                        'source_institute_id' => $sourceId,
-                        'legacy_sub_id'       => $subId,
-                        'district_id'         => $districtId,
-                        'district_name'       => $districtName,
-                        'status'              => $status,
-                        'is_active'           => $isActive,
-                        'which_govt'          => $whichGovt,
-                        'updated_by'          => $auditUserTableId,
-                    ]);
-                    $updatedCount++;
+                    // Check if any attributes changed
+                    $hasChanges = (
+                        $existing->institute_name !== $rawInstName ||
+                        $existing->institute_code !== $instituteCode ||
+                        (int)$existing->category_id !== (int)$categoryId ||
+                        $existing->category_name !== $categoryName ||
+                        (int)$existing->management_id !== (int)$mgmtId ||
+                        $existing->management_name !== $mgmtName ||
+                        (int)$existing->source_institute_id !== (int)$sourceId ||
+                        (int)$existing->legacy_sub_id !== (int)$subId ||
+                        (int)$existing->district_id !== (int)$districtId ||
+                        $existing->district_name !== $districtName ||
+                        (int)$existing->status !== (int)$status ||
+                        (bool)$existing->is_active !== (bool)$isActive ||
+                        (int)$existing->which_govt !== (int)$whichGovt
+                    );
+
+                    if ($hasChanges) {
+                        $existing->update([
+                            'institute_name'      => $rawInstName,
+                            'institute_code'      => $instituteCode,
+                            'category_id'         => $categoryId,
+                            'category_name'       => $categoryName,
+                            'management_id'       => $mgmtId,
+                            'management_name'     => $mgmtName,
+                            'source_institute_id' => $sourceId,
+                            'legacy_sub_id'       => $subId,
+                            'district_id'         => $districtId,
+                            'district_name'       => $districtName,
+                            'status'              => $status,
+                            'is_active'           => $isActive,
+                            'which_govt'          => $whichGovt,
+                            'updated_by'          => $auditUserTableId,
+                        ]);
+                        $updatedCount++;
+                    } else {
+                        $unchangedCount++;
+                    }
                 } else {
                     FieldVisitInstitute::create([
                         'institute_code'      => $instituteCode,
-                        'institute_name'      => $instName,
+                        'institute_name'      => $rawInstName,
                         'category_id'         => $categoryId,
                         'category_name'       => $categoryName,
                         'management_id'       => $mgmtId,
@@ -218,36 +342,44 @@ class FieldVisitInstituteSeeder extends Seeder
                 $totalProcessed++;
             }
 
-            // Prune any previously imported records that are NOT in the updated Excel file
-            // (strictly preserving manual records where source_institute_id IS NULL)
-            $staleInstitutes = FieldVisitInstitute::whereNotNull('source_institute_id')
+            // SAFETY ENHANCEMENT:
+            // Do NOT automatically delete database records missing from Excel.
+            // Identify and report them separately to prevent accidental data loss or foreign key breakage.
+            $missingFromExcel = FieldVisitInstitute::whereNotNull('source_institute_id')
                 ->whereNotIn('source_institute_id', $importedSourceIds)
                 ->get();
+            $missingFromExcelCount = $missingFromExcel->count();
 
-            foreach ($staleInstitutes as $stale) {
-                $linkedCount = DB::table('field_visits')->where('institution_id', $stale->id)->count();
-                if ($linkedCount > 0) {
-                    if ($this->command) {
-                        $this->command->warn("Cannot remove stale institute ID {$stale->id} ({$stale->institute_name}): referenced by $linkedCount Field Visit(s).");
-                    }
-                } else {
-                    $stale->delete();
-                    if ($this->command) {
-                        $this->command->info("Removed obsolete Excel record ID {$stale->id} (Code: {$stale->institute_code}).");
-                    }
+            if ($missingFromExcelCount > 0 && $this->command) {
+                $this->command->warn("Identified $missingFromExcelCount database record(s) with source_institute_id not present in the revised Excel workbook (preserved safely without deletion):");
+                foreach ($missingFromExcel as $missingRec) {
+                    $linkedVisits = DB::table('field_visits')->where('institution_id', $missingRec->id)->count();
+                    $this->command->line("  - ID: {$missingRec->id} | Code: {$missingRec->institute_code} | Name: {$missingRec->institute_name} | Linked Visits: {$linkedVisits}");
                 }
             }
 
             DB::commit();
 
+            $totalInDb = FieldVisitInstitute::count();
+
             if ($this->command) {
                 $this->command->info("=== Field Visit Institute Seeder Completed Successfully ===");
-                $this->command->info("Total Valid Processed: $totalProcessed");
-                $this->command->info("Inserted Records:      $insertedCount");
-                $this->command->info("Updated Records:       $updatedCount");
-                $this->command->info("Skipped Rows:          $skippedCount");
-                $this->command->info("Failed Records:        $failedCount");
-                $this->command->info("Total in DB:           " . FieldVisitInstitute::count());
+                $this->command->table(
+                    ['Metric', 'Count'],
+                    [
+                        ['Total Excel Rows (Data)', $highestRow - 1],
+                        ['Valid Records',           $totalProcessed],
+                        ['Inserted',                $insertedCount],
+                        ['Updated',                 $updatedCount],
+                        ['Unchanged',               $unchangedCount],
+                        ['Skipped',                 $skippedCount],
+                        ['Failed',                  $failedCount],
+                        ['Duplicate Source IDs',    $duplicateSourceIdsCount],
+                        ['Missing District Mapping', $missingDistrictMappingCount],
+                        ['Missing from Excel',      $missingFromExcelCount],
+                        ['Total Database Records',  $totalInDb],
+                    ]
+                );
             }
         } catch (Exception $e) {
             DB::rollBack();

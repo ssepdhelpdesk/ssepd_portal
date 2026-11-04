@@ -185,6 +185,8 @@ class FieldVisitManagementTest extends TestCase
             'category_id' => $institute->category_id,
             'institution_id' => $institute->id,
             'institution_name' => $institute->institute_name,
+            'visiting_officer_name' => 'Dr. Test Officer',
+            'visiting_officer_designation' => 'Director',
             'contact_number' => '9876543210',
             'address_type' => 1,
             'district_id' => $institute->district_id ?: 2421,
@@ -449,6 +451,8 @@ class FieldVisitManagementTest extends TestCase
             'field_visit_type_id' => $type->id,
             'status' => 'submitted',
             'visit_purpose' => 'Rural hierarchy verification visit',
+            'visiting_officer_name' => 'Dr. Test Officer',
+            'visiting_officer_designation' => 'Director',
             'institution_type' => 'Government Office',
             'category_id' => $institute->category_id,
             'institution_id' => $institute->id,
@@ -530,6 +534,8 @@ class FieldVisitManagementTest extends TestCase
             'field_visit_type_id' => $type->id,
             'status' => 'submitted',
             'visit_purpose' => 'Urban hierarchy verification visit',
+            'visiting_officer_name' => 'Dr. Test Officer',
+            'visiting_officer_designation' => 'Director',
             'institution_type' => 'Other Welfare Facility',
             'category_id' => $institute->category_id,
             'institution_id' => $institute->id,
@@ -617,6 +623,8 @@ class FieldVisitManagementTest extends TestCase
             'field_visit_type_id' => $type->id,
             'status' => 'submitted',
             'visit_purpose' => 'SSEPD State Office verification visit',
+            'visiting_officer_name' => 'Dr. State Officer',
+            'visiting_officer_designation' => 'Secretary',
             'category_id' => 1,
             'institution_id' => $stateOfficeInst->id,
             'contact_person' => 'Director SSEPD',
@@ -637,7 +645,7 @@ class FieldVisitManagementTest extends TestCase
 
         $visit = FieldVisit::where('contact_number', '9437112233')->orderByDesc('id')->first();
         $this->assertNotNull($visit);
-        $this->assertEquals('SSEPD State Office', $visit->institution_type);
+        $this->assertEquals($stateOfficeInst->category_name, $visit->institution_type);
         $this->assertEquals($stateOfficeInst->id, $visit->institution_id);
         $this->assertEquals(1, $visit->address_type);
         $this->assertEquals(2, $visit->gp_id);
@@ -669,6 +677,8 @@ class FieldVisitManagementTest extends TestCase
             'field_visit_type_id' => $type->id,
             'status' => 'submitted',
             'visit_purpose' => 'SSEPD Field Office inspection',
+            'visiting_officer_name' => 'Dr. Field Officer',
+            'visiting_officer_designation' => 'DSSO',
             'category_id' => 2,
             'institution_name' => 'DSSO Office, Cuttack Collectorate',
             'contact_person' => 'District Social Security Officer',
@@ -688,7 +698,8 @@ class FieldVisitManagementTest extends TestCase
 
         $visit = FieldVisit::where('contact_number', '9861223344')->orderByDesc('id')->first();
         $this->assertNotNull($visit);
-        $this->assertEquals('SSEPD Field Office', $visit->institution_type);
+        $expectedCatName = \App\Models\FieldVisitInstitute::where('category_id', 2)->value('category_name');
+        $this->assertEquals($expectedCatName, $visit->institution_type);
         $this->assertEquals('DSSO Office, Cuttack Collectorate', $visit->institution_name);
         $this->assertNull($visit->institution_id);
         $this->assertEquals(2, $visit->address_type);
@@ -721,6 +732,9 @@ class FieldVisitManagementTest extends TestCase
             'field_visit_type_id' => $type->id,
             'status' => 'submitted',
             'visit_purpose' => 'NGO Outreach and Screening Camp',
+            'visiting_officer_name' => 'Dr. NGO Officer',
+            'visiting_officer_designation' => 'Other',
+            'other_designation' => 'Outreach Coordinator',
             'category_id' => 3, // Other
             'institution_name' => 'Rural Screening & Rehabilitation Camp',
             'contact_person' => 'Camp Coordinator',
@@ -776,6 +790,7 @@ class FieldVisitManagementTest extends TestCase
         $visit->status = 'submitted';
         $visit->visit_purpose = $visit->visit_purpose ?: 'Automated test of field visit management';
         $visit->institution_type = 'SSEPD State Office';
+        $visit->institution_name = $visit->institution_name ?: 'SSEPD State Office';
         $visit->category_id = 1;
         $visit->address_type = 1;
         $visit->district_id = 2430;
@@ -841,5 +856,517 @@ class FieldVisitManagementTest extends TestCase
         $createContent = $createRes->getContent();
         $this->assertStringContainsString('change.fvLocation', $createContent);
         $this->assertStringNotContainsString("$('#state-dropdown').off('change').on('change'", $createContent);
+
+        // 5. DSSO role-based bypass verification for Field Visit forms
+        $dssoUser = User::where('role_id', 9)->first();
+        if ($dssoUser) {
+            $this->actingAs($dssoUser);
+
+            // A. Shared endpoint without field_visit scope returns ONLY assigned district
+            $sharedDistRes = $this->post(url('dashboard/locations/fetch-districts'), [
+                'state_id' => 228,
+            ]);
+            $sharedDistRes->assertStatus(200);
+            $this->assertCount(1, $sharedDistRes->json('districts'));
+
+            // B. Shared endpoint WITH field_visit scope returns ALL 30 districts
+            $fvDistRes = $this->post(url('dashboard/locations/fetch-districts'), [
+                'state_id' => 228,
+                'source'   => 'field_visit',
+            ]);
+            $fvDistRes->assertStatus(200);
+            $this->assertCount(30, $fvDistRes->json('districts'));
+
+            // C. Shared blocks endpoint WITH field_visit scope for another district loads all blocks for that district
+            $otherDistId = 2402;
+            $fvBlockRes = $this->post(url('dashboard/locations/fetch-block'), [
+                'district_id' => $otherDistId,
+                'source'      => 'field_visit',
+            ]);
+            $fvBlockRes->assertStatus(200);
+            $this->assertCount(17, $fvBlockRes->json('blocks'));
+        }
+    }
+
+    /**
+     * Test 19: PART A - Hidden start/end time auto-population on create, preservation on update.
+     */
+    public function test_part_a_timestamps_automatic_population_and_preservation(): void
+    {
+        $this->actingAs($this->adminUser);
+
+        $type = FieldVisitType::first();
+        $institute = \App\Models\FieldVisitInstitute::where('category_name', 'Special School')->first()
+            ?? \App\Models\FieldVisitInstitute::where('category_id', '>', 3)->first();
+
+        // 1. Store without start_time and end_time
+        $postData = [
+            'visit_date' => now()->format('Y-m-d'),
+            'field_visit_type_id' => $type->id,
+            'status' => 'submitted',
+            'visit_purpose' => 'Automated timestamp test',
+            'visiting_officer_name' => 'Dr. Timestamp Tester',
+            'visiting_officer_designation' => 'Secretary',
+            'category_id' => $institute->category_id,
+            'institution_id' => $institute->id,
+            'contact_person' => 'Headmaster',
+            'contact_number' => '9437199999',
+            'address_type' => 1,
+            'state' => 228,
+            'district' => $institute->district_id ?: 2421,
+            'block' => 1,
+            'grampanchayat' => 2,
+            'village_id' => 379717,
+        ];
+
+        $response = $this->post(route('admin.field_visits.store'), $postData);
+        $response->assertSessionHasNoErrors();
+
+        $visit = FieldVisit::where('contact_number', '9437199999')->orderByDesc('id')->first();
+        $this->assertNotNull($visit);
+        $this->assertNotEmpty($visit->start_time, 'start_time must be auto-populated on store');
+        $this->assertNotEmpty($visit->end_time, 'end_time must be auto-populated on store');
+
+        $initialStartTime = $visit->start_time;
+        $initialEndTime = $visit->end_time;
+
+        // 2. Update without start_time and end_time - historical timestamps must be preserved
+        $updateData = $postData;
+        $updateData['visit_purpose'] = 'Updated timestamp test';
+
+        $updateRes = $this->post(route('admin.field_visits.update', $visit->id), $updateData);
+        $updateRes->assertSessionHasNoErrors();
+
+        $visit->refresh();
+        $this->assertEquals($initialStartTime, $visit->start_time, 'Historical start_time must be preserved');
+        $this->assertEquals($initialEndTime, $visit->end_time, 'Historical end_time must be preserved');
+
+        // 3. Show page contains Timing
+        $showRes = $this->get(route('admin.field_visits.show', $visit->id));
+        $showRes->assertStatus(200);
+        $showRes->assertSee('Timing:');
+
+        $visit->forceDelete();
+    }
+
+    /**
+     * Test 20: PART B - Visiting Officer Name, Designation & conditional Other Designation.
+     */
+    public function test_part_b_visiting_officer_designation_and_other_validation(): void
+    {
+        $this->actingAs($this->adminUser);
+
+        $type = FieldVisitType::first();
+        $institute = \App\Models\FieldVisitInstitute::where('category_name', 'Special School')->first()
+            ?? \App\Models\FieldVisitInstitute::where('category_id', '>', 3)->first();
+
+        $baseData = [
+            'visit_date' => now()->format('Y-m-d'),
+            'field_visit_type_id' => $type->id,
+            'status' => 'submitted',
+            'visit_purpose' => 'Officer details validation test',
+            'category_id' => $institute->category_id,
+            'institution_id' => $institute->id,
+            'contact_person' => 'Headmaster',
+            'contact_number' => '9437188888',
+            'address_type' => 1,
+            'state' => 228,
+            'district' => $institute->district_id ?: 2421,
+            'block' => 1,
+            'grampanchayat' => 2,
+            'village_id' => 379717,
+        ];
+
+        // 1. Rejects missing visiting_officer_name and visiting_officer_designation
+        $resMissing = $this->post(route('admin.field_visits.store'), $baseData);
+        $resMissing->assertSessionHasErrors(['visiting_officer_name', 'visiting_officer_designation']);
+
+        // 2. Designation 'Other' without other_designation fails
+        $dataOtherMissing = $baseData;
+        $dataOtherMissing['visiting_officer_name'] = 'Dr. Custom Officer';
+        $dataOtherMissing['visiting_officer_designation'] = 'Other';
+        $resOtherMissing = $this->post(route('admin.field_visits.store'), $dataOtherMissing);
+        $resOtherMissing->assertSessionHasErrors(['other_designation']);
+
+        // 3. Designation 'Other' with other_designation succeeds
+        $dataOtherValid = $dataOtherMissing;
+        $dataOtherValid['other_designation'] = 'Chief Vigilance Officer';
+        $resOtherValid = $this->post(route('admin.field_visits.store'), $dataOtherValid);
+        $resOtherValid->assertSessionHasNoErrors();
+
+        $visitOther = FieldVisit::where('contact_number', '9437188888')->orderByDesc('id')->first();
+        $this->assertNotNull($visitOther);
+        $this->assertEquals('Other', $visitOther->visiting_officer_designation);
+        $this->assertEquals('Chief Vigilance Officer', $visitOther->other_designation);
+        $this->assertEquals('Dr. Custom Officer', $visitOther->visiting_officer_name);
+
+        // 4. Standard designation ignores or clears other_designation
+        $dataStandard = $baseData;
+        $dataStandard['contact_number'] = '9437177777';
+        $dataStandard['visiting_officer_name'] = 'Dr. Special Sec';
+        $dataStandard['visiting_officer_designation'] = 'Special Secreatry';
+        $dataStandard['other_designation'] = 'Irrelevant String';
+        $resStandard = $this->post(route('admin.field_visits.store'), $dataStandard);
+        $resStandard->assertSessionHasNoErrors();
+
+        $visitStd = FieldVisit::where('contact_number', '9437177777')->orderByDesc('id')->first();
+        $this->assertNotNull($visitStd);
+        $this->assertEquals('Special Secreatry', $visitStd->visiting_officer_designation);
+        $this->assertNull($visitStd->other_designation);
+
+        $visitOther->forceDelete();
+        $visitStd->forceDelete();
+    }
+
+    /**
+     * Test 21: PART C - Strict 500-char limit for key_observations and preservation of 6 hidden fields.
+     */
+    public function test_part_c_key_observations_max_500_and_hidden_fields_preservation(): void
+    {
+        $this->actingAs($this->adminUser);
+
+        $type = FieldVisitType::first();
+        $institute = \App\Models\FieldVisitInstitute::where('category_name', 'Special School')->first()
+            ?? \App\Models\FieldVisitInstitute::where('category_id', '>', 3)->first();
+
+        $postData = [
+            'visit_date' => now()->format('Y-m-d'),
+            'field_visit_type_id' => $type->id,
+            'status' => 'submitted',
+            'visit_purpose' => 'Observation limit test',
+            'visiting_officer_name' => 'Dr. Observer',
+            'visiting_officer_designation' => 'Director',
+            'category_id' => $institute->category_id,
+            'institution_id' => $institute->id,
+            'contact_person' => 'Headmaster',
+            'contact_number' => '9437166666',
+            'address_type' => 1,
+            'state' => 228,
+            'district' => $institute->district_id ?: 2421,
+            'block' => 1,
+            'grampanchayat' => 2,
+            'village_id' => 379717,
+            'areas_inspected' => 'Classrooms and Library',
+            'findings' => 'All standards met',
+            'issues_identified' => 'None',
+            'recommendations' => 'Upgrade science lab',
+            'corrective_actions' => 'Procure equipment within 30 days',
+            'overall_remarks' => 'Good performance overall',
+        ];
+
+        // 1. Exceeding 500 characters fails validation
+        $postDataExceed = $postData;
+        $postDataExceed['key_observations'] = str_repeat('A', 501);
+        $resExceed = $this->post(route('admin.field_visits.store'), $postDataExceed);
+        $resExceed->assertSessionHasErrors(['key_observations']);
+
+        // 2. Exactly 500 characters succeeds
+        $postDataValid = $postData;
+        $postDataValid['key_observations'] = str_repeat('B', 500);
+        $resValid = $this->post(route('admin.field_visits.store'), $postDataValid);
+        $resValid->assertSessionHasNoErrors();
+
+        $visit = FieldVisit::where('contact_number', '9437166666')->orderByDesc('id')->first();
+        $this->assertNotNull($visit);
+        $this->assertEquals(500, strlen($visit->key_observations));
+
+        // 3. Update without the 6 hidden fields preserves their existing database values
+        $updateData = [
+            'visit_date' => now()->format('Y-m-d'),
+            'field_visit_type_id' => $type->id,
+            'status' => 'reviewed',
+            'visit_purpose' => 'Updated purpose without hidden fields',
+            'visiting_officer_name' => 'Dr. Observer Updated',
+            'visiting_officer_designation' => 'Director',
+            'category_id' => $institute->category_id,
+            'institution_id' => $institute->id,
+            'contact_number' => '9437166666',
+            'address_type' => 1,
+            'district_id' => $institute->district_id ?: 2421,
+            'block' => 1,
+            'grampanchayat' => 2,
+            'village_id' => 379717,
+            'key_observations' => 'Updated observations within 500 characters',
+        ];
+
+        $updateRes = $this->post(route('admin.field_visits.update', $visit->id), $updateData);
+        $updateRes->assertSessionHasNoErrors();
+
+        $visit->refresh();
+        $this->assertEquals('Classrooms and Library', $visit->areas_inspected);
+        $this->assertEquals('All standards met', $visit->findings);
+        $this->assertEquals('None', $visit->issues_identified);
+        $this->assertEquals('Upgrade science lab', $visit->recommendations);
+        $this->assertEquals('Procure equipment within 30 days', $visit->corrective_actions);
+        $this->assertEquals('Good performance overall', $visit->overall_remarks);
+
+        // 4. Show view renders character count
+        $showRes = $this->get(route('admin.field_visits.show', $visit->id));
+        $showRes->assertStatus(200);
+        $showRes->assertSee('Key Observations');
+        $showRes->assertSee('/ 500 characters');
+
+        $visit->forceDelete();
+    }
+
+    /**
+     * Test 22: PART D - Role-based geographical scoping and record-level authorization.
+     */
+    public function test_part_d_geographical_role_based_filtering(): void
+    {
+        $type = FieldVisitType::first();
+
+        // Clean up any stale test records from previous attempts
+        FieldVisit::where('visit_reference_no', 'like', 'FV-TEST-B%')->forceDelete();
+
+        $uniq = uniqid();
+
+        // Create visit in Block 1, District 2421
+        $visitBlock1 = FieldVisit::create([
+            'visit_reference_no' => 'FV-TEST-B1-' . $uniq,
+            'visit_date' => now(),
+            'start_time' => '10:00:00',
+            'end_time' => '11:00:00',
+            'field_visit_type_id' => $type->id,
+            'status' => 'submitted',
+            'visit_purpose' => 'Geographical test block 1',
+            'visiting_officer_id' => $this->adminUser->user_table_id,
+            'visiting_officer_name' => 'Officer One',
+            'visiting_officer_designation' => 'BSSO',
+            'institution_type' => 'Special School',
+            'category_id' => 1,
+            'district_id' => 2421,
+            'block_id' => 1,
+            'address_type' => 1,
+            'contact_number' => '9437100001',
+            'institution_name' => 'Block 1 Facility',
+        ]);
+
+        // Create visit in Block 9999, District 2430
+        $visitBlock2 = FieldVisit::create([
+            'visit_reference_no' => 'FV-TEST-B2-' . $uniq,
+            'visit_date' => now(),
+            'start_time' => '11:00:00',
+            'end_time' => '12:00:00',
+            'field_visit_type_id' => $type->id,
+            'status' => 'submitted',
+            'visit_purpose' => 'Geographical test block 9999',
+            'visiting_officer_id' => $this->adminUser->user_table_id,
+            'visiting_officer_name' => 'Officer Two',
+            'visiting_officer_designation' => 'BSSO',
+            'institution_type' => 'Special School',
+            'category_id' => 1,
+            'district_id' => 2430,
+            'block_id' => 9999,
+            'address_type' => 1,
+            'contact_number' => '9437100002',
+            'institution_name' => 'Block 9999 Facility',
+        ]);
+
+        // Create a BSSO user (Role 4) posted to Block 1
+        $bssoUser = User::create([
+            'user_id' => 'bsso_' . uniqid(),
+            'name' => 'BSSO Block 1 Officer',
+            'email' => 'bsso_b1_' . time() . '@test.gov.in',
+            'password' => bcrypt('password123'),
+            'role_id' => 4,
+            'posted_district' => 2421,
+            'posted_block' => 1,
+        ]);
+        $bssoUser->user_table_id = 88881;
+        $bssoUser->email_verified_at = now();
+        $bssoUser->save();
+        $bssoUser->assignRole('BSSO');
+        $bssoUser->givePermissionTo(['field-visit-show', 'field-visit-edit', 'field-visit-delete']);
+
+        try {
+            // 1. BSSO user can view visit in Block 1
+            $this->actingAs($bssoUser);
+            $resB1 = $this->get(route('admin.field_visits.show', $visitBlock1->id));
+            $resB1->assertStatus(200);
+
+            // 2. BSSO user is FORBIDDEN (403) from viewing visit in Block 9999
+            $resB2 = $this->get(route('admin.field_visits.show', $visitBlock2->id));
+            $resB2->assertStatus(403);
+
+            // 3. BSSO user is FORBIDDEN (403) from editing visit in Block 9999
+            $resEditB2 = $this->get(route('admin.field_visits.edit', $visitBlock2->id));
+            $resEditB2->assertStatus(403);
+
+            // 4. BSSO user is FORBIDDEN (403) from updating visit in Block 9999
+            $resUpdateB2 = $this->post(route('admin.field_visits.update', $visitBlock2->id), [
+                'visit_date' => now()->format('Y-m-d'),
+                'field_visit_type_id' => $type->id,
+                'status' => 'submitted',
+                'visit_purpose' => 'Unauthorized update',
+                'visiting_officer_name' => 'Hacker',
+                'visiting_officer_designation' => 'BSSO',
+                'category_id' => 1,
+                'contact_number' => '9437100002',
+                'address_type' => 1,
+                'district_id' => 2430,
+                'block' => 9999,
+                'grampanchayat' => 1,
+                'village_id' => 1,
+            ]);
+            $resUpdateB2->assertStatus(403);
+
+            // 5. BSSO user is FORBIDDEN (403) from deleting visit in Block 9999
+            $resDeleteB2 = $this->delete(route('admin.field_visits.destroy', $visitBlock2->id));
+            $resDeleteB2->assertStatus(403);
+
+            // 6. Admin user (Role 1) can view both visits without restriction
+            $this->actingAs($this->adminUser);
+            $this->get(route('admin.field_visits.show', $visitBlock1->id))->assertStatus(200);
+            $this->get(route('admin.field_visits.show', $visitBlock2->id))->assertStatus(200);
+        } finally {
+            $visitBlock1->forceDelete();
+            $visitBlock2->forceDelete();
+            $bssoUser->delete();
+        }
+    }
+
+    /**
+     * Test graceful PostTooLargeException handling.
+     */
+    public function test_post_too_large_exception_gracefully_redirects_with_friendly_message(): void
+    {
+        $this->actingAs($this->adminUser);
+
+        // 1. Regular web POST request
+        $request = \Illuminate\Http\Request::create('/dashboard/field-visits/store', 'POST');
+        $session = app('session')->driver();
+        $request->setLaravelSession($session);
+        $session->setPreviousUrl(route('admin.field_visits.create'));
+
+        $exception = new \Illuminate\Http\Exceptions\PostTooLargeException();
+        $handler = app(\Illuminate\Contracts\Debug\ExceptionHandler::class);
+        $response = $handler->render($request, $exception);
+
+        $this->assertInstanceOf(\Illuminate\Http\RedirectResponse::class, $response);
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertTrue($session->has('error'));
+        $this->assertStringContainsString('The total upload size exceeds the server limit', $session->get('error'));
+
+        // 2. JSON / AJAX request
+        $jsonRequest = \Illuminate\Http\Request::create('/dashboard/field-visits/store', 'POST');
+        $jsonRequest->headers->set('Accept', 'application/json');
+
+        $jsonResponse = $handler->render($jsonRequest, $exception);
+        $this->assertInstanceOf(\Illuminate\Http\JsonResponse::class, $jsonResponse);
+        $this->assertEquals(413, $jsonResponse->getStatusCode());
+        $data = $jsonResponse->getData(true);
+        $this->assertFalse($data['success']);
+        $this->assertStringContainsString('The total upload size exceeds the server limit', $data['message']);
+    }
+
+    /**
+     * Test field visit upload limits: max counts and cumulative sizes.
+     */
+    public function test_field_visit_upload_limits_and_validation(): void
+    {
+        $this->actingAs($this->adminUser);
+
+        // 1. Exceeding max 10 photos
+        $oversizedPhotos = [];
+        for ($i = 0; $i < 11; $i++) {
+            $oversizedPhotos[] = [
+                'image_data' => 'data:image/jpeg;base64,' . base64_encode('test-img-' . $i),
+                'caption' => 'Photo ' . $i,
+            ];
+        }
+
+        $resPhotoCount = $this->post(route('admin.field_visits.store'), [
+            'visit_date' => date('Y-m-d'),
+            'field_visit_type_id' => 1,
+            'status' => 'draft',
+            'visit_purpose' => 'Photo limit test',
+            'visiting_officer_name' => 'Officer',
+            'visiting_officer_designation' => 'BSSO',
+            'category_id' => 1,
+            'institution_id' => 1,
+            'contact_number' => '9437100000',
+            'address_type' => 1,
+            'district_id' => 2430,
+            'block' => 1,
+            'grampanchayat' => 1,
+            'village_id' => 1,
+            'photos' => $oversizedPhotos,
+        ]);
+        $resPhotoCount->assertSessionHasErrors('photos');
+
+        // 2. Exceeding max 5 documents
+        $oversizedDocs = [];
+        for ($i = 0; $i < 6; $i++) {
+            $oversizedDocs[] = \Illuminate\Http\UploadedFile::fake()->create("doc_{$i}.pdf", 100);
+        }
+
+        $resDocCount = $this->post(route('admin.field_visits.store'), [
+            'visit_date' => date('Y-m-d'),
+            'field_visit_type_id' => 1,
+            'status' => 'draft',
+            'visit_purpose' => 'Doc limit test',
+            'visiting_officer_name' => 'Officer',
+            'visiting_officer_designation' => 'BSSO',
+            'category_id' => 1,
+            'institution_id' => 1,
+            'contact_number' => '9437100000',
+            'address_type' => 1,
+            'district_id' => 2430,
+            'block' => 1,
+            'grampanchayat' => 1,
+            'village_id' => 1,
+            'documents' => $oversizedDocs,
+        ]);
+        $resDocCount->assertSessionHasErrors('documents');
+
+        // 3. Document exceeding 1MB per file (1500 KB > 1024 KB)
+        $oversizedSingleDoc = [
+            \Illuminate\Http\UploadedFile::fake()->create('huge.pdf', 1500),
+        ];
+        $resSingleDoc = $this->post(route('admin.field_visits.store'), [
+            'visit_date' => date('Y-m-d'),
+            'field_visit_type_id' => 1,
+            'status' => 'draft',
+            'visit_purpose' => 'Doc size test',
+            'visiting_officer_name' => 'Officer',
+            'visiting_officer_designation' => 'BSSO',
+            'category_id' => 1,
+            'institution_id' => 1,
+            'contact_number' => '9437100000',
+            'address_type' => 1,
+            'district_id' => 2430,
+            'block' => 1,
+            'grampanchayat' => 1,
+            'village_id' => 1,
+            'documents' => $oversizedSingleDoc,
+        ]);
+        $resSingleDoc->assertSessionHasErrors('documents.0');
+
+        // 4. Individual photograph payload exceeding 1MB (approx 1.5MB base64)
+        $largePhotoPayload = 'data:image/jpeg;base64,' . str_repeat('A', 2000000);
+        $resSinglePhoto = $this->post(route('admin.field_visits.store'), [
+            'visit_date' => date('Y-m-d'),
+            'field_visit_type_id' => 1,
+            'status' => 'draft',
+            'visit_purpose' => 'Photo size test',
+            'visiting_officer_name' => 'Officer',
+            'visiting_officer_designation' => 'BSSO',
+            'category_id' => 1,
+            'institution_id' => 1,
+            'contact_number' => '9437100000',
+            'address_type' => 1,
+            'district_id' => 2430,
+            'block' => 1,
+            'grampanchayat' => 1,
+            'village_id' => 1,
+            'photos' => [
+                [
+                    'image_data' => $largePhotoPayload,
+                    'caption' => 'Too large photo',
+                ]
+            ],
+        ]);
+        $resSinglePhoto->assertSessionHasErrors('photos');
     }
 }

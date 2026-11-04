@@ -29,6 +29,7 @@ class FieldVisitPermissionSeeder extends Seeder
             'field-visit-evidence-upload',
             'field-visit-evidence-delete',
             'field-visit-export',
+            'field-visit-report-access',
         ];
 
         foreach ($permissions as $permissionName) {
@@ -37,7 +38,7 @@ class FieldVisitPermissionSeeder extends Seeder
             );
         }
 
-        // Assign to SuperAdmin and Admin roles
+        // Assign all permissions to SuperAdmin and Admin
         $superAdmin = Role::where('name', 'SuperAdmin')->where('guard_name', 'web')->first();
         if ($superAdmin) {
             $superAdmin->givePermissionTo($permissions);
@@ -46,6 +47,29 @@ class FieldVisitPermissionSeeder extends Seeder
         $admin = Role::where('name', 'Admin')->where('guard_name', 'web')->first();
         if ($admin) {
             $admin->givePermissionTo($permissions);
+        }
+
+        // Assign field-visit-report-access to field & department roles
+        $reportRoles = [
+            'BSSO',
+            'MEO',
+            'BDO',
+            'SSSO',
+            'DSSO',
+            'SubCollector',
+            'Collector',
+            'HO',
+            'BO',
+            'Director',
+            'Secretary',
+            'PensionRole',
+        ];
+
+        foreach ($reportRoles as $roleName) {
+            $role = Role::where('name', $roleName)->where('guard_name', 'web')->first();
+            if ($role) {
+                $role->givePermissionTo('field-visit-report-access');
+            }
         }
 
         app()[PermissionRegistrar::class]->forgetCachedPermissions();

@@ -133,19 +133,32 @@ Field Visit Details || {{ $visit->visit_reference_no }}
                <div class="small text-muted mt-2">
                   <i class="fas fa-map-pin text-danger me-1"></i>
                   {{ $visit->district ? $visit->district->district_name : 'No District' }}
-                  @if($visit->block) &bull; {{ $visit->block->block_name }} @endif
+                  @if($visit->block) &bull; {{ $visit->block->block_name }} @elseif($visit->municipality) &bull; {{ $visit->municipality->municipality_name }} @endif
                   @if($visit->institution_address) &bull; {{ $visit->institution_address }} @endif
                </div>
             </div>
             <div class="col-md-6 border-start ps-md-4">
-               <h6 class="text-muted small mb-1">VISITING OFFICER</h6>
+               <h6 class="text-muted small mb-1">VISITING OFFICER DETAILS</h6>
                <h5 class="fw-bold mb-1">
-                  <i class="fas fa-user-check text-success me-1"></i>
-                  {{ $visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id) }}
+                  <i class="fas fa-user-tie text-primary me-1"></i>
+                  {{ $visit->visiting_officer_name ?: ($visit->visitingOfficer ? $visit->visitingOfficer->name : 'N/A') }}
                </h5>
+               @php
+                  $desigDisplay = $visit->visiting_officer_designation === 'Other' && !empty($visit->other_designation)
+                     ? $visit->other_designation
+                     : $visit->visiting_officer_designation;
+               @endphp
+               @if($desigDisplay)
+               <div class="mb-1">
+                  <span class="badge bg-secondary font-monospace">{{ $desigDisplay }}</span>
+               </div>
+               @endif
+               <div class="small text-muted mt-2">
+                  <strong>Loggedin Officer:</strong> {{ $visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id) }}
+                  @if($visit->visitingOfficer && $visit->visitingOfficer->email) ({{ $visit->visitingOfficer->email }}) @endif
+               </div>
                <div class="small text-muted">
-                  Email: {{ $visit->visitingOfficer ? $visit->visitingOfficer->email : 'N/A' }} | 
-                  Attribution: <span class="badge bg-secondary font-monospace">user_table_id: #{{ $visit->visiting_officer_id }}</span>
+                  Attribution: <span class="badge bg-light text-dark border font-monospace">user_table_id: #{{ $visit->visiting_officer_id }}</span>
                </div>
                <div class="small text-muted mt-2">
                   <strong>Timing:</strong> 
@@ -161,7 +174,7 @@ Field Visit Details || {{ $visit->visit_reference_no }}
    <!-- OBSERVATIONS, FINDINGS & RECOMMENDATIONS -->
    <div class="card shadow-sm mb-4">
       <div class="card-header bg-light py-2">
-         <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fas fa-clipboard-check text-primary me-2"></i> Purpose, Observations & Findings</h5>
+         <h5 class="mb-0 fs-6 fw-bold text-dark"><i class="fas fa-clipboard-check text-primary me-2"></i> Purpose & Observations</h5>
       </div>
       <div class="card-body">
          <table class="table table-bordered mb-0">
@@ -171,29 +184,44 @@ Field Visit Details || {{ $visit->visit_reference_no }}
                   <td class="detail-value fw-semibold text-primary">{{ $visit->visit_purpose }}</td>
                </tr>
                <tr>
-                  <td class="detail-label">Areas / Activities Inspected</td>
-                  <td class="detail-value text-wrap">{{ $visit->areas_inspected ?: '—' }}</td>
-               </tr>
-               <tr>
-                  <td class="detail-label">Key Observations</td>
+                  <td class="detail-label">
+                     Key Observations, Recommendations & Suggestions
+                     @if(!empty($visit->key_observations))
+                     <br><span class="badge bg-light text-muted border font-monospace mt-1">{{ strlen($visit->key_observations) }} / 500 characters</span>
+                     @endif
+                  </td>
                   <td class="detail-value text-wrap">{!! nl2br(e($visit->key_observations)) ?: '<span class="text-muted">None recorded</span>' !!}</td>
                </tr>
+               @if(!empty($visit->areas_inspected))
+               <tr>
+                  <td class="detail-label">Areas / Activities Inspected</td>
+                  <td class="detail-value text-wrap">{{ $visit->areas_inspected }}</td>
+               </tr>
+               @endif
+               @if(!empty($visit->findings))
                <tr>
                   <td class="detail-label">Detailed Findings</td>
-                  <td class="detail-value text-wrap">{!! nl2br(e($visit->findings)) ?: '<span class="text-muted">None recorded</span>' !!}</td>
+                  <td class="detail-value text-wrap">{!! nl2br(e($visit->findings)) !!}</td>
                </tr>
+               @endif
+               @if(!empty($visit->issues_identified))
                <tr>
                   <td class="detail-label">Deficiencies / Issues Identified</td>
-                  <td class="detail-value text-wrap text-danger">{!! nl2br(e($visit->issues_identified)) ?: '<span class="text-muted">No issues identified</span>' !!}</td>
+                  <td class="detail-value text-wrap text-danger">{!! nl2br(e($visit->issues_identified)) !!}</td>
                </tr>
+               @endif
+               @if(!empty($visit->recommendations))
                <tr>
                   <td class="detail-label">Recommendations</td>
-                  <td class="detail-value text-wrap">{!! nl2br(e($visit->recommendations)) ?: '<span class="text-muted">None recorded</span>' !!}</td>
+                  <td class="detail-value text-wrap">{!! nl2br(e($visit->recommendations)) !!}</td>
                </tr>
+               @endif
+               @if(!empty($visit->corrective_actions))
                <tr>
                   <td class="detail-label">Corrective Actions Required</td>
-                  <td class="detail-value text-wrap">{!! nl2br(e($visit->corrective_actions)) ?: '<span class="text-muted">None specified</span>' !!}</td>
+                  <td class="detail-value text-wrap">{!! nl2br(e($visit->corrective_actions)) !!}</td>
                </tr>
+               @endif
                <tr>
                   <td class="detail-label">Follow-up Required</td>
                   <td class="detail-value">
@@ -201,14 +229,16 @@ Field Visit Details || {{ $visit->visit_reference_no }}
                      <span class="badge bg-danger"><i class="fas fa-check-circle me-1"></i> YES</span>
                      <span class="ms-2">Due Date: <strong>{{ $visit->follow_up_date ? $visit->follow_up_date->format('d-M-Y') : 'Not set' }}</strong></span>
                      @else
-                     <span class="badge bg-secondary">NO</span>
+                     <span class="badge bg-secondary text-dark">NO</span>
                      @endif
                   </td>
                </tr>
+               @if(!empty($visit->overall_remarks))
                <tr>
                   <td class="detail-label">Overall Remarks</td>
-                  <td class="detail-value text-wrap">{!! nl2br(e($visit->overall_remarks)) ?: '<span class="text-muted">None</span>' !!}</td>
+                  <td class="detail-value text-wrap">{!! nl2br(e($visit->overall_remarks)) !!}</td>
                </tr>
+               @endif
             </tbody>
          </table>
       </div>
