@@ -64,7 +64,7 @@ Field Visit Management || Visit Records
                </div>
 
                <!-- Advanced Search & Filter Toolbar -->
-               <form method="GET" action="{{ route('admin.field_visits.index') }}" class="p-3 bg-light rounded border mb-4">
+               <form id="filterForm" method="GET" action="{{ route('admin.field_visits.index') }}" class="p-3 bg-light rounded border mb-4">
                   <div class="row g-2 align-items-end">
                      <!-- Keyword Search -->
                      <div class="col-md-4 col-sm-12">
@@ -142,19 +142,17 @@ Field Visit Management || Visit Records
                         <button type="submit" class="btn btn-info btn-sm text-white px-3">
                            <i class="fas fa-filter me-1"></i> Apply Filters
                         </button>
-                        @if(request()->hasAny(['search', 'field_visit_type_id', 'status', 'district_id', 'is_follow_up_required', 'date_from', 'date_to']))
-                        <a href="{{ route('admin.field_visits.index') }}" class="btn btn-secondary btn-sm px-3">
+                        <button type="button" id="btnResetFilter" class="btn btn-secondary btn-sm px-3">
                            <i class="fas fa-undo me-1"></i> Reset
-                        </a>
-                        @endif
+                        </button>
                      </div>
                   </div>
                </form>
 
-               <!-- Table Data -->
-               <div class="table-responsive">
-                  <table class="table table-bordered table-hover align-middle">
-                     <thead class="table-dark">
+               <!-- Table Data (Yajra DataTables Server-Side) -->
+               <div class="table-responsive m-t-20">
+                  <table id="fieldVisitsTable" class="display nowrap table table-hover table-striped border align-middle" cellspacing="0" width="100%">
+                     <thead>
                         <tr>
                            <th style="width: 45px;" class="text-center">#</th>
                            <th style="width: 170px;">Reference No</th>
@@ -168,122 +166,22 @@ Field Visit Management || Visit Records
                            <th style="width: 85px;" class="text-center">Action</th>
                         </tr>
                      </thead>
-                     <tbody>
-                        @forelse($visits as $index => $visit)
+                     <tfoot>
                         <tr>
-                           <td class="text-center text-muted">
-                              {{ $visits->firstItem() + $index }}
-                           </td>
-                           <td>
-                              <a href="{{ route('admin.field_visits.show', $visit->id) }}" class="ref-badge text-primary text-decoration-none">
-                                 {{ $visit->visit_reference_no }}
-                              </a>
-                              @if($visit->is_follow_up_required)
-                              <span class="badge bg-warning text-dark d-block mt-1" style="font-size: 0.7rem;">
-                                 <i class="fas fa-exclamation-circle me-1"></i> Follow-up Req
-                              </span>
-                              @endif
-                           </td>
-                           <td class="small">
-                              <div>{{ $visit->visit_date ? $visit->visit_date->format('d-M-Y') : '—' }}</div>
-                              @if($visit->start_time)
-                              <span class="text-muted" style="font-size: 0.75rem;">{{ date('h:i A', strtotime($visit->start_time)) }}</span>
-                              @endif
-                           </td>
-                           <td>
-                              <span class="fw-semibold">{{ $visit->visitType ? $visit->visitType->name : 'N/A' }}</span>
-                           </td>
-                           <td>
-                              <span class="badge bg-light text-dark border me-1">{{ $visit->institution_type }}</span>
-                              <div class="fw-bold mt-1 text-dark">{{ $visit->institution_name }}</div>
-                              @if($visit->organization_code)
-                              <span class="text-muted font-monospace" style="font-size: 0.75rem;">[{{ $visit->organization_code }}]</span>
-                              @endif
-                           </td>
-                           <td class="small">
-                              {{ $visit->district ? $visit->district->district_name : '—' }}
-                              @if($visit->block)
-                              <div class="text-muted" style="font-size: 0.75rem;">{{ $visit->block->block_name }}</div>
-                              @endif
-                           </td>
-                           <td class="small">
-                              <div class="fw-semibold text-dark">
-                                 <i class="fas fa-user-tie text-primary me-1"></i>
-                                 {{ $visit->visiting_officer_name ?: ($visit->visitingOfficer ? $visit->visitingOfficer->name : ('Officer #' . $visit->visiting_officer_id)) }}
-                              </div>
-                              @php
-                                 $desig = $visit->visiting_officer_designation === 'Other' && !empty($visit->other_designation)
-                                    ? $visit->other_designation
-                                    : $visit->visiting_officer_designation;
-                              @endphp
-                              @if(!empty($desig))
-                              <span class="badge bg-secondary font-monospace" style="font-size: 0.68rem;">{{ $desig }}</span>
-                              @endif
-                           </td>
-                           <td class="text-center">
-                              @php $photoCount = $visit->evidences->count(); @endphp
-                              @if($photoCount > 0)
-                              <span class="badge bg-info text-dark" title="{{ $photoCount }} geotagged photo(s)">
-                                 <i class="fas fa-camera me-1"></i> {{ $photoCount }}
-                              </span>
-                              @else
-                              <span class="text-muted" style="font-size: 0.8rem;">—</span>
-                              @endif
-                           </td>
-                           <td class="text-center">
-                              {!! $visit->status_badge !!}
-                           </td>
-                           <td class="text-center">
-                              <div class="btn-group">
-                                 <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Action
-                                 </button>
-                                 <div class="dropdown-menu dropdown-menu-end">
-                                    @can('field-visit-show')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visits.show', $visit->id) }}">
-                                       <i class="fas fa-eye text-info me-2"></i> View Details
-                                    </a>
-                                    @endcan
-                                    @can('field-visit-edit')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visits.edit', $visit->id) }}">
-                                       <i class="fas fa-edit text-warning me-2"></i> Edit Visit
-                                    </a>
-                                    @endcan
-                                    @can('field-visit-delete')
-                                    <a class="dropdown-item text-danger" href="{{ route('admin.field_visits.destroy', $visit->id) }}" id="delete">
-                                       <i class="fas fa-trash-alt text-danger me-2"></i> Delete
-                                    </a>
-                                    @endcan
-                                 </div>
-                              </div>
-                           </td>
+                           <th class="text-center">#</th>
+                           <th>Reference No</th>
+                           <th>Visit Date</th>
+                           <th>Visit Type</th>
+                           <th>Institution / Facility</th>
+                           <th>District</th>
+                           <th>Visiting Officer</th>
+                           <th class="text-center">Evidence</th>
+                           <th class="text-center">Status</th>
+                           <th class="text-center">Action</th>
                         </tr>
-                        @empty
-                        <tr>
-                           <td colspan="10" class="text-center py-5 text-muted">
-                              <i class="fas fa-map-marked-alt fa-3x mb-3 text-secondary d-block"></i>
-                              <h5>No Field Visits Found</h5>
-                              <p class="small mb-3">No field visit inspection records match the current filter criteria.</p>
-                              @can('field-visit-create')
-                              <a href="{{ route('admin.field_visits.create') }}" class="btn btn-success btn-sm text-white">
-                                 <i class="fa fa-plus-circle me-1"></i> Record First Field Visit
-                              </a>
-                              @endcan
-                           </td>
-                        </tr>
-                        @endforelse
-                     </tbody>
+                     </tfoot>
+                     <tbody></tbody>
                   </table>
-               </div>
-
-               <!-- Pagination -->
-               <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                  <div class="small text-muted mb-2">
-                     Showing {{ $visits->firstItem() ?? 0 }} to {{ $visits->lastItem() ?? 0 }} of {{ $visits->total() }} visits
-                  </div>
-                  <div>
-                     {{ $visits->links('pagination::bootstrap-5') }}
-                  </div>
                </div>
 
             </div>
@@ -291,4 +189,58 @@ Field Visit Management || Visit Records
       </div>
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+    var table = $('#fieldVisitsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        scrollX: true,
+        ajax: {
+            url: "{{ route('admin.field_visits.index') }}",
+            data: function (d) {
+                d.search_keyword = $('#search').val();
+                d.field_visit_type_id = $('#field_visit_type_id').val();
+                d.status = $('#status').val();
+                d.district_id = $('#district_id').val();
+                d.is_follow_up_required = $('#is_follow_up_required').val();
+                d.date_from = $('#date_from').val();
+                d.date_to = $('#date_to').val();
+            }
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted' },
+            { data: 'visit_reference_no', name: 'visit_reference_no' },
+            { data: 'visit_date', name: 'visit_date' },
+            { data: 'visit_type', name: 'visitType.name' },
+            { data: 'institution_name', name: 'institution_name' },
+            { data: 'district', name: 'district.district_name' },
+            { data: 'visiting_officer', name: 'visiting_officer_name' },
+            { data: 'photos_count', name: 'photos_count', orderable: false, searchable: false, className: 'text-center' },
+            { data: 'status', name: 'status', className: 'text-center' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        order: [[2, 'desc']],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+    });
+
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+    $('#btnResetFilter').on('click', function () {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
+    });
+});
+</script>
 @endsection

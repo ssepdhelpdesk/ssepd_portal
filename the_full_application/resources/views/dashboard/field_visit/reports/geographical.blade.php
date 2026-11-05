@@ -63,12 +63,25 @@
                <i class="fas fa-list-alt text-primary me-2"></i>Field Visits in Selected Jurisdiction
             </h5>
          </div>
-         <div class="card-body p-0">
+         <div class="card-body p-3">
             <div class="table-responsive">
-               <table class="table table-hover table-striped mb-0 align-middle">
+               <table id="geoVisitsTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                   <thead class="table-dark">
                      <tr>
-                        <th>#</th>
+                        <th style="width: 40px;" class="text-center">#</th>
+                        <th>Visit Ref No</th>
+                        <th>Visit Date</th>
+                        <th>Visit Type</th>
+                        <th>Institution Name</th>
+                        <th>Location</th>
+                        <th>Visiting Officer</th>
+                        <th>Status</th>
+                        <th class="text-center" style="width: 100px;">Action</th>
+                     </tr>
+                  </thead>
+                  <tfoot>
+                     <tr>
+                        <th class="text-center">#</th>
                         <th>Visit Ref No</th>
                         <th>Visit Date</th>
                         <th>Visit Type</th>
@@ -78,11 +91,11 @@
                         <th>Status</th>
                         <th class="text-center">Action</th>
                      </tr>
-                  </thead>
+                  </tfoot>
                   <tbody>
                      @forelse($visits as $idx => $v)
                      <tr>
-                        <td>{{ $visits->firstItem() + $idx }}</td>
+                        <td class="text-center text-muted">{{ $visits->firstItem() + $idx }}</td>
                         <td>
                            <a href="{{ route('admin.field_visits.show', $v->id) }}" class="fw-bold text-primary font-monospace">
                               {{ $v->visit_reference_no }}
@@ -143,12 +156,12 @@
                <i class="fas fa-sitemap text-primary me-2"></i>Geographical Hierarchy Breakdown
             </h5>
          </div>
-         <div class="card-body p-0">
+         <div class="card-body p-3">
             <div class="table-responsive">
-               <table class="table table-hover table-striped mb-0 align-middle">
+               <table id="geoHierarchyTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                   <thead class="table-dark">
                      <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;" class="text-center">#</th>
                         <th>Geographical Unit Name</th>
                         <th>Classification</th>
                         <th class="text-center">Total Visits</th>
@@ -157,10 +170,21 @@
                         <th class="text-center" style="width: 160px;">Drill Down</th>
                      </tr>
                   </thead>
+                  <tfoot>
+                     <tr>
+                        <th class="text-center">#</th>
+                        <th>Geographical Unit Name</th>
+                        <th>Classification</th>
+                        <th class="text-center">Total Visits</th>
+                        <th class="text-center">Rural Visits</th>
+                        <th class="text-center">Urban Visits</th>
+                        <th class="text-center">Drill Down</th>
+                     </tr>
+                  </tfoot>
                   <tbody>
                      @forelse($items as $idx => $item)
                      <tr>
-                        <td>{{ $idx + 1 }}</td>
+                        <td class="text-center text-muted">{{ $idx + 1 }}</td>
                         <td class="fw-bold text-dark fs-6">{{ $item['name'] }}</td>
                         <td><span class="badge bg-secondary">{{ $item['type'] }}</span></td>
                         <td class="text-center fw-bold">{{ number_format($item['total_visits']) }}</td>
@@ -189,5 +213,38 @@
       </div>
    @endif
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+   if ($('#geoVisitsTable').length) {
+      $('#geoVisitsTable').DataTable({
+         responsive: true,
+         scrollX: true,
+         dom: 'Blfrtip',
+         buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+         pageLength: 20,
+         lengthMenu: [[10, 20, 50, -1], [10, 20, 50, "All"]],
+         order: [[2, 'desc']]
+      });
+   }
+
+   if ($('#geoHierarchyTable').length) {
+      $('#geoHierarchyTable').DataTable({
+         responsive: true,
+         scrollX: true,
+         dom: 'Blfrtip',
+         buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+         pageLength: 10,
+         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+         order: [[3, 'desc']]
+      });
+   }
+
+   $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+      .addClass('btn btn-primary me-1');
+});
+</script>
 @endsection
 

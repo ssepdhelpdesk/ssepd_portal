@@ -328,8 +328,10 @@ class FieldVisitReportService
         }
 
         // Keyword Search
-        if ($request->filled('search')) {
-            $search = trim($request->input('search'));
+        $rawSearch = $request->input('search');
+        $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
+        if (!empty($searchVal) && is_string($searchVal)) {
+            $search = trim($searchVal);
             $query->where(function (Builder $q) use ($search) {
                 $q->where('field_visits.visit_reference_no', 'like', "%{$search}%")
                   ->orWhere('field_visits.institution_name', 'like', "%{$search}%")

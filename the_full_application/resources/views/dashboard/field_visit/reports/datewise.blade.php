@@ -2,6 +2,47 @@
 
 @section('title', 'Field Visit Reports || Date-wise Visit Report')
 
+@section('style')
+<style>
+   /* Standardized Pagination UI */
+   .dataTables_wrapper .dataTables_paginate {
+      padding-top: 0.5rem;
+      text-align: right;
+   }
+   .dataTables_wrapper .dataTables_paginate ul.pagination {
+      margin: 2px 0;
+      white-space: nowrap;
+      justify-content: flex-end;
+   }
+   .dataTables_wrapper .dataTables_paginate .page-item .page-link {
+      color: #007bff;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      border: 1px solid #dee2e6;
+   }
+   .dataTables_wrapper .dataTables_paginate .page-item.active .page-link {
+      color: #fff;
+      background-color: #007bff;
+      border-color: #007bff;
+      font-weight: 600;
+   }
+   .dataTables_wrapper .dataTables_paginate .page-item.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none;
+      cursor: not-allowed;
+      background-color: #fff;
+      border-color: #dee2e6;
+      opacity: 0.65;
+   }
+   .dataTables_wrapper .dataTables_paginate .page-item:not(.active):not(.disabled) .page-link:hover {
+      color: #0056b3;
+      background-color: #e9ecef;
+      border-color: #dee2e6;
+   }
+</style>
+@endsection
+
 @section('content')
 <div class="container-fluid">
    <!-- Page Title & Breadcrumb -->
@@ -60,12 +101,12 @@
             <i class="fas fa-file-excel me-1"></i> Export Daily Totals
          </a>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-3">
          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
+            <table id="dailySummaryTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                <thead class="table-dark">
                   <tr>
-                     <th style="width: 40px;">#</th>
+                     <th style="width: 40px;" class="text-center">#</th>
                      <th>Visit Date</th>
                      <th>Day</th>
                      <th class="text-center">Total Visits</th>
@@ -76,13 +117,26 @@
                      <th class="text-center" style="width: 120px;">Action</th>
                   </tr>
                </thead>
+               <tfoot>
+                  <tr>
+                     <th class="text-center">#</th>
+                     <th>Visit Date</th>
+                     <th>Day</th>
+                     <th class="text-center">Total Visits</th>
+                     <th class="text-center">Rural Visits</th>
+                     <th class="text-center">Urban Visits</th>
+                     <th class="text-center">Unique Institutions</th>
+                     <th class="text-center">Unique Officers</th>
+                     <th class="text-center">Action</th>
+                  </tr>
+               </tfoot>
                <tbody>
                   @forelse($daily_totals as $idx => $d)
                   @php
                      $dateObj = \Carbon\Carbon::parse($d->date_val);
                   @endphp
                   <tr>
-                     <td>{{ $idx + 1 }}</td>
+                     <td class="text-center text-muted">{{ $idx + 1 }}</td>
                      <td class="fw-bold text-dark font-monospace">{{ $dateObj->format('d-M-Y') }}</td>
                      <td><span class="badge bg-light text-dark border">{{ $dateObj->format('l') }}</span></td>
                      <td class="text-center fw-bold">{{ number_format($d->total_visits) }}</td>
@@ -116,12 +170,25 @@
             <i class="fas fa-stream text-primary me-2"></i>Date-wise Field Visit Listings
          </h5>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-3">
          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
+            <table id="datewiseListingsTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                <thead class="table-dark">
                   <tr>
-                     <th style="width: 40px;">#</th>
+                     <th style="width: 40px;" class="text-center">#</th>
+                     <th>Visit Ref No</th>
+                     <th>Visit Date</th>
+                     <th>Type</th>
+                     <th>Institution Name</th>
+                     <th>Location</th>
+                     <th>Visiting Officer</th>
+                     <th>Status</th>
+                     <th class="text-center" style="width: 100px;">Action</th>
+                  </tr>
+               </thead>
+               <tfoot>
+                  <tr>
+                     <th class="text-center">#</th>
                      <th>Visit Ref No</th>
                      <th>Visit Date</th>
                      <th>Type</th>
@@ -131,63 +198,66 @@
                      <th>Status</th>
                      <th class="text-center">Action</th>
                   </tr>
-               </thead>
-               <tbody>
-                  @forelse($detailed_visits as $idx => $v)
-                  <tr>
-                     <td>{{ $detailed_visits->firstItem() + $idx }}</td>
-                     <td>
-                        <a href="{{ route('admin.field_visits.show', $v->id) }}" class="fw-bold text-primary font-monospace">
-                           {{ $v->visit_reference_no }}
-                        </a>
-                     </td>
-                     <td class="fw-semibold">{{ $v->visit_date ? $v->visit_date->format('d-M-Y') : 'N/A' }}</td>
-                     <td>{{ $v->visitType ? $v->visitType->name : 'N/A' }}</td>
-                     <td>
-                        <span class="fw-semibold">{{ $v->institution_name }}</span>
-                        @if($v->institution_type)
-                           <br><span class="badge bg-light text-dark border">{{ $v->institution_type }}</span>
-                        @endif
-                     </td>
-                     <td>
-                        @if($v->address_type === 1)
-                           <span class="badge bg-success-subtle text-success border border-success"><i class="fas fa-tree me-1"></i>Rural</span>
-                           <div class="small text-muted">{{ $v->district ? $v->district->district_name : '' }} &bull; {{ $v->block ? $v->block->block_name : '' }}</div>
-                        @else
-                           <span class="badge bg-info-subtle text-info border border-info"><i class="fas fa-city me-1"></i>Urban</span>
-                           <div class="small text-muted">{{ $v->district ? $v->district->district_name : '' }} &bull; {{ $v->municipality ? $v->municipality->municipality_name : '' }}</div>
-                        @endif
-                     </td>
-                     <td>
-                        <span class="fw-semibold">{{ $v->visiting_officer_name ?: ($v->visitingOfficer ? $v->visitingOfficer->name : 'Officer #' . $v->visiting_officer_id) }}</span>
-                        @if($v->visiting_officer_designation)
-                           <br><span class="badge bg-secondary font-monospace" style="font-size: 0.65rem;">{{ $v->visiting_officer_designation }}</span>
-                        @endif
-                     </td>
-                     <td>{!! $v->status_badge !!}</td>
-                     <td class="text-center">
-                        <a href="{{ route('admin.field_visits.show', $v->id) }}" class="btn btn-xs btn-outline-info">
-                           <i class="fas fa-eye me-1"></i> View
-                        </a>
-                     </td>
-                  </tr>
-                  @empty
-                  <tr>
-                     <td colspan="9" class="text-center py-4 text-muted">
-                        No field visits recorded for the specified criteria.
-                     </td>
-                  </tr>
-                  @endforelse
-               </tbody>
+               </tfoot>
+               <tbody></tbody>
             </table>
          </div>
       </div>
-      @if($detailed_visits->hasPages())
-      <div class="card-footer bg-white py-2">
-         {{ $detailed_visits->links() }}
-      </div>
-      @endif
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+   // 1. Daily Visit Summary (Client-side aggregated DataTable)
+   $('#dailySummaryTable').DataTable({
+      responsive: true,
+      scrollX: true,
+      dom: 'Blfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+      pageLength: 10,
+      lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      order: [[1, 'desc']]
+   });
+
+   // 2. Date-wise Field Visit Listings (Server-Side Yajra DataTable)
+   var listingsTable = $('#datewiseListingsTable').DataTable({
+      processing: true,
+      serverSide: true,
+      responsive: true,
+      scrollX: true,
+      ajax: {
+         url: "{{ route('admin.field_visit_reports.datewise') }}",
+         data: function (d) {
+            var filterData = $('#reportFilterForm').serializeArray();
+            $.each(filterData, function (i, field) {
+               if (field.value) {
+                  d[field.name] = field.value;
+               }
+            });
+         }
+      },
+      columns: [
+         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted' },
+         { data: 'visit_reference_no', name: 'visit_reference_no' },
+         { data: 'visit_date', name: 'visit_date' },
+         { data: 'visit_type', name: 'visitType.name' },
+         { data: 'institution_name', name: 'institution_name' },
+         { data: 'location', name: 'district.district_name' },
+         { data: 'visiting_officer', name: 'visiting_officer_name' },
+         { data: 'status', name: 'status', className: 'text-center' },
+         { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+      ],
+      order: [[2, 'desc']],
+      dom: 'Blfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+      lengthMenu: [[10, 20, 50, 100, -1], [10, 20, 50, "All"]],
+   });
+
+   $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+      .addClass('btn btn-primary me-1');
+});
+</script>
 @endsection
 

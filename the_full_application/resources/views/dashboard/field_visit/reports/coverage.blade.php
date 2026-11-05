@@ -137,12 +137,12 @@
             <i class="fas fa-tags text-primary me-2"></i>Institution Category-wise Coverage Breakdown
          </h5>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-3">
          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
+            <table id="categoryBreakdownTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                <thead class="table-dark">
                   <tr>
-                     <th style="width: 40px;">#</th>
+                     <th style="width: 40px;" class="text-center">#</th>
                      <th>Institution Category</th>
                      <th class="text-center">Total Registered</th>
                      <th class="text-center">Visited at least Once</th>
@@ -153,7 +153,7 @@
                <tbody>
                   @forelse($category_breakdown as $idx => $cat)
                   <tr>
-                     <td>{{ $idx + 1 }}</td>
+                     <td class="text-center text-muted">{{ $idx + 1 }}</td>
                      <td class="fw-bold text-dark">{{ $cat['category_name'] }}</td>
                      <td class="text-center fw-semibold">{{ number_format($cat['total']) }}</td>
                      <td class="text-center text-success fw-bold">{{ number_format($cat['visited']) }}</td>
@@ -185,29 +185,29 @@
             <h5 class="card-title mb-0 fw-bold text-dark">
                <i class="fas fa-list text-primary me-2"></i>Master Institutions Directory & Status
             </h5>
-            <small class="text-muted">Showing {{ $institutes->firstItem() ?? 0 }} to {{ $institutes->lastItem() ?? 0 }} of {{ $institutes->total() }} institutions</small>
+            <small class="text-muted">Master database of institutions in your assigned jurisdiction</small>
          </div>
 
          <!-- Filter Tabs: All / Visited / Unvisited -->
-         <div class="btn-group btn-group-sm">
-            @php $currentFilter = request('coverage_filter', 'all'); @endphp
-            <a href="{{ request()->fullUrlWithQuery(['coverage_filter' => 'all']) }}" class="btn {{ $currentFilter === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
+         @php $currentFilter = request('coverage_filter', 'all'); @endphp
+         <div class="btn-group btn-group-sm" id="coverageFilterTabs">
+            <button type="button" class="btn coverage-filter-btn {{ $currentFilter === 'all' ? 'btn-primary active' : 'btn-outline-primary' }}" data-filter="all">
                All ({{ number_format($total_institutes) }})
-            </a>
-            <a href="{{ request()->fullUrlWithQuery(['coverage_filter' => 'visited']) }}" class="btn {{ $currentFilter === 'visited' ? 'btn-success text-white' : 'btn-outline-success' }}">
+            </button>
+            <button type="button" class="btn coverage-filter-btn {{ $currentFilter === 'visited' ? 'btn-success text-white active' : 'btn-outline-success' }}" data-filter="visited">
                Visited ({{ number_format($visited_count) }})
-            </a>
-            <a href="{{ request()->fullUrlWithQuery(['coverage_filter' => 'unvisited']) }}" class="btn {{ $currentFilter === 'unvisited' ? 'btn-danger text-white' : 'btn-outline-danger' }}">
+            </button>
+            <button type="button" class="btn coverage-filter-btn {{ $currentFilter === 'unvisited' ? 'btn-danger text-white active' : 'btn-outline-danger' }}" data-filter="unvisited">
                Unvisited ({{ number_format($unvisited_count) }})
-            </a>
+            </button>
          </div>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-3">
          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
+            <table id="coverageInstitutesTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                <thead class="table-dark">
                   <tr>
-                     <th style="width: 40px;">#</th>
+                     <th style="width: 40px;" class="text-center">#</th>
                      <th>Code</th>
                      <th>Institution Name</th>
                      <th>Category</th>
@@ -218,64 +218,107 @@
                      <th class="text-center" style="width: 100px;">Action</th>
                   </tr>
                </thead>
-               <tbody>
-                  @forelse($institutes as $idx => $inst)
-                  @php
-                     $isVisited = ($inst->visit_count ?? 0) > 0;
-                     $blockOrUlb = $inst->block ? $inst->block->block_name : ($inst->municipality ? $inst->municipality->municipality_name : $inst->block_name);
-                  @endphp
+               <tfoot>
                   <tr>
-                     <td>{{ $institutes->firstItem() + $idx }}</td>
-                     <td class="font-monospace small fw-bold">{{ $inst->institute_code }}</td>
-                     <td class="fw-bold text-dark">{{ $inst->institute_name }}</td>
-                     <td><span class="badge bg-light text-dark border">{{ $inst->category_name }}</span></td>
-                     <td>
-                        <div class="small fw-semibold">{{ $inst->district ? $inst->district->district_name : ($inst->district_name ?: 'N/A') }}</div>
-                        <div class="small text-muted">{{ $blockOrUlb ?: '—' }}</div>
-                     </td>
-                     <td class="text-center">
-                        @if($isVisited)
-                           <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Visited</span>
-                        @else
-                           <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Not Visited</span>
-                        @endif
-                     </td>
-                     <td class="text-center fw-bold">{{ number_format($inst->visit_count ?? 0) }}</td>
-                     <td>
-                        @if(!empty($inst->last_visit_date))
-                           <span class="fw-semibold text-dark">{{ date('d-M-Y', strtotime($inst->last_visit_date)) }}</span>
-                        @else
-                           <span class="text-muted small">Never</span>
-                        @endif
-                     </td>
-                     <td class="text-center">
-                        @if($isVisited)
-                           <a href="{{ route('admin.field_visit_reports.detailed', ['institution_id' => $inst->id]) }}" class="btn btn-xs btn-outline-info" title="View visits to this institution">
-                              <i class="fas fa-eye me-1"></i> Visits
-                           </a>
-                        @else
-                           <span class="text-muted small">—</span>
-                        @endif
-                     </td>
+                     <th class="text-center">#</th>
+                     <th>Code</th>
+                     <th>Institution Name</th>
+                     <th>Category</th>
+                     <th>Location</th>
+                     <th class="text-center">Coverage Status</th>
+                     <th class="text-center">Total Visits</th>
+                     <th>Last Visit Date</th>
+                     <th class="text-center">Action</th>
                   </tr>
-                  @empty
-                  <tr>
-                     <td colspan="9" class="text-center py-5 text-muted">
-                        <i class="fas fa-university fa-2x mb-2 text-secondary d-block"></i>
-                        No institutions found matching the filter criteria.
-                     </td>
-                  </tr>
-                  @endforelse
-               </tbody>
+               </tfoot>
+               <tbody></tbody>
             </table>
          </div>
       </div>
-      @if($institutes->hasPages())
-      <div class="card-footer bg-white py-2">
-         {{ $institutes->links() }}
-      </div>
-      @endif
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+    // 1. Initialize Category Breakdown Table (Client-side DataTable)
+    var catTable = $('#categoryBreakdownTable').DataTable({
+        responsive: true,
+        scrollX: true,
+        pageLength: 10,
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        order: [[2, 'desc']]
+    });
+
+    // 2. Initialize Master Institutions Directory Table (Server-side Yajra DataTable)
+    var currentCoverageFilter = "{{ request('coverage_filter', 'all') }}";
+
+    var instTable = $('#coverageInstitutesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        scrollX: true,
+        ajax: {
+            url: "{{ route('admin.field_visit_reports.coverage') }}",
+            data: function (d) {
+                var filterData = $('#reportFilterForm').serializeArray();
+                $.each(filterData, function (i, field) {
+                    if (field.value) {
+                        d[field.name] = field.value;
+                    }
+                });
+                d.coverage_filter = currentCoverageFilter;
+            }
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted' },
+            { data: 'institute_code', name: 'institute_code' },
+            { data: 'institute_name', name: 'institute_name' },
+            { data: 'category_name', name: 'category_name' },
+            { data: 'location', name: 'district.district_name' },
+            { data: 'coverage_status', name: 'coverage_status', className: 'text-center' },
+            { data: 'visit_count', name: 'visit_count', className: 'text-center' },
+            { data: 'last_visit_date', name: 'last_visit_date' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        order: [[2, 'asc']],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+    });
+
+    // Apply primary button styling to export buttons
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
+
+    // Filter Tabs Handler
+    $('.coverage-filter-btn').on('click', function () {
+        var selected = $(this).data('filter');
+        currentCoverageFilter = selected;
+
+        $('.coverage-filter-btn').removeClass('active btn-primary btn-success btn-danger text-white')
+            .each(function () {
+                var f = $(this).data('filter');
+                if (f === 'all') $(this).addClass('btn-outline-primary');
+                else if (f === 'visited') $(this).addClass('btn-outline-success');
+                else if (f === 'unvisited') $(this).addClass('btn-outline-danger');
+            });
+
+        $(this).addClass('active');
+        if (selected === 'all') {
+            $(this).removeClass('btn-outline-primary').addClass('btn-primary');
+        } else if (selected === 'visited') {
+            $(this).removeClass('btn-outline-success').addClass('btn-success text-white');
+        } else if (selected === 'unvisited') {
+            $(this).removeClass('btn-outline-danger').addClass('btn-danger text-white');
+        }
+
+        instTable.ajax.reload();
+    });
+});
+</script>
 @endsection
 

@@ -39,7 +39,30 @@ class FieldVisitTypeController extends Controller
         if ($request->ajax()) {
             $query = FieldVisitType::with(['creator', 'updater'])->select('field_visit_types.*');
 
-            return DataTables::of($query)
+            $searchVal = $request->input('search_keyword');
+            if (empty($searchVal) && $request->filled('search')) {
+                $rawSearch = $request->input('search');
+                $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
+            }
+            if (!empty($searchVal) && is_string($searchVal)) {
+                $search = trim($searchVal);
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('code', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+
+            if ($request->filled('status')) {
+                $status = $request->input('status');
+                if ($status === '1' || $status === 'active') {
+                    $query->where('is_active', true);
+                } elseif ($status === '0' || $status === 'inactive') {
+                    $query->where('is_active', false);
+                }
+            }
+
+            return DataTables::eloquent($query)
                 ->addIndexColumn()
                 ->editColumn('name', function ($row) {
                     return e($row->name);

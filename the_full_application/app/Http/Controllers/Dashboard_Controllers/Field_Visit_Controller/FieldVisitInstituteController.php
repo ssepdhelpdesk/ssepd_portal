@@ -66,6 +66,15 @@ class FieldVisitInstituteController extends Controller
                 ->select('field_visit_institutes.*');
 
             // Apply Filters
+            $searchVal = $request->input('search_keyword');
+            if (empty($searchVal) && $request->filled('search')) {
+                $rawSearch = $request->input('search');
+                $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
+            }
+            if (!empty($searchVal) && is_string($searchVal)) {
+                $query->search(trim($searchVal));
+            }
+
             if ($request->filled('district_id')) {
                 $query->where('district_id', $request->input('district_id'));
             }
@@ -87,7 +96,7 @@ class FieldVisitInstituteController extends Controller
                 }
             }
 
-            return DataTables::of($query)
+            return DataTables::eloquent($query)
                 ->addIndexColumn()
                 ->editColumn('institute_code', function ($row) {
                     return '<span class="badge bg-primary font-monospace">' . e($row->institute_code) . '</span>';

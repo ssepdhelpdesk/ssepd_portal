@@ -72,6 +72,14 @@ class FieldVisitController extends Controller
             // Apply geographical role-based restrictions
             $this->applyGeographicalScope($query, Auth::user());
 
+            $searchVal = $request->input('search_keyword');
+            if (empty($searchVal) && $request->filled('search')) {
+                $rawSearch = $request->input('search');
+                $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
+            }
+            if (!empty($searchVal) && is_string($searchVal)) {
+                $query->search(trim($searchVal));
+            }
             if ($request->filled('field_visit_type_id')) {
                 $query->where('field_visit_type_id', $request->input('field_visit_type_id'));
             }
@@ -94,7 +102,7 @@ class FieldVisitController extends Controller
                 $query->whereDate('visit_date', '<=', $request->input('date_to'));
             }
 
-            return DataTables::of($query)
+            return DataTables::eloquent($query)
                 ->addIndexColumn()
                 ->editColumn('visit_reference_no', function ($row) {
                     return '<a href="' . route('admin.field_visits.show', $row->id) . '" class="fw-bold text-primary text-decoration-none font-monospace">'

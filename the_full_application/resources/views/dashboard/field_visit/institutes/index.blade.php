@@ -124,7 +124,7 @@ SSEPD Institute Master || List
                @include('dashboard.component.message')
 
                <!-- Filter & Search Toolbar -->
-               <form method="GET" action="{{ route('admin.field_visit_institutes.index') }}" class="row g-2 mb-4 align-items-end p-3 bg-light rounded border">
+               <form id="filterForm" method="GET" action="{{ route('admin.field_visit_institutes.index') }}" class="row g-2 mb-4 align-items-end p-3 bg-light rounded border">
                   <div class="col-lg-3 col-md-6 col-sm-12">
                      <label for="search" class="form-label small fw-semibold text-muted mb-1">Search Keyword</label>
                      <div class="input-group input-group-sm">
@@ -184,15 +184,15 @@ SSEPD Institute Master || List
                      <button type="submit" class="btn btn-sm btn-primary px-3">
                         <i class="fas fa-filter me-1"></i> Apply Filters
                      </button>
-                     <a href="{{ route('admin.field_visit_institutes.index') }}" class="btn btn-sm btn-outline-secondary px-3 ms-1">
+                     <button type="button" id="btnResetFilter" class="btn btn-sm btn-outline-secondary px-3 ms-1">
                         <i class="fas fa-undo me-1"></i> Reset
-                     </a>
+                     </button>
                   </div>
                </form>
 
-               <!-- Institutes Table -->
-               <div class="table-responsive">
-                  <table class="table table-hover table-striped align-middle border">
+               <!-- Institutes Table (Yajra DataTables Server-Side) -->
+               <div class="table-responsive m-t-20">
+                  <table id="institutesTable" class="display nowrap table table-hover table-striped border align-middle" cellspacing="0" width="100%">
                      <thead class="table-dark">
                         <tr>
                            <th style="width: 50px;" class="text-center">#</th>
@@ -205,121 +205,20 @@ SSEPD Institute Master || List
                            <th style="width: 90px;" class="text-center">Action</th>
                         </tr>
                      </thead>
-                     <tbody>
-                        @forelse($institutes as $index => $inst)
+                     <tfoot>
                         <tr>
-                           <td class="text-center text-muted fw-bold">
-                              {{ $institutes->firstItem() + $index }}
-                           </td>
-                           <td>
-                              <span class="badge bg-primary font-monospace px-2 py-1">
-                                 {{ $inst->institute_code }}
-                              </span>
-                           </td>
-                           <td>
-                              <div class="fw-bold text-dark">
-                                 <a href="{{ route('admin.field_visit_institutes.show', $inst->id) }}" class="text-decoration-none text-dark">
-                                    {{ $inst->institute_name }}
-                                 </a>
-                              </div>
-                              @if(!empty($inst->management_name))
-                                 <small class="text-muted d-block mt-1">
-                                    <i class="fas fa-building text-info me-1"></i> {{ $inst->management_name }}
-                                 </small>
-                              @endif
-                           </td>
-                           <td>
-                              <span class="badge bg-info text-dark px-2 py-1">
-                                 {{ $inst->category_name }}
-                              </span>
-                           </td>
-                           <td>
-                              <div class="fw-semibold text-secondary">
-                                 <i class="fas fa-map-marker-alt text-danger me-1"></i> <span class="text-dark">{{ $inst->district_name ?? 'N/A' }}</span>
-                                 @if($inst->address_type == 1)
-                                    <span class="badge bg-light text-success border ms-1">Rural</span>
-                                 @elseif($inst->address_type == 2)
-                                    <span class="badge bg-light text-primary border ms-1">Urban</span>
-                                 @endif
-                              </div>
-                              @if(!empty($inst->block_name))
-                                 <small class="text-muted">{{ $inst->block_name }} (Block)</small>
-                                 @if(!empty($inst->village_name))
-                                    <small class="text-muted d-block"><i class="fas fa-home me-1"></i> {{ $inst->village_name }} (Village)</small>
-                                 @endif
-                              @elseif(!empty($inst->municipality_name))
-                                 <small class="text-muted">{{ $inst->municipality_name }} (ULB)</small>
-                              @endif
-                           </td>
-                           <td class="text-center">
-                              @if($inst->which_govt == 2)
-                                 <span class="badge bg-info px-2 py-1">Govt. of India</span>
-                              @else
-                                 <span class="badge bg-success px-2 py-1">Govt. of Odisha</span>
-                              @endif
-                           </td>
-                           <td class="text-center">
-                              @if($inst->is_active)
-                                 <span class="badge bg-success px-2 py-1">
-                                    <i class="fas fa-check-circle me-1"></i> Active
-                                 </span>
-                              @else
-                                 <span class="badge bg-danger px-2 py-1">
-                                    <i class="fas fa-times-circle me-1"></i> Inactive
-                                 </span>
-                              @endif
-                           </td>
-                           <td class="text-center">
-                              <div class="btn-group">
-                                 <button type="button" class="btn btn-danger dropdown-toggle btn-xs text-white" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Action
-                                 </button>
-                                 <div class="dropdown-menu dropdown-menu-end shadow">
-                                    @can('field-visit-institute-show')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visit_institutes.show', $inst->id) }}">
-                                       <i class="fas fa-eye text-info me-2"></i> View Details
-                                    </a>
-                                    @endcan
-
-                                    @can('field-visit-institute-edit')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visit_institutes.edit', $inst->id) }}">
-                                       <i class="fas fa-edit text-warning me-2"></i> Edit Institute
-                                    </a>
-                                    @endcan
-
-                                    @can('field-visit-institute-delete')
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-danger" href="{{ route('admin.field_visit_institutes.destroy', $inst->id) }}" id="delete">
-                                       <i class="fas fa-trash-alt text-danger me-2"></i> Delete
-                                    </a>
-                                    @endcan
-                                 </div>
-                              </div>
-                           </td>
+                           <th class="text-center">#</th>
+                           <th>Code</th>
+                           <th>Institute Name & Managing Body</th>
+                           <th>Category</th>
+                           <th>District / Sub-District</th>
+                           <th class="text-center">Govt. Scope</th>
+                           <th class="text-center">Status</th>
+                           <th class="text-center">Action</th>
                         </tr>
-                        @empty
-                        <tr>
-                           <td colspan="8" class="text-center py-5 text-muted">
-                              <div class="py-3">
-                                 <i class="fas fa-university fa-3x text-muted mb-3 d-block opacity-50"></i>
-                                 <h5>No Institutes Found</h5>
-                                 <p class="small text-muted mb-0">No institute records matched your filter criteria.</p>
-                              </div>
-                           </td>
-                        </tr>
-                        @endforelse
-                     </tbody>
+                     </tfoot>
+                     <tbody></tbody>
                   </table>
-               </div>
-
-               <!-- Pagination -->
-               <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
-                  <div class="small text-muted">
-                     Showing <strong>{{ $institutes->firstItem() ?? 0 }}</strong> to <strong>{{ $institutes->lastItem() ?? 0 }}</strong> of <strong>{{ $institutes->total() }}</strong> entries
-                  </div>
-                  <div>
-                     {{ $institutes->links('pagination::bootstrap-5') }}
-                  </div>
                </div>
 
             </div>
@@ -327,4 +226,54 @@ SSEPD Institute Master || List
       </div>
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+    var table = $('#institutesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        scrollX: true,
+        ajax: {
+            url: "{{ route('admin.field_visit_institutes.index') }}",
+            data: function (d) {
+                d.search_keyword = $('#search').val();
+                d.district_id = $('#district_id').val();
+                d.category_id = $('#category_id').val();
+                d.which_govt = $('#which_govt').val();
+                d.status = $('#status').val();
+            }
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted fw-bold' },
+            { data: 'institute_code', name: 'institute_code' },
+            { data: 'institute_name', name: 'institute_name' },
+            { data: 'category_name', name: 'category_name' },
+            { data: 'district_name', name: 'district_name' },
+            { data: 'which_govt', name: 'which_govt', className: 'text-center' },
+            { data: 'is_active', name: 'is_active', className: 'text-center' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        order: [[1, 'asc']],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+    });
+
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+    $('#btnResetFilter').on('click', function () {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
+    });
+});
+</script>
 @endsection

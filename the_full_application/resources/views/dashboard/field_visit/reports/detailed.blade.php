@@ -53,12 +53,12 @@
             </a>
          </div>
       </div>
-      <div class="card-body p-0">
+      <div class="card-body p-3">
          <div class="table-responsive">
-            <table class="table table-hover table-striped mb-0 align-middle">
+            <table id="detailedVisitsTable" class="display nowrap table table-hover table-striped border align-middle" cellspacing="0" width="100%">
                <thead class="table-dark">
                   <tr>
-                     <th style="width: 40px;">#</th>
+                     <th style="width: 40px;" class="text-center">#</th>
                      <th>Visit Ref No</th>
                      <th>Visit Date</th>
                      <th>Type</th>
@@ -66,108 +66,81 @@
                      <th>Geographical Location</th>
                      <th>Visiting Officer</th>
                      <th>Observations & Suggestions</th>
-                     <th>Status</th>
-                     <th class="text-center" style="width: 110px;">Action</th>
+                     <th class="text-center">Status</th>
+                     <th class="text-center" style="width: 100px;">Action</th>
                   </tr>
                </thead>
-               <tbody>
-                  @forelse($visits as $idx => $v)
-                  @php
-                     $desig = $v->visiting_officer_designation === 'Other' && !empty($v->other_designation)
-                        ? $v->other_designation
-                        : $v->visiting_officer_designation;
-
-                     $blockOrUlb = $v->address_type === 1
-                        ? ($v->block ? $v->block->block_name : 'N/A')
-                        : ($v->municipality ? $v->municipality->municipality_name : 'N/A');
-
-                     $gpOrWard = $v->address_type === 1
-                        ? ($v->grampanchayat ? $v->grampanchayat->gp_name : 'N/A')
-                        : ($v->ward ? ($v->ward->ward_name ?: 'Ward ' . $v->ward_id) : 'N/A');
-                  @endphp
+               <tfoot>
                   <tr>
-                     <td>{{ $visits->firstItem() + $idx }}</td>
-                     <td>
-                        <a href="{{ route('admin.field_visits.show', $v->id) }}" class="ref-badge text-primary text-decoration-none">
-                           {{ $v->visit_reference_no }}
-                        </a>
-                     </td>
-                     <td class="text-nowrap fw-semibold">
-                        {{ $v->visit_date ? $v->visit_date->format('d-M-Y') : 'N/A' }}
-                     </td>
-                     <td>
-                        <span class="badge bg-secondary-subtle text-dark border">
-                           {{ $v->visitType ? $v->visitType->name : 'N/A' }}
-                        </span>
-                     </td>
-                     <td>
-                        <div class="fw-bold text-dark">{{ $v->institution_name }}</div>
-                        <div class="small text-muted">
-                           Category: <span class="fw-semibold">{{ $v->institute ? $v->institute->category_name : ($v->institution_type ?: 'General') }}</span>
-                        </div>
-                     </td>
-                     <td>
-                        @if($v->address_type === 1)
-                           <span class="badge bg-success-subtle text-success border border-success"><i class="fas fa-tree me-1"></i>Rural</span>
-                           <div class="small text-dark fw-semibold mt-1">{{ $v->district ? $v->district->district_name : 'N/A' }}</div>
-                           <div class="small text-muted">{{ $blockOrUlb }} › {{ $gpOrWard }}</div>
-                        @else
-                           <span class="badge bg-info-subtle text-info border border-info"><i class="fas fa-city me-1"></i>Urban</span>
-                           <div class="small text-dark fw-semibold mt-1">{{ $v->district ? $v->district->district_name : 'N/A' }}</div>
-                           <div class="small text-muted">{{ $blockOrUlb }} › {{ $gpOrWard }}</div>
-                        @endif
-                     </td>
-                     <td>
-                        <div class="fw-bold">{{ $v->visiting_officer_name ?: ($v->visitingOfficer ? $v->visitingOfficer->name : 'Officer #' . $v->visiting_officer_id) }}</div>
-                        @if(!empty($desig))
-                           <span class="badge bg-secondary font-monospace" style="font-size: 0.65rem;">{{ $desig }}</span>
-                        @endif
-                        @if($v->visitingOfficer && $v->visiting_officer_name !== $v->visitingOfficer->name)
-                           <div class="text-muted" style="font-size: 0.72rem;">User: {{ $v->visitingOfficer->name }}</div>
-                        @endif
-                     </td>
-                     <td style="max-width: 250px;">
-                        @if(!empty($v->key_observations))
-                           <div class="small text-dark text-truncate" title="{{ $v->key_observations }}">
-                              <strong>Obs:</strong> {{ Str::limit($v->key_observations, 80) }}
-                           </div>
-                        @endif
-                        @if(!empty($v->recommendations))
-                           <div class="small text-muted text-truncate" title="{{ $v->recommendations }}">
-                              <strong>Rec:</strong> {{ Str::limit($v->recommendations, 80) }}
-                           </div>
-                        @endif
-                        @if(empty($v->key_observations) && empty($v->recommendations))
-                           <span class="text-muted small">—</span>
-                        @endif
-                     </td>
-                     <td>
-                        {!! $v->status_badge !!}
-                     </td>
-                     <td class="text-center">
-                        <a href="{{ route('admin.field_visits.show', $v->id) }}" class="btn btn-xs btn-outline-primary" title="View Visit Details">
-                           <i class="fas fa-eye me-1"></i> Details
-                        </a>
-                     </td>
+                     <th class="text-center">#</th>
+                     <th>Visit Ref No</th>
+                     <th>Visit Date</th>
+                     <th>Type</th>
+                     <th>Institution Details</th>
+                     <th>Geographical Location</th>
+                     <th>Visiting Officer</th>
+                     <th>Observations & Suggestions</th>
+                     <th class="text-center">Status</th>
+                     <th class="text-center">Action</th>
                   </tr>
-                  @empty
-                  <tr>
-                     <td colspan="10" class="text-center py-5 text-muted">
-                        <i class="fas fa-folder-open fa-2x mb-2 text-secondary d-block"></i>
-                        No field visit records found matching your filters.
-                     </td>
-                  </tr>
-                  @endforelse
-               </tbody>
+               </tfoot>
+               <tbody></tbody>
             </table>
          </div>
       </div>
-      @if($visits->hasPages())
-      <div class="card-footer bg-white py-2">
-         {{ $visits->links() }}
-      </div>
-      @endif
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+    var table = $('#detailedVisitsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        scrollX: true,
+        ajax: {
+            url: "{{ route('admin.field_visit_reports.detailed') }}",
+            data: function (d) {
+                var filterData = $('#reportFilterForm').serializeArray();
+                $.each(filterData, function (i, field) {
+                    d[field.name] = field.value;
+                });
+            }
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted' },
+            { data: 'visit_reference_no', name: 'visit_reference_no' },
+            { data: 'visit_date', name: 'visit_date' },
+            { data: 'visit_type', name: 'visitType.name' },
+            { data: 'institution_name', name: 'institution_name' },
+            { data: 'location', name: 'district.district_name' },
+            { data: 'visiting_officer', name: 'visiting_officer_name' },
+            { data: 'observations', name: 'key_observations', orderable: false },
+            { data: 'status', name: 'status', className: 'text-center' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        order: [[2, 'desc']],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],
+    });
+
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
+
+    $('#reportFilterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+    $('#reportFilterForm a[href*="reset"]').on('click', function (e) {
+        e.preventDefault();
+        $('#reportFilterForm')[0].reset();
+        table.ajax.reload();
+    });
+});
+</script>
 @endsection
 

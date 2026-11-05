@@ -265,12 +265,12 @@
                   <i class="fas fa-download me-1"></i> Export Table
                </a>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-3">
                <div class="table-responsive">
-                  <table class="table table-hover table-striped mb-0 align-middle">
+                  <table id="summaryBreakdownTable" class="table table-striped table-bordered display responsive nowrap align-middle" style="width:100%">
                      <thead class="table-dark">
                         <tr>
-                           <th style="width: 50px;">#</th>
+                           <th style="width: 50px;" class="text-center">#</th>
                            <th>Administrative Unit</th>
                            <th>Type</th>
                            <th class="text-center">Total Visits</th>
@@ -281,10 +281,23 @@
                            <th class="text-center" style="width: 140px;">Action</th>
                         </tr>
                      </thead>
+                     <tfoot>
+                        <tr>
+                           <th class="text-center">#</th>
+                           <th>Administrative Unit</th>
+                           <th>Type</th>
+                           <th class="text-center">Total Visits</th>
+                           <th class="text-center">Rural Visits</th>
+                           <th class="text-center">Urban Visits</th>
+                           <th class="text-center">Unique Institutions</th>
+                           <th class="text-center">Unique Officers</th>
+                           <th class="text-center">Action</th>
+                        </tr>
+                     </tfoot>
                      <tbody>
                         @forelse($breakdownRows as $idx => $row)
                         <tr>
-                           <td>{{ $idx + 1 }}</td>
+                           <td class="text-center text-muted">{{ $idx + 1 }}</td>
                            <td class="fw-bold text-dark">{{ $row['name'] }}</td>
                            <td><span class="badge bg-secondary">{{ $row['type'] }}</span></td>
                            <td class="text-center fw-bold">{{ number_format($row['total_visits']) }}</td>
@@ -319,10 +332,26 @@
 </div>
 @endsection
 
-@section('scripts')
+@section('script')
 <!-- Load Chart.js with CDN fallback -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
+$(function () {
+   // Initialize Summary Breakdown DataTable
+   var summaryTable = $('#summaryBreakdownTable').DataTable({
+      responsive: true,
+      scrollX: true,
+      pageLength: 10,
+      lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+      dom: 'Blfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+      order: [[3, 'desc']]
+   });
+
+   $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+      .addClass('btn btn-primary me-1');
+});
+
 document.addEventListener('DOMContentLoaded', function () {
    if (typeof Chart === 'undefined') {
       console.error('Chart.js could not be loaded.');

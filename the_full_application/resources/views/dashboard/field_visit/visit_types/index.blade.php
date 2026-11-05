@@ -60,7 +60,7 @@ Visit Type Master || List
                @include('dashboard.component.message')
 
                <!-- Filter & Search Toolbar -->
-               <form method="GET" action="{{ route('admin.field_visit_types.index') }}" class="row g-2 mb-4 align-items-end">
+               <form id="filterForm" method="GET" action="{{ route('admin.field_visit_types.index') }}" class="row g-2 mb-4 align-items-end">
                   <div class="col-md-5 col-sm-12">
                      <label for="search" class="form-label small text-muted mb-1">Search Keywords</label>
                      <div class="input-group">
@@ -87,17 +87,15 @@ Visit Type Master || List
                      <button type="submit" class="btn btn-info text-white flex-grow-1">
                         <i class="fas fa-filter me-1"></i> Filter
                      </button>
-                     @if(request()->hasAny(['search', 'status']))
-                     <a href="{{ route('admin.field_visit_types.index') }}" class="btn btn-secondary">
+                     <button type="button" id="btnResetFilter" class="btn btn-secondary">
                         <i class="fas fa-undo me-1"></i> Reset
-                     </a>
-                     @endif
+                     </button>
                   </div>
                </form>
 
-               <!-- Table Data -->
-               <div class="table-responsive">
-                  <table class="table table-bordered table-hover align-middle">
+               <!-- Table Data (Yajra DataTables Server-Side) -->
+               <div class="table-responsive m-t-20">
+                  <table id="visitTypesTable" class="display nowrap table table-hover table-striped border align-middle" cellspacing="0" width="100%">
                      <thead class="table-dark">
                         <tr>
                            <th style="width: 50px;" class="text-center">#</th>
@@ -110,85 +108,20 @@ Visit Type Master || List
                            <th style="width: 90px;" class="text-center">Action</th>
                         </tr>
                      </thead>
-                     <tbody>
-                        @forelse($visitTypes as $index => $type)
+                     <tfoot>
                         <tr>
-                           <td class="text-center text-muted">
-                              {{ $visitTypes->firstItem() + $index }}
-                           </td>
-                           <td>
-                              <span class="fw-bold text-dark">{{ $type->name }}</span>
-                           </td>
-                           <td>
-                              <span class="badge bg-secondary badge-code text-dark">{{ $type->code }}</span>
-                           </td>
-                           <td class="small text-muted">
-                              {{ $type->description ? \Illuminate\Support\Str::limit($type->description, 70) : '—' }}
-                           </td>
-                           <td class="text-center">
-                              <span class="badge bg-light text-dark border">{{ $type->sort_order }}</span>
-                           </td>
-                           <td class="text-center">
-                              @if($type->is_active)
-                              <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Active</span>
-                              @else
-                              <span class="badge bg-danger"><i class="fas fa-times-circle me-1"></i> Inactive</span>
-                              @endif
-                           </td>
-                           <td class="small text-muted">
-                              {{ $type->created_at ? $type->created_at->format('d-M-Y') : '—' }}
-                           </td>
-                           <td class="text-center">
-                              <div class="btn-group">
-                                 <button type="button" class="btn btn-danger dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Action
-                                 </button>
-                                 <div class="dropdown-menu dropdown-menu-end">
-                                    @can('field-visit-type-show')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visit_types.show', $type->id) }}">
-                                       <i class="fas fa-eye text-info me-2"></i> View
-                                    </a>
-                                    @endcan
-                                    @can('field-visit-type-edit')
-                                    <a class="dropdown-item" href="{{ route('admin.field_visit_types.edit', $type->id) }}">
-                                       <i class="fas fa-edit text-warning me-2"></i> Edit
-                                    </a>
-                                    @endcan
-                                    @can('field-visit-type-delete')
-                                    <a class="dropdown-item text-danger" href="{{ route('admin.field_visit_types.destroy', $type->id) }}" id="delete">
-                                       <i class="fas fa-trash-alt text-danger me-2"></i> Delete
-                                    </a>
-                                    @endcan
-                                 </div>
-                              </div>
-                           </td>
+                           <th class="text-center">#</th>
+                           <th>Visit Type Name</th>
+                           <th>Code</th>
+                           <th>Description</th>
+                           <th class="text-center">Sort Order</th>
+                           <th class="text-center">Status</th>
+                           <th>Created At</th>
+                           <th class="text-center">Action</th>
                         </tr>
-                        @empty
-                        <tr>
-                           <td colspan="8" class="text-center py-5 text-muted">
-                              <i class="fas fa-folder-open fa-3x mb-3 text-secondary d-block"></i>
-                              <h5>No Visit Types Found</h5>
-                              <p class="small mb-3">No field visit type records match the current filter criteria.</p>
-                              @can('field-visit-type-create')
-                              <a href="{{ route('admin.field_visit_types.create') }}" class="btn btn-success btn-sm">
-                                 <i class="fa fa-plus-circle me-1"></i> Add First Visit Type
-                              </a>
-                              @endcan
-                           </td>
-                        </tr>
-                        @endforelse
-                     </tbody>
+                     </tfoot>
+                     <tbody></tbody>
                   </table>
-               </div>
-
-               <!-- Pagination -->
-               <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap">
-                  <div class="small text-muted mb-2">
-                     Showing {{ $visitTypes->firstItem() ?? 0 }} to {{ $visitTypes->lastItem() ?? 0 }} of {{ $visitTypes->total() }} entries
-                  </div>
-                  <div>
-                     {{ $visitTypes->links('pagination::bootstrap-5') }}
-                  </div>
                </div>
 
             </div>
@@ -196,4 +129,51 @@ Visit Type Master || List
       </div>
    </div>
 </div>
+@endsection
+
+@section('script')
+<script>
+$(function () {
+    var table = $('#visitTypesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        responsive: true,
+        scrollX: true,
+        ajax: {
+            url: "{{ route('admin.field_visit_types.index') }}",
+            data: function (d) {
+                d.search_keyword = $('#search').val();
+                d.status = $('#status').val();
+            }
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center text-muted' },
+            { data: 'name', name: 'name', className: 'fw-bold text-dark' },
+            { data: 'code', name: 'code' },
+            { data: 'description', name: 'description', className: 'small text-muted' },
+            { data: 'sort_order', name: 'sort_order', className: 'text-center' },
+            { data: 'is_active', name: 'is_active', className: 'text-center' },
+            { data: 'created_at', name: 'created_at', className: 'small text-muted' },
+            { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+        ],
+        order: [[4, 'asc']],
+        dom: 'Blfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+        lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    });
+
+    $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel')
+        .addClass('btn btn-primary me-1');
+
+    $('#filterForm').on('submit', function (e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+    $('#btnResetFilter').on('click', function () {
+        $('#filterForm')[0].reset();
+        table.ajax.reload();
+    });
+});
+</script>
 @endsection
