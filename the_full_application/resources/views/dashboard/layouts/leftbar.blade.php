@@ -96,6 +96,36 @@
                </ul>
             </li>
             @endcan
+            @if(auth()->user()->can('field-visit-type-access') || auth()->user()->can('field-visit-type-list') || auth()->user()->can('field-visit-type-create') || auth()->user()->can('field-visit-institute-access') || auth()->user()->can('field-visit-institute-list') || auth()->user()->can('field-visit-institute-create') || auth()->user()->can('field-visit-access') || auth()->user()->can('field-visit-list') || auth()->user()->can('field-visit-create'))
+            <li class="{{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'active' : '' }}">
+               <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'true' : 'false' }}">
+                  <i class="fas fa-map-marked-alt"></i>
+                  <span class="hide-menu">Field Visit Management Master</span>
+               </a>
+               <ul aria-expanded="{{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'true' : 'false' }}" class="collapse {{ request()->routeIs('admin.field_visit_types.*') || request()->routeIs('admin.field_visit_institutes.*') || request()->routeIs('admin.field_visits.*') ? 'in' : '' }}">
+                  @can('field-visit-institute-list')
+                  <li class="{{ request()->routeIs('admin.field_visit_institutes.index') ? 'active' : '' }}">
+                     <a href="{{ route('admin.field_visit_institutes.index') }}" class="{{ request()->routeIs('admin.field_visit_institutes.index') ? 'active' : '' }}"><i class="fas fa-university me-1"></i> Institute Master</a>
+                  </li>
+                  @endcan
+                  @can('field-visit-institute-create')
+                  <li class="{{ request()->routeIs('admin.field_visit_institutes.create') ? 'active' : '' }}">
+                     <a href="{{ route('admin.field_visit_institutes.create') }}" class="{{ request()->routeIs('admin.field_visit_institutes.create') ? 'active' : '' }}"><i class="fas fa-plus-circle me-1"></i> Add Institute</a>
+                  </li>
+                  @endcan
+                  @can('field-visit-type-list')
+                  <li class="{{ request()->routeIs('admin.field_visit_types.index') ? 'active' : '' }}">
+                     <a href="{{ route('admin.field_visit_types.index') }}" class="{{ request()->routeIs('admin.field_visit_types.index') ? 'active' : '' }}"><i class="fas fa-tags me-1"></i> Visit Types</a>
+                  </li>
+                  @endcan
+                  @can('field-visit-type-create')
+                  <li class="{{ request()->routeIs('admin.field_visit_types.create') ? 'active' : '' }}">
+                     <a href="{{ route('admin.field_visit_types.create') }}" class="{{ request()->routeIs('admin.field_visit_types.create') ? 'active' : '' }}"><i class="fas fa-plus me-1"></i> Add Visit Type</a>
+                  </li>
+                  @endcan
+               </ul>
+            </li>
+            @endif
             @endif
             <li class="nav-small-cap">--- BENEFICIARY SERVICES</li>
             <li>
@@ -232,6 +262,22 @@
                   @can('field-visit-create')
                   <li class="{{ request()->routeIs('admin.field_visits.create') ? 'active' : '' }}">
                      <a href="{{ route('admin.field_visits.create') }}" class="{{ request()->routeIs('admin.field_visits.create') ? 'active' : '' }}"><i class="fas fa-calendar-plus me-1"></i> Record Visit</a>
+                  </li>
+                  @endcan
+               </ul>
+            </li>
+            @endif
+            @if(auth()->user()->can('disability-day-access') || auth()->user()->can('disability-day-list'))
+            <li class="nav-small-cap">--- DISABILITY DAY 2026</li>
+            <li class="{{ request()->routeIs('admin.disability_day.*') ? 'active' : '' }}">
+               <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.disability_day.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.disability_day.*') ? 'true' : 'false' }}">
+                  <i class="fas fa-store"></i>
+                  <span class="hide-menu">Disability Day 2026</span>
+               </a>
+               <ul aria-expanded="{{ request()->routeIs('admin.disability_day.*') ? 'true' : 'false' }}" class="collapse {{ request()->routeIs('admin.disability_day.*') ? 'in' : '' }}">
+                  @can('disability-day-list')
+                  <li class="{{ request()->routeIs('admin.disability_day.index') ? 'active' : '' }}">
+                     <a href="{{ route('admin.disability_day.index') }}" class="{{ request()->routeIs('admin.disability_day.index') ? 'active' : '' }}"><i class="fas fa-list me-1"></i> Stall Registrations</a>
                   </li>
                   @endcan
                </ul>

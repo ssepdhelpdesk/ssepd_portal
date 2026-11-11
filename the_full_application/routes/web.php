@@ -41,11 +41,13 @@ use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisit
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitController;
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitInstituteController;
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitReportController;
+use App\Http\Controllers\Dashboard_Controllers\DisabilityDayController;
 
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
     LocationFrontendController,
-    DisabilityDayStallController
+    DisabilityDayStallController,
+    DisabilityDay2026FrontendController
 };
 
 use App\Http\Controllers\Api\{
@@ -141,6 +143,19 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
         Route::get('list', 'list')->name('list');
     });
 
+});
+
+/* Disability Day 2026 Public Stall Registration & Application Tracking */
+Route::prefix('disability-day-2026')->name('disability_day.')->controller(DisabilityDay2026FrontendController::class)->group(function () {
+    Route::get('stall-registration', 'create')->name('registration');
+    Route::post('stall-registration', 'store')->name('registration.store');
+    Route::get('track', 'trackForm')->name('track');
+    Route::post('track', 'sendOtp')->name('track.send_otp');
+    Route::get('track/verify-otp', 'verifyOtpForm')->name('track.verify_otp');
+    Route::post('track/verify-otp', 'verifyOtp')->name('track.verify_otp.post');
+    Route::post('track/resend-otp', 'resendOtp')->name('track.resend_otp');
+    Route::get('track/details', 'applicationDetails')->name('track.details');
+    Route::post('track/logout', 'endTrackingSession')->name('track.logout');
 });
 
 Route::prefix('website')->name('website.')->group(function () {
@@ -613,6 +628,18 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('ajax/municipalities', 'ajaxMunicipalities')->name('ajax.municipalities');
         Route::get('ajax/gps', 'ajaxGps')->name('ajax.gps');
         Route::get('ajax/wards', 'ajaxWards')->name('ajax.wards');
+    });
+
+    /* Disability Day 2026 Stall Registration Management */
+    Route::prefix('disability-day')->name('disability_day.')->controller(DisabilityDayController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('{id}/view', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
+        Route::match(['get', 'delete', 'post'], '{id}/delete', 'destroy')->name('destroy');
+        Route::post('{id}/allot-stall', 'allotStall')->name('allot_stall');
+        Route::get('{id}/available-stalls', 'getAvailableStalls')->name('available_stalls');
+        Route::post('{id}/resend-email', 'resendConfirmationEmail')->name('resend_email');
     });
 
     Route::resource('products', ProductController::class)->names('products');
