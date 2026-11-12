@@ -133,7 +133,7 @@
                 <div class="d-flex flex-wrap">
                     <div class="event-info-pill">
                         <i class="fas fa-map-marker-alt text-warning"></i>
-                        <span><strong>Venue:</strong> S'O'A University</span>
+                        <span><strong>Venue:</strong> S'O'A University, Bhubaneswar</span>
                     </div>
                     <div class="event-info-pill">
                         <i class="fas fa-calendar-alt text-warning"></i>

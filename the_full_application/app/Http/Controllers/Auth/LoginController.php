@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
@@ -35,6 +38,118 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Get the login username to be used by the controller.
+     * Overrides trait to use 'username' input field.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'username';
+    }
+
+    /**
+     * Determine the database field to check for username (email or user_id).
+     *
+     * @param  string  $usernameInput
+     * @return string
+     */
+    protected function usernameField($usernameInput)
+    {
+        return filter_var($usernameInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_id';
+    }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     * Dynamically maps to 'email' or 'user_id'.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        $usernameField = $this->usernameField($request->input($this->username()));
+
+        return [
+            $usernameField => $request->input($this->username()),
+            'password'      => $request->input('password'),
+        ];
+    }
+
+    /**
+     * Get the rate limiting throttle key for CAPTCHA failures.
+     * Keyed by client IP address and session ID to prevent credential-independent brute-forcing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    protected function captchaThrottleKey(Request $request): string
+    {
+        $ip = $request->ip() ?? '127.0.0.1';
+        $sessionId = ($request->hasSession() && $request->session()->getId())
+            ? $request->session()->getId()
+            : 'nosession';
+
+        return 'captcha_fail|' . $ip . '|' . $sessionId;
+    }
+
+    /**
+     * Validate the user login request, enforcing mandatory server-side CAPTCHA verification
+     * with dedicated rate limiting for failed CAPTCHA attempts.
+     * Fails closed: CAPTCHA is strictly mandatory in production and cannot be bypassed.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    protected function validateLogin(Request $request)
+    {
+        // Fail-closed enforcement: rely strictly on config('captcha.disable', false)
+        // which evaluates to false unless APP_ENV is explicitly 'local' or 'testing'
+        // and CAPTCHA_DISABLE=true. Unset APP_ENV or production always enforces CAPTCHA.
+        $allowBypass = (bool) config('captcha.disable', false);
+
+        if (!$allowBypass) {
+            $captchaThrottleKey = $this->captchaThrottleKey($request);
+
+            if ($this->limiter()->tooManyAttempts($captchaThrottleKey, 5)) {
+                $seconds = $this->limiter()->availableIn($captchaThrottleKey);
+
+                throw ValidationException::withMessages([
+                    'captcha' => ["Too many failed CAPTCHA attempts. Please try again in {$seconds} seconds."],
+                ])->status(Response::HTTP_TOO_MANY_REQUESTS);
+            }
+        }
+
+        $rules = [
+            $this->username() => 'required|string',
+            'password'        => 'required|string',
+        ];
+
+        if ($allowBypass) {
+            $rules['captcha'] = 'nullable';
+        } else {
+            $rules['captcha'] = [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) use ($captchaThrottleKey) {
+                    if (!captcha_check(trim((string) $value))) {
+                        $this->limiter()->hit($captchaThrottleKey, 60);
+                        $fail('Invalid captcha code. Please try again.');
+                    } else {
+                        $this->limiter()->clear($captchaThrottleKey);
+                    }
+                },
+            ];
+        }
+
+        $request->validate($rules, [
+            'captcha.required' => 'Please enter the security verification answer.',
+        ]);
     }
 
     /**

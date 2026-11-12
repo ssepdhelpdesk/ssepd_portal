@@ -41,6 +41,6 @@ class HomeController extends Controller
      */
     public function refreshCaptcha(): JsonResponse
     {
-        return response()->json(['captcha' => captcha_img('math_blue')]);
+        return response()->json(['captcha' => captcha_img('flat')]);
     }
 }

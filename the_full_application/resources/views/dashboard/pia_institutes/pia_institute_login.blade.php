@@ -1610,6 +1610,7 @@
          #loginForm .captcha-display-row {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 10px;
             margin-top: 8px;
          }
@@ -1901,13 +1902,13 @@
                         <span class="form-label" style="margin-bottom:0;">Security Verification</span>
                         <div class="captcha-display-row">
                            <div class="captcha-canvas-wrap" id="captcha-img">
-                              {!! captcha_img('math_blue') !!}
+                              {!! captcha_img('flat') !!}
                            </div>
-                           <button type="button" class="btn-refresh-captcha btn-refresh" aria-label="Refresh Captcha Code">
+                           <button type="button" class="btn-refresh-captcha btn-refresh" aria-label="Refresh Captcha Code" title="Refresh Captcha">
                               <i class="fa-solid fa-arrows-rotate"></i>
                            </button>
                            <div class="captcha-input-wrap">
-                              <input type="text" id="captcha" class="form-input {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" style="padding-left:14px;" placeholder="Enter Answer" required aria-required="true">
+                              <input type="text" id="captcha" class="form-input {{ $errors->has('captcha') ? ' has-error' : '' }}" name="captcha" style="padding-left:14px;" placeholder="Enter Captcha" required aria-required="true" autocomplete="off" aria-label="Security Verification Code">
                            </div>
                         </div>
                         @if ($errors->has('captcha'))
