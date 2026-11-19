@@ -121,11 +121,13 @@
                     <div class="stall-status-banner allotted">
                         <div>
                             <div class="small text-uppercase fw-bold"><i class="fas fa-check-circle me-1"></i> Stall Allotment Confirmed</div>
-                            <div class="small">Your stall has been officially assigned by the department committee.</div>
+                            <div class="small">Your exhibition space has been officially assigned by the department committee.</div>
                         </div>
-                        <div>
-                            <span class="text-muted small me-2">Allotted Stall:</span>
-                            <span class="stall-no-badge text-success">{{ $registration->allotted_stall }}</span>
+                        <div class="d-flex align-items-center flex-wrap gap-1">
+                            <span class="text-muted small me-2">Allotted Stalls:</span>
+                            @foreach($registration->getAllottedStallNumbers() as $sNo)
+                                <span class="stall-no-badge text-success">Stall #{{ $sNo }}</span>
+                            @endforeach
                         </div>
                     </div>
                     @else

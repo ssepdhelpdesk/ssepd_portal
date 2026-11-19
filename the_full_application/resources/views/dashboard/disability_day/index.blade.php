@@ -116,6 +116,15 @@ Disability Day 2026 || Stall Registrations
                                     </select>
                                 </div>
                                 <div class="col-md-2">
+                                    <label class="form-label small fw-semibold mb-1">Financial Year</label>
+                                    <select class="form-select form-select-sm" id="financial_year">
+                                        <option value="">All FY</option>
+                                        @foreach($financialYears as $fy)
+                                        <option value="{{ $fy }}">{{ $fy }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
                                     <label class="form-label small fw-semibold mb-1">Allotment Status</label>
                                     <select class="form-select form-select-sm" id="allotment_status">
                                         <option value="">All Statuses</option>
@@ -123,12 +132,12 @@ Disability Day 2026 || Stall Registrations
                                         <option value="not_allotted">Not Yet Allotted</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <label class="form-label small fw-semibold mb-1">Applied From</label>
+                                <div class="col-md-1">
+                                    <label class="form-label small fw-semibold mb-1">From</label>
                                     <input type="date" class="form-control form-control-sm" id="date_from">
                                 </div>
-                                <div class="col-md-2">
-                                    <label class="form-label small fw-semibold mb-1">Applied To</label>
+                                <div class="col-md-1">
+                                    <label class="form-label small fw-semibold mb-1">To</label>
                                     <input type="date" class="form-control form-control-sm" id="date_to">
                                 </div>
                                 <div class="col-md-1 d-flex gap-1">
@@ -156,8 +165,8 @@ Disability Day 2026 || Stall Registrations
                                     <th style="width: 120px;">Phone</th>
                                     <th style="width: 110px;">District</th>
                                     <th style="width: 130px;">Applied At</th>
-                                    <th style="width: 120px;" class="text-center">Allotted Stall</th>
-                                    <th style="width: 110px;" class="text-center">Action</th>
+                                    <th style="width: 140px;" class="text-center">Allotted Stalls</th>
+                                    <th style="width: 250px;" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -170,7 +179,7 @@ Disability Day 2026 || Stall Registrations
                                     <th>Phone</th>
                                     <th>District</th>
                                     <th>Applied At</th>
-                                    <th class="text-center">Allotted Stall</th>
+                                    <th class="text-center">Allotted Stalls</th>
                                     <th class="text-center">Action</th>
                                 </tr>
                             </tfoot>
@@ -230,16 +239,22 @@ Disability Day 2026 || Stall Registrations
                         <div class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label for="modalAllottedStall" class="form-label fw-semibold mb-0">
-                                    Stall Number (1 to 100)
+                                    Allot Stalls (1 to 100) — Multi-select
                                 </label>
                                 <span id="modalAvailabilityCount" class="badge bg-info text-dark"></span>
                             </div>
-                            <select class="form-select" id="modalAllottedStall" name="allotted_stall" style="width: 100%;">
+                            <select class="form-select" id="modalAllottedStall" name="stalls[]" multiple="multiple" style="width: 100%;">
                                 <!-- Dynamically populated via AJAX -->
                             </select>
                             <div class="form-text small mt-1">
-                                <i class="fas fa-info-circle me-1"></i> Only unassigned stalls (1 to 100) are listed. Select clear to unallot.
+                                <i class="fas fa-info-circle me-1"></i> You can select multiple available stalls. Existing allotments remain selected. Deselect to unassign.
                             </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mb-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm py-0 px-2" id="modalClearAllBtn" title="Clear all allotments for this organization">
+                                <i class="fas fa-times me-1"></i> Unassign All Stalls
+                            </button>
                         </div>
 
                         <div id="modalCurrentStatus" class="p-2 rounded bg-light border small text-muted"></div>
@@ -248,13 +263,19 @@ Disability Day 2026 || Stall Registrations
                 <div class="modal-footer bg-light py-2">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success" id="modalSubmitBtn">
-                        <i class="fas fa-save me-1"></i> Save Allotment
+                        <i class="fas fa-save me-1"></i> Save Allotments
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<!-- Hidden Clear All Form -->
+<form id="clearAllStallForm" method="POST" style="display: none;">
+    @csrf
+    <input type="hidden" name="clear_all" value="1">
+</form>
 
 <!-- Delete Form (Hidden) -->
 <form id="deleteForm" method="POST" style="display: none;">
@@ -266,6 +287,8 @@ Disability Day 2026 || Stall Registrations
 @section('script')
 <script>
 let table = null;
+let currentModalRegId = null;
+let isSendingAllotmentEmail = false;
 
 $(function () {
     table = $('#stallRegistrationsTable').DataTable({
@@ -278,6 +301,7 @@ $(function () {
             data: function (d) {
                 d.search_keyword = $('#search_keyword').val();
                 d.district_id = $('#district_id').val();
+                d.financial_year = $('#financial_year').val();
                 d.allotment_status = $('#allotment_status').val();
                 d.date_from = $('#date_from').val();
                 d.date_to = $('#date_to').val();
@@ -313,9 +337,46 @@ $(function () {
         $('#filterForm')[0].reset();
         table.ajax.reload();
     });
+
+    // Clear all stalls button handler inside modal
+    $('#modalClearAllBtn').on('click', function () {
+        if (!currentModalRegId) return;
+        if (confirm('Are you sure you want to remove ALL stall allotments for this organization?')) {
+            const clearUrl = "{{ url('/dashboard/disability-day') }}/" + currentModalRegId + "/allot-stall";
+            $.ajax({
+                url: clearUrl,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    clear_all: 1
+                },
+                success: function (res) {
+                    const modalEl = document.getElementById('allotStallModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) modalInstance.hide();
+                    if (table) table.ajax.reload(null, false);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Allotments Cleared',
+                        text: res.message || 'All stalls unassigned successfully.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : 'Failed to clear stall allotments.'
+                    });
+                }
+            });
+        }
+    });
 });
 
-function openAllotModal(id, regNo, currentStall, orgName) {
+function openAllotModal(id, regNo, currentStallsStr, orgName) {
+    currentModalRegId = id;
     $('#modalRegNo').text(regNo);
     $('#modalOrgName').text(orgName || '—');
     const allotUrl = "{{ url('/dashboard/disability-day') }}/" + id + "/allot-stall";
@@ -350,43 +411,43 @@ function openAllotModal(id, regNo, currentStall, orgName) {
             }
             $select.empty();
 
-            // Default empty option for clearing allotment
-            $select.append(new Option('-- No Stall Allotted (Clear) --', ''));
+            const currentStalls = (data.current_stalls || []).map(Number);
+            const availableStalls = (data.available_stalls || []).map(Number);
+            const combined = Array.from(new Set([...currentStalls, ...availableStalls])).sort((a, b) => a - b);
 
-            const currentStallNum = data.current_stall;
-            const stalls = data.available_stalls || [];
-
-            stalls.forEach(function (num) {
-                const isSelected = (currentStallNum === num);
-                const label = 'Stall ' + num + (isSelected ? ' (Currently Assigned)' : '');
+            combined.forEach(function (num) {
+                const isSelected = currentStalls.includes(num);
+                const label = 'Stall #' + num + (isSelected ? ' (Currently Assigned)' : '');
                 $select.append(new Option(label, num, false, isSelected));
             });
 
-            // Initialize Select2 with modal dropdownParent to support modal focus
+            // Initialize Select2 with multi-select support
             $select.select2({
                 dropdownParent: $('#allotStallModal'),
                 width: '100%',
-                placeholder: '-- Select Stall Number (1 - 100) --',
-                allowClear: true
+                placeholder: '-- Select One or More Stalls (1 - 100) --',
+                allowClear: true,
+                closeOnSelect: false
             });
 
-            // Check capacity
-            if (stalls.length === 0 && !currentStallNum) {
+            // Capacity indicator
+            if (availableStalls.length === 0 && currentStalls.length === 0) {
                 $('#modalCapacityAlert').removeClass('d-none');
                 $select.prop('disabled', true);
                 $('#modalSubmitBtn').prop('disabled', true);
-                $('#modalAvailabilityCount').text('0 of 100 Available').removeClass('bg-info text-dark').addClass('bg-danger text-white');
+                $('#modalAvailabilityCount').text('0 Available').removeClass('bg-info text-dark').addClass('bg-danger text-white');
             } else {
                 $('#modalCapacityAlert').addClass('d-none');
                 $select.prop('disabled', false);
                 $('#modalSubmitBtn').prop('disabled', false);
-                $('#modalAvailabilityCount').text(stalls.length + ' of 100 Available').removeClass('bg-danger text-white').addClass('bg-info text-dark');
+                $('#modalAvailabilityCount').text(availableStalls.length + ' Available (1-100)').removeClass('bg-danger text-white').addClass('bg-info text-dark');
             }
 
-            if (currentStallNum) {
-                $('#modalCurrentStatus').html('<i class="fas fa-check-circle text-success me-1"></i> Current allotment: <strong>Stall ' + currentStallNum + '</strong>. Choose another unassigned stall or select clear to remove it.');
+            if (currentStalls.length > 0) {
+                const badgeList = currentStalls.map(s => '<span class="badge bg-success font-monospace me-1">Stall #' + s + '</span>').join(' ');
+                $('#modalCurrentStatus').html('<div class="mb-1 text-dark fw-semibold"><i class="fas fa-check-circle text-success me-1"></i> Current Allotments (' + currentStalls.length + '):</div>' + badgeList);
             } else {
-                $('#modalCurrentStatus').html('<i class="fas fa-info-circle text-muted me-1"></i> Currently not allotted a stall.');
+                $('#modalCurrentStatus').html('<i class="fas fa-info-circle text-muted me-1"></i> Currently not allotted any stall.');
             }
         },
         error: function () {
@@ -407,6 +468,7 @@ $('#allotStallModal').on('hidden.bs.modal', function () {
         $select.select2('destroy');
     }
     $select.empty();
+    currentModalRegId = null;
 });
 
 // Handle Allotment Form AJAX Submission with SweetAlert2
@@ -466,6 +528,80 @@ $('#allotStallForm').on('submit', function (e) {
         }
     });
 });
+
+// Function to send stall allotment confirmation email
+function sendAllotmentEmail(id, regNo, email, hasStall) {
+    if (!hasStall) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Stall Not Allotted',
+            text: 'Cannot send allotment email: No stall has been allotted to ' + regNo + ' yet. Please assign at least one stall first.',
+            confirmButtonColor: '#087e8b'
+        });
+        return;
+    }
+
+    if (isSendingAllotmentEmail) {
+        return;
+    }
+
+    Swal.fire({
+        title: 'Send Allotment Email?',
+        html: `Are you sure you want to send the official Stall Allotment Confirmation email to <strong>${email}</strong> for registration <code>${regNo}</code>?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#087e8b',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fas fa-paper-plane me-1"></i> Yes, Send Email',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            isSendingAllotmentEmail = true;
+
+            Swal.fire({
+                title: 'Sending Email...',
+                text: 'Please wait while the allotment confirmation email is being dispatched.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: "{{ url('/dashboard/disability-day') }}/" + id + "/send-allotment-email",
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                success: function (res) {
+                    isSendingAllotmentEmail = false;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Email Sent',
+                        text: res.message || 'Allotment email dispatched successfully.',
+                        confirmButtonColor: '#087e8b'
+                    });
+                },
+                error: function (xhr) {
+                    isSendingAllotmentEmail = false;
+                    let msg = 'Failed to dispatch allotment email.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Delivery Failed',
+                        text: msg,
+                        confirmButtonColor: '#087e8b'
+                    });
+                }
+            });
+        }
+    });
+}
 
 function confirmDelete(id, regNo) {
     if (confirm('Are you sure you want to delete registration ' + regNo + '? This action will soft-delete the record.')) {

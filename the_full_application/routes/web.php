@@ -149,6 +149,7 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
 Route::prefix('disability-day-2026')->name('disability_day.')->controller(DisabilityDay2026FrontendController::class)->group(function () {
     Route::get('stall-registration', 'create')->name('registration');
     Route::post('stall-registration', 'store')->name('registration.store');
+    Route::get('check-email', 'checkEmail')->name('check_email');
     Route::get('track', 'trackForm')->name('track');
     Route::post('track', 'sendOtp')->name('track.send_otp');
     Route::get('track/verify-otp', 'verifyOtpForm')->name('track.verify_otp');
@@ -640,6 +641,7 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::post('{id}/allot-stall', 'allotStall')->name('allot_stall');
         Route::get('{id}/available-stalls', 'getAvailableStalls')->name('available_stalls');
         Route::post('{id}/resend-email', 'resendConfirmationEmail')->name('resend_email');
+        Route::post('{id}/send-allotment-email', 'sendAllotmentEmail')->name('send_allotment_email');
     });
 
     Route::resource('products', ProductController::class)->names('products');

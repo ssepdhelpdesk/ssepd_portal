@@ -34,20 +34,50 @@ class DisabilityDayRegistration extends Model implements Auditable
         'pin',
         'applied_at',
         'allotted_stall',
+        'status',
+        'financial_year',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
-        'applied_at'   => 'datetime',
-        'district_id'  => 'integer',
-        'state_id'     => 'integer',
-        'created_by'   => 'integer',
-        'updated_by'   => 'integer',
-        'created_at'   => 'datetime',
-        'updated_at'   => 'datetime',
-        'deleted_at'   => 'datetime',
+        'applied_at'     => 'datetime',
+        'district_id'    => 'integer',
+        'state_id'       => 'integer',
+        'status'         => 'integer',
+        'financial_year' => 'string',
+        'created_by'     => 'integer',
+        'updated_by'     => 'integer',
+        'created_at'     => 'datetime',
+        'updated_at'     => 'datetime',
+        'deleted_at'     => 'datetime',
     ];
+
+    /**
+     * Model lifecycle events.
+     */
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->financial_year)) {
+                $model->financial_year = static::calculateFinancialYear($model->applied_at ?: Carbon::now('Asia/Kolkata'));
+            }
+            if (!isset($model->status)) {
+                $model->status = 1;
+            }
+            if (empty($model->applied_at)) {
+                $model->applied_at = Carbon::now('Asia/Kolkata');
+            }
+        });
+    }
+
+    /**
+     * Stalls allotted to this organization.
+     */
+    public function stallAllotments(): HasMany
+    {
+        return $this->hasMany(DisabilityDayStallAllotment::class, 'registration_id', 'id')->orderBy('stall_number');
+    }
 
     /**
      * District relationship (references District master).
@@ -152,53 +182,137 @@ class DisabilityDayRegistration extends Model implements Auditable
     }
 
     /**
-     * Helper to check if a stall has been allotted.
+     * Scope for active registrations only (status = 1).
      */
-    public function isAllotted(): bool
+    public function scopeActive($query)
     {
-        return !empty($this->allotted_stall);
+        return $query->where('status', 1);
     }
 
     /**
-     * Get normalized current stall number as integer, or null.
+     * Scope for filtering by financial year.
+     */
+    public function scopeFinancialYear($query, ?string $fy)
+    {
+        if (!empty($fy)) {
+            return $query->where('financial_year', $fy);
+        }
+        return $query;
+    }
+
+    /**
+     * Determine the financial year (convention: April 1 to March 31).
+     * Example: November 2026 => "2026-27"
+     */
+    public static function calculateFinancialYear(?Carbon $date = null): string
+    {
+        $date = $date ? $date->copy()->setTimezone('Asia/Kolkata') : Carbon::now('Asia/Kolkata');
+        $year = (int) $date->year;
+        if ($date->month >= 4) {
+            $startYear = $year;
+            $endYear = substr((string) ($year + 1), -2);
+        } else {
+            $startYear = $year - 1;
+            $endYear = substr((string) $year, -2);
+        }
+        return "{$startYear}-{$endYear}";
+    }
+
+    /**
+     * Helper to check if any stall has been allotted.
+     */
+    public function isAllotted(): bool
+    {
+        return count($this->getAllottedStallNumbers()) > 0 || !empty($this->allotted_stall);
+    }
+
+    /**
+     * Get array of all allotted stall numbers (e.g. [5, 12]).
+     * Checks stallAllotments relation first, falls back to parsing allotted_stall string.
+     *
+     * @return array<int>
+     */
+    public function getAllottedStallNumbers(): array
+    {
+        $numbers = [];
+        if ($this->relationLoaded('stallAllotments')) {
+            $numbers = $this->stallAllotments->pluck('stall_number')->map(fn($v) => (int)$v)->all();
+        } else {
+            $numbers = $this->stallAllotments()->pluck('stall_number')->map(fn($v) => (int)$v)->all();
+        }
+
+        if (empty($numbers) && !empty($this->allotted_stall)) {
+            preg_match_all('/\d+/', (string) $this->allotted_stall, $matches);
+            if (!empty($matches[0])) {
+                $numbers = array_map('intval', $matches[0]);
+            }
+        }
+
+        $numbers = array_values(array_unique(array_filter($numbers, fn($n) => $n >= 1 && $n <= 100)));
+        sort($numbers);
+        return $numbers;
+    }
+
+    /**
+     * Get primary or first allotted stall number (for backwards compatibility).
      */
     public function getCurrentStallNumber(): ?int
     {
-        if (empty($this->allotted_stall)) {
-            return null;
+        $numbers = $this->getAllottedStallNumbers();
+        return $numbers[0] ?? null;
+    }
+
+    /**
+     * Get formatted string of all allotted stalls (e.g. "Stall 5, Stall 12").
+     */
+    public function getAllottedStallsFormattedAttribute(): string
+    {
+        $numbers = $this->getAllottedStallNumbers();
+        if (empty($numbers)) {
+            return '';
         }
-        preg_match('/\d+/', (string) $this->allotted_stall, $matches);
-        return isset($matches[0]) ? (int) $matches[0] : null;
+        return implode(', ', array_map(fn($n) => "Stall {$n}", $numbers));
     }
 
     /**
      * Get array of available stall numbers between 1 and 100.
-     * Optionally excludes a specific registration ID (e.g. current registration's stall is considered available to itself).
+     * Excludes stalls assigned to ANY other organization/registration.
      *
      * @param int|null $excludeRegistrationId
      * @return array<int>
      */
     public static function getAvailableStallNumbers(?int $excludeRegistrationId = null): array
     {
-        $query = static::whereNotNull('allotted_stall')
-            ->where('allotted_stall', '!=', '');
-
+        // 1. From disability_day_stall_allotments table
+        $allotmentQuery = DisabilityDayStallAllotment::query();
         if ($excludeRegistrationId) {
-            $query->where('id', '!=', $excludeRegistrationId);
+            $allotmentQuery->where('registration_id', '!=', $excludeRegistrationId);
+        }
+        $assignedFromAllotments = $allotmentQuery->pluck('stall_number')
+            ->map(fn($v) => (int)$v)
+            ->all();
+
+        // 2. From disability_day_registrations.allotted_stall column
+        $regQuery = static::whereNotNull('allotted_stall')
+            ->where('allotted_stall', '!=', '');
+        if ($excludeRegistrationId) {
+            $regQuery->where('id', '!=', $excludeRegistrationId);
+        }
+        $assignedFromRegs = [];
+        foreach ($regQuery->pluck('allotted_stall') as $val) {
+            preg_match_all('/\d+/', (string) $val, $matches);
+            if (!empty($matches[0])) {
+                foreach ($matches[0] as $m) {
+                    $assignedFromRegs[] = (int) $m;
+                }
+            }
         }
 
-        $assigned = $query->pluck('allotted_stall')
-            ->map(function ($val) {
-                preg_match('/\d+/', (string) $val, $matches);
-                return isset($matches[0]) ? (int) $matches[0] : null;
-            })
-            ->filter()
-            ->unique()
-            ->toArray();
+        $allAssigned = array_unique(array_merge($assignedFromAllotments, $assignedFromRegs));
 
         $available = [];
         for ($i = 1; $i <= 100; $i++) {
-            if (!in_array($i, $assigned, true)) {
+            if (!in_array($i, $allAssigned, true)) {
                 $available[] = $i;
             }
         }

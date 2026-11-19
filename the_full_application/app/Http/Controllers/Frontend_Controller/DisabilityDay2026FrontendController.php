@@ -32,14 +32,66 @@ class DisabilityDay2026FrontendController extends Controller
     }
 
     /**
+     * Live AJAX validation to check for duplicate email registration.
+     */
+    public function checkEmail(Request $request)
+    {
+        $rawEmail = $request->query('email', '');
+        $email = strtolower(trim($rawEmail));
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return response()->json([
+                'exists'  => false,
+                'valid'   => false,
+                'message' => 'Please provide a valid email address.',
+            ]);
+        }
+
+        $appliedAt = Carbon::now('Asia/Kolkata');
+        $financialYear = DisabilityDayRegistration::calculateFinancialYear($appliedAt);
+
+        $exists = DisabilityDayRegistration::whereRaw('LOWER(TRIM(email)) = ?', [$email])
+            ->where('financial_year', $financialYear)
+            ->exists();
+
+        return response()->json([
+            'exists'         => $exists,
+            'valid'          => true,
+            'financial_year' => $financialYear,
+            'message'        => $exists
+                ? 'This email ID has already been registered. One organization can submit only one registration.'
+                : 'Email is available for registration.',
+        ]);
+    }
+
+    /**
      * Handle public stall registration form submission.
      */
     public function store(Request $request)
     {
+        $appliedAt = Carbon::now('Asia/Kolkata');
+        $financialYear = DisabilityDayRegistration::calculateFinancialYear($appliedAt);
+        $normalizedEmail = strtolower(trim((string) $request->input('email')));
+
         $validator = Validator::make($request->all(), [
             'organization_name' => 'required|string|max:255',
             'contact_person'    => 'required|string|max:255',
-            'email'             => 'required|string|email|max:150',
+            'email'             => [
+                'required',
+                'string',
+                'email',
+                'max:150',
+                function ($attribute, $value, $fail) use ($financialYear) {
+                    $cleaned = strtolower(trim((string) $value));
+                    $alreadyRegistered = DisabilityDayRegistration::whereRaw('LOWER(TRIM(email)) = ?', [$cleaned])
+                        ->where('financial_year', $financialYear)
+                        ->exists();
+
+                    if ($alreadyRegistered) {
+                        $fail('This email ID has already been registered. One organization can submit only one registration.');
+                    }
+                },
+            ],
             'phone'             => ['required', 'regex:/^[6-9][0-9]{9}$/'],
             'purpose'           => 'required|string|max:2000',
             'at'                => 'required|string|max:255',
@@ -73,9 +125,8 @@ class DisabilityDay2026FrontendController extends Controller
                 ->withInput();
         }
 
-        $email = strtolower(trim($request->input('email')));
+        $email = $normalizedEmail;
         $phone = trim($request->input('phone'));
-        $appliedAt = Carbon::now('Asia/Kolkata');
 
         $district = District::find($request->input('district_id'));
         $state = State::find($request->input('state_id'));
@@ -87,7 +138,7 @@ class DisabilityDay2026FrontendController extends Controller
             try {
                 $registrationNo = DisabilityDayRegistration::generateUniqueRegistrationNo($appliedAt);
 
-                $registration = DB::transaction(function () use ($request, $email, $phone, $appliedAt, $district, $state, $registrationNo) {
+                $registration = DB::transaction(function () use ($request, $email, $phone, $appliedAt, $financialYear, $district, $state, $registrationNo) {
                     return DisabilityDayRegistration::create([
                         'registration_no'   => $registrationNo,
                         'organization_name' => trim($request->input('organization_name')),
@@ -105,15 +156,26 @@ class DisabilityDay2026FrontendController extends Controller
                         'pin'               => trim($request->input('pin')),
                         'applied_at'        => $appliedAt,
                         'allotted_stall'    => null, // Initially NULL per requirements
+                        'status'            => 1, // Active / Approved for dashboard
+                        'financial_year'    => $financialYear, // Server-generated financial year
                         'created_by'        => Auth::check() ? Auth::id() : null,
                     ]);
                 });
 
                 break; // Creation succeeded
             } catch (\Illuminate\Database\QueryException $qe) {
-                // If unique constraint collision occurs on registration_no, retry
-                if ($qe->getCode() == 23000 && $attempt < $maxRetries) {
-                    continue;
+                // If collision occurs on email unique constraint
+                if ($qe->getCode() == 23000 || ($qe->errorInfo[1] ?? null) == 1062) {
+                    $msg = strtolower($qe->getMessage());
+                    if (str_contains($msg, 'email') || str_contains($msg, 'disability_day_reg_email_fy_unique')) {
+                        return redirect()->back()
+                            ->withErrors(['email' => 'This email ID has already been registered. One organization can submit only one registration.'])
+                            ->withInput();
+                    }
+                    // If unique constraint collision occurs on registration_no, retry
+                    if ($attempt < $maxRetries) {
+                        continue;
+                    }
                 }
                 Log::error('Disability Day Registration DB Query Exception: ' . $qe->getMessage());
                 return redirect()->back()

@@ -68,9 +68,13 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
                     </div>
                     <div>
                         @if($registration->isAllotted())
-                            <span class="badge bg-success fs-6 px-3 py-2 font-monospace">
-                                <i class="fas fa-store me-1"></i> Allotted: {{ $registration->allotted_stall }}
-                            </span>
+                            <div class="d-flex flex-wrap gap-1 justify-content-end">
+                                @foreach($registration->getAllottedStallNumbers() as $sNum)
+                                    <span class="badge bg-success fs-6 px-3 py-2 font-monospace">
+                                        <i class="fas fa-store me-1"></i> Stall #{{ $sNum }}
+                                    </span>
+                                @endforeach
+                            </div>
                         @else
                             <span class="badge bg-secondary fs-6 px-3 py-2">
                                 <i class="fas fa-hourglass-half me-1"></i> Not Yet Allotted
@@ -80,7 +84,7 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="detail-label">Event</div>
                             <div class="detail-val fw-bold">International Day of Persons With Disabilities – 2026</div>
                         </div>
@@ -88,9 +92,13 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
                             <div class="detail-label">Venue</div>
                             <div class="detail-val">S'O'A University</div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="detail-label">Event Dates</div>
                             <div class="detail-val">01 Dec – 03 Dec 2026</div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="detail-label">Financial Year</div>
+                            <div class="detail-val font-monospace fw-bold text-primary">{{ $registration->financial_year ?? '2026-27' }}</div>
                         </div>
                     </div>
                 </div>
@@ -182,56 +190,89 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
                     <h5 class="card-title mb-0 text-white">
                         <i class="fas fa-store-alt me-2"></i> Manage Stall Allotment
                     </h5>
-                    <span class="badge bg-light text-primary">{{ count($availableStalls) }} / 100 Available</span>
+                    <span class="badge bg-light text-primary">{{ count($availableStalls) }} Available</span>
                 </div>
                 <div class="card-body">
-                    @if(empty($availableStalls) && empty($currentStallNumber))
-                        <div class="alert alert-danger py-2 px-3 small mb-3">
-                            <i class="fas fa-exclamation-triangle me-1"></i> <strong>Capacity Reached:</strong> All 100 stalls are assigned. No stalls available.
-                        </div>
-                    @endif
+                    @php
+                        $currentStallNumbers = $registration->getAllottedStallNumbers();
+                    @endphp
 
-                    @if($currentStallNumber)
-                        <div class="alert alert-success py-2 px-3 small mb-3">
-                            <i class="fas fa-check-circle me-1"></i> <strong>Currently Allotted:</strong> Stall {{ $currentStallNumber }}
+                    @if(!empty($currentStallNumbers))
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted mb-1">Currently Allotted Stalls ({{ count($currentStallNumbers) }}):</label>
+                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                @foreach($currentStallNumbers as $sNo)
+                                    <form action="{{ route('admin.disability_day.allot_stall', $registration->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove Stall #{{ $sNo }} from this registration?')">
+                                        @csrf
+                                        <input type="hidden" name="remove_stall" value="{{ $sNo }}">
+                                        <span class="badge bg-success font-monospace fs-7 p-2 d-inline-flex align-items-center">
+                                            <i class="fas fa-store me-1"></i> Stall #{{ $sNo }}
+                                            <button type="submit" class="btn-close btn-close-white ms-2" style="font-size: 0.6rem;" title="Remove this stall"></button>
+                                        </span>
+                                    </form>
+                                @endforeach
+                            </div>
                         </div>
                     @else
                         <div class="alert alert-secondary py-2 px-3 small mb-3">
-                            <i class="fas fa-info-circle me-1"></i> <strong>Status:</strong> Not yet allotted a stall.
+                            <i class="fas fa-info-circle me-1"></i> <strong>Status:</strong> Not yet allotted any stall.
+                        </div>
+                    @endif
+
+                    @if(empty($availableStalls) && empty($currentStallNumbers))
+                        <div class="alert alert-danger py-2 px-3 small mb-3">
+                            <i class="fas fa-exclamation-triangle me-1"></i> <strong>Capacity Reached:</strong> All 100 stalls are assigned. No stalls available.
                         </div>
                     @endif
 
                     <form action="{{ route('admin.disability_day.allot_stall', $registration->id) }}" method="POST" id="showAllotStallForm">
                         @csrf
                         <div class="mb-3">
-                            <label for="allotted_stall" class="form-label fw-semibold">
-                                Stall Number (1 to 100)
+                            <label for="allotted_stalls" class="form-label fw-semibold">
+                                Assign Stalls (1 to 100) — Multi-select
                             </label>
                             <select class="form-select" 
-                                    id="allotted_stall" 
-                                    name="allotted_stall" 
+                                    id="allotted_stalls" 
+                                    name="stalls[]" 
+                                    multiple="multiple" 
                                     style="width: 100%;" 
-                                    {{ (empty($availableStalls) && empty($currentStallNumber)) ? 'disabled' : '' }}>
-                                <option value="">-- No Stall Allotted (Clear) --</option>
-                                @foreach($availableStalls as $stallNum)
-                                    <option value="{{ $stallNum }}" {{ (string)old('allotted_stall', $currentStallNumber) === (string)$stallNum ? 'selected' : '' }}>
-                                        Stall {{ $stallNum }}{{ $currentStallNumber === $stallNum ? ' (Currently Assigned)' : '' }}
+                                    {{ empty($availableStalls) && empty($currentStallNumbers) ? 'disabled' : '' }}>
+                                @php
+                                    $combinedStalls = array_values(array_unique(array_merge($currentStallNumbers, $availableStalls)));
+                                    sort($combinedStalls);
+                                @endphp
+                                @foreach($combinedStalls as $stallNum)
+                                    @php $isAssigned = in_array($stallNum, $currentStallNumbers, true); @endphp
+                                    <option value="{{ $stallNum }}" {{ $isAssigned ? 'selected' : '' }}>
+                                        Stall #{{ $stallNum }}{{ $isAssigned ? ' (Currently Assigned)' : '' }}
                                     </option>
                                 @endforeach
                             </select>
                             <div class="form-text small mt-1">
-                                <i class="fas fa-info-circle me-1"></i> Select an unassigned stall (1–100) or choose clear to unassign.
+                                <i class="fas fa-info-circle me-1"></i> Select one or more available stalls. Existing assignments remain checked.
                             </div>
-                            @error('allotted_stall')
+                            @error('stalls')
                             <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success" {{ (empty($availableStalls) && empty($currentStallNumber)) ? 'disabled' : '' }}>
-                                <i class="fas fa-save me-1"></i> Update Stall Allotment
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success" {{ empty($availableStalls) && empty($currentStallNumbers) ? 'disabled' : '' }}>
+                                <i class="fas fa-save me-1"></i> Save Stall Allotments
                             </button>
                         </div>
                     </form>
+
+                    @if(!empty($currentStallNumbers))
+                    <div class="mt-2 text-center">
+                        <form action="{{ route('admin.disability_day.allot_stall', $registration->id) }}" method="POST" onsubmit="return confirm('Clear ALL stall allotments for this registration?')">
+                            @csrf
+                            <input type="hidden" name="clear_all" value="1">
+                            <button type="submit" class="btn btn-link text-danger btn-sm text-decoration-none p-0">
+                                <i class="fas fa-times-circle me-1"></i> Clear All Allotted Stalls
+                            </button>
+                        </form>
+                    </div>
+                    @endif
                 </div>
             </div>
             @endcan
@@ -244,17 +285,38 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p class="small text-muted mb-3">
-                        Resend the official registration confirmation email containing the registration number and event instructions to <strong>{{ $registration->email }}</strong>.
-                    </p>
-                    <form action="{{ route('admin.disability_day.resend_email', $registration->id) }}" method="POST">
-                        @csrf
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="return confirm('Send registration confirmation email to {{ $registration->email }}?')">
-                                <i class="fas fa-envelope me-1"></i> Resend Confirmation Email
-                            </button>
-                        </div>
-                    </form>
+                    <div class="mb-3 pb-3 border-bottom">
+                        <label class="fw-semibold small text-dark d-block mb-1">Registration Confirmation Email:</label>
+                        <p class="small text-muted mb-2">
+                            Resend the initial registration receipt email containing the Registration Number to <strong>{{ $registration->email }}</strong>.
+                        </p>
+                        <form action="{{ route('admin.disability_day.resend_email', $registration->id) }}" method="POST">
+                            @csrf
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-outline-primary btn-sm" onclick="return confirm('Send registration confirmation email to {{ $registration->email }}?')">
+                                    <i class="fas fa-envelope me-1"></i> Resend Registration Email
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <label class="fw-semibold small text-dark d-block mb-1">Stall Allotment Confirmation Email:</label>
+                        <p class="small text-muted mb-2">
+                            Send the official stall allotment notification email with assigned stall details to <strong>{{ $registration->email }}</strong>.
+                        </p>
+                        <form action="{{ route('admin.disability_day.send_allotment_email', $registration->id) }}" method="POST" onsubmit="return confirm('Send official Stall Allotment Confirmation email to {{ $registration->email }} for allotted stalls?')">
+                            @csrf
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-sm" {{ !$registration->isAllotted() ? 'disabled' : '' }}>
+                                    <i class="fas fa-paper-plane me-1"></i> Send Allotment Email
+                                </button>
+                            </div>
+                            @if(!$registration->isAllotted())
+                                <div class="text-muted small text-center mt-1"><i class="fas fa-exclamation-circle me-1"></i> Allot at least one stall to enable sending allotment confirmation.</div>
+                            @endif
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -314,9 +376,10 @@ Disability Day 2026 || View Registration: {{ $registration->registration_no }}
 @section('script')
 <script>
 $(function () {
-    $('#allotted_stall').select2({
-        placeholder: '-- Select Stall Number (1 - 100) --',
+    $('#allotted_stalls').select2({
+        placeholder: '-- Select One or More Stalls (1 - 100) --',
         allowClear: true,
+        closeOnSelect: false,
         width: '100%'
     });
 

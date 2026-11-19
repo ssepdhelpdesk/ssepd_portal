@@ -302,8 +302,9 @@
                                        maxlength="150" 
                                        required>
                                 <div class="form-text small text-muted">A confirmation email and tracking OTPs will be sent to this address.</div>
+                                <div id="emailDuplicateFeedback" class="invalid-feedback d-none">This email ID has already been registered. One organization can submit only one registration.</div>
                                 @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -534,6 +535,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------
+    // Email Uniqueness & Duplicate Check (Frontend)
+    // -------------------------------------------------------------
+    const emailInput = document.getElementById('email');
+    const emailFeedback = document.getElementById('emailDuplicateFeedback');
+    let isEmailDuplicate = false;
+
+    if (emailInput) {
+        emailInput.addEventListener('blur', function () {
+            const val = this.value.trim().toLowerCase();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!val || !emailRegex.test(val)) return;
+
+            fetch("{{ route('disability_day.check_email') }}?email=" + encodeURIComponent(val))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.exists) {
+                        isEmailDuplicate = true;
+                        emailInput.classList.add('is-invalid');
+                        if (emailFeedback) {
+                            emailFeedback.textContent = data.message;
+                            emailFeedback.classList.remove('d-none');
+                            emailFeedback.classList.add('d-block');
+                        }
+                    } else {
+                        isEmailDuplicate = false;
+                        emailInput.classList.remove('is-invalid');
+                        if (emailFeedback) {
+                            emailFeedback.classList.add('d-none');
+                            emailFeedback.classList.remove('d-block');
+                        }
+                    }
+                })
+                .catch(() => {
+                    // Authoritative backend validation will catch it
+                });
+        });
+
+        emailInput.addEventListener('input', function () {
+            if (isEmailDuplicate) {
+                isEmailDuplicate = false;
+                this.classList.remove('is-invalid');
+                if (emailFeedback) {
+                    emailFeedback.classList.add('d-none');
+                    emailFeedback.classList.remove('d-block');
+                }
+            }
+        });
+    }
+
+    // -------------------------------------------------------------
     // Client-side Form Validation with SweetAlert2
     // -------------------------------------------------------------
     const form = document.getElementById('stallRegistrationForm');
@@ -575,6 +626,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailVal || !emailRegex.test(emailVal)) {
                 showValidationError('Invalid Email Address', 'Please enter a valid email address.', email);
+                return false;
+            }
+
+            if (isEmailDuplicate) {
+                showValidationError(
+                    'Duplicate Registration',
+                    'This email ID has already been registered. One organization can submit only one registration.',
+                    email
+                );
                 return false;
             }
 

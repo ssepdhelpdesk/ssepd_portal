@@ -68,13 +68,17 @@ Disability Day 2026 || Edit Registration: {{ $registration->registration_no }}
 
                         <!-- Non-editable System Metadata -->
                         <div class="row g-3 p-3 bg-light rounded mb-4 border">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label small text-muted mb-1">Registration Number (Immutable)</label>
                                 <input type="text" class="form-control font-monospace fw-bold bg-white" value="{{ $registration->registration_no }}" readonly disabled>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label class="form-label small text-muted mb-1">Applied Date & Time (Immutable)</label>
                                 <input type="text" class="form-control bg-white" value="{{ optional($registration->applied_at)->format('d-M-Y h:i:s A') ?? 'N/A' }}" readonly disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small text-muted mb-1">Financial Year (Backend-Generated)</label>
+                                <input type="text" class="form-control font-monospace fw-semibold bg-white" value="{{ $registration->financial_year ?? '2026-27' }}" readonly disabled>
                             </div>
                         </div>
 
