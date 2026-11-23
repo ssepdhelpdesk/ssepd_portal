@@ -42,12 +42,14 @@ use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisit
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitInstituteController;
 use App\Http\Controllers\Dashboard_Controllers\Field_Visit_Controller\FieldVisitReportController;
 use App\Http\Controllers\Dashboard_Controllers\DisabilityDayController;
+use App\Http\Controllers\Dashboard_Controllers\DisabilityDayParticipantAdminController;
 
 use App\Http\Controllers\Frontend_Controller\{
     NgoRegdFrontendController,
     LocationFrontendController,
     DisabilityDayStallController,
-    DisabilityDay2026FrontendController
+    DisabilityDay2026FrontendController,
+    DisabilityDayParticipantController
 };
 
 use App\Http\Controllers\Api\{
@@ -145,18 +147,25 @@ Route::prefix('frontend')->name('frontend.')->group(function () {
 
 });
 
-/* Disability Day 2026 Public Stall Registration & Application Tracking */
-Route::prefix('disability-day-2026')->name('disability_day.')->controller(DisabilityDay2026FrontendController::class)->group(function () {
-    Route::get('stall-registration', 'create')->name('registration');
-    Route::post('stall-registration', 'store')->name('registration.store');
-    Route::get('check-email', 'checkEmail')->name('check_email');
-    Route::get('track', 'trackForm')->name('track');
-    Route::post('track', 'sendOtp')->name('track.send_otp');
-    Route::get('track/verify-otp', 'verifyOtpForm')->name('track.verify_otp');
-    Route::post('track/verify-otp', 'verifyOtp')->name('track.verify_otp.post');
-    Route::post('track/resend-otp', 'resendOtp')->name('track.resend_otp');
-    Route::get('track/details', 'applicationDetails')->name('track.details');
-    Route::post('track/logout', 'endTrackingSession')->name('track.logout');
+/* Disability Day 2026 Public Stall Registration, Participant Registration & Application Tracking */
+Route::prefix('disability-day-2026')->name('disability_day.')->group(function () {
+    Route::controller(DisabilityDay2026FrontendController::class)->group(function () {
+        Route::get('stall-registration', 'create')->name('registration');
+        Route::post('stall-registration', 'store')->name('registration.store');
+        Route::get('check-email', 'checkEmail')->name('check_email');
+        Route::get('track', 'trackForm')->name('track');
+        Route::post('track', 'sendOtp')->name('track.send_otp');
+        Route::get('track/verify-otp', 'verifyOtpForm')->name('track.verify_otp');
+        Route::post('track/verify-otp', 'verifyOtp')->name('track.verify_otp.post');
+        Route::post('track/resend-otp', 'resendOtp')->name('track.resend_otp');
+        Route::get('track/details', 'applicationDetails')->name('track.details');
+        Route::post('track/logout', 'endTrackingSession')->name('track.logout');
+    });
+
+    Route::controller(DisabilityDayParticipantController::class)->group(function () {
+        Route::get('participant-registration', 'create')->name('participant_registration');
+        Route::post('participant-registration', 'store')->name('participant_registration.store');
+    });
 });
 
 Route::prefix('website')->name('website.')->group(function () {
@@ -642,6 +651,13 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
         Route::get('{id}/available-stalls', 'getAvailableStalls')->name('available_stalls');
         Route::post('{id}/resend-email', 'resendConfirmationEmail')->name('resend_email');
         Route::post('{id}/send-allotment-email', 'sendAllotmentEmail')->name('send_allotment_email');
+    });
+
+    /* Disability Day 2026 Participant Registration Management */
+    Route::prefix('disability-day-participants')->name('disability_day_participant.')->controller(DisabilityDayParticipantAdminController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('{id}/view', 'show')->name('show');
+        Route::match(['get', 'delete', 'post'], '{id}/delete', 'destroy')->name('destroy');
     });
 
     Route::resource('products', ProductController::class)->names('products');

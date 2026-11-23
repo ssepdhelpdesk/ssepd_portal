@@ -269,15 +269,18 @@
             @endif
             @if(auth()->user()->can('disability-day-access') || auth()->user()->can('disability-day-list'))
             <li class="nav-small-cap">--- DISABILITY DAY 2026</li>
-            <li class="{{ request()->routeIs('admin.disability_day.*') ? 'active' : '' }}">
-               <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.disability_day.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.disability_day.*') ? 'true' : 'false' }}">
-                  <i class="fas fa-store"></i>
+            <li class="{{ request()->routeIs('admin.disability_day.*') || request()->routeIs('admin.disability_day_participant.*') ? 'active' : '' }}">
+               <a class="has-arrow waves-effect waves-dark {{ request()->routeIs('admin.disability_day.*') || request()->routeIs('admin.disability_day_participant.*') ? 'active' : '' }}" href="javascript:void(0)" aria-expanded="{{ request()->routeIs('admin.disability_day.*') || request()->routeIs('admin.disability_day_participant.*') ? 'true' : 'false' }}">
+                  <i class="fas fa-calendar-alt"></i>
                   <span class="hide-menu">Disability Day 2026</span>
                </a>
-               <ul aria-expanded="{{ request()->routeIs('admin.disability_day.*') ? 'true' : 'false' }}" class="collapse {{ request()->routeIs('admin.disability_day.*') ? 'in' : '' }}">
+               <ul aria-expanded="{{ request()->routeIs('admin.disability_day.*') || request()->routeIs('admin.disability_day_participant.*') ? 'true' : 'false' }}" class="collapse {{ request()->routeIs('admin.disability_day.*') || request()->routeIs('admin.disability_day_participant.*') ? 'in' : '' }}">
                   @can('disability-day-list')
                   <li class="{{ request()->routeIs('admin.disability_day.index') ? 'active' : '' }}">
-                     <a href="{{ route('admin.disability_day.index') }}" class="{{ request()->routeIs('admin.disability_day.index') ? 'active' : '' }}"><i class="fas fa-list me-1"></i> Stall Registrations</a>
+                     <a href="{{ route('admin.disability_day.index') }}" class="{{ request()->routeIs('admin.disability_day.index') ? 'active' : '' }}"><i class="fas fa-store me-1"></i> Stall Registrations</a>
+                  </li>
+                  <li class="{{ request()->routeIs('admin.disability_day_participant.*') ? 'active' : '' }}">
+                     <a href="{{ route('admin.disability_day_participant.index') }}" class="{{ request()->routeIs('admin.disability_day_participant.*') ? 'active' : '' }}"><i class="fas fa-users me-1"></i> Participant Registrations</a>
                   </li>
                   @endcan
                </ul>
