@@ -242,7 +242,7 @@
                     <i class="fas fa-wheelchair"></i> Government of Odisha &bull; SSEPD Department
                 </span>
                 <h1 class="h2 fw-bold mb-2">Participant Registration – Disability Day 2026</h1>
-                <h2 class="h5 text-warning fw-semibold mb-3">Registration Form for Participants and their Escorts.</h2>
+                <h2 class="h5 text-warning fw-semibold mb-3">Registration Form for Participants and Escorts – Walkathon, Cultural, Sports &amp; Other Activities</h2>
                 <p class="text-white-50 mb-3" style="max-width: 650px;">
                     State-level registration portal for students, special school candidates, escorts, and participants in Cultural, Sports, and allied events celebrating International Day of Persons with Disabilities.
                 </p>
@@ -293,7 +293,7 @@
                                     <span class="fw-bold">{{ session('participant_name') }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span class="text-muted">School / Institute:</span>
+                                    <span class="text-muted">Institute Name:</span>
                                     <span class="fw-bold">{{ session('school_name') }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between">
@@ -406,10 +406,10 @@
                                 @enderror
                             </div>
 
-                            <!-- 2. School Name -->
+                            <!-- 2. Institute Name -->
                             <div class="col-md-6">
                                 <label for="institute_id" class="form-label fw-semibold">
-                                    2. School Name <span class="required-asterisk">*</span>
+                                    2. Institute Name <span class="required-asterisk">*</span>
                                 </label>
                                 <select class="form-select select2-institute @error('institute_id') is-invalid @enderror" 
                                         id="institute_id" 
@@ -418,15 +418,33 @@
                                         required>
                                     <option value="">Search and Select School Name</option>
                                     @foreach($institutes as $institute)
-                                    <option value="{{ $institute->id }}" {{ old('institute_id') == $institute->id ? 'selected' : '' }}>
+                                    <option value="{{ $institute->id }}" {{ (string) old('institute_id') === (string) $institute->id ? 'selected' : '' }}>
                                         {{ $institute->institute_name }}
                                     </option>
                                     @endforeach
+                                    <option value="Others" {{ old('institute_id') === 'Others' ? 'selected' : '' }}>Others</option>
                                 </select>
-                                <div class="form-text small text-muted">Search and select from registered SSEPD Special Schools and Recognized Institutes.</div>
+                                <div class="form-text small text-muted">Search and select from registered SSEPD Special Schools and Recognized Institutes, or choose Others.</div>
                                 @error('institute_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
+
+                                <!-- Conditional Manual Institute Name -->
+                                <div class="mt-3 {{ old('institute_id') === 'Others' ? '' : 'd-none' }}" id="otherInstituteWrapper">
+                                    <label for="institute_name_other" class="form-label fw-semibold">
+                                        Enter Institute Name <span class="required-asterisk">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control @error('institute_name_other') is-invalid @enderror"
+                                           id="institute_name_other"
+                                           name="institute_name_other"
+                                           value="{{ old('institute_name_other') }}"
+                                           placeholder="Enter full name of your school / institute"
+                                           maxlength="255">
+                                    @error('institute_name_other')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- 3. Gender -->
@@ -576,6 +594,7 @@
                                         name="participation_in" 
                                         required>
                                     <option value="">-- Select Participation Category --</option>
+                                    <option value="Walkathon" {{ old('participation_in') === 'Walkathon' ? 'selected' : '' }}>Walkathon</option>
                                     <option value="Cultural" {{ old('participation_in') === 'Cultural' ? 'selected' : '' }}>Cultural (Dance, Music, Drama, Art)</option>
                                     <option value="Sports" {{ old('participation_in') === 'Sports' ? 'selected' : '' }}>Sports (Athletics, Indoor Games, Para-Sports)</option>
                                     <option value="Others" {{ old('participation_in') === 'Others' ? 'selected' : '' }}>Others (Exhibition, Volunteering, Others)</option>
@@ -793,9 +812,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         $('#institute_id').on('change', function () {
-            if ($(this).val()) {
+            const val = $(this).val();
+            const otherInstWrapper = document.getElementById('otherInstituteWrapper');
+            const otherInstInput = document.getElementById('institute_name_other');
+
+            if (val) {
                 $(this).removeClass('is-invalid');
                 $(this).next('.select2-container').find('.select2-selection').removeClass('is-invalid');
+            }
+
+            if (otherInstWrapper && otherInstInput) {
+                if (val === 'Others') {
+                    otherInstWrapper.classList.remove('d-none');
+                    otherInstInput.setAttribute('required', 'required');
+                } else {
+                    otherInstWrapper.classList.add('d-none');
+                    otherInstInput.removeAttribute('required');
+                    otherInstInput.value = '';
+                }
             }
         });
     }
@@ -1218,11 +1252,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // -------------------------------------------------------------
-    // 3. Conditional Participation Details
+    // 3. Conditional Participation Details & Walkathon Date Rules
     // -------------------------------------------------------------
     const participationSelect = document.getElementById('participation_in');
     const otherWrapper = document.getElementById('otherParticipationWrapper');
     const otherInput = document.getElementById('participation_other');
+    const allDaysCheckbox = document.getElementById('attending_date_all');
+    const dec1Checkbox = document.getElementById('attending_date_2026-12-01');
+    const individualDateCheckboxes = document.querySelectorAll('.attending-date-individual');
+
+    function applyWalkathonDateRule(isWalkathon) {
+        if (!dec1Checkbox) return;
+
+        if (isWalkathon) {
+            dec1Checkbox.checked = true;
+            dec1Checkbox.disabled = false;
+            dec1Checkbox.dataset.walkathonLocked = 'true';
+
+            individualDateCheckboxes.forEach(cb => {
+                if (cb.value !== '2026-12-01') {
+                    cb.checked = false;
+                    cb.disabled = true;
+                    const card = cb.closest('.col-md-3');
+                    if (card) card.classList.add('d-none');
+                }
+            });
+
+            if (allDaysCheckbox) {
+                allDaysCheckbox.checked = false;
+                allDaysCheckbox.disabled = true;
+                const card = allDaysCheckbox.closest('.col-md-3');
+                if (card) card.classList.add('d-none');
+            }
+        } else {
+            dec1Checkbox.dataset.walkathonLocked = 'false';
+
+            individualDateCheckboxes.forEach(cb => {
+                cb.disabled = false;
+                const card = cb.closest('.col-md-3');
+                if (card) card.classList.remove('d-none');
+            });
+
+            if (allDaysCheckbox) {
+                allDaysCheckbox.disabled = false;
+                const card = allDaysCheckbox.closest('.col-md-3');
+                if (card) card.classList.remove('d-none');
+            }
+        }
+    }
 
     if (participationSelect && otherWrapper) {
         participationSelect.addEventListener('change', function () {
@@ -1236,16 +1313,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     otherInput.value = '';
                 }
             }
+            applyWalkathonDateRule(this.value === 'Walkathon');
         });
+
+        // Apply on initial load (handles old() validation errors)
+        applyWalkathonDateRule(participationSelect.value === 'Walkathon');
     }
 
 
     // -------------------------------------------------------------
     // 3a. Mutually Exclusive Attendance Dates Checkboxes
     // -------------------------------------------------------------
-    const allDaysCheckbox = document.getElementById('attending_date_all');
-    const individualDateCheckboxes = document.querySelectorAll('.attending-date-individual');
-
     if (allDaysCheckbox && individualDateCheckboxes.length > 0) {
         allDaysCheckbox.addEventListener('change', function () {
             if (this.checked) {
@@ -1257,6 +1335,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         individualDateCheckboxes.forEach(cb => {
             cb.addEventListener('change', function () {
+                if (this.dataset.walkathonLocked === 'true') {
+                    this.checked = true;
+                    return;
+                }
                 if (this.checked) {
                     allDaysCheckbox.checked = false;
                 }
@@ -1337,15 +1419,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 return false;
             }
 
-            // 2. School Name
+            // 2. Institute Name
             const inst = document.getElementById('institute_id');
             if (!inst || !inst.value.trim()) {
                 if (typeof $.fn.select2 !== 'undefined') {
                     $('#institute_id').next('.select2-container').find('.select2-selection').addClass('is-invalid');
                     $('#institute_id').select2('open');
                 }
-                showValidationError('Mandatory Field Missing', 'Please search and select a School / Institute from the list.', inst);
+                showValidationError('Mandatory Field Missing', 'Please search and select an Institute from the list.', inst);
                 return false;
+            }
+            if (inst.value === 'Others') {
+                const otherInst = document.getElementById('institute_name_other');
+                if (!otherInst || !otherInst.value.trim() || otherInst.value.trim().length < 2) {
+                    showValidationError('Mandatory Field Missing', 'Please enter your Institute Name.', otherInst);
+                    return false;
+                }
             }
 
             // 3. Gender

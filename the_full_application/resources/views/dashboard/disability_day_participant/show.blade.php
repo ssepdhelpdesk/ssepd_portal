@@ -85,9 +85,12 @@ Disability Day 2026 || Participant Details: {{ $participant->registration_no }}
                             <div class="detail-val fw-bold text-dark fs-5">{{ $participant->participant_name }}</div>
                         </div>
                         <div class="col-md-6">
-                            <div class="detail-label">Special School / Institute</div>
+                            <div class="detail-label">Institute Name</div>
                             <div class="detail-val fw-semibold text-primary">
                                 <i class="fas fa-school me-1 text-secondary"></i> {{ $participant->school_name }}
+                                @if(is_null($participant->institute_id))
+                                    <span class="badge bg-light text-dark border ms-1">Manual / Others</span>
+                                @endif
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -247,7 +250,9 @@ Disability Day 2026 || Participant Details: {{ $participant->registration_no }}
                         <div class="col-md-6">
                             <div class="detail-label">Participation Category</div>
                             <div class="detail-val">
-                                @if($participant->participation_in === 'Cultural')
+                                @if($participant->participation_in === 'Walkathon')
+                                    <span class="badge bg-primary fs-6 px-3 py-2"><i class="fas fa-walking me-1"></i> Walkathon</span>
+                                @elseif($participant->participation_in === 'Cultural')
                                     <span class="badge bg-purple fs-6 px-3 py-2"><i class="fas fa-music me-1"></i> Cultural (Dance, Music, Drama, Art)</span>
                                 @elseif($participant->participation_in === 'Sports')
                                     <span class="badge bg-success fs-6 px-3 py-2"><i class="fas fa-running me-1"></i> Sports (Athletics, Para-Sports)</span>

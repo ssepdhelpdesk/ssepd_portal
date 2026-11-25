@@ -37,6 +37,17 @@ class DisabilityDayParticipantRegistration extends Model
     ];
 
     public const ALL_DAYS_VALUE = 'ALL_DAYS';
+    public const WALKATHON_DATE = '2026-12-01';
+
+    /**
+     * Approved participation categories.
+     */
+    public const PARTICIPATION_CATEGORIES = [
+        'Walkathon',
+        'Cultural',
+        'Sports',
+        'Others',
+    ];
 
     /**
      * Maximum space-separated words allowed in a single participant's full name
@@ -230,9 +241,10 @@ class DisabilityDayParticipantRegistration extends Model
 
     /**
      * Authoritative validation for participant attendance dates.
-     * Enforces canonical dates, rejects duplicates/invalid dates, and enforces All Days exclusivity.
+     * Enforces canonical dates, rejects duplicates/invalid dates, enforces All Days exclusivity,
+     * and enforces Walkathon-only December 1, 2026 restriction.
      */
-    public static function validateAttendingDates($value, \Closure $fail): void
+    public static function validateAttendingDates($value, \Closure $fail, ?string $participationIn = null): void
     {
         if (!is_array($value) || count($value) === 0) {
             $fail('Please select at least one date of participation.');
@@ -256,6 +268,13 @@ class DisabilityDayParticipantRegistration extends Model
 
         if (in_array(self::ALL_DAYS_VALUE, $cleaned, true) && count($cleaned) > 1) {
             $fail('All Days cannot be combined with individual date selections.');
+            return;
+        }
+
+        if ($participationIn === 'Walkathon') {
+            if (in_array(self::ALL_DAYS_VALUE, $cleaned, true) || $cleaned !== [self::WALKATHON_DATE]) {
+                $fail('For Walkathon participation, only December 1, 2026 can be selected.');
+            }
         }
     }
 

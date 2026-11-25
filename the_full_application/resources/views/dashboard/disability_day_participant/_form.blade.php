@@ -1,5 +1,10 @@
 @php
     $isEdit = isset($participant) && $participant->exists;
+    $activeInstituteId = old('institute_id');
+    if (is_null($activeInstituteId) && $isEdit) {
+        $activeInstituteId = is_null($participant->institute_id) ? 'Others' : (string) $participant->institute_id;
+    }
+    $activeInstituteOther = old('institute_name_other', ($isEdit && is_null($participant->institute_id)) ? $participant->school_name : '');
     $activeAddressType = (string) old('address_type', $isEdit ? ($participant->address_type ?? '1') : '1');
     $activeState = old('state', $isEdit ? $participant->state_id : '');
     $activeDistrict = old('district', $isEdit ? $participant->district_id : '');
@@ -80,7 +85,7 @@
 
     <div class="col-md-6">
         <label for="institute_id" class="form-label fw-semibold">
-            School / Institute <span class="required-asterisk">*</span>
+            Institute Name <span class="required-asterisk">*</span>
         </label>
         <select class="form-control select2 @error('institute_id') is-invalid @enderror"
                 id="institute_id"
@@ -89,14 +94,31 @@
                 required>
             <option value="">Search and Select School Name</option>
             @foreach($institutes as $inst)
-                <option value="{{ $inst->id }}" {{ (string) old('institute_id', $isEdit ? $participant->institute_id : '') === (string) $inst->id ? 'selected' : '' }}>
+                <option value="{{ $inst->id }}" {{ (string) $activeInstituteId === (string) $inst->id ? 'selected' : '' }}>
                     {{ $inst->institute_name }}
                 </option>
             @endforeach
+            <option value="Others" {{ $activeInstituteId === 'Others' ? 'selected' : '' }}>Others</option>
         </select>
         @error('institute_id')
         <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
+
+        <div class="mt-2 {{ $activeInstituteId === 'Others' ? '' : 'd-none' }}" id="otherInstituteWrapper">
+            <label for="institute_name_other" class="form-label fw-semibold">
+                Enter Institute Name <span class="required-asterisk">*</span>
+            </label>
+            <input type="text"
+                   class="form-control @error('institute_name_other') is-invalid @enderror"
+                   id="institute_name_other"
+                   name="institute_name_other"
+                   value="{{ $activeInstituteOther }}"
+                   placeholder="Enter full name of institute"
+                   maxlength="255">
+            @error('institute_name_other')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
     </div>
 
     <div class="col-md-4">
@@ -283,7 +305,7 @@
         <label for="participation_in" class="form-label fw-semibold">Participation Category <span class="required-asterisk">*</span></label>
         <select class="form-select @error('participation_in') is-invalid @enderror" id="participation_in" name="participation_in" required>
             <option value="">-- Select Category --</option>
-            @foreach(['Cultural', 'Sports', 'Others'] as $cat)
+            @foreach(\App\Models\DisabilityDayParticipantRegistration::PARTICIPATION_CATEGORIES as $cat)
                 <option value="{{ $cat }}" {{ $activeParticipation === $cat ? 'selected' : '' }}>{{ $cat }}</option>
             @endforeach
         </select>
@@ -397,6 +419,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    $('#institute_id').on('change', function () {
+        if ($(this).val() === 'Others') {
+            $('#otherInstituteWrapper').removeClass('d-none');
+            $('#institute_name_other').attr('required', 'required');
+        } else {
+            $('#otherInstituteWrapper').addClass('d-none');
+            $('#institute_name_other').removeAttr('required').val('');
+        }
+    });
+
     // Address Type toggle
     $('input[name="address_type"]').on('change', function () {
         if (this.value === '1') {
@@ -481,12 +513,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Conditional Participation, Attendance Dates & Transport
+    function applyAdminWalkathonDateRule(isWalkathon) {
+        const $dec1 = $('#admin_attending_date_2026-12-01');
+        if (isWalkathon) {
+            $dec1.prop('checked', true).prop('disabled', false).data('walkathon-locked', true);
+            $('.attending-date-individual').not($dec1).each(function () {
+                $(this).prop('checked', false).prop('disabled', true);
+                $(this).closest('.col-md-3').addClass('d-none');
+            });
+            $('#admin_attending_date_all').prop('checked', false).prop('disabled', true).closest('.col-md-3').addClass('d-none');
+        } else {
+            $dec1.data('walkathon-locked', false);
+            $('.attending-date-individual').prop('disabled', false).closest('.col-md-3').removeClass('d-none');
+            $('#admin_attending_date_all').prop('disabled', false).closest('.col-md-3').removeClass('d-none');
+        }
+    }
+
     $('#admin_attending_date_all').on('change', function () {
         if (this.checked) {
             $('.attending-date-individual').prop('checked', false);
         }
     });
     $('.attending-date-individual').on('change', function () {
+        if ($(this).data('walkathon-locked')) {
+            $(this).prop('checked', true);
+            return;
+        }
         if (this.checked) {
             $('#admin_attending_date_all').prop('checked', false);
         }
@@ -499,7 +551,10 @@ document.addEventListener('DOMContentLoaded', function () {
             $('#otherParticipationWrapper').addClass('d-none');
             $('#participation_other').val('');
         }
+        applyAdminWalkathonDateRule(this.value === 'Walkathon');
     });
+
+    applyAdminWalkathonDateRule($('#participation_in').val() === 'Walkathon');
 
     $('#transport_mode').on('change', function () {
         if (this.value === 'Other') {

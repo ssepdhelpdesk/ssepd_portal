@@ -141,7 +141,7 @@ Disability Day 2026 || Participant Registrations
                                         <input type="text" class="form-control form-control-sm" id="search_keyword" placeholder="Reg No, Name, Escort, Mobile...">
                                     </div>
                                     <div class="col-md-3">
-                                        <label for="institute_id" class="form-label small fw-semibold mb-1">School / Institute</label>
+                                        <label for="institute_id" class="form-label small fw-semibold mb-1">Institute Name</label>
                                         <select class="form-control form-control-sm select2" id="institute_id" style="width: 100%;">
                                             <option value="">-- All Institutes --</option>
                                             @foreach($institutes as $inst)
@@ -162,6 +162,7 @@ Disability Day 2026 || Participant Registrations
                                         <label for="participation_in" class="form-label small fw-semibold mb-1">Category</label>
                                         <select class="form-control form-control-sm" id="participation_in">
                                             <option value="">-- All Categories --</option>
+                                            <option value="Walkathon">Walkathon</option>
                                             <option value="Cultural">Cultural</option>
                                             <option value="Sports">Sports</option>
                                             <option value="Others">Others</option>
@@ -238,7 +239,7 @@ Disability Day 2026 || Participant Registrations
                                     <th style="width: 40px;" class="text-center">#</th>
                                     <th>Registration No.</th>
                                     <th>Participant Name</th>
-                                    <th>School / Institute</th>
+                                    <th>Institute Name</th>
                                     <th>Gender</th>
                                     <th>T-Shirt</th>
                                     <th>Escorts</th>

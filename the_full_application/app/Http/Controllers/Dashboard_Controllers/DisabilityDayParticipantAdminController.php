@@ -132,9 +132,10 @@ class DisabilityDayParticipantAdminController extends Controller
                 })
                 ->editColumn('participation_in', function ($row) {
                     $badge = match($row->participation_in) {
-                        'Cultural' => 'bg-purple text-white',
-                        'Sports'   => 'bg-success text-white',
-                        default    => 'bg-warning text-dark',
+                        'Walkathon' => 'bg-primary text-white',
+                        'Cultural'  => 'bg-purple text-white',
+                        'Sports'    => 'bg-success text-white',
+                        default     => 'bg-warning text-dark',
                     };
                     $otherDesc = $row->participation_in === 'Others' && !empty($row->participation_other)
                         ? ' title="' . e($row->participation_other) . '"'
@@ -485,7 +486,18 @@ class DisabilityDayParticipantAdminController extends Controller
                     DisabilityDayParticipantRegistration::validateSingleParticipantName($value, $fail);
                 },
             ],
-            'institute_id'          => ['required', 'integer', 'exists:field_visit_institutes,id'],
+            'institute_id'          => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value === 'Others') {
+                        return;
+                    }
+                    if (!ctype_digit((string) $value) || !DB::table('field_visit_institutes')->where('id', (int) $value)->exists()) {
+                        $fail('The selected institute is invalid or does not exist.');
+                    }
+                },
+            ],
+            'institute_name_other'  => ['required_if:institute_id,Others', 'nullable', 'string', 'min:2', 'max:255'],
             'gender'                => ['required', 'string', 'in:Male,Female,Other'],
             'tshirt_size'           => ['required', 'string', 'in:S,M,L,XL,XXL,XXXL'],
             'address_type'          => ['required', 'in:1,2'],
@@ -515,14 +527,14 @@ class DisabilityDayParticipantAdminController extends Controller
             ],
             'pin'                   => ['required', 'regex:/^[1-9][0-9]{5}$/'],
             'number_of_escorts'     => ['required', 'integer', 'min:0', 'max:5'],
-            'participation_in'      => ['required', 'string', 'in:Cultural,Sports,Others'],
+            'participation_in'      => ['required', 'string', 'in:' . implode(',', DisabilityDayParticipantRegistration::PARTICIPATION_CATEGORIES)],
             'participation_other'   => ['required_if:participation_in,Others', 'nullable', 'string', 'max:255'],
             'attending_dates'       => [
                 'required',
                 'array',
                 'min:1',
-                function ($attribute, $value, $fail) {
-                    DisabilityDayParticipantRegistration::validateAttendingDates($value, $fail);
+                function ($attribute, $value, $fail) use ($request) {
+                    DisabilityDayParticipantRegistration::validateAttendingDates($value, $fail, trim((string) $request->input('participation_in')));
                 },
             ],
             'transport_mode'        => ['required', 'string', 'in:' . implode(',', DisabilityDayParticipantRegistration::TRANSPORT_MODES)],
@@ -608,6 +620,7 @@ class DisabilityDayParticipantAdminController extends Controller
         $messages = [
             'escorts.max'                      => 'No escort details should be provided when the number of escorts is 0.',
             'escorts.size'                     => 'The number of submitted escort details must match the declared count of :size.',
+            'institute_name_other.required_if' => 'Please enter the institute name.',
             'attending_dates.required'         => 'Please select at least one date of participation.',
             'attending_dates.min'              => 'Please select at least one date of participation.',
             'transport_mode_other.required_if' => 'Please specify the other mode of transportation.',
@@ -622,9 +635,15 @@ class DisabilityDayParticipantAdminController extends Controller
      */
     private function extractCleanPayload(Request $request): array
     {
-        $instituteId = $request->input('institute_id');
-        $institute = DB::table('field_visit_institutes')->where('id', $instituteId)->first();
-        $schoolName = $institute ? $institute->institute_name : 'Unknown Institute';
+        $rawInstituteId = trim((string) $request->input('institute_id'));
+        if ($rawInstituteId === 'Others') {
+            $instituteId = null;
+            $schoolName = trim((string) $request->input('institute_name_other'));
+        } else {
+            $instituteId = (int) $rawInstituteId;
+            $institute = DB::table('field_visit_institutes')->where('id', $instituteId)->first();
+            $schoolName = $institute ? $institute->institute_name : 'Unknown Institute';
+        }
 
         $addressType = (int) $request->input('address_type');
         $stateId = $request->input('state');
@@ -639,7 +658,7 @@ class DisabilityDayParticipantAdminController extends Controller
 
         return [
             'participant_name'      => DisabilityDayParticipantRegistration::normalizeParticipantName($request->input('participant_name')),
-            'institute_id'          => (int) $instituteId,
+            'institute_id'          => $instituteId,
             'school_name'           => $schoolName,
             'gender'                => trim((string) $request->input('gender')),
             'tshirt_size'           => strtoupper(trim((string) $request->input('tshirt_size'))),
