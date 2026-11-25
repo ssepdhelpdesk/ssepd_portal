@@ -164,6 +164,7 @@ Disability Day 2026 || Stall Registrations
                                     <th style="width: 160px;">Email</th>
                                     <th style="width: 120px;">Phone</th>
                                     <th style="width: 110px;">District</th>
+                                    <th style="width: 220px;">Complete Address</th>
                                     <th style="width: 130px;">Applied At</th>
                                     <th style="width: 140px;" class="text-center">Allotted Stalls</th>
                                     <th style="width: 250px;" class="text-center">Action</th>
@@ -178,6 +179,7 @@ Disability Day 2026 || Stall Registrations
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>District</th>
+                                    <th>Complete Address</th>
                                     <th>Applied At</th>
                                     <th class="text-center">Allotted Stalls</th>
                                     <th class="text-center">Action</th>
@@ -315,11 +317,12 @@ $(function () {
             { data: 'email', name: 'email' },
             { data: 'phone', name: 'phone' },
             { data: 'district', name: 'district.district_name' },
+            { data: 'complete_address', name: 'complete_address', orderable: false, searchable: false },
             { data: 'applied_at', name: 'applied_at' },
             { data: 'allotted_stall', name: 'allotted_stall', className: 'text-center' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
         ],
-        order: [[7, 'desc']],
+        order: [[8, 'desc']],
         dom: 'Blfrtip',
         buttons: ['copy', 'csv', 'excel', 'print'],
         lengthMenu: [[10, 25, 50, 100, 500, -1], [10, 25, 50, 100, 500, "All"]],

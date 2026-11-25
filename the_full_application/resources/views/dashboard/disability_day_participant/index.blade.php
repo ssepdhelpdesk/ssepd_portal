@@ -129,6 +129,13 @@ Disability Day 2026 || Participant Registrations
                             <h4 class="card-title mb-1">Disability Day 2026 — Participant Registrations</h4>
                             <p class="text-muted small mb-0">Venue: S'O'A University &bull; Dates: 01 Dec 2026 – 03 Dec 2026</p>
                         </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin.disability_day_participant.export_participants_escorts') }}"
+                               id="btnExportParticipantsEscorts"
+                               class="btn btn-success btn-sm">
+                                <i class="fas fa-file-excel me-1"></i> Export Participants &amp; Escorts to Excel
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Filter Form -->
@@ -240,6 +247,8 @@ Disability Day 2026 || Participant Registrations
                                     <th>Registration No.</th>
                                     <th>Participant Name</th>
                                     <th>Institute Name</th>
+                                    <th>District</th>
+                                    <th>Complete Address</th>
                                     <th>Gender</th>
                                     <th>T-Shirt</th>
                                     <th>Escorts</th>
@@ -305,6 +314,8 @@ $(document).ready(function () {
             { data: 'registration_no', name: 'registration_no' },
             { data: 'participant_name', name: 'participant_name' },
             { data: 'school_name', name: 'school_name' },
+            { data: 'district', name: 'district.district_name' },
+            { data: 'complete_address', name: 'complete_address', orderable: false, searchable: false },
             { data: 'gender', name: 'gender', className: 'text-center' },
             { data: 'tshirt_size', name: 'tshirt_size', className: 'text-center' },
             { data: 'number_of_escorts', name: 'number_of_escorts', className: 'text-center' },
@@ -317,7 +328,7 @@ $(document).ready(function () {
             { data: 'status', name: 'status', className: 'text-center' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
         ],
-        order: [[12, 'desc']],
+        order: [[14, 'desc']],
         dom: 'Blfrtip',
         buttons: ['copy', 'csv', 'excel', 'print'],
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
@@ -337,6 +348,32 @@ $(document).ready(function () {
             $('.select2').val('').trigger('change');
         }
         table.ajax.reload();
+    });
+
+    $('#btnExportParticipantsEscorts').on('click', function (e) {
+        e.preventDefault();
+        const baseUrl = $(this).attr('href').split('?')[0];
+        const params = {
+            search_keyword: $('#search_keyword').val(),
+            institute_id: $('#institute_id').val(),
+            gender: $('#gender').val(),
+            participation_in: $('#participation_in').val(),
+            attending_date: $('#attending_date').val(),
+            transport_mode: $('#transport_mode').val(),
+            expected_arrival_date: $('#expected_arrival_date').val(),
+            tshirt_size: $('#tshirt_size').val(),
+            status: $('#status').val(),
+            date_from: $('#date_from').val(),
+            date_to: $('#date_to').val()
+        };
+        const cleanParams = {};
+        Object.keys(params).forEach(function (k) {
+            if (params[k] !== null && params[k] !== undefined && String(params[k]).trim() !== '') {
+                cleanParams[k] = params[k];
+            }
+        });
+        const qs = $.param(cleanParams);
+        window.location.href = qs ? (baseUrl + '?' + qs) : baseUrl;
     });
 });
 

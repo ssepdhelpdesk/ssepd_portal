@@ -101,6 +101,9 @@ class DisabilityDayController extends Controller
                 ->editColumn('district', function ($row) {
                     return $row->district ? e($row->district->district_name) : (e($row->district_name) ?: '—');
                 })
+                ->addColumn('complete_address', function ($row) {
+                    return e($row->complete_address);
+                })
                 ->editColumn('applied_at', function ($row) {
                     return $row->applied_at ? $row->applied_at->format('d-M-Y h:i A') : 'N/A';
                 })

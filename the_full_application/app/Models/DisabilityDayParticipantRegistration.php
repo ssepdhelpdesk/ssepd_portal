@@ -154,6 +154,69 @@ class DisabilityDayParticipantRegistration extends Model
     }
 
     /**
+     * Resolve District display name using the District master relation first.
+     */
+    public function getDistrictDisplayName(): string
+    {
+        if ($this->relationLoaded('district') && $this->district) {
+            return (string) $this->district->district_name;
+        }
+        if (!empty(trim((string) $this->district_name))) {
+            return trim((string) $this->district_name);
+        }
+        if ($this->district) {
+            return (string) $this->district->district_name;
+        }
+        return '—';
+    }
+
+    /**
+     * Format the complete participant address from actual non-empty address fields.
+     */
+    public function getCompleteAddressAttribute(): string
+    {
+        $parts = [];
+
+        if ((int) $this->address_type === 1) {
+            if (!empty(trim((string) $this->village_name))) {
+                $parts[] = 'Village: ' . trim((string) $this->village_name);
+            }
+            if (!empty(trim((string) $this->gp_name))) {
+                $parts[] = 'GP: ' . trim((string) $this->gp_name);
+            }
+            if (!empty(trim((string) $this->block_name))) {
+                $parts[] = 'Block: ' . trim((string) $this->block_name);
+            }
+        } elseif (!empty(trim((string) $this->municipality_name))) {
+            $parts[] = 'Municipality: ' . trim((string) $this->municipality_name);
+        }
+
+        if (!empty(trim((string) $this->at))) {
+            $parts[] = 'At: ' . trim((string) $this->at);
+        }
+        if (!empty(trim((string) $this->post))) {
+            $parts[] = 'Post: ' . trim((string) $this->post);
+        }
+        if (!empty(trim((string) $this->ps))) {
+            $parts[] = 'PS: ' . trim((string) $this->ps);
+        }
+
+        $stateName = $this->relationLoaded('state') && $this->state
+            ? $this->state->state_name
+            : $this->state_name;
+        if (!empty(trim((string) $stateName))) {
+            $parts[] = 'State: ' . trim((string) $stateName);
+        }
+
+        $pinVal = trim((string) ($this->pin ?: $this->postal_pin));
+        if ($pinVal !== '') {
+            $parts[] = 'PIN: ' . $pinVal;
+        }
+
+        return !empty($parts) ? implode(', ', $parts) : '—';
+    }
+
+    /**
      * Determine the financial year (convention: April 1 to March 31).
      * Example: November 2026 => "2026-27"
      */

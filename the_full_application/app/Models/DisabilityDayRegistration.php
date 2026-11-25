@@ -96,6 +96,28 @@ class DisabilityDayRegistration extends Model implements Auditable
     }
 
     /**
+     * Format the complete registered address from non-empty address fields.
+     */
+    public function getCompleteAddressAttribute(): string
+    {
+        $parts = [];
+        if (!empty(trim((string) $this->at))) {
+            $parts[] = 'At: ' . trim((string) $this->at);
+        }
+        if (!empty(trim((string) $this->po))) {
+            $parts[] = 'Post: ' . trim((string) $this->po);
+        }
+        if (!empty(trim((string) $this->ps))) {
+            $parts[] = 'PS: ' . trim((string) $this->ps);
+        }
+        if (!empty(trim((string) $this->pin))) {
+            $parts[] = 'PIN: ' . trim((string) $this->pin);
+        }
+
+        return !empty($parts) ? implode(', ', $parts) : '—';
+    }
+
+    /**
      * OTP verification requests for this registration.
      */
     public function otps(): HasMany

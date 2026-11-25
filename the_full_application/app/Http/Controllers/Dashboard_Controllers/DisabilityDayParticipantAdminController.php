@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Dashboard_Controllers;
 
+use App\Exports\DisabilityDayParticipantsAndEscortsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Block;
 use App\Models\DisabilityDayEscort;
@@ -12,12 +13,14 @@ use App\Models\Municipality;
 use App\Models\State;
 use App\Models\Village;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class DisabilityDayParticipantAdminController extends Controller
@@ -27,10 +30,90 @@ class DisabilityDayParticipantAdminController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('permission:disability-day-access|disability-day-list', ['only' => ['index']]);
+        $this->middleware('permission:disability-day-access|disability-day-list', ['only' => ['index', 'exportParticipantsAndEscorts']]);
         $this->middleware('permission:disability-day-show', ['only' => ['show']]);
         $this->middleware('permission:disability-day-edit', ['only' => ['create', 'store', 'edit', 'update']]);
         $this->middleware('permission:disability-day-delete', ['only' => ['destroy']]);
+    }
+
+    /**
+     * Apply shared search and filter criteria to participant registration queries.
+     */
+    protected function applyParticipantFilters(Builder $query, Request $request): Builder
+    {
+        // Search by keyword (reg no, participant name, school name, escort name/mobile)
+        $searchVal = $request->input('search_keyword');
+        if (empty($searchVal) && $request->filled('search')) {
+            $rawSearch = $request->input('search');
+            $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
+        }
+        if (!empty($searchVal) && is_string($searchVal)) {
+            $term = '%' . trim($searchVal) . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('disability_day_participant_registrations.registration_no', 'like', $term)
+                  ->orWhere('disability_day_participant_registrations.participant_name', 'like', $term)
+                  ->orWhere('disability_day_participant_registrations.school_name', 'like', $term)
+                  ->orWhereHas('escorts', function ($eq) use ($term) {
+                      $eq->where('name', 'like', $term)
+                         ->orWhere('mobile', 'like', $term);
+                  });
+            });
+        }
+
+        if ($request->filled('institute_id')) {
+            $query->where('disability_day_participant_registrations.institute_id', $request->input('institute_id'));
+        }
+
+        if ($request->filled('gender')) {
+            $query->where('disability_day_participant_registrations.gender', $request->input('gender'));
+        }
+
+        if ($request->filled('participation_in')) {
+            $query->where('disability_day_participant_registrations.participation_in', $request->input('participation_in'));
+        }
+
+        if ($request->filled('attending_date')) {
+            $query->whereJsonContains('disability_day_participant_registrations.attending_dates', $request->input('attending_date'));
+        }
+
+        if ($request->filled('transport_mode')) {
+            $query->where('disability_day_participant_registrations.transport_mode', $request->input('transport_mode'));
+        }
+
+        if ($request->filled('expected_arrival_date')) {
+            $query->whereDate('disability_day_participant_registrations.expected_arrival_date', $request->input('expected_arrival_date'));
+        }
+
+        if ($request->filled('tshirt_size')) {
+            $query->where('disability_day_participant_registrations.tshirt_size', $request->input('tshirt_size'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('disability_day_participant_registrations.status', (int) $request->input('status'));
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('disability_day_participant_registrations.applied_at', '>=', $request->input('date_from'));
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('disability_day_participant_registrations.applied_at', '<=', $request->input('date_to'));
+        }
+
+        return $query;
+    }
+
+    /**
+     * Export all eligible participants and their mapped escorts to a single Excel worksheet.
+     */
+    public function exportParticipantsAndEscorts(Request $request)
+    {
+        $query = DisabilityDayParticipantRegistration::query();
+        $this->applyParticipantFilters($query, $request);
+
+        return Excel::download(
+            new DisabilityDayParticipantsAndEscortsExport($query),
+            'SSEPD_Disability_Day_2026_Participants_and_Escorts.xlsx'
+        );
     }
 
     /**
@@ -42,63 +125,7 @@ class DisabilityDayParticipantAdminController extends Controller
             $query = DisabilityDayParticipantRegistration::with(['escorts', 'district', 'state'])
                 ->select('disability_day_participant_registrations.*');
 
-            // Search by keyword (reg no, participant name, school name, escort name/mobile)
-            $searchVal = $request->input('search_keyword');
-            if (empty($searchVal) && $request->filled('search')) {
-                $rawSearch = $request->input('search');
-                $searchVal = is_array($rawSearch) ? ($rawSearch['value'] ?? null) : $rawSearch;
-            }
-            if (!empty($searchVal) && is_string($searchVal)) {
-                $term = '%' . trim($searchVal) . '%';
-                $query->where(function ($q) use ($term) {
-                    $q->where('registration_no', 'like', $term)
-                      ->orWhere('participant_name', 'like', $term)
-                      ->orWhere('school_name', 'like', $term)
-                      ->orWhereHas('escorts', function ($eq) use ($term) {
-                          $eq->where('name', 'like', $term)
-                             ->orWhere('mobile', 'like', $term);
-                      });
-                });
-            }
-
-            if ($request->filled('institute_id')) {
-                $query->where('institute_id', $request->input('institute_id'));
-            }
-
-            if ($request->filled('gender')) {
-                $query->where('gender', $request->input('gender'));
-            }
-
-            if ($request->filled('participation_in')) {
-                $query->where('participation_in', $request->input('participation_in'));
-            }
-
-            if ($request->filled('attending_date')) {
-                $query->whereJsonContains('attending_dates', $request->input('attending_date'));
-            }
-
-            if ($request->filled('transport_mode')) {
-                $query->where('transport_mode', $request->input('transport_mode'));
-            }
-
-            if ($request->filled('expected_arrival_date')) {
-                $query->whereDate('expected_arrival_date', $request->input('expected_arrival_date'));
-            }
-
-            if ($request->filled('tshirt_size')) {
-                $query->where('tshirt_size', $request->input('tshirt_size'));
-            }
-
-            if ($request->filled('status')) {
-                $query->where('status', (int) $request->input('status'));
-            }
-
-            if ($request->filled('date_from')) {
-                $query->whereDate('applied_at', '>=', $request->input('date_from'));
-            }
-            if ($request->filled('date_to')) {
-                $query->whereDate('applied_at', '<=', $request->input('date_to'));
-            }
+            $this->applyParticipantFilters($query, $request);
 
             return DataTables::eloquent($query)
                 ->addIndexColumn()
@@ -111,6 +138,12 @@ class DisabilityDayParticipantAdminController extends Controller
                 })
                 ->editColumn('school_name', function ($row) {
                     return '<span class="small text-muted" title="' . e($row->school_name) . '"><i class="fas fa-school me-1 text-secondary"></i>' . e(Str::limit($row->school_name, 30)) . '</span>';
+                })
+                ->addColumn('district', function ($row) {
+                    return e($row->getDistrictDisplayName());
+                })
+                ->addColumn('complete_address', function ($row) {
+                    return '<span class="small">' . e($row->complete_address) . '</span>';
                 })
                 ->editColumn('gender', function ($row) {
                     $badgeClass = match($row->gender) {
@@ -204,7 +237,7 @@ class DisabilityDayParticipantAdminController extends Controller
                     return $actions;
                 })
                 ->rawColumns([
-                    'registration_no', 'participant_name', 'school_name', 'gender',
+                    'registration_no', 'participant_name', 'school_name', 'complete_address', 'gender',
                     'tshirt_size', 'number_of_escorts', 'participation_in', 'attending_dates',
                     'transport_mode', 'expected_arrival_date', 'expected_arrival_time',
                     'status', 'action'
