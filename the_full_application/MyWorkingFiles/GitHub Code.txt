@@ -1,7 +1,7 @@
 cd /e/XAMPP/htdocs/ssepd_portal
 git status
 git add .
-git commit -m "Disability Day Stal Registreation 11-11-2026"
+git commit -m "Disability Day Participant Registration 23-11-2026"
 git push origin main
 
 git clone https://admin_ssepd@bitbucket.org/admin_ssepd/ssepd_portal.git
@@ -338,7 +338,7 @@ SET
 
     /////////////////////////////////////////////////////////////////////////////
 
-    Have you remembered all the details and chat history of "Project Analysis Plan, Project Analysis Plan (1), Project Analysis Plan (2), Project Analysis Plan (3), Project Analysis Plan (4), Project Analysis (5), Project Analysis (6), Project Analysis (7), Project Analysis (8), Project Analysis (9), Project Analysis (10)" from these 11 Chats?
+    Have you remembered all the details and chat history of "Project Analysis Plan, Project Analysis Plan (1), Project Analysis Plan (2), Project Analysis Plan (3), Project Analysis Plan (4), Project Analysis (5), Project Analysis (6), Project Analysis (7), Project Analysis (8), Project Analysis (9), Project Analysis (10), Project Analysis (11)" from these 12 Chats?
 
 
     District-wise Total Expenditure under the Madhu Babu Pension Yojana (MBPY) for October 2026

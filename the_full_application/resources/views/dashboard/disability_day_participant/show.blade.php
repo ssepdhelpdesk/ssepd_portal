@@ -46,6 +46,11 @@ Disability Day 2026 || Participant Details: {{ $participant->registration_no }}
                 <a href="{{ route('admin.disability_day_participant.index') }}" class="btn btn-secondary btn-sm">
                     <i class="fas fa-arrow-left me-1"></i> Back to Registrations
                 </a>
+                @can('disability-day-edit')
+                <a href="{{ route('admin.disability_day_participant.edit', $participant->id) }}" class="btn btn-warning btn-sm text-dark">
+                    <i class="fas fa-edit me-1"></i> Edit Details
+                </a>
+                @endcan
                 <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">
                     <i class="fas fa-print me-1"></i> Print Receipt
                 </button>
@@ -258,6 +263,78 @@ Disability Day 2026 || Participant Details: {{ $participant->registration_no }}
                                 <div class="detail-val fw-semibold text-dark">{{ $participant->participation_other }}</div>
                             </div>
                         @endif
+
+                        <div class="col-12 mt-3">
+                            <div class="detail-label">Dates of Participation</div>
+                            <div class="detail-val mt-1">
+                                @php
+                                    $storedDates = is_array($participant->attending_dates) ? $participant->attending_dates : [];
+                                    $canonicalKeys = array_keys(\App\Models\DisabilityDayParticipantRegistration::EVENT_DATES);
+                                    $sortedDates = array_values(array_intersect($canonicalKeys, $storedDates));
+                                    sort($sortedDates);
+                                @endphp
+                                @if(empty($sortedDates))
+                                    <span class="text-muted">Not Specified</span>
+                                @elseif($sortedDates === $canonicalKeys)
+                                    <span class="badge bg-primary fs-6 px-3 py-2">
+                                        <i class="fas fa-calendar-check me-1"></i> All Days (December 1–3, 2026)
+                                    </span>
+                                @else
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach($sortedDates as $d)
+                                            <span class="badge bg-info text-dark fs-6 px-3 py-2">
+                                                <i class="fas fa-calendar-day me-1"></i> {{ \App\Models\DisabilityDayParticipantRegistration::EVENT_DATES[$d] ?? $d }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Transportation & Venue Arrival Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 text-dark fw-bold">
+                        <i class="fas fa-bus text-primary me-2"></i> Transportation &amp; Venue Arrival Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="detail-label">Mode of Transportation</div>
+                            <div class="detail-val fw-semibold">
+                                @if(!empty($participant->transport_mode))
+                                    <span class="badge bg-info text-dark fs-6 px-3 py-2">{{ $participant->transport_mode }}</span>
+                                @else
+                                    <span class="text-muted">Not Specified</span>
+                                @endif
+                            </div>
+                        </div>
+                        @if($participant->transport_mode === 'Other' && !empty($participant->transport_mode_other))
+                            <div class="col-md-6">
+                                <div class="detail-label">Other Mode of Transportation Details</div>
+                                <div class="detail-val fw-semibold text-dark">{{ $participant->transport_mode_other }}</div>
+                            </div>
+                        @endif
+                        <div class="col-md-6">
+                            <div class="detail-label">Expected Date of Arrival at Venue</div>
+                            <div class="detail-val font-monospace fw-bold">
+                                {{ $participant->expected_arrival_date ? $participant->expected_arrival_date->format('d M Y') : 'Not Specified' }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-label">Expected Time of Arrival at Venue</div>
+                            <div class="detail-val font-monospace fw-bold">
+                                @if(!empty($participant->expected_arrival_time))
+                                    {{ \Carbon\Carbon::parse($participant->expected_arrival_time)->format('h:i A') }}
+                                @else
+                                    Not Specified
+                                @endif
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

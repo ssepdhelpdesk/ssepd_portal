@@ -47,6 +47,13 @@ return new class extends Migration
             $table->unsignedInteger('number_of_escorts')->default(0);
             $table->string('participation_in', 50)->index();
             $table->string('participation_other', 255)->nullable();
+            $table->json('attending_dates')->nullable();
+
+            // Transportation & Venue Arrival Details
+            $table->string('transport_mode', 100)->nullable()->index('dd_part_transport_mode_idx');
+            $table->string('transport_mode_other', 255)->nullable();
+            $table->date('expected_arrival_date')->nullable()->index('dd_part_arrival_date_idx');
+            $table->time('expected_arrival_time')->nullable();
             
             // System metadata & Status
             $table->timestamp('applied_at')->nullable()->index();

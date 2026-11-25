@@ -656,7 +656,11 @@ Route::group(['middleware' => ['auth', 'prevent-back-history', 'track.session', 
     /* Disability Day 2026 Participant Registration Management */
     Route::prefix('disability-day-participants')->name('disability_day_participant.')->controller(DisabilityDayParticipantAdminController::class)->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
         Route::get('{id}/view', 'show')->name('show');
+        Route::get('{id}/edit', 'edit')->name('edit');
+        Route::post('{id}/update', 'update')->name('update');
         Route::match(['get', 'delete', 'post'], '{id}/delete', 'destroy')->name('destroy');
     });
 

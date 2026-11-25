@@ -42,6 +42,11 @@ Disability Day 2026 || Participant Registrations
         </div>
         <div class="col-md-5 align-self-center text-end">
             <div class="d-flex justify-content-end gap-2">
+                @can('disability-day-edit')
+                <a href="{{ route('admin.disability_day_participant.create') }}" class="btn waves-effect waves-light btn-rounded text-white btn-xs btn-success">
+                    <i class="fas fa-plus me-1"></i> Add Participant
+                </a>
+                @endcan
                 <a href="{{ route('disability_day.participant_registration') }}" target="_blank" class="btn waves-effect waves-light btn-rounded text-white btn-xs btn-primary">
                     <i class="fas fa-external-link-alt me-1"></i> Public Registration Form
                 </a>
@@ -175,11 +180,33 @@ Disability Day 2026 || Participant Registrations
                                         </select>
                                     </div>
                                     <div class="col-md-2 mt-2">
-                                        <label for="date_from" class="form-label small fw-semibold mb-1">Date From</label>
+                                        <label for="attending_date" class="form-label small fw-semibold mb-1">Attendance Date</label>
+                                        <select class="form-control form-control-sm" id="attending_date">
+                                            <option value="">-- All Dates --</option>
+                                            @foreach(\App\Models\DisabilityDayParticipantRegistration::EVENT_DATES as $isoDate => $dateLabel)
+                                                <option value="{{ $isoDate }}">{{ $dateLabel }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mt-2">
+                                        <label for="transport_mode" class="form-label small fw-semibold mb-1">Transport Mode</label>
+                                        <select class="form-control form-control-sm" id="transport_mode">
+                                            <option value="">-- All Modes --</option>
+                                            @foreach(\App\Models\DisabilityDayParticipantRegistration::TRANSPORT_MODES as $mode)
+                                                <option value="{{ $mode }}">{{ $mode }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 mt-2">
+                                        <label for="expected_arrival_date" class="form-label small fw-semibold mb-1">Arrival Date</label>
+                                        <input type="date" class="form-control form-control-sm" id="expected_arrival_date">
+                                    </div>
+                                    <div class="col-md-2 mt-2">
+                                        <label for="date_from" class="form-label small fw-semibold mb-1">Reg. Date From</label>
                                         <input type="date" class="form-control form-control-sm" id="date_from">
                                     </div>
                                     <div class="col-md-2 mt-2">
-                                        <label for="date_to" class="form-label small fw-semibold mb-1">Date To</label>
+                                        <label for="date_to" class="form-label small fw-semibold mb-1">Reg. Date To</label>
                                         <input type="date" class="form-control form-control-sm" id="date_to">
                                     </div>
                                     <div class="col-md-2 mt-2">
@@ -216,9 +243,13 @@ Disability Day 2026 || Participant Registrations
                                     <th>T-Shirt</th>
                                     <th>Escorts</th>
                                     <th>Participation</th>
+                                    <th>Dates of Participation</th>
+                                    <th>Transport Mode</th>
+                                    <th>Arrival Date</th>
+                                    <th>Arrival Time</th>
                                     <th>Registered Date</th>
                                     <th>Status</th>
-                                    <th style="width: 80px;" class="text-center">Action</th>
+                                    <th style="width: 110px;" class="text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -255,14 +286,17 @@ $(document).ready(function () {
         ajax: {
             url: "{{ route('admin.disability_day_participant.index') }}",
             data: function (d) {
-                d.search_keyword   = $('#search_keyword').val();
-                d.institute_id      = $('#institute_id').val();
-                d.gender            = $('#gender').val();
-                d.participation_in  = $('#participation_in').val();
-                d.tshirt_size       = $('#tshirt_size').val();
-                d.status            = $('#status').val();
-                d.date_from         = $('#date_from').val();
-                d.date_to           = $('#date_to').val();
+                d.search_keyword        = $('#search_keyword').val();
+                d.institute_id          = $('#institute_id').val();
+                d.gender                = $('#gender').val();
+                d.participation_in      = $('#participation_in').val();
+                d.attending_date        = $('#attending_date').val();
+                d.transport_mode        = $('#transport_mode').val();
+                d.expected_arrival_date = $('#expected_arrival_date').val();
+                d.tshirt_size           = $('#tshirt_size').val();
+                d.status                = $('#status').val();
+                d.date_from             = $('#date_from').val();
+                d.date_to               = $('#date_to').val();
             }
         },
         columns: [
@@ -274,11 +308,15 @@ $(document).ready(function () {
             { data: 'tshirt_size', name: 'tshirt_size', className: 'text-center' },
             { data: 'number_of_escorts', name: 'number_of_escorts', className: 'text-center' },
             { data: 'participation_in', name: 'participation_in', className: 'text-center' },
+            { data: 'attending_dates', name: 'attending_dates', orderable: false },
+            { data: 'transport_mode', name: 'transport_mode' },
+            { data: 'expected_arrival_date', name: 'expected_arrival_date', className: 'text-center' },
+            { data: 'expected_arrival_time', name: 'expected_arrival_time', className: 'text-center' },
             { data: 'applied_at', name: 'applied_at' },
             { data: 'status', name: 'status', className: 'text-center' },
             { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
         ],
-        order: [[8, 'desc']],
+        order: [[12, 'desc']],
         dom: 'Blfrtip',
         buttons: ['copy', 'csv', 'excel', 'print'],
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],

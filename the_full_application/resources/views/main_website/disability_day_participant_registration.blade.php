@@ -308,6 +308,24 @@
                                     <span class="text-muted">Participation Category:</span>
                                     <span class="badge bg-primary fs-6">{{ session('participation_in') }}</span>
                                 </li>
+                                @if(session('attending_dates'))
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Dates of Participation:</span>
+                                    <span class="fw-bold">{{ session('attending_dates') }}</span>
+                                </li>
+                                @endif
+                                @if(session('transport_mode'))
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Mode of Transportation:</span>
+                                    <span class="fw-bold">{{ session('transport_mode') }}</span>
+                                </li>
+                                @endif
+                                @if(session('expected_arrival_date'))
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="text-muted">Expected Venue Arrival:</span>
+                                    <span class="fw-bold">{{ session('expected_arrival_date') }} at {{ session('expected_arrival_time') }}</span>
+                                </li>
+                                @endif
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span class="text-muted">Submitted At:</span>
                                     <span class="fw-bold">{{ session('applied_at') }}</span>
@@ -560,7 +578,7 @@
                                     <option value="">-- Select Participation Category --</option>
                                     <option value="Cultural" {{ old('participation_in') === 'Cultural' ? 'selected' : '' }}>Cultural (Dance, Music, Drama, Art)</option>
                                     <option value="Sports" {{ old('participation_in') === 'Sports' ? 'selected' : '' }}>Sports (Athletics, Indoor Games, Para-Sports)</option>
-                                    <option value="Others" {{ old('participation_in') === 'Others' ? 'selected' : '' }}>Others (Exhibition, Volunteering, Allied)</option>
+                                    <option value="Others" {{ old('participation_in') === 'Others' ? 'selected' : '' }}>Others (Exhibition, Volunteering, Others)</option>
                                 </select>
                                 @error('participation_in')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -583,17 +601,143 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <!-- Dates of Participation -->
+                            <div class="col-12 mt-3" id="attendingDatesGroup">
+                                <label class="form-label fw-semibold d-block">
+                                    Dates of Participation <span class="required-asterisk">*</span>
+                                </label>
+                                <div class="form-text small text-muted mb-2">
+                                    Please select the date(s) on which you will attend the event.
+                                </div>
+                                @php
+                                    $oldAttendingDates = old('attending_dates', []);
+                                    if (!is_array($oldAttendingDates)) $oldAttendingDates = [];
+                                @endphp
+                                <div class="row g-2">
+                                    @foreach(\App\Models\DisabilityDayParticipantRegistration::EVENT_DATES as $isoDate => $dateLabel)
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check custom-radio p-2 border rounded bg-light">
+                                            <input class="form-check-input ms-1 attending-date-checkbox attending-date-individual"
+                                                   type="checkbox"
+                                                   name="attending_dates[]"
+                                                   id="attending_date_{{ $isoDate }}"
+                                                   value="{{ $isoDate }}"
+                                                   {{ in_array($isoDate, $oldAttendingDates, true) ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-medium ms-1" for="attending_date_{{ $isoDate }}">
+                                                {{ $dateLabel }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check custom-radio p-2 border rounded bg-light border-primary">
+                                            <input class="form-check-input ms-1 attending-date-checkbox"
+                                                   type="checkbox"
+                                                   name="attending_dates[]"
+                                                   id="attending_date_all"
+                                                   value="{{ \App\Models\DisabilityDayParticipantRegistration::ALL_DAYS_VALUE }}"
+                                                   {{ in_array(\App\Models\DisabilityDayParticipantRegistration::ALL_DAYS_VALUE, $oldAttendingDates, true) ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-semibold text-primary ms-1" for="attending_date_all">
+                                                All Days (December 1–3, 2026)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                @error('attending_dates')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION E: TRANSPORTATION & VENUE ARRIVAL DETAILS -->
+                    <div class="form-section-header">
+                        <i class="fas fa-bus text-primary"></i>
+                        <span>Section E — Transportation &amp; Venue Arrival Details</span>
+                    </div>
+                    <div class="form-section-body">
+                        <div class="row g-3">
+                            <!-- 8. Mode of Transportation -->
+                            <div class="col-md-6">
+                                <label for="transport_mode" class="form-label fw-semibold">
+                                    8. Mode of Transportation <span class="required-asterisk">*</span>
+                                </label>
+                                <select class="form-select @error('transport_mode') is-invalid @enderror" 
+                                        id="transport_mode" 
+                                        name="transport_mode" 
+                                        required>
+                                    <option value="">-- Select Mode of Transportation --</option>
+                                    @foreach(\App\Models\DisabilityDayParticipantRegistration::TRANSPORT_MODES as $mode)
+                                    <option value="{{ $mode }}" {{ old('transport_mode') === $mode ? 'selected' : '' }}>
+                                        {{ $mode }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @error('transport_mode')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Conditional Field: Specify Other Mode of Transportation -->
+                            <div class="col-md-6 {{ old('transport_mode') === 'Other' ? '' : 'd-none' }}" id="otherTransportWrapper">
+                                <label for="transport_mode_other" class="form-label fw-semibold">
+                                    Specify Other Mode of Transportation <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="text" 
+                                       class="form-control @error('transport_mode_other') is-invalid @enderror" 
+                                       id="transport_mode_other" 
+                                       name="transport_mode_other" 
+                                       value="{{ old('transport_mode_other') }}" 
+                                       placeholder="Enter mode of transportation details" 
+                                       maxlength="255">
+                                @error('transport_mode_other')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- 9. Expected Date of Arrival at Venue -->
+                            <div class="col-md-6">
+                                <label for="expected_arrival_date" class="form-label fw-semibold">
+                                    9. Expected Date of Arrival at Venue <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="date" 
+                                       class="form-control @error('expected_arrival_date') is-invalid @enderror" 
+                                       id="expected_arrival_date" 
+                                       name="expected_arrival_date" 
+                                       value="{{ old('expected_arrival_date') }}" 
+                                       required>
+                                @error('expected_arrival_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- 10. Expected Time of Arrival at Venue -->
+                            <div class="col-md-6">
+                                <label for="expected_arrival_time" class="form-label fw-semibold">
+                                    10. Expected Time of Arrival at Venue <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="time" 
+                                       class="form-control @error('expected_arrival_time') is-invalid @enderror" 
+                                       id="expected_arrival_time" 
+                                       name="expected_arrival_time" 
+                                       value="{{ old('expected_arrival_time') }}" 
+                                       required>
+                                @error('expected_arrival_time')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- System-generated Information Notice -->
-                        <div class="system-info-notice my-4">
+                        <!-- <div class="system-info-notice my-4">
                             <h6 class="fw-bold mb-2"><i class="fas fa-shield-alt me-1"></i> Registration & Event Identity Policy</h6>
                             <ul class="mb-0 ps-3">
                                 <li><strong>Registration Number:</strong> Generated automatically by the secure server upon successful submission (<code>SSEPD/DD2026/PART/DD/MM/YYYY/XXXXXX</code>).</li>
                                 <li><strong>Applied Date & Time:</strong> Timestamped from the official Indian Standard Time (IST) departmental clock.</li>
                                 <li><strong>Identity & T-Shirt Allocation:</strong> Official badge and T-Shirt kit will be handed over to registered participants and escorts at the venue reception counter.</li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top flex-wrap gap-3">
@@ -1097,6 +1241,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // -------------------------------------------------------------
+    // 3a. Mutually Exclusive Attendance Dates Checkboxes
+    // -------------------------------------------------------------
+    const allDaysCheckbox = document.getElementById('attending_date_all');
+    const individualDateCheckboxes = document.querySelectorAll('.attending-date-individual');
+
+    if (allDaysCheckbox && individualDateCheckboxes.length > 0) {
+        allDaysCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                individualDateCheckboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+            }
+        });
+
+        individualDateCheckboxes.forEach(cb => {
+            cb.addEventListener('change', function () {
+                if (this.checked) {
+                    allDaysCheckbox.checked = false;
+                }
+            });
+        });
+    }
+
+    // -------------------------------------------------------------
+    // 3b. Conditional Transportation Details & Name Normalization
+    // -------------------------------------------------------------
+    const transportSelect = document.getElementById('transport_mode');
+    const otherTransportWrapper = document.getElementById('otherTransportWrapper');
+    const otherTransportInput = document.getElementById('transport_mode_other');
+
+    if (transportSelect && otherTransportWrapper) {
+        transportSelect.addEventListener('change', function () {
+            if (this.value === 'Other') {
+                otherTransportWrapper.classList.remove('d-none');
+                if (otherTransportInput) otherTransportInput.setAttribute('required', 'required');
+            } else {
+                otherTransportWrapper.classList.add('d-none');
+                if (otherTransportInput) {
+                    otherTransportInput.removeAttribute('required');
+                    otherTransportInput.value = '';
+                }
+            }
+        });
+    }
+
+    const pNameInput = document.getElementById('participant_name');
+    if (pNameInput) {
+        pNameInput.addEventListener('blur', function () {
+            this.value = this.value.trim().replace(/\s+/g, ' ');
+        });
+    }
+
+
+    // -------------------------------------------------------------
     // 4. Client-side Form Validation with SweetAlert2
     // -------------------------------------------------------------
     const form = document.getElementById('participantRegistrationForm');
@@ -1117,10 +1315,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            // 1. Participant Name
+            // 1. Participant Name (Single Participant Validation)
             const pName = document.getElementById('participant_name');
-            if (!pName || !pName.value.trim() || pName.value.trim().length < 2) {
+            if (!pName) {
+                showValidationError('Mandatory Field Missing', 'Participant name field is missing.', pName);
+                return false;
+            }
+            const rawPName = pName.value;
+            if (/[,;\r\n\t|\/&]/.test(rawPName)) {
+                showValidationError('Invalid Participant Name', 'Please enter only one participant\'s full name. Multiple names separated by commas, semicolons, or new lines are not allowed.', pName);
+                return false;
+            }
+            const normalizedPName = rawPName.trim().replace(/\s+/g, ' ');
+            pName.value = normalizedPName;
+            if (!normalizedPName || normalizedPName.length < 2) {
                 showValidationError('Mandatory Field Missing', 'Please enter a valid participant name (at least 2 characters).', pName);
+                return false;
+            }
+            if (normalizedPName.split(' ').filter(Boolean).length > 6) {
+                showValidationError('Multiple Participants Detected', 'Please enter only one participant\'s full name. Multiple participants\' names cannot be entered in a single registration.', pName);
                 return false;
             }
 
@@ -1246,6 +1459,39 @@ document.addEventListener('DOMContentLoaded', function () {
                     showValidationError('Please Specify Other Participation', 'Please describe the other participation activity in the field provided.', otherInput);
                     return false;
                 }
+            }
+
+            // 7b. Dates of Participation
+            const checkedAttendance = document.querySelectorAll('.attending-date-checkbox:checked');
+            if (!checkedAttendance || checkedAttendance.length === 0) {
+                showValidationError('Dates of Participation Missing', 'Please select at least one date on which you will attend the event.', document.getElementById('attending_date_2026-12-01'));
+                return false;
+            }
+
+            // 8. Transportation & Venue Arrival Details
+            const transMode = document.getElementById('transport_mode');
+            if (!transMode || !transMode.value.trim()) {
+                showValidationError('Transportation Mode Missing', 'Please select a Mode of Transportation.', transMode);
+                return false;
+            }
+
+            if (transMode.value === 'Other') {
+                if (!otherTransportInput || !otherTransportInput.value.trim()) {
+                    showValidationError('Please Specify Other Transportation', 'Please specify the other mode of transportation.', otherTransportInput);
+                    return false;
+                }
+            }
+
+            const arrDate = document.getElementById('expected_arrival_date');
+            if (!arrDate || !arrDate.value.trim()) {
+                showValidationError('Arrival Date Missing', 'Please select the Expected Date of Arrival at Venue.', arrDate);
+                return false;
+            }
+
+            const arrTime = document.getElementById('expected_arrival_time');
+            if (!arrTime || !arrTime.value.trim()) {
+                showValidationError('Arrival Time Missing', 'Please enter the Expected Time of Arrival at Venue.', arrTime);
+                return false;
             }
 
             // Prevent multiple submissions

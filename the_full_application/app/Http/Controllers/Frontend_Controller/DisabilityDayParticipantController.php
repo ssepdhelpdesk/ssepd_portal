@@ -44,7 +44,7 @@ class DisabilityDayParticipantController extends Controller
         $financialYear = DisabilityDayParticipantRegistration::calculateFinancialYear($appliedAt);
 
         // Sanitize string inputs
-        $participantName = trim((string) $request->input('participant_name'));
+        $participantName = DisabilityDayParticipantRegistration::normalizeParticipantName($request->input('participant_name'));
         $instituteId = $request->input('institute_id');
         $gender = trim((string) $request->input('gender'));
         $tshirtSize = strtoupper(trim((string) $request->input('tshirt_size')));
@@ -52,10 +52,21 @@ class DisabilityDayParticipantController extends Controller
         $numEscorts = (int) $request->input('number_of_escorts', 0);
         $participationIn = trim((string) $request->input('participation_in'));
         $participationOther = trim((string) $request->input('participation_other'));
+        $attendingDates = DisabilityDayParticipantRegistration::normalizeAttendingDates($request->input('attending_dates', []));
+        $transportMode = trim((string) $request->input('transport_mode'));
+        $transportModeOther = trim((string) $request->input('transport_mode_other'));
+        $expectedArrivalDate = trim((string) $request->input('expected_arrival_date'));
+        $expectedArrivalTime = trim((string) $request->input('expected_arrival_time'));
 
         // Base Validation Rules
         $rules = [
-            'participant_name'    => ['required', 'string', 'min:2', 'max:150', 'regex:/^[\p{L}\p{M}\s\.\'-]+$/u'],
+            'participant_name'    => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    DisabilityDayParticipantRegistration::validateSingleParticipantName($value, $fail);
+                },
+            ],
             'institute_id'        => ['required', 'integer', 'exists:field_visit_institutes,id'],
             'gender'              => ['required', 'string', 'in:Male,Female,Other'],
             'tshirt_size'         => ['required', 'string', 'in:S,M,L,XL,XXL,XXXL'],
@@ -88,6 +99,18 @@ class DisabilityDayParticipantController extends Controller
             'number_of_escorts'   => ['required', 'integer', 'min:0', 'max:5'],
             'participation_in'    => ['required', 'string', 'in:Cultural,Sports,Others'],
             'participation_other' => ['required_if:participation_in,Others', 'nullable', 'string', 'max:255'],
+            'attending_dates'     => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    DisabilityDayParticipantRegistration::validateAttendingDates($value, $fail);
+                },
+            ],
+            'transport_mode'        => ['required', 'string', 'in:' . implode(',', DisabilityDayParticipantRegistration::TRANSPORT_MODES)],
+            'transport_mode_other'  => ['required_if:transport_mode,Other', 'nullable', 'string', 'max:255'],
+            'expected_arrival_date' => ['required', 'date'],
+            'expected_arrival_time' => ['required', 'regex:/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/'],
         ];
 
         // Conditional Address Validation
@@ -216,6 +239,16 @@ class DisabilityDayParticipantController extends Controller
             'participation_in.required'  => 'Please select a participation category.',
             'participation_in.in'        => 'Please select a valid participation category (Cultural, Sports, or Others).',
             'participation_other.required_if' => 'Please specify your other participation activity.',
+            'attending_dates.required'   => 'Please select at least one date of participation.',
+            'attending_dates.min'        => 'Please select at least one date of participation.',
+
+            'transport_mode.required'        => 'Please select a mode of transportation.',
+            'transport_mode.in'              => 'Please select a valid mode of transportation.',
+            'transport_mode_other.required_if' => 'Please specify the other mode of transportation.',
+            'expected_arrival_date.required' => 'Please select the expected date of arrival at the venue.',
+            'expected_arrival_date.date'     => 'Please enter a valid expected date of arrival.',
+            'expected_arrival_time.required' => 'Please enter the expected time of arrival at the venue.',
+            'expected_arrival_time.regex'    => 'Please enter a valid time of arrival (HH:MM).',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -284,6 +317,11 @@ class DisabilityDayParticipantController extends Controller
                         $numEscorts,
                         $participationIn,
                         $participationOther,
+                        $attendingDates,
+                        $transportMode,
+                        $transportModeOther,
+                        $expectedArrivalDate,
+                        $expectedArrivalTime,
                         $appliedAt,
                         $financialYear
                     ) {
@@ -291,32 +329,37 @@ class DisabilityDayParticipantController extends Controller
                         $regNo = DisabilityDayParticipantRegistration::generateUniqueRegistrationNo($appliedAt);
 
                         $participant = DisabilityDayParticipantRegistration::create([
-                            'registration_no'     => $regNo,
-                            'participant_name'    => $participantName,
-                            'institute_id'        => $instituteId,
-                            'school_name'         => $schoolName,
-                            'gender'              => $gender,
-                            'tshirt_size'         => $tshirtSize,
-                            'address_type'        => $addressType,
-                            'state_id'            => $stateId ? (int)$stateId : null,
-                            'state_name'          => $stateName,
-                            'district_id'         => $districtId ? (int)$districtId : null,
-                            'district_name'       => $districtName,
-                            'block_id'            => $blockId ? (int)$blockId : null,
-                            'block_name'          => $blockName,
-                            'gp_id'               => $gpId ? (int)$gpId : null,
-                            'gp_name'             => $gpName,
-                            'village_id'          => $villageId ? (int)$villageId : null,
-                            'village_name'        => $villageName,
-                            'municipality_id'     => $municipalityId ? (int)$municipalityId : null,
-                            'municipality_name'   => $municipalityName,
-                            'pin'                 => trim((string)$request->input('pin')),
-                            'number_of_escorts'   => $numEscorts,
-                            'participation_in'    => $participationIn,
-                            'participation_other' => $participationIn === 'Others' ? $participationOther : null,
-                            'applied_at'          => $appliedAt,
-                            'status'              => 1,
-                            'financial_year'      => $financialYear,
+                            'registration_no'       => $regNo,
+                            'participant_name'      => $participantName,
+                            'institute_id'          => $instituteId,
+                            'school_name'           => $schoolName,
+                            'gender'                => $gender,
+                            'tshirt_size'           => $tshirtSize,
+                            'address_type'          => $addressType,
+                            'state_id'              => $stateId ? (int)$stateId : null,
+                            'state_name'            => $stateName,
+                            'district_id'           => $districtId ? (int)$districtId : null,
+                            'district_name'         => $districtName,
+                            'block_id'              => $blockId ? (int)$blockId : null,
+                            'block_name'            => $blockName,
+                            'gp_id'                 => $gpId ? (int)$gpId : null,
+                            'gp_name'               => $gpName,
+                            'village_id'            => $villageId ? (int)$villageId : null,
+                            'village_name'          => $villageName,
+                            'municipality_id'       => $municipalityId ? (int)$municipalityId : null,
+                            'municipality_name'     => $municipalityName,
+                            'pin'                   => trim((string)$request->input('pin')),
+                            'number_of_escorts'     => $numEscorts,
+                            'participation_in'      => $participationIn,
+                            'participation_other'   => $participationIn === 'Others' ? $participationOther : null,
+                            'attending_dates'       => $attendingDates,
+                            'transport_mode'        => $transportMode,
+                            'transport_mode_other'  => $transportMode === 'Other' ? $transportModeOther : null,
+                            'expected_arrival_date' => $expectedArrivalDate,
+                            'expected_arrival_time' => $expectedArrivalTime,
+                            'applied_at'            => $appliedAt,
+                            'status'                => 1,
+                            'financial_year'        => $financialYear,
                         ]);
 
                         // Insert Escort Records
@@ -379,15 +422,21 @@ class DisabilityDayParticipantController extends Controller
             return redirect()
                 ->route('disability_day.participant_registration')
                 ->with([
-                    'registration_success' => true,
-                    'registration_no'      => $registration->registration_no,
-                    'participant_name'     => $registration->participant_name,
-                    'school_name'          => $registration->school_name,
-                    'gender'               => $registration->gender,
-                    'tshirt_size'          => $registration->tshirt_size,
-                    'number_of_escorts'    => $registration->number_of_escorts,
-                    'participation_in'     => $registration->participation_in,
-                    'applied_at'           => $appliedAt->format('d M Y, h:i A'),
+                    'registration_success'  => true,
+                    'registration_no'       => $registration->registration_no,
+                    'participant_name'      => $registration->participant_name,
+                    'school_name'           => $registration->school_name,
+                    'gender'                => $registration->gender,
+                    'tshirt_size'           => $registration->tshirt_size,
+                    'number_of_escorts'     => $registration->number_of_escorts,
+                    'participation_in'      => $registration->participation_in,
+                    'attending_dates'       => DisabilityDayParticipantRegistration::formatAttendingDatesForDisplay($registration->attending_dates),
+                    'transport_mode'        => $registration->transport_mode === 'Other' && $registration->transport_mode_other
+                        ? 'Other (' . $registration->transport_mode_other . ')'
+                        : $registration->transport_mode,
+                    'expected_arrival_date' => $registration->expected_arrival_date ? $registration->expected_arrival_date->format('d M Y') : '',
+                    'expected_arrival_time' => $registration->expected_arrival_time,
+                    'applied_at'            => $appliedAt->format('d M Y, h:i A'),
                 ]);
 
         } catch (\Throwable $e) {
