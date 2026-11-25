@@ -234,6 +234,19 @@
          Register Stall <i class="fa-solid fa-arrow-right-long"></i>
          </button></a>
       </div>
+      <!-- Disability Day 2026 – Participant Registration -->
+      <div class="service-card" data-keywords="disability day 2026 participant registration exhibition event soa university persons with disabilities">
+         <div class="service-icon-wrap">
+            <i class="fa-solid fa-store"></i>
+         </div>
+         <div class="service-details">
+            <h3 class="service-title">Disability Day 2026 – Participant Registration</h3>
+            <p class="service-desc">Register individuals and participating institutions for Walkathon, Cultural, Sports, and other activities during the International Day of Persons with Disabilities – 2026, to be held at S'O'A University from 01 December to 03 December 2026.</p>
+         </div>
+         <a href="{{ route('disability_day.participant_registration') }}"><button class="btn-service-action" aria-label="Open Disability Day 2026 Stall Registration">
+         Register Here <i class="fa-solid fa-arrow-right-long"></i>
+         </button></a>
+      </div>
       <!-- Reports & Dashboard -->
       <!-- <div class="service-card" data-keywords="reports dashboard analytics data count analytics state command metrics">
          <div class="service-icon-wrap">
