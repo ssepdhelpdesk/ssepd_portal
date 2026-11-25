@@ -228,7 +228,7 @@
          </div>
          <div class="service-details">
             <h3 class="service-title">Disability Day 2026 – Stall Registration</h3>
-            <p class="service-desc">Register your organization for stall participation in the International Day of Persons with Disabilities – 2026 event at S'O'A University, scheduled from 01 December to 03 December 2026.</p>
+            <!-- <p class="service-desc">Register your organization for stall participation in the International Day of Persons with Disabilities – 2026 event at S'O'A University, scheduled from 01 December to 03 December 2026.</p> -->
          </div>
          <a href="{{ route('disability_day.registration') }}"><button class="btn-service-action" aria-label="Open Disability Day 2026 Stall Registration">
          Register Stall <i class="fa-solid fa-arrow-right-long"></i>
@@ -241,7 +241,7 @@
          </div>
          <div class="service-details">
             <h3 class="service-title">Disability Day 2026 – Participant Registration</h3>
-            <p class="service-desc">Register individuals and participating institutions for Walkathon, Cultural, Sports, and other activities during the International Day of Persons with Disabilities – 2026, to be held at S'O'A University from 01 December to 03 December 2026.</p>
+            <!-- <p class="service-desc">Register individuals and participating institutions for Walkathon, Cultural, Sports, and other activities during the International Day of Persons with Disabilities – 2026, to be held at S'O'A University from 01 December to 03 December 2026.</p> -->
          </div>
          <a href="{{ route('disability_day.participant_registration') }}"><button class="btn-service-action" aria-label="Open Disability Day 2026 Stall Registration">
          Register Here <i class="fa-solid fa-arrow-right-long"></i>
