@@ -7,16 +7,27 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle
+class DisabilityDayParticipantsAndEscortsExport implements
+    FromQuery,
+    WithHeadings,
+    WithMapping,
+    WithStyles,
+    ShouldAutoSize,
+    WithTitle,
+    WithEvents
 {
     protected Builder $query;
+    protected int $serialNo = 0;
 
     public function __construct(Builder $query)
     {
@@ -31,49 +42,16 @@ class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadin
     public function query(): Builder
     {
         return $this->query
-            ->leftJoin(
-                'disability_day_escorts as escorts',
-                'escorts.participant_registration_id',
-                '=',
-                'disability_day_participant_registrations.id'
-            )
-            ->leftJoin(
-                'districts',
-                'districts.district_id',
-                '=',
-                'disability_day_participant_registrations.district_id'
-            )
-            ->leftJoin(
-                'states',
-                'states.state_id',
-                '=',
-                'disability_day_participant_registrations.state_id'
-            )
-            ->whereNull('disability_day_participant_registrations.deleted_at')
-            ->select([
-                'disability_day_participant_registrations.*',
-                'districts.district_name as master_district_name',
-                'states.state_name as master_state_name',
-                'escorts.id as escort_id',
-                'escorts.escort_index as escort_index',
-                'escorts.name as escort_name',
-                'escorts.relationship as escort_relationship',
-                'escorts.mobile as escort_mobile',
-                'escorts.email as escort_email',
-                'escorts.created_at as escort_created_at',
-            ])
-            ->orderBy('disability_day_participant_registrations.id', 'asc')
-            ->orderBy('escorts.escort_index', 'asc')
-            ->orderBy('escorts.id', 'asc');
+            ->with(['escorts', 'district', 'state'])
+            ->orderBy('disability_day_participant_registrations.id', 'asc');
     }
 
     public function headings(): array
     {
         return [
-            'Participant ID',
+            'Sl.No',
             'Participant Registration No.',
             'Participant Name',
-            'Institute ID',
             'Institute / School Name',
             'Gender',
             'T-Shirt Size',
@@ -84,42 +62,31 @@ class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadin
             'Transportation Other Details',
             'Expected Arrival Date',
             'Expected Arrival Time',
-            'Address Type',
-            'State',
             'District',
             'Block',
             'Grampanchayat (GP)',
             'Village',
             'Municipality / ULB',
             'PIN Code',
-            'Complete Address',
             'Declared No. of Escorts',
-            'Financial Year',
-            'Applied At',
-            'Registration Status',
-            'Escort ID',
-            'Escort Sl. No.',
-            'Escort Name',
-            'Relationship with Participant',
-            'Escort Mobile Number',
-            'Escort Email',
-            'Escort Created At',
+            'Escort Details',
         ];
     }
 
     public function map($row): array
     {
-        $districtName = $row->master_district_name ?: ($row->district_name ?: '');
-        $stateName = $row->master_state_name ?: ($row->state_name ?: '');
+        $this->serialNo++;
 
-        // Ensure complete_address uses resolved master state name if relation isn't loaded
-        if (!empty($stateName) && empty($row->state_name)) {
-            $row->state_name = $stateName;
-        }
+        $districtName = $row->getDistrictDisplayName();
+        $districtName = $districtName === '—' ? '' : $districtName;
 
-        $addressTypeLabel = (int) $row->address_type === 1
-            ? 'Rural (Block / GP / Village)'
-            : ((int) $row->address_type === 2 ? 'Urban (Municipality / ULB)' : '');
+        $isRural = (int) $row->address_type === 1;
+        $isUrban = (int) $row->address_type === 2;
+
+        $blockName = $isRural ? trim((string) ($row->block_name ?? '')) : '';
+        $gpName = $isRural ? trim((string) ($row->gp_name ?? '')) : '';
+        $villageName = $isRural ? trim((string) ($row->village_name ?? '')) : '';
+        $municipalityName = $isUrban ? trim((string) ($row->municipality_name ?? '')) : '';
 
         $attendingDates = '';
         if (!empty($row->attending_dates)) {
@@ -144,19 +111,12 @@ class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadin
             }
         }
 
-        $appliedAt = $row->applied_at
-            ? Carbon::parse($row->applied_at)->format('d-M-Y h:i A')
-            : '';
-
-        $escortCreatedAt = !empty($row->escort_created_at)
-            ? Carbon::parse($row->escort_created_at)->format('d-M-Y h:i A')
-            : '';
+        $escortDetailsText = $this->formatEscortDetails($row);
 
         return [
-            $row->id,
-            $row->registration_no,
-            $row->participant_name,
-            $row->institute_id ?? '',
+            $this->serialNo,
+            $row->registration_no ?? '',
+            $row->participant_name ?? '',
             $row->school_name ?? '',
             $row->gender ?? '',
             $row->tshirt_size ?? '',
@@ -167,27 +127,48 @@ class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadin
             $row->transport_mode_other ?? '',
             $arrivalDate,
             $arrivalTime,
-            $addressTypeLabel,
-            $stateName,
             $districtName,
-            $row->block_name ?? '',
-            $row->gp_name ?? '',
-            $row->village_name ?? '',
-            $row->municipality_name ?? '',
+            $blockName,
+            $gpName,
+            $villageName,
+            $municipalityName,
             $row->pin ?: ($row->postal_pin ?? ''),
-            $row->complete_address === '—' ? '' : $row->complete_address,
             (int) $row->number_of_escorts,
-            $row->financial_year ?? '',
-            $appliedAt,
-            (int) $row->status === 1 ? 'Registered' : 'Inactive',
-            $row->escort_id ?? '',
-            $row->escort_index ?? '',
-            $row->escort_name ?? '',
-            $row->escort_relationship ?? '',
-            $row->escort_mobile ?? '',
-            $row->escort_email ?? '',
-            $escortCreatedAt,
+            $escortDetailsText,
         ];
+    }
+
+    /**
+     * Format all associated escorts for a participant into a single readable multiline cell.
+     */
+    protected function formatEscortDetails(DisabilityDayParticipantRegistration $participant): string
+    {
+        $escorts = $participant->escorts;
+        if (!$escorts || $escorts->isEmpty()) {
+            return 'No Escort';
+        }
+
+        $blocks = [];
+        foreach ($escorts->values() as $idx => $escort) {
+            $lines = ['Escort ' . ($idx + 1)];
+
+            if (!empty(trim((string) $escort->name))) {
+                $lines[] = 'Name: ' . trim((string) $escort->name);
+            }
+            if (!empty(trim((string) $escort->relationship))) {
+                $lines[] = 'Relationship: ' . trim((string) $escort->relationship);
+            }
+            if (!empty(trim((string) $escort->mobile))) {
+                $lines[] = 'Mobile: ' . trim((string) $escort->mobile);
+            }
+            if (!empty(trim((string) $escort->email))) {
+                $lines[] = 'Email: ' . trim((string) $escort->email);
+            }
+
+            $blocks[] = implode("\n", $lines);
+        }
+
+        return implode("\n---\n", $blocks);
     }
 
     public function styles(Worksheet $sheet): array
@@ -199,7 +180,46 @@ class DisabilityDayParticipantsAndEscortsExport implements FromQuery, WithHeadin
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '1B5E20'],
                 ],
+                'alignment' => [
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
             ],
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+                $highestRow = $sheet->getHighestRow();
+
+                // Freeze header row
+                $sheet->freezePane('A2');
+
+                // Set readable width for Escort Details column (U) and enable Wrap Text
+                $sheet->getColumnDimension('U')->setAutoSize(false);
+                $sheet->getColumnDimension('U')->setWidth(45);
+
+                if ($highestRow >= 2) {
+                    $sheet->getStyle("A2:U{$highestRow}")
+                        ->getAlignment()
+                        ->setVertical(Alignment::VERTICAL_TOP);
+
+                    $sheet->getStyle("U2:U{$highestRow}")
+                        ->getAlignment()
+                        ->setWrapText(true);
+
+                    // Auto-adjust row heights for multiline Escort Details
+                    for ($r = 2; $r <= $highestRow; $r++) {
+                        $val = (string) $sheet->getCell("U{$r}")->getValue();
+                        $lineCount = substr_count($val, "\n") + 1;
+                        if ($lineCount > 1) {
+                            $sheet->getRowDimension($r)->setRowHeight(max(20, $lineCount * 15 + 6));
+                        }
+                    }
+                }
+            },
         ];
     }
 }

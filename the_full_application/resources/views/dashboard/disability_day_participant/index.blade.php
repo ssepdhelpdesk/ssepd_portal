@@ -133,7 +133,7 @@ Disability Day 2026 || Participant Registrations
                             <a href="{{ route('admin.disability_day_participant.export_participants_escorts') }}"
                                id="btnExportParticipantsEscorts"
                                class="btn btn-success btn-sm">
-                                <i class="fas fa-file-excel me-1"></i> Export Participants &amp; Escorts to Excel
+                                <i class="fas fa-file-excel me-1"></i> Export Participants &amp; Escorts
                             </a>
                         </div>
                     </div>
